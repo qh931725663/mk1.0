@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="yes" name="apple-touch-fullscreen">
+<meta content="telephone=no,email=no" name="format-detection">
+<script type="text/javascript" src="js/flexible_css.js"></script>
+<script type="text/javascript" src="js/flexible.js"></script>
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="Shortcut Icon" href="favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="css/common.css" />
+<title>体检报告</title>
+</head>
+<body>
+	<div class="main">
+		<!-- 头部信息 -->
+		<section class="title">
+			<img alt="" src="image/th.png"> 
+			<span>带*为必填项</span>
+		</section>
+		<!-- 内容 -->
+		<section class="content">
+			<!--    照片添加    -->
+	        <div class="z_photo">
+	            <div class="z_file">
+	                <input type="file" name="file" id="file" value="" accept="image/*" multiple/>
+	            </div>
+	            
+	        </div>
+		</section>
+		 <!--  保存 -->
+		 <div class="btn-save">保存</div>
+	</div>
+	<script type="text/javascript" src="../../common/js/jquery-1.11.3.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		WX_UPLOAD.init();	
+	});
+		var WX_UPLOAD = {
+			url : "/mkh1.0/wx/healthRecord/upload.action",
+			url_new : "",
+			fileType : 500001,
+			//选择文件
+			fileInput : "#file",
+			fileType : "",
+			files : [], //上传文件
+			//保存档案
+			saveHealthRecord : $.noop,
+			//上传多文件
+			uploadFiles : function() {
+				var that = this;
+				//
+				$.each(that.files, function(k, v) {
+				debugger;
+					that.uploadFile(v);
+				});
+			},
+			//上传单个文件
+			uploadFile : function(file) {
+				var that = this;
+				var formdata = new FormData();
+				formdata.append("file", file);
+				//
+				var xhr = new XMLHttpRequest();
+		
+				// 完成
+				xhr.addEventListener("load", function(e) {
+					console.log("完成");
+				}, false);
+				// 错误
+				xhr.addEventListener("error", function(e) {
+					console.log("失败");
+				}, false);
+				//上传文件
+				xhr.open("POST", that.url_new, true);
+				xhr.send(formdata);
+			},
+
+			//初始化
+			init : function() {
+				var that = this;
+				$(this.fileInput).on("change", function(e) {
+					that.getFiles(e);
+					//选择图片
+					debugger;
+					that.selectFile();
+					
+				});
+				//绑定保存方法
+				this.bindSave();
+			},
+			
+			//获取文件
+			getFiles : function(e) {
+				var that = this;
+				// 从事件中获取选中的所有文件
+				var new_files = e.target.files || e.dataTransfer.files;
+				$.each(new_files, function(i, v) {
+					that.files.push(v);
+				});
+				console.log(that.files);
+			},
+			//删除文件
+			deleteFile : function() {
+				
+				var that = this;
+				//
+				$(".z_delImg").unbind().on("click", function(e) {
+					//删除文件
+					var index = $(this).parent().attr("data-index");
+					//
+					that.files.splice(index, 1);
+					//删除元素
+					$(this).parent().remove();
+					//重置序号
+					that.resetFileIndex();
+				});
+			},
+			//选择图片
+			selectFile : function() {
+				//获取点击的文本框
+				debugger;
+				var file = document.getElementById("file");
+				//存放图片的父级元素
+				var imgContainer = document.getElementsByClassName('z_photo')[0];
+				//获取的图片文件
+				var fileList = file.files;
+				//文本框的父级元素
+				var input = document.getElementsByClassName('z_file')[0];
+				//遍历获取到得图片文件
+				for (var i = 0; i < fileList.length; i++) {
+					var imgUrl = window.URL.createObjectURL(file.files[i]);
+					//显示图片
+					var img = document.createElement("img");
+					img.setAttribute("src", imgUrl);
+					//删除图片按钮
+					var del = document.createElement("img");
+					del.setAttribute("src", "image/del.png");
+					del.setAttribute("class", "z_delImg");
+					//
+					var imgAdd = document.createElement("div");
+					imgAdd.setAttribute("class", "z_addImg");
+					imgAdd.appendChild(img);
+					imgAdd.appendChild(del);
+					imgContainer.appendChild(imgAdd);
+				}
+				//绑定删除事件
+				this.deleteFile();
+				//图片标记
+				this.resetFileIndex();
+			},
+			//重置标记
+			resetFileIndex : function() {
+				$(".z_addImg").each(function(i) {
+					$(this).attr("data-index", i);
+				});
+			},
+			//绑定保存方法
+			bindSave : function() {
+				var that = this;
+				//
+				$(".btn-save").on("click", function() {
+					//保存体检报告
+					that.saveHealthRecord().done(function(data) {
+						var order_id = data.data;
+						//保存图片
+						that.url_new = that.url + "?report_type=" + that.fileType + "&openid=test" + "&order_id=" + order_id;
+						that.uploadFiles();
+					});
+		
+				});
+			}
+		};	
+	</script>
+</body>
+</html>
