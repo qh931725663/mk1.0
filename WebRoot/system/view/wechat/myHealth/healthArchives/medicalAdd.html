@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="yes" name="apple-touch-fullscreen">
+<meta content="telephone=no,email=no" name="format-detection">
+<script type="text/javascript" src="js/flexible_css.js"></script>
+<script type="text/javascript" src="js/flexible.js"></script>
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="Shortcut Icon" href="favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="css/common.css" />
+<title>医保记录</title>
+</head>
+<body>
+	<div class="main">
+		<!-- 头部信息 -->
+		<section class="title">
+			<img alt="" src="image/th.png"> 
+			<span>带*为必填项</span>
+		</section>
+		<!-- 内容 -->
+		<section class="content">
+			<ul class="write">
+				<li class="write-item">
+					<span class="write-label">姓名</span>
+					<input type="hidden" name="user_id">
+					<input type="text" name="user_name" dir="rtl" class="ipt" readonly="readonly" placeholder="请输入姓名">
+				</li>
+				<li class="write-item">
+					<span class="write-label">身份证号</span>
+					<input type="text" name="user_card" dir="rtl" class="ipt" readonly="readonly" placeholder="请输入身份证号">
+				</li>
+				<li class="write-item write-bottom">
+					<span class="write-label">医保卡号</span>
+					<input type="number" name="report_no" dir="rtl" class="ipt" placeholder="请输入医保卡号">
+				</li>
+				<li class="write-item">
+					<span class="write-label must">就诊医院</span>
+					<img class="jt" alt="" src="image/jt.png">
+					<input type="hidden" name="hosp_name" id="hosp_name">
+					<select class="sel" dir="rtl" name="hosp_order_id" id="hosp_order_id">
+						<option>请选择就诊医院</option>
+						<option>第一医院</option>
+					</select>
+				</li>
+				<li class="write-item write-bottom">
+					<span class="write-label must">就诊类型</span>
+					<img class="jt" alt="" src="image/jt.png">
+					<select class="sel" dir="rtl" name="medical_insurance_type">
+						<option>请选择就诊类型</option>
+						<option value="1">职工医保</option>
+					</select>
+				</li>
+				<li class="write-item">
+					<span class="write-label must">报销日期</span>
+					<input class="input-date" name="medical_insurance_time" type="date" placeholder="请输入报销日期">
+				</li>
+				<li class="write-item">
+					<span class="write-label">费用总额</span>
+					<input type="text" name="medical_insurance_total" dir="rtl" class="ipt" placeholder="请输入费用总额">
+				</li>
+				<li class="write-item">
+					<span class="write-label">报销金额</span>
+					<input type="text" name="medical_insurance_reimbursement_amount" dir="rtl" class="ipt" placeholder="请输入报销金额">
+				</li>
+				<li class="write-item write-bottom">
+					<span class="write-label">补助金额</span>
+					<input type="text" name="medical_insurance_subsidy_amount" dir="rtl" class="ipt" placeholder="请输入补助金额">
+				</li>
+				<li class="write-item write-bottom-none">
+					<span class="write-label must">添加照片</span>
+				</li>
+			</ul>
+			<!--    照片添加    -->
+	        <div class="z_photo">
+	            <div class="z_file">
+	                <input type="file" name="file" id="file" value="" accept="image/*" multiple/>
+	            </div>
+	        </div>
+		</section>
+		 <!--  保存 -->
+		 <div class="btn-save">
+      	 		保存
+      	 </div>
+	</div>
+	<script type="text/javascript" src="../../common/js/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/medicalAdd.js"></script>
+</body>
+</html>

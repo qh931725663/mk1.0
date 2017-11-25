@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>脉搏血氧仪</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="use-explain">
+        <ul class="use-explain-list">
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/pulse-img/equipment_1.png" alt="" style="width:100%;"/>
+                </div>
+                <p>1、在计步器界面，显示步数、卡路里值和时间；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/pulse-img/equipment_2.png" alt="" style="width:100%;"/>
+                </div>
+                <p>2、计步器界面插入手指进入血氧界面；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/pulse-img/equipment_3.png" alt="" style="width:100%;"/>
+                </div>
+                <p>3、插入手指后约4-8秒可读取血氧和脉率数值，待数据稳定后可拔出手指，完成血氧数据存储；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/pulse-img/equipment_4.png" alt="" style="width:100%;"/>
+
+                </div>
+                <P>4、按开机键可以进行屏幕的开启和关闭；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/pulse-img/equipment_5.png" alt="" style="width:100%;"/>
+                </div>
+                <P>5、计步器界面没有任何操作 的情况下，一段时间进入黑屏界面，黑屏界面计步器正常工作；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/pulse-img/equipment_6.png" alt="" style="width:100%;"/>
+                </div>
+                <P>6、脉搏血氧仪可以存储多组数据。</P>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>综合健康指数</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <style>
+        #canvas{
+            background: url("../../common/image/myhealth/myhealth_01.png") no-repeat 0px 3px;
+            background-size: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="composite-ahdi">
+        <h2 style="margin-top:15px;">综合健康指数(AHDI)</h2>
+        <div class="composite-box">
+            <ul>
+                <li><span class="b-01"></span>低度风险</li>
+                <li><span class="b-02"></span>中低风险</li>
+                <li><span class="b-03"></span>中度风险</li>
+                <li><span class="b-04"></span>高度风险</li>
+                <li><span class="b-05"></span>极高风险</li>
+            </ul>
+            <div class="box-1">
+                <canvas id="canvas" width="165" height="165" data-score='0'></canvas>
+            </div>
+        </div>
+        <div class="box-mes" style="display:none;">
+            <span><i>中度风险:</i>具有患慢性病和其他疾病风险的人群</span>
+        </div>
+    </div>
+    <div class="major-hazards">
+        <div class="m-title">主要危险因素</div>
+        <ul>
+            <li><span class="gray-circular"></span>糖尿病</li>
+        </ul>
+    </div>
+    <div class="food-plan">
+        <div class="m-title">饮食计划</div>
+        <ul>
+            <li><span class="gray-circular"></span>学会计算食物中的碳水化合物，富含碳水化合物的食品 有：谷物，水果，奶类，豆类以及富含淀粉类的蔬菜。女性每餐40-60g米饭（1中碗）男性每餐50-80g米饭。根据年龄和活动量做相应的调整。</li>
+            <li><span class="gray-circular"></span>每一餐的食物构成要均衡，构成比：1/2为不含淀粉的蔬菜，例如：番茄，胡萝卜，菠菜。1/4为蛋白质 如家禽肉，瘦肉，鱼，另1/4为含有淀粉的谷物。可以再加一份水果或者不加糖的茶或者咖啡。</li>
+            <li><span class="gray-circular"></span>要选择健康的碳水化合物，如对血糖影响较小，也就是血糖指数低的食物，多选择含高纤维的食品，这些食物有全麦谷物，豆类，低脂奶和蔬菜。</li>
+        </ul>
+    </div>
+    <div class="sport-plan">
+        <div class="m-title">运动计划</div>
+        <ul>
+            <li><span class="gray-circular"></span>每周健走5天，每次30分钟</li>
+            <li><span class="gray-circular"></span>健走前，后测量血糖</li>
+            <li><span class="gray-circular"></span>健走时及时补充水分</li>
+
+        </ul>
+    </div>
+    <div class="medicine">
+        <div class="m-title">药物<span style="color: #DC3135;font-size: 15px;">(促进胰岛素分泌)</span></div>
+        <ul>
+            <li><span class="gray-circular"></span>磺脲类 格列美脲 格列齐特 格列吡嗪 格列喹酮</li>
+            <li><span class="gray-circular"></span>格列奈类 瑞格列奈 那格列奈</li>
+
+        </ul>
+    </div>
+</div>
+<script src="../../common/js/jquery-1.11.3.js"></script>
+<script src="js/cycle.js"></script>
+<script>
+$(function(){
+	//初始化加载数据
+	init();
+	function init(){
+		$.ajax({
+	        url:"../../../../../wx/user/healthIndex.action",
+	        type:"get",
+	        async: false,
+	        dataType : 'json',
+	        success:function(request) {
+	        var list=request.data;
+				if(request.status==0){
+					$("#canvas").attr({"data-score":list.ahdi_value});
+				}
+	      	}
+ 		});
+	}
+});
+</script>
+</body>
+</html>

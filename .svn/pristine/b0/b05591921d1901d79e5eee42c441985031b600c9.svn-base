@@ -1,0 +1,111 @@
+package com.haaa.cloudmedical.platform.allinone.controller;
+
+import java.io.*;
+import java.util.*;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload.*;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+/**
+ * Servlet implementation class contec
+ */
+
+@WebServlet(name="AIOLoginServlet",urlPatterns={"/aiologin"}) 
+public class LoginServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public LoginServlet() {
+        super();  
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("--------已调");
+
+		response.setContentType("text/html");
+        response.setCharacterEncoding("GB2312");
+        System.out.println(request);
+        PrintWriter out = response.getWriter();
+		String contentType = request.getContentType();
+        if(contentType != null && contentType.indexOf("multipart/form-data") != -1){
+        	System.out.println("--------始验证用");
+            FileItemFactory factory = new DiskFileItemFactory();
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            Iterator    items;
+            String username = "";
+            String passwd = ""; 
+            try{
+                items=upload.parseRequest(request).iterator();
+                while(items.hasNext()){
+                    FileItem item = (FileItem) items.next();
+                    if(item.isFormField()){
+                    	
+                    	if (0==item.getFieldName().compareTo("username")){
+                    		username = item.getString();
+                    		
+                    		
+                    	}else if (0==item.getFieldName().compareTo("password")){
+                    		passwd = item.getString();
+                    	}
+
+                    }
+                }
+
+            	System.out.println(username);
+            	System.out.println(passwd);
+                System.out.println("返回信息");
+                out.print(this.getPaitInfo(request));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }else{
+        	//可以做出错处理也可不处理
+        }
+	}
+	
+	protected String getPaitInfo(HttpServletRequest request) {
+
+		String headString = "<?xml version=\"1.0\" encoding=\"GBK\"?>\n";
+		StringBuffer sbs = new StringBuffer(headString);
+		sbs.append("<downinfo>\n");
+		sbs.append("<id>1222222</id>\n");
+		sbs.append("<startdate>2011-01-01 00:00:00</startdate>\n");
+		sbs.append("<enddate>2018-01-01 00:00:00</enddate>\n");
+		sbs.append("<diskspace>300</diskspace>\n");
+		sbs.append("<used>2</used>\n");
+		sbs.append("<total>500</total>\n");
+		sbs.append("<username>fanbowen</username>\n");
+		sbs.append("<cardtype>0</cardtype>\n"); // 卡类�?
+		sbs.append("<personid>2423423423</personid>\n");
+		sbs.append("<age>25</age>\n");
+		sbs.append("<sex>男</sex>\n");
+		sbs.append("<birthday>1991-07-29</birthday>\n");
+		sbs.append("<phone></phone>\n");
+		sbs.append("<hospitalid>91</hospitalid>\n");
+		sbs.append("<height>1800</height>\n");
+		sbs.append("<weight>780</weight>\n");
+		sbs.append("</downinfo>\n");
+		System.out.println(request.getSession().getId());
+		String returnValue = "HTTP_SUCCESS:PHPSESSID="+request.getSession().getId()
+				+ sbs.toString();
+		return returnValue;
+	}
+}

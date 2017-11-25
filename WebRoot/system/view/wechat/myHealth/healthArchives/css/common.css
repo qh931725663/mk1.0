@@ -1,0 +1,231 @@
+@charset "utf-8";
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+		"Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun,
+		sans-serif;
+	height: 100%;
+}
+
+.must:after {
+	content: '*';
+	color: red;
+}
+
+.main {
+	background: #F0F0F0;
+	height: 100%;
+}
+
+.main>.title {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 1rem;
+	background-color: #ffdc9b;
+}
+
+.main>.title>span {
+	color: #FF7200;
+	margin-left: 0.1rem;
+	font-size: 0.4rem;
+}
+
+.main>.title>img {
+	height: 0.4rem;
+}
+
+.write>.write-item {
+	height: 1.5rem;
+	border-bottom: 0.05rem solid #F0F0F0;
+	background-color: #fff;
+}
+
+.write>.write-bottom {
+	border-bottom: 0.3rem solid #F0F0F0;
+}
+
+.write>.write-bottom-none {
+	border-bottom: none;
+}
+
+.write>.write-item>.write-label {
+	line-height: 1.5rem;
+	margin-left: 0.3rem;
+	font-size: 0.4rem;
+	display: inline-block;
+}
+
+.write>.view-item{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.write>.view-item>.view-label{
+	margin-left: 0.3rem;
+	font-size: 0.4rem;
+}
+
+.write>.view-item>.view-data{
+	margin-right: 0.3rem;
+	font-size: 0.4rem;
+	color: #6b6b6b;
+}
+
+.write>.view-item>.view-no{
+	color: #dddddd;
+}
+
+.write>.write-item>.ipt {
+	border: none;
+	height: 50%;
+	width: 50%;
+	float: right;
+	margin-top: 0.3rem;
+	margin-right: 0.3rem;
+}
+
+.write>.write-item>.input-date {
+	float: right;
+	margin-top: 0.5rem;
+	margin-right: 0.3rem;
+}
+
+.write>.write-item>.sel {
+	border: none;
+	outline: none;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	-ms-appearance: none;
+	width: 50%;
+	float: right;
+	margin-top: 0.5rem;
+	margin-right: 0.3rem;
+	background: none;
+}
+
+.write>.write-item>.jt {
+	float: right;
+	margin-top: 0.5rem;
+	margin-right: 0.3rem;
+	height: 0.5rem;
+}
+
+/* 添加图片 */
+.z_photo {
+	width: 100%;
+	height: 4rem;
+	overflow: auto;
+	clear: both;
+	background-color: #fff;
+}
+
+.z_photo-view{
+	margin-bottom: 1rem;
+}
+
+.z_photo img {
+	width: 2rem;
+	height: 2rem;
+}
+
+.z_addImg {
+	float: left;
+	margin-left: 0.3rem;
+	position: relative;
+}
+
+.z_addImg>.z_delImg {
+	position: absolute;
+	width: 0.5rem;
+	height: 0.5rem;
+	left: 1.5rem;
+}
+
+.z_file {
+	width: 2rem;
+	height: 2rem;
+	background: url(../image/addimg.png) no-repeat;
+	background-size: 100% 100%;
+	float: left;
+	margin-left: 0.3rem;
+}
+
+.z_file input::-webkit-file-upload-button {
+	width: 1rem;
+	height: 1rem;
+	border: none;
+	position: absolute;
+	outline: 0;
+	opacity: 0;
+}
+
+.z_file input#file {
+	display: block;
+	width: auto;
+	border: 0;
+	vertical-align: middle;
+}
+
+/* 保存按钮 */
+.btn-save {
+	width: 80%;
+	background-color: #DA281F;
+	height: 1rem;
+	margin: 1rem auto;
+	border-radius: 0.2rem;
+	text-align: center;
+	line-height: 1rem;
+	font-size: 0.5rem;
+	color: #fff;
+}
+
+/* 弹窗样式 */
+.win>.input-content {
+	box-sizing:border-box;
+	resize: none;
+	outline: none;
+	width: 100%;
+	height: 3rem;
+	border: none;
+	margin-bottom: 0rem;
+	padding: 0.3rem;
+	font-size: 0.4rem;
+}
+
+.win>.title {
+	height: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 0.05rem solid #F0F0F0;
+	background-color: #fff;
+}
+
+.win>.title>.jt {
+	height: 0.5rem;
+	margin-left: 0.3rem;
+	
+}
+
+.win>.title>.center-text {
+	font-size: 0.5rem;
+}
+
+.win>.title>.right-text {
+	font-size: 0.4rem;
+	line-height: 0.5rem;
+	margin-right: 0.3rem;
+	color: #585858;
+}
+
+.win>.remark {
+	text-align: right;
+	height: 1rem;
+	line-height: 1rem;
+	background-color: #fff;
+	font-size: 0.4rem;
+	padding-right: 0.3rem;
+	color: #737373;
+}

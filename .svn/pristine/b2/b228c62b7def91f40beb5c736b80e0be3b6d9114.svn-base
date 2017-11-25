@@ -1,0 +1,293 @@
+/*主要校验*/
+//新增用户校验
+var flag_user="";
+function submit_check(){
+    flag_user=true;
+    if($("#user_phone").val()==""){
+        $("#user_phone_mes").html("手机号不能为空！");
+        flag_user=false;
+    }else{
+        $("#user_phone_mes").html("");
+    }
+    //手机号校验
+    var phone = /^1[3|4|5|7|8][0-9]{9}$/;
+    if($("#user_phone").val()!="" && !phone.test($("#user_phone").val())){
+        $("#user_phone_mes").html("手机号格式不正确！");
+        flag_user=false;
+    }else if($("#user_phone").val()!=""){
+        $.ajax({
+            url: "../../../user-platform/exists.action",
+            type: "post",
+            dataType: 'json',
+            data:{user_phone:$("#user_phone").val(),type:"1"},
+            success: function (response) {
+                if(response){
+                    $("#user_phone_mes").html("该用户已经存在！");
+                    flag_user=false;
+                }
+            }
+        });
+    }
+    var pwd=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
+    if($("#user_pwd").val()==""){
+        $("#user_pwd_mes").html("密码不能为空！");
+        flag_user=false;
+    }else{
+        $("#user_pwd_mes").html("");
+    }
+
+    if($("#user_pwd").val()!="" && !pwd.test($("#user_pwd").val())){
+        $("#user_pwd_mes").html("6-16位，只能用字母、数字！");
+        flag_user=false;
+    }
+
+    if($("#user_pwd2").val()==""){
+        $("#user_pwd2_mes").html("密码不能为空！");
+        //$("#user_pwd").focus();
+        flag_user=false;
+    }else{
+        $("#user_pwd2_mes").html("");
+    }
+    if($("#user_pwd2").val()!="" && !pwd.test($("#user_pwd2").val())){
+        $("#user_pwd2_mes").html("6-16位，只能用字母、数字！");
+        flag_user=false;
+    }else if($("#user_pwd").val()!=$("#user_pwd2").val()){
+        $("#user_pwd2_mes").html("两次密码输入不相同，请确认后重新输入！");
+        flag_user=false;
+    }
+    if($("#user_name").val()==""){
+        $("#user_name_mes").html("姓名不能为空！");
+        //$("#user_name").focus();
+        flag_user=false;
+    }else{
+        $("#user_name_mes").html("");
+    }
+    return flag_user;
+}
+//用户编辑页面校验
+var user_edit_flag="";
+function user_edit_check(){
+    user_edit_flag=true;
+    var pwd=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
+    if($("#user_pwd").val()!="" && !pwd.test($("#user_pwd").val())){
+        $("#user_pwd_mes").html("6-16位，只能用字母、数字！");
+        user_edit_flag=false;
+    }else{
+        $("#user_pwd_mes").html("");
+    }
+
+    if($("#user_pwd2").val()!="" && !pwd.test($("#user_pwd2").val())){
+        $("#user_pwd2_mes").html("6-16位，只能用字母、数字！");
+        user_edit_flag=false;
+    }else if($("#user_pwd").val()!=$("#user_pwd2").val()){
+        $("#user_pwd2_mes").html("两次密码输入不相同，请确认后重新输入！");
+        user_edit_flag=false;
+    }else{
+        $("#user_pwd2_mes").html("");
+    }
+    if($("#user_name").val()==""){
+        $("#user_name_mes").html("姓名不能为空！");
+        //$("#user_name").focus();
+        user_edit_flag=false;
+    }else{
+        $("#user_name_mes").html("");
+    }
+    return user_edit_flag;
+}
+//会员新增校验
+var member_add_flag="";
+function member_add_check(){
+    member_add_flag=true;
+    if($("#user_name").val()==""){
+        $("#user_name_mes").html("请输入真实姓名！");
+        member_add_flag=false;
+    }else{
+        $("#user_name_mes").html("")
+    }
+    var idcard=/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/;
+    if($("#user_card").val()==""){
+        $("#user_card_mes").html("请输入身份证号码！");
+        member_add_flag=false;
+    }else{
+        $("#user_card_mes").html("");
+    }
+
+    if($("#user_card").val()!="" && !idcard.test($("#user_card").val())){
+        $("#user_card_mes").html("身份证格式不正确，请重新输入！");
+        user_edit_flag=false;
+
+    }else if($("#user_card").val()!=""){
+        $.ajax({
+            url: "../../../user-platform/checkUserCard.action",
+            type: "post",
+            dataType: 'json',
+            data:{user_card:$("#user_card").val(),type:"2"},
+            success: function (response) {
+                if(response){
+                    $("#user_card_mes").html("该身份证号已经存在！");
+                    member_add_flag=false;
+                }
+            }
+        });
+
+    }
+
+    if($("#doctor_id").val()==""){
+        $("#doctor_id_mes").html("请输入家庭医生！");
+        member_add_flag=false;
+    }else{
+        $("#doctor_id_mes").html("")
+    }
+
+    if($("#user_phone").val()==""){
+        $("#user_phone_mes").html("请输入手机号！");
+        member_add_flag=false;
+    }else{
+        $("#user_phone_mes").html("")
+    }
+    //手机号校验
+    var phone = /^1[3|4|5|7|8][0-9]{9}$/;
+    if($("#user_phone").val()!="" && !phone.test($("#user_phone").val())){
+        $("#user_phone_mes").html("手机号格式不正确！");
+        member_add_flag=false;
+        return false;
+    }else if($("#user_phone").val()!=""){
+        $.ajax({
+            url: "../../../user-platform/exists.action",
+            type: "post",
+            dataType: 'json',
+            data:{user_phone:$("#user_phone").val(),type:"2"},
+            success: function (response) {
+                if(response){
+                    $("#user_phone_mes").html("该手机号已经存在！");
+                    member_add_flag=false;
+                }
+            }
+        });
+    }
+    return member_add_flag;
+}
+//会员编辑校验
+var member_edit_flag="";
+function member_edit_check(){
+    member_edit_flag=true;
+    if($("#doctor_id").val()==""){
+        $("#doctor_id_mes").html("请输入家庭医生！");
+        member_edit_flag=false;
+    }else{
+        $("#doctor_id_mes").html("")
+    }
+    return member_edit_flag;
+}
+
+//医生新增校验
+
+var doctor_add_flag="";
+function doctor_add_check(){
+    doctor_add_flag=true;
+    if($("#user_name").val()==""){
+        $("#user_name_mes").html("请输入真实姓名！");
+        doctor_add_flag=false;
+    }else{
+        $("#user_name_mes").html("")
+    }
+    var idcard=/^(\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$/;
+    if($("#user_card").val()!="" && !idcard.test($("#user_card").val())){
+        $("#user_card_mes").html("身份证格式不正确，请重新输入！");
+        doctor_add_flag=false;
+    }else{
+        $("#user_card_mes").html("");
+    }
+    //手机号校验
+    var phone = /^1[3|4|5|7|8][0-9]{9}$/;
+    if($("#user_phone").val()==""){
+        $("#user_phone_mes").html("请输入手机号！");
+        doctor_add_flag=false;
+    }else if($("#user_phone").val()!="" && !phone.test($("#user_phone").val())){
+        $("#user_phone_mes").html("手机号格式不正确！");
+        doctor_add_flag=false;
+    }else{
+        $("#user_phone_mes").html("");
+    }
+    return doctor_add_flag;
+}
+function idcard(){
+    if($("#user_card").val()!=""){
+        return $.ajax({
+            url: "../../../user-platform/checkUserCard.action",
+            type: "post",
+            dataType: 'json',
+            data:{user_card:$("#user_card").val(),type:"2"},
+            success: function (response) {
+                if(response){
+                    $("#user_card_mes").html("该身份证号已经存在！");
+                    doctor_add_flag=false;
+                }
+            }
+        });
+
+    }
+}
+function phone(){
+    if($("#user_phone").val()!=""){
+        return $.ajax({
+            url: "../../../user-platform/exists.action",
+            type: "post",
+            dataType: 'json',
+            data:{user_phone:$("#user_phone").val(),type:"2"},
+            success: function (response) {
+                if(response){
+                    $("#user_phone_mes").html("该手机号已经存在！");
+                    doctor_add_flag=false;
+                }
+            }
+        });
+    }
+}
+//页面右上角修改个人密码校验
+var per_pwd_flag="";
+function per_pwd_check(){
+    var pwd=/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
+    per_pwd_flag=true;
+    if($("#user_pwd").val()==""){
+        $("#user_pwd_mes").html("请输入密码！");
+        per_pwd_flag=false;
+    }else if($("#user_pwd").val()!="" && !pwd.test($("#user_pwd").val())){
+        $("#user_pwd_mes").html("6-16位，只能用字母、数字！");
+        per_pwd_flag=false;
+    }else{
+        $("#user_pwd_mes").html("");
+    }
+    if($("#user_pwd2").val()==""){
+        $("#user_pwd2_mes").html("请输入密码！");
+        per_pwd_flag=false;
+    }else if($("#user_pwd2").val()!="" && !pwd.test($("#user_pwd2").val())){
+        $("#user_pwd2_mes").html("6-16位，只能用字母、数字！");
+        per_pwd_flag=false;
+    }else if($("#user_pwd").val()!=$("#user_pwd2").val()){
+        $("#user_pwd2_mes").html("两次密码不相同，请重新输入！");
+        per_pwd_flag=false;
+    }else{
+        $("#user_pwd2_mes").html("");
+    }
+    return per_pwd_flag;
+}
+
+//新闻添加 修改校验
+var news_flag="";
+function new_add_edit_check(){
+    news_flag=true;
+    if($("#title").val()==""){
+        $("#title_mes").html("文章标题必填，字数10-20字!");
+        news_flag=false;
+    }else{
+        $("#title_mes").html("");
+    }
+    if($("#short_introduction").val()==""){
+        $("#short_introduction_mes").html("文章标题必填，字数10-20字!");
+        news_flag=false;
+    }else{
+        $("#short_introduction_mes").html("");
+    }
+    return news_flag;
+}

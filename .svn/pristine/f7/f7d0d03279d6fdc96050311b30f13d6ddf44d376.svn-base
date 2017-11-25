@@ -1,0 +1,116 @@
+package com.haaa.cloudmedical.platform.news.controller;
+
+import java.time.LocalDateTime;
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.entity.BannerNews;
+import com.haaa.cloudmedical.platform.news.service.NewsManageService;
+
+@RestController
+@RequestMapping("/news")
+public class NewsManageController {
+
+	@Resource
+	private NewsManageService service;
+
+	private Logger logger = Logger.getLogger(NewsManageController.class);
+
+	/**
+	 * 查询
+	 * 
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getNewsById.action")
+	@ResponseBody
+	public Object getNewsById(String order_id) {
+		ResponseDTO dto = service.getNewsById(order_id);
+		return dto;
+	}
+	
+	/**
+	 * 查询
+	 * 
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getUserId.action")
+	@ResponseBody
+	public Object getUserId(String user_phone) {
+		String user_id = service.getUserId(user_phone);
+		return user_id;
+	}
+
+	/**
+	 * 条件查询
+	 * 
+	 * @param the_text
+	 * @param user_id
+	 * @param startDate
+	 * @param endDate
+	 * @param pageno
+	 * @return
+	 */
+	@RequestMapping("/gridquery.action")
+	@ResponseBody
+	public Page getNewsByCondition(String the_text, String user_id, String news_type,String startDate, String endDate, Integer pageno) {
+		Page page = service.getNewsByCondition(the_text, user_id, news_type,startDate, endDate, pageno);
+		return page;
+	}
+	
+	/**
+	 * 获取所有的发布者
+	 * @return
+	 */
+	@RequestMapping("/getManagerList.action")
+	@ResponseBody
+	public Object getManagerList(){
+		ResponseDTO dto = service.getManagerList();
+		return dto;
+	}
+
+	/**
+	 * 更新
+	 * @param news
+	 * @return
+	 */
+	@RequestMapping("/update.action")
+	@ResponseBody
+	public boolean update(BannerNews news) {
+		boolean flag = service.update(news);
+		return flag;
+	}
+	
+	/**
+	 * 新增
+	 * @param news
+	 * @return
+	 */
+	@RequestMapping("/add.action")
+	@ResponseBody
+	public long add(BannerNews news){
+		news.setCreate_date(LocalDateTime.now().toString());
+		long order_id = service.add(news);
+		return order_id;
+	}
+	
+	/**
+	 * 删除
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/delete.action")
+	@ResponseBody
+	public boolean delete(String order_id){
+		boolean flag = service.delete(order_id);
+		return flag;
+	}
+
+}

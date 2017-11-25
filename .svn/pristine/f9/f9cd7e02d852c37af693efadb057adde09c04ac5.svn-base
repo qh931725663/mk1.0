@@ -1,0 +1,207 @@
+package com.haaa.cloudmedical.platform.news.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.Attachment;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.LogPrinter;
+import com.haaa.cloudmedical.platform.news.service.NewsManageService;
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.FileRenamePolicy;
+
+@RestController
+@RequestMapping("/news")
+public class NewsManageController {
+
+	@Resource
+	private NewsManageService service;
+
+	private Logger logger = Logger.getLogger(NewsManageController.class);
+
+	private String separator = "/";
+	private String fileSizeLimit = "2000";
+	private File oldFile;
+
+	class MyFileRenamePolicy implements FileRenamePolicy {
+		public File rename(File file) {
+			oldFile = file;
+			String fileSaveName = StringUtils.join(new String[] { java.util.UUID.randomUUID().toString(), ".",
+					FilenameUtils.getExtension(file.getName()) });
+			File result = new File(file.getParentFile(), fileSaveName);
+			return result;
+		}
+	}
+
+	@RequestMapping("/addNews.action")
+	public InfoJson addNews(HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		HttpSession session = request.getSession();
+		String dateDir = DateFormatUtils.format(new Date(), "yyyy" + separator + "MM" + separator + "dd");
+		String uploadDir = "upload" + separator + "news" + separator + dateDir + separator;
+		String uploadUrl = session.getServletContext().getRealPath(separator);
+		if (!uploadUrl.endsWith(String.valueOf(separator))) {
+			uploadUrl = uploadUrl + separator;
+		}
+		File savePath = new File(uploadUrl + uploadDir);
+		if (!savePath.exists()) {
+			savePath.mkdirs();
+		}
+		String saveDirectory = uploadUrl + uploadDir;
+		int maxPostSize = Integer.parseInt(this.fileSizeLimit) * 1024 * 1024;
+		String encoding = "UTF-8";
+		FileRenamePolicy rename = new MyFileRenamePolicy();
+		MultipartRequest multi = null;
+		try {
+			multi = new MultipartRequest(request, saveDirectory, maxPostSize, encoding, rename);
+			if (oldFile != null)
+				LogPrinter.info("oldfilename:" + oldFile.getName());
+		} catch (IOException e) {
+			infoJson.setInfo("上传图像错误！！！");
+			e.printStackTrace();
+			return infoJson;
+		}
+		Enumeration<?> elements = multi.getFileNames();
+		File file = null;
+		String contentType = "";
+		int num = 0;
+		Attachment attachment = new Attachment();
+		while (elements.hasMoreElements()) {
+			String name = (String) elements.nextElement();
+			file = multi.getFile(name);
+			if (file != null) {
+				contentType = multi.getContentType(name);
+				attachment.setPic_num(num);
+				attachment.setFile_name(file.getName());
+				attachment.setFileLength(file.length());
+				attachment.setContentType(contentType);
+				num++;
+			}
+		}
+		Map<String, Object> newsMap = new HashMap<String, Object>();
+		newsMap.put("title", multi.getParameter("title"));
+		newsMap.put("is_push_to_patient", multi.getParameter("is_push_to_patient"));
+		newsMap.put("is_push_to_doctor", multi.getParameter("is_push_to_doctor"));
+		newsMap.put("is_push_to_frontpage", multi.getParameter("is_push_to_frontpage"));
+		newsMap.put("short_introduction", multi.getParameter("short_introduction"));
+		newsMap.put("url_index", multi.getParameter("url_index"));
+		newsMap.put("the_text", multi.getParameter("the_text"));
+		newsMap.put("user_id", multi.getParameter("user_id"));
+		newsMap.put("create_date", new Date());
+		if (attachment.getFile_name() != null) {
+			newsMap.put("pic_index", uploadDir + attachment.getFile_name());
+		}
+		infoJson = service.addNews(newsMap);
+		return infoJson;
+	}
+
+	public InfoJson updateNews(HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		HttpSession session = request.getSession();
+		String dateDir = DateFormatUtils.format(new Date(), "yyyy" + separator + "MM" + separator + "dd");
+		String uploadDir = "upload" + separator + "news" + separator + dateDir + separator;
+		String uploadUrl = session.getServletContext().getRealPath(separator);
+		if (!uploadUrl.endsWith(String.valueOf(separator))) {
+			uploadUrl = uploadUrl + separator;
+		}
+		File savePath = new File(uploadUrl + uploadDir);
+		if (!savePath.exists()) {
+			savePath.mkdirs();
+		}
+		String saveDirectory = uploadUrl + uploadDir;
+		int maxPostSize = Integer.parseInt(this.fileSizeLimit) * 1024 * 1024;
+		String encoding = "UTF-8";
+		FileRenamePolicy rename = new MyFileRenamePolicy();
+		MultipartRequest multi = null;
+		try {
+			multi = new MultipartRequest(request, saveDirectory, maxPostSize, encoding, rename);
+			if (oldFile != null)
+				LogPrinter.info("oldfilename:" + oldFile.getName());
+		} catch (IOException e) {
+			infoJson.setInfo("上传图像错误！！！");
+			e.printStackTrace();
+			return infoJson;
+		}
+		Enumeration<?> elements = multi.getFileNames();
+		File file = null;
+		String contentType = "";
+		int num = 0;
+		Attachment attachment = new Attachment();
+		while (elements.hasMoreElements()) {
+			String name = (String) elements.nextElement();
+			file = multi.getFile(name);
+			if (file != null) {
+				contentType = multi.getContentType(name);
+				attachment.setPic_num(num);
+				attachment.setFile_name(file.getName());
+				attachment.setFileLength(file.length());
+				attachment.setContentType(contentType);
+				num++;
+			}
+		}
+		Map<String, Object> newsMap = new HashMap<String, Object>();
+		newsMap.put("order_id", multi.getParameter("order_id"));
+		newsMap.put("title", multi.getParameter("title"));
+		newsMap.put("is_push_to_patient", multi.getParameter("is_push_to_patient"));
+		newsMap.put("is_push_to_doctor", multi.getParameter("is_push_to_doctor"));
+		newsMap.put("is_push_to_frontpage", multi.getParameter("is_push_to_frontpage"));
+		newsMap.put("short_introduction", multi.getParameter("short_introduction"));
+		newsMap.put("url_index", multi.getParameter("url_index"));
+		newsMap.put("the_text", multi.getParameter("the_text"));
+		newsMap.put("user_id", multi.getParameter("user_id"));
+		newsMap.put("create_date", new Date());
+		if (attachment.getFile_name() != null) {
+			newsMap.put("pic_index", uploadDir + attachment.getFile_name());
+		}
+		infoJson = service.addNews(newsMap);
+		return infoJson;
+	}
+
+	@RequestMapping("/getNewsById.action")
+	public InfoJson getNewsById(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getNewsById(order_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson getNewsByCondition(String condition, String downTime, String upTime, Integer pageno,
+			Integer pagesize) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (pageno == null) {
+				pageno = 1;
+			}
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+			infoJson = service.getNewsByCondition(condition, downTime, upTime, pageno, pagesize);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

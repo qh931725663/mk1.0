@@ -1,0 +1,112 @@
+package com.haaa.cloudmedical.common.util;
+
+import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class BeanPropertyUtil {
+	
+	public static void toMapFromObject(Map<String,Object> map,Object object){
+		Field[] fields = object.getClass().getDeclaredFields();
+		Field.setAccessible(fields, true);
+		for (Field field : fields) {
+			try {
+				if(field.get(object)!=null)
+					map.put(field.getName(), field.get(object));
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}			
+		}
+	}
+	public static void toObjectFromMap(Map<String,Object> map,Object object){
+		Field[] fields = object.getClass().getDeclaredFields();
+		Field.setAccessible(fields, true);
+		for (Field field : fields) {
+			if(map.containsKey(field.getName())){
+				try {
+					field.set(object, map.get(field));
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public static String[] getPropertyNameAndValue(Object object){
+		Map<String,Object> map = new HashMap<String,Object>();
+		toMapFromObject(map,object);		
+		return getPropertyNameAndValue(map);
+	}
+	
+	public static List<HashMap<String, Object>> toHashMap(ResultSet resultSet) {
+		ResultSetMetaData rsmd;
+		List<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+		try {
+			rsmd = resultSet.getMetaData();
+			int size = rsmd.getColumnCount();
+			String[] columnName = new String[size];
+			for (int i = 0; i < size; i++) {
+				columnName[i] = rsmd.getColumnLabel(i + 1);
+			}
+			HashMap<String, Object> map = null;
+			while (resultSet.next()) {
+				map = new HashMap<String, Object>();
+				for (int i = 0; i < size; i++) {
+					if(resultSet.getObject(columnName[i])!=null)
+						map.put(columnName[i].toLowerCase(), resultSet.getObject(columnName[i]));
+				}
+				list.add(map);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public static int charCount(String string, char c) {
+		int count = 0;
+		char[] chars = string.toCharArray();
+		for (char ch : chars) {
+			if (ch == c)
+				count++;
+		}
+		return count;
+	}
+	public static <T> List<T>  toObjectsFromMaps(List<Map<String,Object>> from,Class<T> cla){
+		T object = null;
+		Field[] fields = cla.getDeclaredFields();
+		List<T> list = new ArrayList<T>();
+		Field.setAccessible(fields, true);
+		for (Map<String,Object> map : from) {
+			try {
+				object = cla.newInstance();
+				for (Field field : fields) {
+					String name = field.getName();
+					if(map.containsKey(name)){
+						Object value = map.get(name);
+						if(value.getClass()==Date.class)
+							value = DateUtil.DateFormat(value, "yyyy/MM/dd HH:mm");
+						field.set(object, String.valueOf(value));
+					}
+				}
+				list.add(object);
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+		
+	}
+	
+
+}

@@ -1,0 +1,244 @@
+package com.haaa.cloudmedical.app.chronicplan.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.gexin.fastjson.JSONArray;
+import com.gexin.fastjson.JSONObject;
+import com.haaa.cloudmedical.app.chronicplan.service.ChronicPlanService;
+import com.haaa.cloudmedical.app.equipment.controller.BloodOxygenController;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+
+/**
+ * 
+ * @author Owen
+ *
+ */
+@Controller
+@RequestMapping("/chronicplan")
+public class ChronicplanController {
+	@Autowired
+	private ChronicPlanService service;
+	@Resource
+    private CommonUserService commonUserService;
+	
+	private Logger logger = Logger.getLogger(BloodOxygenController.class);
+	    
+	/**
+	 * @description 添加管理计划
+	 * @param param
+	 * @return
+	 */
+	@RequestMapping(value = { "/addPlanItems.action" }, method = { RequestMethod.POST })
+	@ResponseBody
+	public InfoJson addPlanItems(String param) {
+		//System.out.println("前台出入的json"+param);
+		InfoJson infoJson = new InfoJson();
+		JSONObject jo=new JSONObject();                    
+        //如果页面传的是json数组字符串，用下列方式解析  
+        List<Map> parseArray = jo.parseArray(param, Map.class); 
+        String create_by=  String.valueOf(commonUserService.getUserMap().get("user_id"));
+        int flag =0;
+		for (Map map : parseArray) {
+			//设置创建人(从缓存中取当前登录用户)
+			map.put("create_by", create_by);
+			//设置添加时间
+			Date date = new Date();	
+			map.put("create_date",(DateUtil.dateFormat(date, "yyyy-MM-dd HH:mm:ss")));
+			if (map.get("option_value")!=null) {
+				flag+=1;
+			}						
+			//设置测量时间
+			if (map.get("check_time")==null) {
+				map.put("check_time",(DateUtil.dateFormat(date, "yyyy-MM-dd HH:mm:ss")));
+			}	
+		}
+		if (flag==0) {
+			infoJson.setInfo(-1, "请输入数据");
+			return infoJson;
+		}	
+        try {								
+			service.addPlanItems(parseArray);
+			infoJson.setStatus(1);			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+	}  
+	
+	/**
+	 * @description 具体计划的测量记录跟踪展示
+	 * @param plan_id
+	 * @param dic_order_id
+	 * @return
+	 */
+    @RequestMapping(value = { "/getPlanTrackItems.action" }, method = { RequestMethod.GET })
+    @ResponseBody
+    public  InfoJson getPlanTrackItems( String plan_id, String dic_order_id,String pageno, String pagesize) {
+    	InfoJson infoJson = new InfoJson();
+    	if (plan_id==null || dic_order_id==null) {
+    		infoJson.setInfo("参数为空");
+    		return infoJson;
+		}
+    	try {
+			infoJson=service.getPlanTrackItems( plan_id,  dic_order_id);
+			infoJson.setStatus(1);	
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+    	return  infoJson;
+	} 
+    
+    /**
+     * @description 删除某次跟踪检测记录
+     * @param item_order_id
+     * @return
+     */
+    @RequestMapping(value = { "/deletePlanItems.action" }, method = { RequestMethod.GET })
+    @ResponseBody
+    public InfoJson deletePlanItems(String item_order_id) {
+    	InfoJson infoJson = new InfoJson();
+    	if (item_order_id==null) {
+    		infoJson.setInfo("参数为空");
+    		return infoJson;
+		}
+    	try {
+			service.deletePlanItems(item_order_id);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}  	
+    	return infoJson;
+	}
+   
+    /**
+	 * 
+	 * @Title: query 
+	 * @Description: 血糖数据查询 
+	 * @param user_id 
+	 * @param recent 不为null时表示，曲线图查询
+	 * @param year_month 
+	 * @param pageno 
+	 * @param pagesize 
+	 * @param request 
+	 * @return @throws
+	 */
+	@RequestMapping(value = { "/bloodSugarQuery.action" }, method = { RequestMethod.GET })
+	@ResponseBody
+	public InfoJson bloodSugarQuery(Long user_id, String recent, Integer period, String year_month, Integer pageno, Integer days,
+			Integer pagesize) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			//根据是否传递user_id判断从患者端还是医生端传递
+			//user_id = commonUserService.getPatientId(user_id);
+			//默认数据DEFAULT_PAGESIZE = 15
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+			//默认查询最近 RECENT = 365
+			if (recent != null) {
+				if (days == null) {
+					days = 365;
+				}
+					infoJson = service.queryRecent(user_id, period, days);
+				
+			} else if (pageno != null) {
+				infoJson = service.pageQuery(user_id, year_month,period, pageno, pagesize);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @Title: query 
+	 * @Description: 血压数据查询
+	 * @param user_id
+	 * @param recent  不为null时表示，曲线图查询
+	 * @param year_month
+	 * @param pageno
+	 * @param pagesize
+	 * @param request
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping(value = { "/bloodPressure.action" }, method = { RequestMethod.GET })
+	@ResponseBody
+	public InfoJson bloodPressureQuery(Long user_id, String recent, String year_month, Integer pageno, Integer pagesize,Integer days,
+			HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			//根据是否传递user_id判断从患者端还是医生端传递
+			//user_id = commonUserService.getPatientId(user_id);
+			//默认数据DEFAULT_PAGESIZE = 15
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+			//默认查询最近 RECENT = 365
+			if (recent != null) {
+				if (days == null) {
+					days = 365;
+				}
+				infoJson = service.queryRecent(user_id, days);
+			} else if (pageno != null) {
+				infoJson = service.pageQuery(user_id, year_month, pageno, pagesize);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		}
+		return infoJson;
+	}
+
+	/**
+	 * @description 药品查询
+	 * @param medicName
+	 * @return
+	 */
+	@RequestMapping(value = { "/getMedicine.action" }, method = { RequestMethod.GET })
+	@ResponseBody
+	public InfoJson getMedicine(String medicName) {
+		InfoJson infoJson = new InfoJson();
+		if (medicName==null) {
+			infoJson.setInfo("请输入药品名称!");
+			return infoJson;
+		}
+		try {
+			
+			List<Map<String, Object>> medicines = service.getMedicine(medicName);
+			if (medicines.size()==0) {
+				infoJson.setCount(0);
+				infoJson.setInfo("药品库没有该药品!");
+				return infoJson;
+			}
+			infoJson.setCount(medicines.size());
+			infoJson.setData(medicines);
+			infoJson.setStatus(1);	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return infoJson;
+	}
+	
+}

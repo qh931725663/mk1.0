@@ -1,0 +1,191 @@
+package com.haaa.cloudmedical.platform.news.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.entity.BannerNews;
+import com.haaa.cloudmedical.platform.news.service.NewsManageService;
+
+@RestController
+@RequestMapping("/news")
+public class NewsManageController {
+
+	@Resource
+	private NewsManageService service;
+
+	private Logger logger = Logger.getLogger(NewsManageController.class);
+
+	/**
+	 * 查询
+	 * 
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getNewsById.action")
+	@ResponseBody
+	public Object getNewsById(String order_id) {
+		ResponseDTO dto = service.getNewsById(order_id);
+		return dto;
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getUserId.action")
+	@ResponseBody
+	public Object getUserId(String user_phone) {
+		String user_id = service.getUserId(user_phone);
+		return user_id;
+	}
+
+	/**
+	 * 条件查询
+	 * 
+	 * @param the_text
+	 * @param user_id
+	 * @param startDate
+	 * @param endDate
+	 * @param pageno
+	 * @return
+	 */
+	@RequestMapping("/gridquery.action")
+	@ResponseBody
+	public Page getNewsByCondition(String the_text, String user_id, String section, String startDate,
+			String endDate, Integer pageno) {
+		Page page = service.getNewsByCondition(the_text, user_id, section, startDate, endDate, pageno);
+		return page;
+	}
+
+	/**
+	 * 获取所有的发布者
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getManagerList.action")
+	@ResponseBody
+	public Object getManagerList() {
+		ResponseDTO dto = service.getManagerList();
+		return dto;
+	}
+
+	/**
+	 * 更新
+	 * 
+	 * @param news
+	 * @return
+	 */
+	@RequestMapping("/update.action")
+	@ResponseBody
+	public boolean update(BannerNews news) {
+		boolean flag = service.update(news);
+		return flag;
+	}
+
+	/**
+	 * 新增
+	 * 
+	 * @param news
+	 * @return
+	 */
+	@RequestMapping("/add.action")
+	@ResponseBody
+	public ResponseDTO add(BannerNews news) {
+		news.setCreate_date(LocalDateTime.now().toString());
+		if(news.getSection().equals("5")||news.getSection().equals("6")){
+			news.setIs_push_to_frontpage("1");
+		}
+		ResponseDTO dto = service.add(news);
+		return dto;
+	}
+
+	/**
+	 * 删除
+	 * 
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/delete.action")
+	@ResponseBody
+	public boolean delete(String order_id) {
+		boolean flag = service.delete(order_id);
+		return flag;
+	}
+
+	@RequestMapping("/upload.action")
+	@ResponseBody
+	public Object upload(HttpServletRequest request, HttpServletResponse response)
+			throws IllegalStateException, IOException {
+		// 创建一个通用的多部分解析器
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(
+				request.getSession().getServletContext());
+		String path = "";
+		// 判断 request 是否有文件上传,即多部分请求
+		if (multipartResolver.isMultipart(request)) {
+			// 转换成多部分request
+			MultipartHttpServletRequest multiRequest = multipartResolver.resolveMultipart(request);
+			// 取得request中的所有文件名
+			Iterator<String> iter = multiRequest.getFileNames();
+			while (iter.hasNext()) {
+				// 记录上传过程起始时的时间，用来计算上传时间
+				int pre = (int) System.currentTimeMillis();
+				// 取得上传文件
+				MultipartFile file = multiRequest.getFile(iter.next());
+				if (file != null) {
+					// 取得当前上传文件的文件名称
+					String myFileName = file.getOriginalFilename();
+					// 如果名称不为“”,说明该文件存在，否则说明该文件不存在
+					if (myFileName.trim() != "") {
+						// 重命名上传后的文件名
+						// String fileName = "demoUpload" +
+						// file.getOriginalFilename();
+						String fileName = StringUtils.join(new String[] { java.util.UUID.randomUUID().toString(), ".",
+								FilenameUtils.getExtension(file.getOriginalFilename()) });
+						// 定义上传路径
+						path = service.getFilePath(request) + fileName;
+						//
+						String realpath = BeanUtil.getProperty("dbconfig").getString("pictureuploaddir") + path;
+						File localFile = new File(realpath);
+						file.transferTo(localFile);
+					}
+				}
+				// 记录上传该文件后的时间
+				int finaltime = (int) System.currentTimeMillis();
+				System.out.println(finaltime - pre);
+				// 保存图片
+				service.savePicture(request, path);
+			}
+		}
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("error", 0);
+		map.put("url", url + path);
+		return map;
+	}
+
+	
+
+}

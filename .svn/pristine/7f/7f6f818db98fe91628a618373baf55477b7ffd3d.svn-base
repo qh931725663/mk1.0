@@ -1,0 +1,282 @@
+package com.haaa.cloudmedical.app.user.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.user.service.UserAppService;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.entity.User;
+
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
+import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+
+/**
+ * 
+ * @author James
+ * 
+ */
+
+@Controller
+@RequestMapping("/user-app")
+public class UserAppController {
+
+	@Autowired
+	private UserAppService service;
+
+	private Logger logger = Logger.getLogger(UserAppController.class);
+
+	/**
+	 * 检验手机号码是否已存在
+	 * 
+	 * @param user_phone
+	 * @return
+	 */
+	public boolean contain(String user_phone) {
+		boolean flag = false;
+		int size = service.getPhones(user_phone);
+		if (size > 0)
+			flag = true;
+		return flag;
+	}
+
+	/**
+	 * 获取验证码
+	 * 
+	 * @param user_phone
+	 * @return
+	 */
+	@RequestMapping("/sendMessage.action")
+	@ResponseBody
+	public Object sendMessage(String user_phone, String op_type) {
+		String errmsg = "";
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = this.contain(user_phone);
+		if (op_type.equals("1")) {
+			if (flag) {
+				errmsg = "该号码已注册！";
+				dto.setErrmsg(errmsg);
+				logger.error(user_phone + ":" + errmsg);
+				return dto;
+			}
+		} else if (op_type.equals("2")) {
+			if (!flag) {
+				errmsg = "该号码不存在！";
+				dto.setErrmsg(errmsg);
+				logger.error(user_phone + ":" + errmsg);
+				return dto;
+			}
+		}
+		long validate = Math.round((Math.random()*9+1)*100000);
+		String url = Constant.MESSAGE_URL;
+		String appkey = Constant.MESSAGE_APPKEY;
+		String secret = Constant.MESSAGE_SECRET;
+		TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
+		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
+		req.setSmsType("normal");
+		req.setSmsFreeSignName(Constant.MESSAGE_SIGN_NAME);
+		req.setSmsParamString("{'code':'" + validate + "','time':'2'}");
+		req.setRecNum(user_phone);
+		req.setSmsTemplateCode(Constant.MESSAGE_TEMPLATE_CODE);
+		AlibabaAliqinFcSmsNumSendResponse rsp = null;
+		try {
+			rsp = client.execute(req);
+			flag = rsp.isSuccess();
+			if (flag) {
+				service.redisPut(user_phone, String.valueOf(validate), 120);// 验证码有效期90s
+			}
+			dto.setFlag(true);
+		} catch (ApiException e) {
+			dto.setErrmsg("验证码发送失败。");
+			logger.error("发送验证码失败："+e.getMessage());
+		}
+
+		return dto;
+	}
+
+	/**
+	 * 检验验证码
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @param validate
+	 * @return
+	 */
+	public boolean validate(String user_phone, String validate) {
+		boolean flag = false;
+		Object validate_redis = service.redisGet(user_phone);
+		if (validate_redis != null&&!"".equals(validate_redis.toString())) {
+			if (validate.equals(validate_redis.toString()))
+				flag = true;
+		}
+		return flag;
+	}
+
+	/**
+	 * 新用户注册
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @param validate
+	 * @return
+	 */
+	@RequestMapping("/register.action")
+	@ResponseBody
+	public Object register(String user_phone, String user_pwd,String user_type, String validate) {
+		ResponseDTO dto = null;
+		if(user_type!=null&&!"".equals(user_type)){
+			boolean flag = this.validate(user_phone, validate);
+			if (flag) {
+				dto = service.register(user_phone, MD5Util.encode(user_pwd),user_type);
+			} else {
+				dto=new ResponseDTO();
+				dto.setErrmsg("验证码错误！");
+				logger.error(user_phone + ":" + "验证码错误！");
+			}
+		}
+		return dto;
+	}
+
+	/**
+	 * 用户登录
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public Object login(String user_phone, String user_pwd,String os_type) {
+		ResponseDTO dto = service.login(user_phone,MD5Util.encode(user_pwd),os_type);
+		return dto;
+	}
+
+	/**
+	 * 用户退出登录
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/logout.action")
+	@ResponseBody
+	public void logout(String loginToken) {
+		service.redisDelete(loginToken);
+	}
+
+	/**
+	 * 保存新用户基本信息
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/updateUser.action")
+	@ResponseBody
+	public Object save(User user,String doctor_id) {
+		ResponseDTO dto = service.updateUser(user,doctor_id);
+		return dto;
+	}
+
+	/**
+	 * 获取用户基本信息
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/getUserInfo.action")
+	@ResponseBody
+	public ResponseDTO getUser(String user_id,String user_type) {
+		ResponseDTO dto = service.getUser(user_id,user_type);
+		return dto;
+	}
+
+	/**
+	 * 验证用户登录状态
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/isLogin.action")
+	@ResponseBody
+	public boolean validateLogin(String loginToken) {
+		boolean flag = false;
+		String validate =service.redisGet(loginToken).toString();
+		if (validate!= null && !"".equals(validate)&&loginToken.equals(validate))
+			flag = true;
+		return flag;
+
+	}
+
+	/**
+	 * 用户重置密码
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/password.action")
+	@ResponseBody
+	public Object password(String user_phone, String user_pwd,String validate) {
+		boolean flag = false;
+		flag = this.validate(user_phone, validate);
+		ResponseDTO dto = null;
+		if (flag) {
+			dto = service.password(user_phone,MD5Util.encode(user_pwd));
+		}else{
+			dto=new ResponseDTO();
+		}
+		return dto;
+	}
+	
+	
+	
+	/**
+	 * 获取系统时间
+	 * @return
+	 */
+	@RequestMapping("/getSysDate.action")
+	@ResponseBody
+	public String getMysqlTime(){
+		String year = String.valueOf(service.getMySqlTime());
+		return year;
+	}
+	
+	@RequestMapping("/getAhdi.action")
+	@ResponseBody
+	public Object getAhdi(String user_card,String user_phone){
+		String ahdi_value="";
+		Map<String,Object> map = new HashMap<>();
+		double ahdi = service.getAhdi(user_phone, user_card);
+		if(ahdi!=-1){
+			if(ahdi>=0&&ahdi<2.5)
+				ahdi_value = "高";
+			else if(ahdi>=2.5&&ahdi<5)
+				ahdi_value = "中高";
+			else if(ahdi>=5&&ahdi<7.5)
+				ahdi_value = "中";
+			else if(ahdi>=7.5&&ahdi<10)
+				ahdi_value = "低";
+		}
+		map.put("ahdi", ahdi_value);
+		return map;
+	}
+	
+	@RequestMapping("/getAhdiValue.action")
+	@ResponseBody
+	public Object getAhdi(String user_id){
+		double ahdiValue = service.getAhdiValue(user_id);
+		long ahdi = Math.round(ahdiValue);
+		Map<String,Object> map = new HashMap<>();
+		map.put("ahdi", ahdi);
+		return map;
+	}
+}

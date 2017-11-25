@@ -1,0 +1,277 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.platform.survey.service;
+
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.dao.BasicInfoSurveyDao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+@Log(name = "后台基础调查")
+public class BasicInfoSurveyService {
+
+	@Resource
+	private BasicInfoSurveyDao basicInfoSurveyDao;
+
+	/**
+	 * 
+	 * @Title: getBasicInfo 
+	 * @Description: 基本数据查询基础信息 
+	 * @param user_id
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBasicInfo(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		DecimalFormat dFormat = new DecimalFormat("#.00");
+		Map<String, Object> basicInfoMap = basicInfoSurveyDao.getBasiceInfo(user_id);
+		if (basicInfoMap.get("user_height") != null && basicInfoMap.get("user_weight") != null) {
+			float height = (float) basicInfoMap.get("user_height");
+			float weight = (float) basicInfoMap.get("user_weight");
+			basicInfoMap.put("BMI", dFormat.format(weight / Math.pow(height / 100, 2)));
+		} else {
+			basicInfoMap.put("BMI", "");
+		}
+		basicInfoMap.forEach((k, v) -> {
+			if (v == null) {
+				basicInfoMap.put(k, "");
+			}
+		});
+		String idcard = (String) basicInfoMap.get("user_card");
+		IdcardInfoExtractor idInfo = new IdcardInfoExtractor(idcard);
+		basicInfoMap.put("user_age", idInfo.getAge());
+		infoJson.setData(basicInfoMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: addBasicInfoSurvey 
+	 * @Description: 添加基础档案
+	 * @param map
+	 * @return
+	 * @throws
+	 */
+	public InfoJson addBasicInfoSurvey(Map<String, Object> map) {
+		InfoJson infoJson = new InfoJson();
+		Date date = new Date();
+		Number history_id = addBasicInfoSurveyHistory(map, date);
+		map.forEach((k, v) -> {
+			if (v != null && !((String) v).trim().equals("")) {
+				saveAnswer(k, v, history_id, date);
+			}
+		});
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: saveAnswer 
+	 * @Description: 保存每一次答案以及响应问题
+	 * @param question
+	 * @param answer
+	 * @param history_id
+	 * @param date
+	 * @throws
+	 */
+	private void saveAnswer(String question, Object answer, Number history_id, Date date) {
+		String[] questionarr = question.split("-");
+		String question_id = questionarr[0];
+		Map<String, Object> questionMap = basicInfoSurveyDao.getQuestionById(question_id);
+		questionMap.put("base_order_id", history_id);
+		questionMap.put("question_k_order_id", questionMap.remove("order_id"));
+		questionMap.put("create_date", date);
+		questionMap.remove("table_id");
+		questionMap.remove("parent_id");
+		if (questionarr.length == 3) {
+			String index = questionarr[2];
+			questionMap.put("question_index", index);
+		} else {
+			questionMap.put("question_index", 0);
+		}
+		Number question_order_id = basicInfoSurveyDao.insertAndGetKey(questionMap, "s_base_question");
+		Map<String, Object> answerMap = new HashMap<String, Object>();
+		answerMap.put("base_order_id", history_id);
+		answerMap.put("question_order_id", question_order_id);
+		answerMap.put("answer", answer);
+		answerMap.put("create_date", date);
+		basicInfoSurveyDao.insertAndGetKey(answerMap, "s_base_answer");
+	}
+
+	/**
+	 * 
+	 * @Title: addBasicInfoSurveyHistory 
+	 * @Description: 保存基本档案信息
+	 * @param map
+	 * @param date
+	 * @return
+	 * @throws
+	 */
+	private Number addBasicInfoSurveyHistory(Map<String, Object> map, Date date) {
+		Map<String, Object> basicInfoMap = new HashMap<String, Object>();
+		basicInfoMap.put("user_id", map.remove("user_id"));
+		basicInfoMap.put("user_name", map.remove("user_name"));
+		basicInfoMap.put("fixed_phone", map.remove("fixed_phone"));
+		basicInfoMap.put("user_phone", map.remove("user_phone"));
+		basicInfoMap.put("user_sex", map.remove("user_sex"));
+		basicInfoMap.put("user_address", map.remove("user_address"));
+		basicInfoMap.put("email", map.remove("email"));
+		basicInfoMap.put("language", map.remove("language"));
+		basicInfoMap.put("user_height", map.remove("user_height"));
+		basicInfoMap.put("user_weight", map.remove("user_weight"));
+		basicInfoMap.put("doctor_id", map.remove("doctor_id"));
+		basicInfoMap.put("user_card", map.remove("user_card"));
+		basicInfoMap.put("user_nation", map.remove("user_nation"));
+		basicInfoMap.put("user_blood", map.remove("user_blood"));
+		basicInfoMap.put("user_medical_burden", map.remove("user_medical_burden"));
+		basicInfoMap.put("user_blood_is_rh", map.remove("user_blood_is_rh"));
+		basicInfoMap.put("career", map.remove("career"));
+		basicInfoMap.put("income", map.remove("income"));
+		basicInfoMap.put("work_unit", map.remove("work_unit"));
+		basicInfoMap.put("work_address", map.remove("work_address"));
+		basicInfoMap.put("user_waist", map.remove("user_waist"));
+		basicInfoMap.put("resident_type", map.remove("resident_type"));
+		basicInfoMap.put("cultural_level", map.remove("cultural_level"));
+		basicInfoMap.put("user_marriage", map.remove("user_marriage"));
+		basicInfoMap.put("create_date", date);
+		map.remove("user_age");
+		map.remove("BMI");
+		return basicInfoSurveyDao.insertAndGetKey(basicInfoMap, "s_base");
+	}
+
+	/**
+	 * 
+	 * @Title: getBasicInfoSurveyHistoryByTime 
+	 * @Description: 根据时间查询基础档案历史
+	 * @param datemax
+	 * @param datemin
+	 * @param user_id
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBasicInfoSurveyHistoryByTime(String datemax, String datemin, String user_id) {
+		InfoJson infoJson = new InfoJson();
+		infoJson.setData(basicInfoSurveyDao.getBasicInfoSurveyHistory(datemax, datemin, user_id));
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	public InfoJson getBasicInfoSurveyDetail(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> basicMap = new HashMap<String, Object>();
+		DecimalFormat dFormat = new DecimalFormat("#.00");
+		Map<String, Object> map = basicInfoSurveyDao.getBasicInfroSurveyHistoryDetail(order_id);
+		if (map.get("user_height") != null && map.get("user_weight") != null) {
+			float height = (float) map.get("user_height");
+			float weight = (float) map.get("user_weight");
+			map.put("BMI", dFormat.format(weight / Math.pow(height / 100, 2)));
+		} else {
+			map.put("BMI", "");
+		}
+		String idcard = (String) map.get("user_card");
+		IdcardInfoExtractor idInfo = new IdcardInfoExtractor(idcard);
+		map.put("user_age", idInfo.getAge());
+		map.forEach((k, v) -> {
+			if (v == null) {
+				basicMap.put(k, "");
+			} else {
+				basicMap.put(k, v);
+			}
+		});
+		resultMap.put("BasicInfo", basicMap);
+		List<Map<String, Object>> list = basicInfoSurveyDao.getBasicInfoSurveyDetail(order_id);
+		resultMap
+				.put("answers",
+						list.stream()
+								.collect(Collectors.groupingBy(t -> "t" + t.remove("table_id"), Collectors.groupingBy(
+										c -> "c" + ((Map) c).remove("question_index")))));
+
+		/*
+		 * list.forEach(s -> { if ((int) s.get("question_index") == 0) { if
+		 * (!resultMap.containsKey("a" + s.get("question_k_order_id"))) {
+		 * resultMap.put("a" + s.get("question_k_order_id"), s.get("answer")); }
+		 * else { } } else { int table_id = (int)
+		 * basicInfoSurveyDao.getQuestionTableId(s.get("questiont_k_order_id").
+		 * toString()) .get("table_id"); if (!resultMap.containsKey("t" +
+		 * table_id)) { resultMap.put("t" + table_id, new HashMap<String,
+		 * Object>()); } Map<String, Object> tableMap = (Map) resultMap.get("t"
+		 * + table_id); if (!tableMap.containsKey("c" +
+		 * s.get("question_index"))) { tableMap.put("c" +
+		 * s.get("question_index"), new HashMap<String, Object>()); }
+		 * Map<String, Object> subMap = (Map) tableMap.get("c" +
+		 * s.get("question_index")); if (!subMap.containsKey("a" +
+		 * s.get("question_k_order_id"))) { subMap.put("a" +
+		 * s.get("question_k_order_id"), s.get("answer")); } else {
+		 * subMap.put("a" + s.get("question_k_order_id"), subMap.get("a" +
+		 * s.get("question_k_order_id") + "," + s.get("answer"))); } } });
+		 */
+		infoJson.setData(resultMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	public InfoJson getBasicInfoSurveyDetailByTime(String datemax, String datemin, String user_id) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> bList = basicInfoSurveyDao.getBasicInfoSurveyHistory(datemax, datemin, user_id);
+		List<Object> resultlist = new LinkedList<Object>();
+		bList.stream().forEach(s -> {
+			String order_id = String.valueOf(s.get("order_id"));
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			Map<String, Object> basicMap = new HashMap<String, Object>();
+			Map<String, Object> map = basicInfoSurveyDao.getBasicInfroSurveyHistoryDetail(order_id);
+			resultMap.put("datetime", DateUtil.DateFormat((Date) map.get("create_date"), "yyyy-MM-dd"));
+			resultMap.put("order_id",order_id);
+			DecimalFormat dFormat = new DecimalFormat("#.00");
+			if (map.get("user_height") != null && map.get("user_weight") != null) {
+				float height = (float) map.get("user_height");
+				float weight = (float) map.get("user_weight");
+				map.put("BMI", dFormat.format(weight / Math.pow(height / 100, 2)));
+			} else {
+				map.put("BMI", "");
+			}
+			String idcard = (String) map.get("user_card");
+			IdcardInfoExtractor idInfo = new IdcardInfoExtractor(idcard);
+			map.put("user_age", idInfo.getAge());
+			map.forEach((k, v) -> {
+				if (v == null) {
+					basicMap.put(k, "");
+				} else {
+					basicMap.put(k, v);
+				}
+			});
+			resultMap.put("BasicInfo", basicMap);
+			List<Map<String, Object>> list = basicInfoSurveyDao.getBasicInfoSurveyDetail(order_id);
+			resultMap.put("answers",
+					list.stream()
+							.collect(Collectors.groupingBy(t -> "t" + t.remove("table_id"), Collectors.groupingBy(
+									c -> "c" + ((Map) c).remove("question_index")))));
+			resultlist.add(resultMap);
+		});
+		infoJson.setData(resultlist);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+}

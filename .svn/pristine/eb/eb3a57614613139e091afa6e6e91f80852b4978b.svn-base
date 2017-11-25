@@ -1,0 +1,140 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css"
+	href="../static/view-image/css/lightbox.css">
+
+<link rel="stylesheet" type="text/css"
+	href="./css/bootstrap-3.3.2.min.css">
+<link rel="stylesheet" type="text/css"
+	href="./css/bootstrap-multiselect.css">
+
+<title>消息提醒</title>
+<style type="text/css">
+.lable-input {
+	width: 150px;
+}
+
+.div-btn {
+	padding-left: 165px;
+}
+
+.select-style {
+	height: 31px;
+	width: 332px;
+}
+
+.input-style {
+	width: 332px;
+}
+
+.select-style2 {
+	height: 31px;
+	width: 80px;
+}
+</style>
+</head>
+<body>
+	<!-- 添加 &新增-->
+	<div id="measure">
+		<article class="page-container">
+			<form action="" method="post" class="form form-horizontal" id="">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3 lable-input"> <span
+						class="c-red">*</span>就诊日期：
+					</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input class="input-text Wdate radius" id="doctor_remind_date"
+							name="doctor_remind_date"
+							onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})"
+							style="width:332px;" />
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3 lable-input"><span
+						class="c-red">*</span>就诊时间：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<select class="select radius select-style" id="doctor_remind_time"
+							name="doctor_remind_time">
+							<option value="" selected>请选择</option>
+						</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3 lable-input"><span
+						class="c-red">*</span>就诊医院：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<select class="select radius select-style" id="hosp_order_id"
+							name="hosp_order_id">
+							<option value="" selected>请选择</option>
+						</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3 lable-input"><span
+						class="c-red">*</span>就诊科室：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<select class="select radius select-style" id="department_id"
+							name="department_id">
+							<option value="" selected>请选择</option>
+						</select>
+					</div>
+				</div>
+				<div class="row cl">
+					<div class="div-btn">
+						<button type="button" class="btn btn-success radius"
+							id="doctor_save">
+							<i class="icon-ok"></i> 确定
+						</button>
+						<button type="button" class="btn btn-danger radius"
+							onclick="remind.doctor('cancel_window');">
+							<i class="icon-ok"></i> 取消
+						</button>
+					</div>
+				</div>
+			</form>
+		</article>
+	</div>
+
+	<script type="text/javascript"
+		src="../static/view-image/js/lightbox-plus-jquery.min.js"></script>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="./js/bootstrap-3.3.2.min.js"></script>
+	<script type="text/javascript" src="./js/bootstrap-multiselect.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<script type="text/javascript" src="../health/js/jquery.tips.js"></script>
+	<script type="text/javascript" src="js/remind-detail.js"></script>
+	<script type="text/javascript" src="js/doctor-detail.js"></script>
+	<script type="text/javascript">
+		//初始化方法
+		$(function() {
+			remind.doctor('initDetail');
+		});
+	</script>
+</body>
+</html>

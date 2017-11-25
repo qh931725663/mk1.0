@@ -1,0 +1,104 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.allinone.controller;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.allinone.service.AIOAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+
+@RestController
+@RequestMapping("/aio-app")
+public class AIOAppController {
+
+	@Resource
+	private AIOAppService aioService;
+
+	@Resource
+    private CommonUserService commonUserService;
+	
+	private Logger logger = Logger.getLogger(AIOAppController.class);
+
+	/**
+	 * 
+	 * @Title: getTimeList 
+	 * @Description: app端一体机数据历史列表查询  返回数据:order_id/date
+	 * @param user_id
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping("/getTimeList.action")
+	public InfoJson getTimeList(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			//根据是否传递user_id判断从患者端还是医生端传递
+			user_id = commonUserService.getPatientId(user_id);
+			infoJson = aioService.getTimeList(user_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getDetail 
+	 * @Description: android端一体机数据详情查询(从视图的表里面取值)
+	 * 如果传order_id，根据order_id查询明确的数据记录;如果只传递user_id，根据user_id查询最近一条记录
+	 * @param user_id
+	 * @param order_id
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping("/getDetail.action")
+	public InfoJson getDetail(String user_id, String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			//根据是否传递user_id判断从患者端还是医生端传递
+			user_id = commonUserService.getPatientId(user_id);
+			infoJson = aioService.getDetail(user_id, order_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+	}
+
+
+	/**
+	 * 
+	 * @Title: getIOSDetail 
+	 * @Description: ios端一体机数据详情查询(从视图的表里面取值)
+	 * 如果传order_id，根据order_id查询明确的数据记录如果只传递user_id，根据user_id查询最近一条记录
+	 * @param user_id
+	 * @param order_id
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping("/getIOSDetail.action")
+	public InfoJson getIOSDetail(String user_id, String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			//根据是否传递user_id判断从患者端还是医生端传递
+			user_id = commonUserService.getPatientId(user_id);
+			infoJson = aioService.getIOSDetail(user_id, order_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+	}
+
+}

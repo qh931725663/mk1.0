@@ -1,0 +1,298 @@
+package com.haaa.cloudmedical.app.equipment.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+
+/**
+ * 琛�绯栦华鎺ュ彛锛屽惈缁熻鍔熻兘
+ * 
+ * @author haaa
+ *
+ */
+@Service
+public class BloodSugarService {
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	private Logger logger = Logger.getLogger(BloodSugarService.class);
+
+	@Transactional
+	public InfoJson add(EquipmentUse equipmentUse, BloodSugar bloodSugar) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			Date date = new Date();
+			equipmentUse.setCreate_date(date);
+			equipmentUse.setEquipment_name("blood_sugar");
+			equipmentUse.setEquipment_property_order_id(5);
+			Long id = (Long) bloodSugarDao.insertAndGetKey(equipmentUse,"c_equipment_use");
+			bloodSugar.setCreate_date(date);
+			bloodSugar.setEquipment_use_order_id(id);
+			long result = (Long) bloodSugarDao.insertAndGetKey(bloodSugar, "c_blood_sugar");
+			Map< String, Object> map = bloodSugarDao.queryDetailById(result, "c_blood_sugar");
+			if (map!=null) {
+				infoJson.setData(map);
+				infoJson.setStatus(1);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 鏍规嵁type,user_id鏌ヨ鏈�杩�90澶╂暟鎹�
+	 * 
+	 * @param user_id
+	 * @param type
+	 * @return
+	 */
+	public InfoJson queryRecent(long user_id, int period) {
+		// Map<String, Object> dataMap = new HashMap<String, Object>(); //
+		// 鏈�缁堣繑鍥瀖ap,鍚暟鎹互鍙婄粺璁℃暟鎹�
+		InfoJson infoJson = new InfoJson();
+		try {
+			List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+			if (period % 100000 == 0) {
+				for (int i = 1; i < 7; i++) {
+					Map<String, Object> data = new HashMap<String, Object>(); // 瀛樹竴涓猵eriod鐨勬暟鎹�
+					List<Map<String, Object>> list = bloodSugarDao.queryRecent(user_id, period + i);
+					data.put("period", period + i);
+					List<Map<String, Object>> maps = bloodSugarDao.queryMonth(user_id);
+					data.put("size", maps.size());
+					data.put("list", list);
+					dataList.add(data);
+				}
+				infoJson.setData(dataList);
+				infoJson.setStatus(1);
+			} else {
+				Map<String, Object> data = new HashMap<String, Object>(); // 瀛樹竴涓猵eriod鐨勬暟鎹�
+				List<Map<String, Object>> list = bloodSugarDao.queryRecent(user_id, period); // 鐗瑰畾peroid鐨勬暟鎹泦鍚坙ist
+				data.put("period", period);
+				List<Map<String, Object>> maps = bloodSugarDao.queryMonth(user_id);
+				data.put("size", maps.size());
+				data.put("list", list);
+				infoJson.setData(data);
+				infoJson.setStatus(1);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+
+		}
+		return infoJson;
+	}
+
+	public InfoJson queryRecent1(long user_id, int period) {
+		// Map<String, Object> dataMap = new HashMap<String, Object>(); //
+		// 鏈�缁堣繑鍥瀖ap,鍚暟鎹互鍙婄粺璁℃暟鎹�
+		InfoJson infoJson = new InfoJson();
+		try {
+			Map<String, Object> map = new HashMap<String, Object>();
+			List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+			if (period % 100000 == 0) {
+				for (int i = 1; i < 7; i++) {
+					List<Map<String, Object>> list = bloodSugarDao.queryRecent(user_id, period + i);
+					map.put(String.valueOf(period), list);
+					List<Map<String, Object>> maps = bloodSugarDao.queryMonth(user_id);
+					map.put("size"+String.valueOf(period), maps.size());
+				}
+			} else {
+				Map<String, Object> data = new HashMap<String, Object>(); // 瀛樹竴涓猵eriod鐨勬暟鎹�
+				List<Map<String, Object>> list = bloodSugarDao.queryRecent(user_id, period); // 鐗瑰畾peroid鐨勬暟鎹泦鍚坙ist
+				map.put(String.valueOf(period), list);
+				List<Map<String, Object>> maps = bloodSugarDao.queryMonth(user_id);
+				map.put("size"+String.valueOf(period), maps.size());
+			}
+			infoJson.setData(map);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+
+		}
+		return infoJson;
+	}
+
+	public InfoJson pageQuery(long user_id, String year_month, int pageno, int pagesize) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> dataList = null;
+		try {
+			if (year_month != null) {
+				dataList = bloodSugarDao.queryByMonth(user_id, year_month, pageno, pagesize);
+			} else {
+				dataList = bloodSugarDao.pageQuery(user_id, pageno, pagesize);
+			}
+			if (dataList.size()>0) {
+				Iterator<Map<String, Object>> iterator = dataList.iterator();
+				Map<String, Object> map = iterator.next();
+				Date date = (Date) map.get("datetime");
+				String yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+				String monthDay = DateUtil.dateFormat(date, "MM-dd");
+				String tempYearMonth = null;
+				List<Object> monthList = new ArrayList<Object>();
+				outer: while (true) {
+					if (map == null) {
+						break;
+					}
+					Map<String, Object> monthMap = new HashMap<String, Object>();
+					tempYearMonth = yearMonth;
+					monthList.add(monthMap);
+					monthMap.put("yearmonth", yearMonth);
+					List<Object> timeList = new ArrayList<Object>();
+					while (tempYearMonth.equals(yearMonth)) {
+						monthMap.put("timelist", timeList);
+						Map<String, Object> timeMap = new HashMap<String, Object>();
+						map.put("datetime", DateUtil.dateFormat(date, "MM-dd HH:mm"));
+						timeMap.put("singledata", map);
+						int hour = DateUtil.getHour(date);
+						int period = periodDefine(hour);
+						timeMap.put("period", period);
+						timeList.add(timeMap);
+						if (iterator.hasNext()) {
+							map = iterator.next();
+							date = (Date) map.get("datetime");
+							yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+							monthDay = DateUtil.dateFormat(date, "MM-dd");
+						} else {
+							break outer;
+						}
+
+					}
+				}
+				System.out.println("monthlist-------" + monthList);
+				infoJson.setData(monthList);
+				infoJson.setStatus(1);
+			}
+			
+		} catch (Exception e) {
+			logger.error("", e);
+
+		}
+		return infoJson;
+	}
+
+	private int periodDefine(int hour) {
+		int period = 0;
+		if (hour < Constant.MORNING_END && hour >= 0) {
+			period = -1;
+		} else if (hour < Constant.NIGHT_BEGIN) {
+			period = 0;
+		} else {
+			period = 1;
+		}
+		return period;
+	}
+
+	/**
+	 * 杩斿洖鍏锋湁淇℃伅鐨勫勾鏈�
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	public InfoJson queryMonth(Long user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson.setData(bloodSugarDao.queryMonth(user_id));
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 缁熻7澶╁唴琛�绯栫殑鎯呭喌
+	 * 
+	 * @param data
+	 * @return
+	 * @throws Exception
+	 */
+	public InfoJson dataStat(long user_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Integer> statMap = new HashMap<String, Integer>();
+		int high = 0;
+		int low = 0;
+		int normal = 0;
+		int peroid = 0;
+		float bloodsugar = 0;
+		try {
+			List<Map<String, Object>> data = bloodSugarDao.queryRecentAll(user_id);
+
+			System.out.println(data);
+
+			for (Map<String, Object> map : data) {
+				peroid = (Integer) map.get("measurement_period");
+				bloodsugar = (Float) map.get("BloodSugar");
+				// 绌鸿吂
+				if (peroid % 100000 == 1) {
+					if (bloodsugar < Constant.lOW_FBG) {
+						low++;
+					} else if (bloodsugar > Constant.HIGH_FBG) {
+						high++;
+					} else {
+						normal++;
+					}
+				}
+				// 鐫″墠
+				else if (peroid % 100000 == 7) {
+					if (bloodsugar < Constant.lOW_POST_BG) {
+						low++;
+					} else if (bloodsugar > Constant.HIGH_POST_BG) {
+						high++;
+					} else {
+						normal++;
+					}
+				}
+				// 椁愬悗
+				else if (peroid % 2 == 0) {
+					if (bloodsugar < Constant.lOW_POST_BG) {
+						low++;
+					} else if (bloodsugar > Constant.HIGH_POST_BG) {
+						high++;
+					} else {
+						normal++;
+					}
+
+				} else {// 椁愬墠
+					if (bloodsugar < Constant.lOW_PRE_BG) {
+						low++;
+					} else if (bloodsugar > Constant.HIGH_PRE_BG) {
+						high++;
+					} else {
+						normal++;
+					}
+				}
+			}
+			statMap.put("high", high);
+			statMap.put("low", low);
+			statMap.put("normal", normal);
+			infoJson.setData(statMap);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

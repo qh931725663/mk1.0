@@ -1,0 +1,208 @@
+package com.haaa.cloudmedical.app.equipment.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+
+/**
+ * 
+ * @author Bowen Fan
+ *
+ */
+@Service
+@Log(name="app耳温")
+public class EarThermometerService {
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+
+	/**
+	 * 
+	 * @Title: add @Description: 耳温数据添加 @param equipmentUse @param
+	 *         earThermometer @return @throws
+	 */
+	@Transactional
+	@Log(name="耳闻记录添加")
+	public InfoJson add(EquipmentUse equipmentUse, EarThermometer earThermometer) {
+		InfoJson infoJson = new InfoJson();
+		if (equipmentUse.getCreate_date()==null) {
+			Date date = new Date();
+			equipmentUse.setCreate_date(DateUtil.dateFormat(date, "yyyy-MM-dd HH:mm:ss"));
+		}	
+		equipmentUse.setEquipment_name("ear_thremometer");
+		equipmentUse.setEquipment_property_order_id(Constant.EAR_THERMOMETER_ID);
+		Long id = (Long) earThermometerDao.insertAndGetKey(equipmentUse, "c_equipment_use");
+		earThermometer.setCreate_date(equipmentUse.getCreate_date());
+		earThermometer.setEquipment_use_order_id(String.valueOf(id));
+		long result = (Long) earThermometerDao.insertAndGetKey(earThermometer, "c_ear_thermometer");
+		Map<String, Object> map = earThermometerDao.queryDetailById(result, "c_ear_thermometer");
+		map.put("datetime", DateUtil.DateFormat(map.remove("create_date"), "yyyy-MM-dd"));
+		infoJson.setData(map);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: queryRecent @Description: 曲线图近期数据查询 @param
+	 *         user_id @return @throws
+	 */
+	public InfoJson queryRecent(long user_id, int days) {
+		InfoJson infoJson = new InfoJson();
+
+		if (earThermometerDao.queryRecent(user_id, 90).size() != 0) {
+			infoJson.setCount(infoJson.getCount() + 1);
+		}
+		List<Map<String, Object>> list = earThermometerDao.queryRecent(user_id, days);
+		for (Map<String, Object> map : list) {
+			map.put("temperature", (NumberUtil.decimalFormat((float) map.remove("temperature"), 1)));
+		}
+		infoJson.setData(list);
+		infoJson.setStatus(1);
+
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: pageQuery @Description: 分页查询，按月分页查询 @param user_id @param
+	 *         year_month @param pageno @param pagesize @return @throws
+	 */
+	public InfoJson pageQuery(long user_id, String year_month, int pageno, int pagesize) {
+		InfoJson infoJson = new InfoJson();
+
+		List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
+		List<Object> monthList = new ArrayList<Object>();
+		if (year_month != null) {
+			dataList = earThermometerDao.queryByMonth(user_id, year_month, pageno, pagesize);
+			infoJson.setCount(earThermometerDao.pageNumberByMonth(user_id+"",year_month, pagesize));
+
+		} else {
+			dataList = earThermometerDao.pageQuery(user_id, pageno, pagesize);
+			infoJson.setCount(earThermometerDao.pageNumber(user_id+"", pagesize));
+
+		}
+		if (dataList.size() > 0) {
+			Iterator<Map<String, Object>> iterator = dataList.iterator();
+			Map<String, Object> map = iterator.next();
+			Date date = (Date) map.get("datetime");
+			String yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+			String monthDay = DateUtil.dateFormat(date, "MM-dd");
+			String tempYearMonth = null;
+			outer: while (true) {
+				if (map == null) {
+					break;
+				}
+				Map<String, Object> monthMap = new HashMap<String, Object>();
+				tempYearMonth = yearMonth;
+				monthList.add(monthMap);
+				monthMap.put("yearmonth", yearMonth);
+				List<Object> timeList = new ArrayList<Object>();
+				while (tempYearMonth.equals(yearMonth)) {
+					monthMap.put("timelist", timeList);
+					Map<String, Object> timeMap = new HashMap<String, Object>();
+					map.put("datetime", DateUtil.dateFormat(date, "MM-dd HH:mm"));
+					map.put("temperature", (NumberUtil.decimalFormat((float) map.remove("temperature"), 1)));
+					map.put("month", yearMonth);
+					timeMap.put("singledata", map);
+					int hour = DateUtil.getHour(date);
+					int period = periodDefine(hour);
+					timeMap.put("period", period);
+					timeList.add(timeMap);
+					if (iterator.hasNext()) {
+						map = iterator.next();
+						date = (Date) map.get("datetime");
+						yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+						monthDay = DateUtil.dateFormat(date, "MM-dd");
+					} else {
+						break outer;
+					}
+				}
+			}
+		}
+		infoJson.setData(monthList);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: periodDefine @Description: 根据查询的时间 判断早中晚时间段，-1上午，0下午，1晚上 @param
+	 *         hour @return @throws
+	 */
+	private int periodDefine(int hour) {
+		int period = 0;
+		if (hour < Constant.MORNING_END && hour >= 0) {
+			period = -1;
+		} else if (hour < Constant.NIGHT_BEGIN) {
+			period = 0;
+		} else {
+			period = 1;
+		}
+		return period;
+	}
+
+	/**
+	 * 返回具有信息的年月
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	public InfoJson queryMonth(Long user_id) {
+		InfoJson infoJson = new InfoJson();
+		infoJson.setData(earThermometerDao.queryMonth(user_id));
+		infoJson.setStatus(1);
+		return infoJson;
+
+	}
+
+	/**
+	 * 统计高压低压
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public InfoJson dataStat(long user_id, int days) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> data = earThermometerDao.queryRecent(user_id, days);
+		Map<String, Integer> statMap = new HashMap<String, Integer>();
+		int high = 0;
+		int low = 0;
+		int normal = 0;
+		float temperature;
+		for (Map<String, Object> map : data) {
+			temperature = (float) map.get("temperature");
+			if (temperature > Constant.HIGH_TEMPERATURE) {
+				high++;
+			} else if (temperature < Constant.LOW_TEMPERATURE) {
+				low++;
+			} else {
+				normal++;
+			}
+		}
+		statMap.put("high", high);
+		statMap.put("low", low);
+		statMap.put("normal", normal);
+		infoJson.setData(statMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+}

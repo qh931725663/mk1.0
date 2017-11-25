@@ -1,0 +1,142 @@
+package com.haaa.cloudmedical.dao;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+/**
+ * 
+ * @author Owen
+ *
+ */
+@Repository
+public class ChronicPlanDao extends BaseTemplateDao {
+
+	// object转换为字符串
+	public Map<String, String> obj2Str(Map<String, Object> map) {
+		Map<String, String> result = new HashMap<>();
+		map.forEach((key,value)->result.put(key, value==null?null:String.valueOf(value)));
+		return result;
+	}
+
+	// object转换为字符串
+	public List<Map<String, String>> obj2Str(List<Map<String, Object>> list) {
+		return list.stream().collect(ArrayList::new, (l,t)->l.add(obj2Str(t)), ArrayList::addAll);
+	}
+
+	// 管理计划列表
+	public List<Map<String, String>> getChronicPlanList(String patient_id, String type) {
+		String sql = "select order_id,plan_level,findname(plan_level) level_name,type,status,plan_year,"
+				+ "date_format(plan_begin,'%Y-%m-%d') plan_begin,date_format(plan_end,'%Y-%m-%d') plan_end,create_by "
+				+ "from p_plan where user_id = ? and type = ?";
+		List<Map<String, Object>> list = this.select(sql, new Object[] { patient_id, type });
+		return obj2Str(list);
+	}
+	
+	// 管理计划详情
+	public List<Map<String, String>> getChronicPlanDetail(String order_id) {
+		String sql = "select order_id,user_id,plan_order_id,plan_dict_order_id,plan_item_type,plan_item_name,plan_name,"
+				+ "(select plan_content from p_plan_dict where order_id = plan_dict_order_id) plan_content,plan_num,real_num,"
+				+ "(select is_require from p_plan_dict where order_id = plan_dict_order_id) is_require,"
+				+ "plan_rate,up2std_num,up2std_rate,avg_value,rep_year,rep_type "
+				+ "from p_plan_report where plan_order_id = ? ";
+		List<Map<String, Object>> result = this.select(sql, new Object[] { order_id });
+		for (Map<String, Object> map : result) {
+			map.put("plan_rate", Math.round(Double.parseDouble(map.get("plan_rate").toString())*100));
+			map.put("up2std_rate", Math.round(Double.parseDouble(map.get("up2std_rate").toString())*100));
+		}
+		return obj2Str(result);
+	}
+	
+	// 管理计划详情
+		public Map<String, String> getChronicPlanInfo(String order_id) {
+			String sql = "select order_id,user_id,plan_level,findname(plan_level) level_name,type,status,plan_year,plan_begin,"
+					+ "plan_end,create_by,create_date from p_plan where order_id = ? ";
+			Map<String, Object> result = this.get(sql, new Object[] { order_id });
+			return obj2Str(result);
+		}
+	
+	/**
+     * @description 用于计划跟踪列表展示
+     * @param user_id
+     * @param order_id
+     * @return
+     */
+	public List<Map<String, Object>> getPlanTrackItems(String plan_id, String dic_order_id) {
+		String sql ="SELECT c.order_id cid,i.order_id iid,c.check_time check_time, c.option_name, c.option_value,c.option_unit "
+				+ "FROM p_plan p "
+				+ "LEFT JOIN p_plan_item i ON p.order_id = i.plan_order_id "
+				+ "LEFT JOIN p_plan_dict d on i.dict_order_id = d.order_id "
+				+ "LEFT JOIN p_plan_item_content c ON i.order_id = c.item_order_id "
+				+ "WHERE p.order_id = ? AND d.order_id = ? ";
+		// int start = (pageno - 1) * pagesize;
+		 System.out.println(sql);
+		 return jdbcTemplate.queryForList(sql.toString(),plan_id,dic_order_id);
+	}
+
+	public List<Map<String, Object>>  getAllIterms(String plan_order_id,String dict_order_id) {
+		String sql ="SELECT i.order_id item_order_id,date_format(i.create_date,'%Y-%m-%d') create_time "
+				+ "FROM p_plan_item i "
+				+ "where i.plan_order_id = ? AND i.dict_order_id=? "
+				+ "ORDER BY i.order_id DESC";
+		 return jdbcTemplate.queryForList(sql.toString(),plan_order_id,dict_order_id);
+	}
+	
+	public List<Map<String, Object>>  getAllOptionByIterm(BigInteger iterm_order_id) {
+		String sql ="SELECT c.option_name,c.option_value,c.option_unit "
+				+ "FROM p_plan_item_content c "
+				+ "WHERE c.item_order_id = ?";
+		 return jdbcTemplate.queryForList(sql.toString(),iterm_order_id);
+	}
+
+	/**
+	 * @description 添加item数据并返回主键
+	 * @param item_content_id
+	 * @return
+	 */
+	public Long addItem(String plan_order_id,String plan_dic_order_id,String create_date,String create_by) {
+		long key = 0;
+		String sql ="INSERT INTO p_plan_item (plan_order_id,dict_order_id,create_date,create_by)  VALUES (?,?,?,?)";
+		System.out.println(sql);
+		jdbcTemplate.update(sql.toString(), plan_order_id,plan_dic_order_id,create_date,create_by);
+		sql = "select LAST_INSERT_ID()";
+		return jdbcTemplate.queryForObject(sql, Long.class);
+		 
+	}
+	/**
+	 * @description 删除某次检测记录的iterm表记录
+	 * @param item_order_id
+	 */
+	public void deletePlanItems(String item_order_id) {
+		String sql ="DELETE  "
+				+ "FROM p_plan_item "
+				+ "WHERE order_id =?";
+		jdbcTemplate.update(sql.toString(), item_order_id);
+	}
+	
+	/**
+	 * @description 删除某次检测记录的content表记录
+	 * @param item_order_id
+	 */
+	public void deletePlanContents(String item_order_id) {
+		String sql ="DELETE "
+				+ "FROM p_plan_item_content "
+				+ "WHERE item_order_id =377";
+		jdbcTemplate.update(sql.toString(), item_order_id);
+
+	}
+	
+
+	/**
+	 * 调用存储过程进行不同类型的慢性病的检测数据同步共享
+	 */
+	public void callStore(String item_order_id) {
+		String sql ="call proc_chronic_plan_sync("+item_order_id+")";		
+		jdbcTemplate.execute(sql);
+	}
+}

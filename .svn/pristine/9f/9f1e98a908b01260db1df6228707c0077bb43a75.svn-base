@@ -1,0 +1,391 @@
+/*头部*/
+*{font-family: "微软雅黑";}
+input{border: none;outline: none;text-align: right;}
+input::placeholder{color: #B0B0B0;}
+.header{
+	font-family: "微软雅黑";
+	font-size: 0.35rem;
+	color: #AFAFAF;
+	background-color: #F0F0F0;
+	padding-top: 0.64rem;
+	height: 1rem;
+}
+.dotBox{
+	margin: 0 0.43rem;
+	height: 0.04rem;
+	background-color: #DEDCDC;
+}
+.circle>p,.txtBox>p{
+	width: 24%;
+	display: inline-block;
+	text-align: center;
+}
+.txtBox{
+	margin-top: -0.18rem;
+}
+.circle>p{
+	position: relative;
+	width: 23.8%;
+}
+.dot{
+	display: inline-block;
+	background-color: #DEDCDC;
+	width: 0.22rem;
+	height: 0.22rem;
+	border-radius: 50%;
+	position: absolute;
+	top:-0.5rem;
+}
+/*选中样式*/
+.on{
+	width: 0.24rem;
+	height: 0.24rem;
+	background-color: #6196DA;
+	border: 3px solid #9FC5F8;
+	top:-0.55rem;
+}
+.onFont{
+	color: #999999;
+}
+/* 适配华为平板 */
+@media screen and (min-width:780px) and (max-width:960px){
+	.dot{
+	top:-0.42rem;
+	}
+	.on{
+	top:-0.47rem;
+	}
+}
+/*主体*/
+.main{
+	font-size: 0.35rem;
+	color: #545454;
+}
+.basicInfo{
+	display: none;
+	margin: 0.2rem 0.50rem;
+}
+.basicInfo>li{
+	line-height: 1.2rem;
+	border-bottom: 0.03rem solid #DEDCDC;
+}
+.basicInfo>li:last-child{
+	line-height: 1;
+	border: none;
+	text-align: center;
+}
+.main>ul>li>p{
+	line-height: 1REM;
+}
+.info_left,.info_rgt{display: inline-block;}
+.info_left{
+	width: 20%;
+}
+.info_rgt{
+	float: right;
+	text-align: right;
+}
+/*点击隐藏显示*/
+.hide_cont,.sport{
+	display:none;
+	background: #F0F0F0;
+	margin-right: -0.5rem;
+	margin-left: -0.5rem;
+	line-height: 1.6rem;
+	margin-bottom: 0.3rem;
+	padding: 0 0 0 0.95rem;
+}
+.sport{
+	display:block;
+	margin-left: -1.15rem;
+}
+.sel_op{
+	border: 1px solid #CCCCCC;
+	border-radius: 10px;
+	padding:0.2rem 0.6rem;
+	margin: 0 0.2rem;
+	color: #666;
+	background: #fff;
+}
+/*重点必填*/
+.must{
+	color: #CD412F;
+	padding-right: 5px;
+}
+/*点击选择*/
+.change{
+	background: #CD412F;
+	color: #fff;
+	border: 1px solid #CD412F;
+}
+/*箭头*/
+.arrow{
+	vertical-align: middle;
+	margin-left: 8px;
+	width:20px;
+	height:20px;
+}
+.next,.tijiao,.back,.goback{
+	display: inline-block;
+	margin: 0.8rem auto;
+	width: 6rem;
+	color: #fff;
+	background: #CD412F;
+	border-radius: 10px;
+	padding: 0.25rem 0;
+	text-align: center;
+}
+.back,.goback{
+	border: 1px solid #CD412F;
+	background: #fff;
+	color: #CD412F;
+	margin-right: 0.6rem;
+	
+}
+.checkBox{
+	padding: 0 0 0 0.65rem;
+}
+/*复选框*/
+.opt{
+	display: inline-block;
+	margin: 0 0.2rem;
+}
+.lab {display: inline;padding-left: 10px;}  
+.magic[type=checkbox]{
+    font-size:1em;
+    visibility: hidden;
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+}
+.magic[type=checkbox]:before{
+    top:12%;
+    position: absolute;
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    display: block;
+    background: url("../image/before.png") no-repeat;
+    background-size: 1em 1em;
+}
+.magic[type=checkbox]:checked:before{
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    background: url("../image/after.png") no-repeat;
+    background-size: 1em 1em;
+}
+/*单选框*/
+.magic[type=radio]{
+    font-size:1em;
+    visibility: hidden;
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+}
+.magic[type=radio]:before{
+    top:12%;
+    position: absolute;
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    display: block;
+    background: url("../image/dot1.png") no-repeat;
+    background-size: 1em 1em;
+}
+.magic[type=radio]:checked:before{
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    background: url("../image/dot2.png") no-repeat;
+    background-size: 1em 1em;
+}
+/*单选样式*/
+.rad_left{
+	width: 60%;
+}
+.rad_rgt{
+	width: 39%;
+}
+.rad_rgt>input{
+	width: 1.7rem;
+}
+/*高血压、糖尿病日期*/
+.datetime{
+	display:none;
+	width: 3rem;
+	text-align: center;
+}
+/*添加*/
+.addimg{
+	vertical-align: middle;
+	width: 0.7rem;
+}
+.addpadding{
+	padding: 0.4rem 0;
+}
+.plustable{
+	width:7rem;
+	border: dotted 2px #E0E0E0;
+	border-radius: 5px;
+	margin:auto;
+	line-height: 1;
+	padding: 0.1rem 0.2rem;
+}
+.addbtn{
+	vertical-align: middle;
+	width:7rem;
+	border-radius: 5px;
+	background: #E0E0E0;
+	margin:auto;
+	padding: 0.1rem 0;
+	text-align: center;
+}
+.addbtn span{
+	vertical-align: text-bottom;
+}
+/*手术史*/
+.sstable{
+	background-color: #eff4fb;
+	border-radius: 10px;
+	line-height: 1rem;
+	width: 95%;
+	margin-bottom: 0.5rem;
+}
+.sstable tr td{
+	padding: 0 0.3rem;
+}
+.first_tr{
+	color: #fff;
+	text-align: right;
+}
+.first_tr td{
+	width: 50%;
+}
+.first_tr td:first-child{
+	background: #6196DA;
+	border-radius: 10px 0 0 0;
+	width: 50%;
+	padding: 0;
+}
+.first_tr td:last-child{
+	background: #6196DA;
+	border-radius:0 10px 0 0;
+	width: 42%;
+	padding-right: 0.3rem;
+}
+.del{
+	border: 1px solid#fff; 
+	padding: 2px 10px;
+	border-radius: 5px;
+}
+.ssname,.sstime{
+	background: #eff4fb;
+	margin-right: -0.6rem;
+}
+/*家庭成员病史*/
+.member{
+	background-color: #eff4fb;
+	border-radius: 5px;
+	margin-bottom: 0.5rem;
+	width: 96%;
+}
+.f_left{
+	padding-left: 0.3rem;
+}
+.f_rgt{
+	width: 75%;
+}
+.f_rgt input{
+	background-color: #eff4fb;
+}
+.mem_op{
+	border: 1px solid #CCCCCC;
+	border-radius: 10px;
+	padding:0.1rem 0.3rem;
+	margin: 0 0.2rem;
+	color: #666;
+	background: #fff;
+}
+.F_member,.sickBox{
+	background: #d3e1f4;
+}
+.sickBox{
+	border-radius: 0 0 5px 5px;
+	color: #545454;
+}
+/*点击选择*/
+.mem_change{
+	background: #6196DA;
+	color: #fff;
+	border: 1px solid #6196DA;
+}
+/*查体*/
+.view{
+	width: 26%;
+}
+.view_rgt{
+	width: 73%;
+}
+.view_op{
+	padding:0.2rem;
+}
+/*隐藏*/
+.once{
+	display: none;
+}
+.both{
+	display: none;
+}
+.ray{
+	width: 26%;
+}
+.ray_rgt{
+	width: 73%;
+}
+.xrgt{
+	margin-left: 0.9rem;
+}
+/*风险评估*/
+.fengx{
+	width: 37%;
+}
+.fengx_rgt{
+	width: 62%;
+}
+.member_num{
+	background-color:#6196da;
+	border-radius:5px 5px 0 0 ;
+	line-height: 1rem;
+}
+.member_num>p{
+	padding:0 0.3rem;
+}
+.member_num>p>.num_mm{
+	display:inline-block;
+	text-align: center;
+	width: 80%;
+}
+.noboeder,.neednot,.mond_op,.short{
+	direction: rtl;
+	border: 0;  
+    position: relative;  
+    min-height: 1.146667rem;  
+    line-height: 1.146667rem;  
+    white-space: nowrap;  
+    overflow: hidden;  
+    background-color: #eee;  
+    background: transparent;  
+    appearance:none;  
+    -moz-appearance:none; /* Firefox */  
+    -webkit-appearance:none; /* Safari 和 Chrome */ 
+}
+.yaohide{
+	display:none;
+}

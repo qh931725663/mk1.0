@@ -1,0 +1,37 @@
+package com.haaa.cloudmedical.platform.smoking.service;
+
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.haaa.cloudmedical.entity.SmokingPlatformView;
+import com.haaa.cloudmedical.dao.SmokingDao;
+
+@Service
+public class SmokingPlatformService {
+	@Autowired
+	private SmokingDao dao;
+   //用户查询接口
+	public  List<Map<String,Object>> findSmokingUser (SmokingPlatformView view )throws SQLException, Exception{
+		Map<String, Object> mapW = new HashMap<String, Object>();
+		mapW.put("user_name", view.getUser_name());
+		mapW.put("user_card", view.getUser_card());
+		mapW.put("user_phone", view.getUser_phone());
+		mapW.put("doctor_name", view.getDoctor_name());
+		mapW.put("quit_smoking_plan_end", view.getQuit_smoking_plan_end());
+		mapW.put("dateAfter", view.getDateAfter());
+		mapW.put("dateBefore", view.getDateBefore());
+		mapW.put("user_is_vip", view.getUser_is_vip());
+		mapW.put("dateAfter", view.getDateAfter());
+		mapW.put("dateBefore", view.getDateBefore());
+		
+		
+		return dao.queryWhere(mapW);
+	
+	}
+	
+
+}

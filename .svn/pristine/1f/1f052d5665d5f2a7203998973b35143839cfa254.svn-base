@@ -1,0 +1,123 @@
+package com.haaa.cloudmedical.platform.allinone.controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.haaa.cloudmedical.entity.AIO6500;
+import com.haaa.cloudmedical.platform.allinone.service.AIO6500Service;
+
+@Controller
+@RequestMapping("/aio6500")
+public class AIO6500Controller {
+
+	@Resource
+	private AIO6500Service service;
+	
+    private String uploadPath="D:\\phmsdata";
+
+
+	@RequestMapping("/login.action")
+	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		String paitInfo = service.login(request);
+		out.print(paitInfo);
+	}
+
+	@RequestMapping("/saveData.action")
+	public void saveData(AIO6500 aio,HttpServletRequest request, HttpServletResponse response) throws IOException {
+		System.out.println("-6500传数据");
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		String responseStr = service.saveData(aio);
+		System.out.println(responseStr);
+		out.println(responseStr);
+	}
+
+	@RequestMapping("/report.action")
+	public void report(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		String contentType = request.getContentType();		
+		if (contentType != null
+				&& contentType.indexOf("multipart/form-data") != -1) {
+			FileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			Iterator items;
+			try {
+				items = upload.parseRequest(request).iterator();
+				while (items.hasNext()) {
+					FileItem item = (FileItem) items.next();
+					if (!item.isFormField()) {
+						String name = item.getName();
+						int nIndex = name.lastIndexOf('/');
+						if (-1==nIndex){
+							nIndex = name.lastIndexOf('\\');
+						}
+						String fileName = name.substring(nIndex + 1, name.length());
+						String cmd = fileName.substring(0, fileName.indexOf("."));
+						String path = this.uploadPath + File.separatorChar + fileName;
+						// 处理上传个人信息命令
+						if (0 == cmd.compareTo("update")) {
+							File uploaderFile = new File(path);
+//							item.write(uploaderFile);
+							out.println("HTTP_SUCCESS:uniquecode=1234567890;hospitalid=1;");
+							System.out.println("HTTP_SUCCESS:uniquecode=1234567890;hospitalid=1");
+						} else {
+							path+=".png";
+							File uploaderFile = new File(path);
+//							item.write(uploaderFile);
+							out.println("HTTP_SUCCESS:");
+							System.out.println("HTTP_SUCCESS:");
+						}
+					} else {
+						// out.println(item.getFieldName()+":"+item.getString()); 
+					}
+				} 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			// 处理控制命令
+			String name = request.getParameter("name");
+			if (name != null) {
+				String content = request.getParameter("content");
+				String cmd = name.substring(0, name.indexOf(".")); 
+				if (0 == cmd.compareTo("data")) {
+					// 处理病历上传控制命令
+					out.println("HTTP_SUCCESS:filename=D:/phmsdata/test.abc;");
+					System.out.println("data:HTTP_SUCCESS:filename=D:/phmsdata/test.abc");
+				} else if (0 == cmd.compareTo("datareport")) {
+					// 处理报告上传控制命令 
+					out.println("HTTP_SUCCESS:filename=/www/phmsdata/test.abc;");
+					System.out.println("datareport:HTTP_SUCCESS:filename=/www/phmsdata/test.abc");
+				} else {
+					// 不支持的命令
+					out.println("bad command!");
+					System.out.println("bad command!"+cmd);
+				}
+			} else {
+				out.println("loginok");
+				System.out.println("loginok");
+			}
+		}
+	}
+}

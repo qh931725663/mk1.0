@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>高血压</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+    <style>
+        h2{font-weight:bold;font-size:16px;text-align: center;margin: 10px 0; }
+        h3{font-weight: bold;margin:8px 0; }
+        p{margin:3px 0;font-size: 14px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="company" style="padding: 0 20px;">
+        <h2 style="">掌握重度妊娠期高血压降压</h2>
+        <span style="margin-left: 75px;margin-right: 8px;">2017-04-14 22:25</span><span>作者：小可真</span>
+        <p style="text-indent: 2em;margin-top:5px;">重度妊娠期高血压是妊娠期妇女急危重症之一，如控制不佳极容易进展为重度子痫前期甚至发生子痫。本文总结重度妊娠期高血压急诊降压方案，供大家共同学习。</p>
+        <h3>重度妊娠期高血压诊治方案总结</h3>
+        <p style="margin-bottom: 10px;">
+            <img src="../../images/img/tips/hb_1.jpeg" style="width:100%"/>
+            <span>注：参见《妊娠期高血压疾病诊治指南（2015）》</span>
+        </p>
+        <p>
+            与我国指南略有不同的是，2017 年美国妇产学会委员会推荐将拉贝洛尔、肼苯哒嗪、硝苯地平列为重度妊娠期高血压的一线治疗药物，尼卡地平、艾司洛尔被列为二线治疗药物，硝普钠用于其他药物降压效果不佳时，引起代谢产物氰化物对孕妇及胎儿有害，因此建议尽可能短时间使用。美国妇产学会委员会意见更加细化降压和血压监测流程。
+        </p>
+        <p style="margin:10px 0;">
+            下面为重度妊娠期高血压降压方案（美国妇产学会委员会意见）：1. 硝苯地平降压方案；2. 为肼苯哒嗪降压方案；3. 为拉贝洛尔降压方案。
+        </p>
+        <h3>硝苯地平降压方案</h3>
+        <p>
+            <img src="../../images/img/tips/hb_2.jpeg" style="width: 100%;"/>
+        </p>
+        <h3 style="font-weight: bold;">肼苯哒嗪降压方案</h3>
+        <p>
+            <img src="../../images/img/tips/hb_3.jpeg" style="width: 100%;"/>
+        </p>
+        <h3>拉贝洛尔降压方案</h3>
+        <p>
+            <img src="../../images/img/tips/hb_4.jpeg" style="width: 100%;"/>
+        </p>
+        <p>参考文献</p>
+        <p>1. 中华医学会妇产科学分会妊娠期高血压疾病学组. 妊娠期高血压疾病诊治指南（2015）. 中华妇产科杂志.</p>
+    </div>
+</div>
+</body>
+</html>

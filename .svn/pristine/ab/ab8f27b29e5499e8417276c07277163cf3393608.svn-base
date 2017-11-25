@@ -1,0 +1,168 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+
+public class UrineTest {
+
+	private Long order_id;
+
+	private Long equipment_use_order_id;
+
+	private Integer uro;
+
+	private Integer bld;
+
+	private Integer bil;
+
+	private Integer ket;
+
+	private Integer glu;
+
+	private Integer pro;
+
+	private Float ph;
+
+	private Integer nit;
+
+	private Integer leu;
+
+	private Float sg;
+
+	private Integer vc;
+
+	private Date create_date;
+
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	public Integer getUro() {
+		return uro;
+	}
+
+	public void setUro(Integer uro) {
+		this.uro = uro;
+	}
+
+	public Integer getBld() {
+		return bld;
+	}
+
+	public void setBld(Integer bld) {
+		this.bld = bld;
+	}
+
+	public Integer getBil() {
+		return bil;
+	}
+
+	public void setBil(Integer bil) {
+		this.bil = bil;
+	}
+
+	public Integer getKet() {
+		return ket;
+	}
+
+	public void setKet(Integer ket) {
+		this.ket = ket;
+	}
+
+	public Integer getGlu() {
+		return glu;
+	}
+
+	public void setGlu(Integer glu) {
+		this.glu = glu;
+	}
+
+	public Integer getPro() {
+		return pro;
+	}
+
+	public void setPro(Integer pro) {
+		this.pro = pro;
+	}
+
+	public Float getPh() {
+		return ph;
+	}
+
+	public void setPh(Float ph) {
+		this.ph = ph;
+	}
+
+	public Integer getNit() {
+		return nit;
+	}
+
+	public void setNit(Integer nit) {
+		this.nit = nit;
+	}
+
+	public Integer getLeu() {
+		return leu;
+	}
+
+	public void setLeu(Integer leu) {
+		this.leu = leu;
+	}
+
+	public Float getSg() {
+		return sg;
+	}
+
+	public void setSg(Float sg) {
+		this.sg = sg;
+	}
+
+	public Integer getVc() {
+		return vc;
+	}
+
+	public void setVc(Integer vc) {
+		this.vc = vc;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+
+	@Override
+	public String toString() {
+		return "UrineTest [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id + ", uro=" + uro
+				+ ", bld=" + bld + ", bil=" + bil + ", ket=" + ket + ", glu=" + glu + ", pro=" + pro + ", ph=" + ph
+				+ ", nit=" + nit + ", leu=" + leu + ", sg=" + sg + ", vc=" + vc + ", create_date=" + create_date
+				+ ", update_date=" + update_date + "]";
+	}
+
+}

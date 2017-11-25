@@ -1,0 +1,265 @@
+package com.haaa.cloudmedical.app.user.controller;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.user.service.DoctorAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+import com.haaa.cloudmedical.entity.User;
+
+@Controller
+@RequestMapping("/doctor-app")
+public class DoctorAppController {
+	
+	@Autowired
+	private DoctorAppService service;
+	
+	@Autowired
+	private CommonUserService common;
+	
+	/**
+	 * 登录
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public Object login(String user_phone,String user_pwd){
+		ResponseDTO dto = service.login(user_phone,MD5Util.encode(user_pwd));
+		return dto;
+	}
+	
+	/**
+	 * 修改医生信息
+	 * @param user
+	 * @param doctor
+	 * @return
+	 */
+	@RequestMapping("/update.action")
+	@ResponseBody
+	public ResponseDTO update(User user,Doctor doctor){
+		ResponseDTO dto = new ResponseDTO();
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			user.setUser_id(user_map.get("user_id").toString());
+			dto = service.update(user, doctor);
+		}
+		return dto;
+	}
+	
+	/**
+	 * 获取医生信息
+	 * @param doctor_id
+	 * @return
+	 */
+	@RequestMapping("/getDoctorInfo.action")
+	@ResponseBody
+	public Object getDoctorInfo(){
+		Object doctor = null;
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			doctor = service.getInfoById(doctor_id);
+		}
+		return doctor;
+	}
+	
+	/**
+	 * 获取患者列表
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/getPatientList.action")
+	@ResponseBody
+	public Object getPatientList(String ahdi_level, String chronic){
+		ResponseDTO dto  = null;
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			dto  = service.getPatientList(doctor_id,ahdi_level,chronic);
+		}
+		return dto;
+		
+	}
+	
+	/**
+	 * 获取患者列表
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/getPatientListByCondition.action")
+	@ResponseBody
+	public Object getPatientListByCondition(String ahdi_level,String chronic){
+		ResponseDTO dto  = null;
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			dto  = service.getPatientListByCondition(doctor_id,ahdi_level,chronic);
+		}
+		return dto;
+		
+	}
+	
+	/**
+	 * 添加患者
+	 * @param doctor_id
+	 * @param user_name
+	 * @param user_phone
+	 * @param user_card
+	 * @return
+	 */
+	@RequestMapping("/addPatient.action")
+	@ResponseBody
+	public Object addPatient(String user_name,String user_phone,String user_card){
+		ResponseDTO dto  = null;
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			dto = service.addNewPatient(doctor_id, user_name, user_phone, user_card);
+		}
+		return dto;
+	}
+	
+	/**
+	 * 获取患者信息
+	 */
+	@RequestMapping("/getPatientInfo.action")
+	@ResponseBody
+	public Object getPatientInfo(String patient_id){
+		ResponseDTO dto = service.getPatientInfo(patient_id);
+		return dto;
+		
+	}
+	
+	/**
+	 * 完善患者信息
+	 */
+	@RequestMapping("/updatePatient.action")
+	@ResponseBody
+	public Object updatePatient(User user){
+		ResponseDTO dto = service.updatePatientInfo(user);
+		return dto;
+	}
+	
+	/**
+	 * 获取新闻
+	 */
+	@RequestMapping("/getNews.action")
+	@ResponseBody
+	public Object getNews(String section,Integer pageno,Integer pagesize){
+		Page page = service.getNews(section,pageno, pagesize);
+		return page;
+	}
+	
+	/**
+	 * 获取患者健康档案
+	 */
+	@RequestMapping("/getHealthReport.action")
+	@ResponseBody
+	public Object getHealthReport(String patient_id){
+		ResponseDTO dto = service.getHealthReport(patient_id);
+		return dto;
+	}
+	
+	/**
+	 * 获取患者健康档案详情
+	 */
+	@RequestMapping("/getHealthReportInfo.action")
+	@ResponseBody
+	public Object getHealthReport(String order_id,String report_type){
+		ResponseDTO dto = service.getHealthReport(order_id,report_type);
+		return dto;
+	}
+	
+	/**
+	 * 上传体检报告
+	 */
+	@RequestMapping("/saveCheckReport.action")
+	@ResponseBody
+	public Object saveCheckReport(CheckReport report){
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;		
+	}
+	
+	/**
+	 * 上传门诊报告
+	 */
+	@RequestMapping("/saveClinicReport.action")
+	@ResponseBody
+	public Object saveClinicReport(ClinicReport report){
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;		
+	}
+	
+	/**
+	 * 上传住院报告报告
+	 */
+	@RequestMapping("/saveHospitalReport.action")
+	@ResponseBody
+	public Object saveHospitalReport(HospitalReport report){
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;		
+	}
+	
+	/**
+	 * 上传医保报告
+	 */
+	@RequestMapping("/saveInsuranceReport.action")
+	@ResponseBody
+	public Object saveInsuranceReport(InsuranceReport report){
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String,Object> user_map = common.getUserMap();
+		if(user_map!=null){
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;		
+	}
+	
+}

@@ -1,0 +1,253 @@
+*{letter-spacing: 1px;}
+div h1{
+	padding: 0 25px;
+	color: #5b5b5b;
+	height: 60px;
+	line-height: 60px;
+	background-color: #f0f0f0;
+	font-size: 17px;
+}
+div p{
+	padding: 10px 25px;
+	font-size: 16px;
+	color: #666;
+	overflow: hidden;
+	}
+div p>span{float: right;font-size: 15px;}
+/*基础信息*/
+.basic-information li{
+	overflow: hidden;padding: 20px 5px;
+	border-bottom: 1px solid #f0f0f0;
+	}
+.basic-information li>span:first-child{
+	font-size:16px;
+	color: #666;
+}
+.basic-information li>span:last-child{
+	font-size: 15px;
+	color: #666;
+	float: right;
+}
+.basic-information li>.user-weight,.basic-information li>.user-waistline,.basic-information li>.user-height,.monad{
+	float: right;
+	font-size: 15px;
+	padding-left: 5px;
+}
+.child,.child-phone,.child-name{
+	font-size: 15px;
+	color: #666;
+	float: left;
+	padding-left: 15px;
+}
+.child{
+		border: 1px solid #f0f0f0; 
+		padding: 2px 15px;
+		border-radius: 4px;
+		margin-left: 15px;
+	}
+.basic-information,.lifestyle>ul,.pasthistory>table,.survey>table{
+	padding: 0 25px;
+	font-size: 16px;
+	color: #666;
+	}
+	/*生活方式*/
+.lifestyle>ul>li{padding: 10px 0 10px 22px;overflow: hidden;}
+.lifestyle>ul>li>span{font-size: 16px;}
+.lifestyle>p,.pasthistory>p{
+	padding-top: 20px;
+}
+.lifestyle>ul>li>.survey_answer,.lifestyle>ul>li>.monad{
+	float: right;
+	padding-left: 5px;
+}
+/*既往史*/
+.pasthistory>h1{
+	margin-top: 10px;
+}
+.pasthistory>p:last-child{
+	padding-bottom: 20px;
+}
+.table_box{
+	background-color: #6196da;
+	border-radius: 5px 5px 0 0 ;
+	padding: 0;
+}
+.table_box>span{
+	float: none;
+	display: inline-block;
+	width: 24%;
+	color: #FFF;
+	font-size: 16px;
+	padding:15px 0;
+	text-align: center;
+}
+/*疾病史*/
+.medical-history{
+	margin: 10px 30px;
+	overflow: hidden;
+}
+.medical-history>li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	background-color: #eff4fb;
+	border: 1px solid #eff4fb;
+	box-sizing:border-box;
+}
+.medical-history>li>span{
+	font-size: 16px;
+	display: inline-block;
+	width: 50%;
+	padding:15px 0;
+}
+.medical-history>li:nth-child(2n+1){
+	border-left: 1px dashed #c7dcf9;
+}
+/*手术史*/
+.shoushu_list{
+	margin: 10px 30px;
+	overflow: hidden;
+}
+.shoushu_list>li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	background-color: #eff4fb;
+	border: 1px solid #eff4fb;
+	box-sizing:border-box;
+}
+.shoushu_list>li>span{
+	font-size: 16px;
+	display: inline-block;
+	width: 50%;
+	padding:15px 0;
+}
+.shoushu_list li:nth-child(2n+1){
+	border-left: 1px dashed #c7dcf9;
+}
+/*外伤史 */
+.injury_list{
+	margin: 10px 30px;
+	overflow: hidden;
+}
+.injury_list>li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	background-color: #eff4fb;
+	border: 1px solid #eff4fb;
+	box-sizing:border-box;
+}
+.injury_list>li>span{
+	font-size: 16px;
+	display: inline-block;
+	width: 50%;
+	padding:15px 0;
+}
+.injury_list li:nth-child(2n+1){
+	border-left: 1px dashed #c7dcf9;
+}
+/*输血史*/
+.blood_list{
+	margin: 10px 30px;
+	overflow: hidden;
+}
+.blood_list>li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	background-color: #eff4fb;
+	border: 1px solid #eff4fb;
+	box-sizing:border-box;
+}
+.blood_list>li>span{
+	font-size: 16px;
+	display: inline-block;
+	width: 50%;
+	padding:15px 0px;
+}
+.blood_list li:nth-child(2n+1){
+	border-left: 1px dashed #c7dcf9;
+}
+/*家庭成员病史*/
+.familyd_list{
+	margin: 10px 30px;
+	overflow: hidden;
+}
+.familyd_list>li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	background-color: #eff4fb;
+	border: 1px solid #eff4fb;
+	box-sizing:border-box;
+	padding-bottom:10px;
+}
+.familyd_list>li>span{
+	font-size: 16px;
+	display: inline-block;
+	padding:15px 0;
+}
+.familyd_list li:nth-child(2n+1){
+	border-left: 1px dashed #c7dcf9;
+}
+.familyd_list>.fhb>span{
+	width:100%;
+	text-align:right;
+	padding:0px;
+}
+.familyd_list>.fhb>span>span{
+	width:50%;
+	text-align:center;
+	display:inline-block;
+	font-size:16px;
+}
+.familyd_list>.fhb>span:first-child,.familyd_list>.fhb>span:nth-child(2){
+	width:50%;
+	text-align:center;
+}
+.familyd_list>.fhb>span:first-child>span,.familyd_list>.fhb>span:nth-child(2)>span{
+	width:100%;
+	padding:10px 0 0 0;
+}
+/*问卷调查*/
+.survey>h1:first-child{
+	margin-bottom: 10px;
+}
+.survey>p:last-child{
+	padding-bottom: 20px;
+}
+/*慢病症状*/
+.manb_list{
+	margin: 10px 30px;
+	overflow: hidden;
+}
+.manb_list>li{
+	float: left;
+	width: 50%;
+	text-align: center;
+	background-color: #eff4fb;
+	border: 1px solid #eff4fb;
+	box-sizing:border-box;
+}
+.manb_list>li>span{
+	font-size: 16px;
+	display: inline-block;
+	width: 50%;
+	padding:15px 0;
+}
+.manb_list li:nth-child(2n+1){
+	border-left: 1px dashed #c7dcf9;
+}
+/*辅助检查、预防疫苗*/
+.checking>h1,.prevention>h1{
+	margin-bottom: 20px ;
+}
+.prevention>p:last-child,.checking>p:last-child{
+	margin-bottom: 20px;
+}
+/*表统一初始化*/
+.medical-history,.shoushu_list,.injury_list,.blood_list,.familyd_list,.manb_list{
+	background-color: #eff4fb;
+	border-radius:0 0 5px 5px ;
+}

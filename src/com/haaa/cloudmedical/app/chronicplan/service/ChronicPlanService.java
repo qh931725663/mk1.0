@@ -1,0 +1,59 @@
+package com.haaa.cloudmedical.app.chronicplan.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+/**
+ * 
+ * @author Owen
+ *
+ */
+public interface ChronicPlanService {
+
+
+	/**
+	* @description 用于计划跟踪列表展示
+	* @return
+	*/
+	InfoJson getPlanTrackItems(String plan_id, String dic_order_id);
+
+	
+	/**
+	 *  @description 添加跟踪测量记录
+	 */
+	void addPlanItems(List<Map>  parseArray);
+
+	/**
+	 * @description 删除某次跟踪测量记录
+	 */
+	void deletePlanItems(String item_order_id);
+
+	/**
+	 * @description血糖曲线图的查询
+	 */
+	InfoJson queryRecent(Long user_id, int period, int days);
+
+	/**
+	 * @description 血糖分页数据的查询
+	 */
+	InfoJson pageQuery(Long user_id, String year_month,int period,int pageno, int pagesize);
+
+	/**
+	 * @description 药品数据的查询
+	 * @return InfoJson
+	 */
+	List<Map<String, Object>> getMedicine(String medicName);
+
+	//血压曲线图数据的查询
+	InfoJson queryRecent(Long user_id, Integer days);
+
+	//血压分页数据查询
+	InfoJson pageQuery(Long user_id, String year_month, Integer pageno, Integer pagesize);
+
+
+	
+	
+}

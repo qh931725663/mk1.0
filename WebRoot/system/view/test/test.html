@@ -1,0 +1,33 @@
+
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>KindEditor JSP</title>
+	<link rel="stylesheet" type="text/css" href="themes/default/default.css" />
+	<link rel="stylesheet" type="text/css" href="plugins/code/prettify.css" />
+
+</head>
+<body>
+	<textarea name="content1" cols="100" rows="8" style="width:80%;height:600px;"></textarea>
+		<br />
+<script type="text/javascript" src="jquery-1.11.3.js"></script>
+<script type="text/javascript" src="kindeditor.js"></script>
+<script type="text/javascript" src="lang/zh_CN.js"></script>
+<script type="text/javascript" src="plugins/code/prettify.js"></script>
+<script>
+	KindEditor.ready(function(K) {
+		var editor1 = K.create('textarea[name="content1"]', {
+			cssPath : './plugins/code/prettify.css',
+			uploadJson : 'http://localhost:8080/mkh1.0/health-record/upload.action',
+			allowFileManager : true
+		})
+	});
+
+ 	$(window).load(function(){
+		$("span[data-name='fullscreen']").click();
+		$("span[data-name='fullscreen']").click();
+	});
+</script>
+</body>
+</html>

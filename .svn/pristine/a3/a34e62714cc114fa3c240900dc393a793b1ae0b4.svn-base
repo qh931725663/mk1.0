@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	 <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>计划管理</title>
+    <style type="text/css">
+    	h2{text-align: center;}
+    	.table-font{width: 70%;margin: 20px auto;}
+    	.table-font tr th,.table-font tr td{text-align: center;}
+    	.btn-rgt{margin-right: 10px;}
+    </style>
+</head>
+<body>
+<nav class="breadcrumb">
+  <i class="Hui-iconfont"></i>计划管理 <span class="c-gray en">&gt;</span>计划列表
+  <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<h2>计划管理</h2>
+	<table class="table table-border table-bordered table-hover table-font">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>计划名称</th>
+				<th>开始时间</th>
+				<th>结束时间</th>
+				<th>完成状态</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="plan-tbody">
+    </tbody>
+	</table>
+</div>
+<script type="text/javascript" src="../lib/jquery/jquery-1.11.3.js"></script>
+<script type="text/javascript">
+	$(function(){
+		//获取order_id
+		function getUrlParam(name){
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		var user_id = getUrlParam("user_id");
+		function getData(){  
+			var data = {user_id: user_id};
+			
+			$.ajax({
+				type : "post",
+				url : "../../../plan/planList.action",
+				dataType : "json",
+				data: data,
+				success : function(data) {
+					if(data.status == 1){
+						var html = '';
+						console.log(data.data);
+						$.each(data.data,function(i,m){
+							console.log(m.type);
+							html = '<tr>'+
+							'<td>'+(i+1)+'</td>'+
+							'<td>'+(m.type == "900001"?"糖尿病管理计划":"高血压管理计划")+'</td>'+
+							'<td>'+m.plan_begin+'</td>'+
+							'<td>'+m.plan_end+'</td>'+
+							'<td>'+(m.status == "0"?"进行中":"已完成")+'</td>'+
+							'<td>'+
+							"<span class='btn btn-primary btn-user-edit radius btn-rgt' onclick='goForm("+m.order_id+")'><i class='Hui-iconfont'>&#xe60c;</i>评估详情</span>"+
+							"<span class='btn btn-primary btn-user-edit radius' onclick='goDetails("+m.order_id+")'><i class='Hui-iconfont'>&#xe60c;</i>查看详情</span>"+
+							'</td>'+
+							'</tr>';
+							
+							$(".plan-tbody").append(html);
+						});
+					}
+				}
+			});
+		}
+		getData();
+		//跳转年度评估表
+		function goForm(order_id){
+			window.location.href = "momo.html?order_id="+order_id;
+		}
+		//计划管理明细
+		function goDetails(order_id){
+			window.location.href = "momo.html?order_id="+order_id;
+		}
+	});
+</script>
+</body>
+</html>

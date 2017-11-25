@@ -1,0 +1,20 @@
+.container{width:100%;}
+.composite-box{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center; }
+/*水平垂直居中*/
+.line-align{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;-webkit-justify-content: center; justify-content: center; }
+.composite-ahdi{padding: 10px 10px;}
+.composite-ahdi h2{font-size: 16px;font-weight:normal;color: #2E2E2E;}
+.composite-box ul{width: 30%;}
+.composite-box ul li{margin-bottom:10px;}
+.composite-box ul li span{display:inline-block;width: 11px;height: 11px;}
+.composite-box ul li span.b-01{background: #00B08A;margin-right: 8px;}
+.composite-box ul li span.b-02{background: #00DD88;margin-right: 8px;}
+.composite-box ul li span.b-03{background: #F0E100;margin-right: 8px;}
+.composite-box ul li span.b-04{background: #FF8800;margin-right: 8px;}
+.composite-box ul li span.b-05{background: #FF4210;margin-right: 8px;}
+.composite-box .box-1{width: 70%;margin-top: 22px;}
+.box-mes{text-align: center;margin-top: 20px;}
+i{font-style: normal;color: #2E2E2E;font-size: 14px;}
+.m-title{font-size: 16px; color: #2E2E2E;background: #E3E2E2;height: 35px;line-height: 35px;padding-left: 10px;}
+.major-hazards ul li,.food-plan ul li,.sport-plan ul li,.medicine ul li{padding-left: 10px;padding-right: 10px;margin: 20px 0;line-height: 20px;font-size: 13px;}
+.gray-circular{display: inline-block;margin-right:5px;width: 6px;height: 6px;border-radius: 3px;background: #B3B3B3;}

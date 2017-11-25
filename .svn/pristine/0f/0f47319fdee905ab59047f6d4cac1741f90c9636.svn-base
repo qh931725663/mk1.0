@@ -1,0 +1,68 @@
+package com.haaa.cloudmedical.platform.plan.controller;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.platform.plan.model.PlanVo;
+import com.haaa.cloudmedical.platform.plan.service.IPlanManagerService;
+
+@Controller
+@RequestMapping("/plan")
+public class PlanManagerController {
+    
+    @Autowired
+    IPlanManagerService service;
+    
+    @RequestMapping("/page.action")
+    @ResponseBody
+    public Object page(PlanVo model) {
+        if(model.getPageno() == null || model.getPageno() == 0){
+            model.setPageno(1);
+        }
+        //查询分页
+        Page page = null;
+        try {
+            page = service.getPage(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new StdDTO(0, "系统异常");
+        }
+        return new StdDTO(1, page);
+    }
+    
+    /**
+     * @Description: 查询计划列表
+     * @author 吴琪
+     * @param user_id
+     * @return 
+     * @date: 2017年10月13日 下午1:19:18
+     */
+    @RequestMapping("/planList.action")
+    @ResponseBody
+    public Object planList(Integer user_id){
+        try {
+           return service.getPlanList(user_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new StdDTO(0, "系统异常");
+        }
+    }
+    
+    @RequestMapping("/planItem.action")
+    @ResponseBody
+    public Object planItem(Integer order_id){
+        try {
+            return service.getPlanItem(order_id);
+         } catch (Exception e) {
+             e.printStackTrace();
+             return new StdDTO(0, "系统异常");
+         }
+    }
+}

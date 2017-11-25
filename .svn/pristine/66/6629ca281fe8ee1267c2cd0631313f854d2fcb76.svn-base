@@ -1,0 +1,37 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.allinone.service;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.dao.AIODao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class AIOAppService {
+	
+	@Resource
+	private AIODao aioDao;
+	
+	
+	public InfoJson getTimeList(String user_id){
+		return InfoJson.setSucc(aioDao.getTimeList(user_id));
+	}
+	
+	
+	public InfoJson getDetailById(String order_id){
+		return InfoJson.setSucc(aioDao.getAppDetailById(order_id));
+	}
+	
+	
+
+}

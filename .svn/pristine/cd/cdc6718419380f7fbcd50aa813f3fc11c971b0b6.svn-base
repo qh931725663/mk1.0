@@ -1,0 +1,109 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+@Repository
+public class UrineTestDao extends EquipmentDao {
+
+	public long add(UrineTest urineTest) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, urineTest);
+		return insert(map, "c_urine_test");
+	}
+
+	/*
+	 * AND A.create_date<NOW()
+	 */
+
+	public List<Map<String, Object>> queryRecent(long user_id, String type, int recent) {
+		StringBuffer sql = new StringBuffer("select A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime ");
+		if (type.equalsIgnoreCase("ph") || type.equalsIgnoreCase("sg")) {
+			sql.append(",B." + type);
+		} else {
+			sql.append(",findName(B." + type + ") param ");
+		}
+		sql.append(
+				" from c_equipment_use A,c_urine_test B where A.order_id=B.equipment_use_order_id and A.user_id = ? and"
+						+ " DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date  ORDER BY A.create_date DESC");
+		return jdbcTemplate.queryForList(sql.toString(), new Object[] { user_id, recent });
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		StringBuffer sql = new StringBuffer("SELECT A.order_id,A.create_date datetime ");
+		for (int i = 0; i < Constant.URINEPARAMS.length; i++) {
+			if (Constant.URINEPARAMS[i].equalsIgnoreCase("ph") || Constant.URINEPARAMS[i].equalsIgnoreCase("sg")) {
+				sql.append(",B." + Constant.URINEPARAMS[i]);
+			} else {
+				sql.append(",findName(B." + Constant.URINEPARAMS[i] + ") " + Constant.URINEPARAMS[i]);
+			}
+		}
+		sql.append(" FROM c_equipment_use A,c_urine_test B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ORDER BY A.create_date DESC LIMIT ?,?");
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql.toString(), user_id, start, pagesize);
+	}
+
+	public int pageNumber(long user_id, int pagesize) {
+		String sql = "SELECT COUNT(*) " + " FROM c_equipment_use A,c_urine_test B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ";
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user_id);
+		return count;
+	}
+
+	public int pageNumberByMonth(long user_id, String yearMonth, int pagesize) {
+		String sql = "SELECT COUNT(*) " + " FROM c_equipment_use A,c_urine_test B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND DATE_FORMAT(A.create_date,'%Y-%m')=?  ";
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user_id, yearMonth);
+		return count < 1 ? 0 : ((count - 1) / pagesize) + 1;
+	}
+
+	public Page queryPageByTime(long user_id, String datemin, String datemax, int pageno, int pagesize) {
+		List<Object> list = new ArrayList<Object>();
+		list.add(user_id);
+		StringBuffer sql = new StringBuffer("SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime ");
+		for (int i = 0; i < Constant.URINEPARAMS.length; i++) {
+			if (Constant.URINEPARAMS[i].equalsIgnoreCase("ph") || Constant.URINEPARAMS[i].equalsIgnoreCase("sg")) {
+				sql.append(",concat(B." + Constant.URINEPARAMS[i] + ") " + Constant.URINEPARAMS[i]);
+			} else {
+				sql.append(",findName(B." + Constant.URINEPARAMS[i] + ") " + Constant.URINEPARAMS[i]);
+			}
+		}
+		sql.append(" FROM c_equipment_use A,c_urine_test B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ");
+		if (datemin != null && !datemin.equals("") && datemax != null && !datemax.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')>=? AND DATE_FORMAT(A.create_date,'%Y-%m-%d') <=? ");
+			list.add(datemin);
+			list.add(datemax);
+		} else if (datemin != null && !datemin.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')>=? ");
+			list.add(datemin);
+		} else if (datemax != null && !datemax.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')<=? ");
+			list.add(datemax);
+		} else {
+			sql.append(" AND DATE_SUB(NOW(),INTERVAL ? DAY) <=A.create_date ");
+			list.add(365);
+		}
+		sql.append(" ORDER BY A.create_date DESC ");
+		return super.pageQuery(sql.toString(), list.toArray(), pageno, pagesize);
+	}
+
+	public Map<String, Object> getMostRecentData(long user_id) {
+		String sql = "SELECT findName(a.URO)URO,findName(a.BLD)BLD,findName(a.BIL)BIL,findName(a.KET)KET,findName(a.GLU)GLU,findName(a.PRO)PRO,a.PH,findName(a.NIT)NIT,findName(a.LEU)LEU,a.SG,findName(a.VC)VC,DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i')datetime  FROM c_urine_test a LEFT JOIN c_equipment_use b ON a.equipment_use_order_id = b.order_id AND b.user_id=? order by b.create_date desc limit 1";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, user_id);
+		if (list != null && list.size() == 0) {
+			return null;
+		}
+		return list.get(0);
+	}
+}

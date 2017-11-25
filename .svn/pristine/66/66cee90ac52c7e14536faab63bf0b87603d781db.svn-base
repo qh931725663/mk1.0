@@ -1,0 +1,75 @@
+package com.haaa.cloudmedical.app.plan.service.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.app.plan.dao.ChronicPlanAppDao;
+import com.haaa.cloudmedical.app.plan.service.ChronicPlanAppService;
+import com.haaa.cloudmedical.common.entity.RetData;
+import com.haaa.cloudmedical.common.exception.BizException;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.entity.ChronicManage;
+import com.haaa.cloudmedical.entity.ChronicTrack;
+
+@Service
+public class ChronicPlanAppServiceImpl implements ChronicPlanAppService {
+
+    @Autowired
+    private ChronicPlanAppDao dao;
+
+    private Logger            logger = Logger.getLogger(ChronicPlanAppServiceImpl.class);
+
+    @Override
+    public Object addPlan(ChronicManage form) {
+        try {
+            String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+            form.setCreate_date(date);
+            return dao.insert(form, "m_chronic_manage");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new BizException("添加失败");
+        }
+    }
+
+    @Override
+    public Object getList(String user_id, String type) {
+        if (StringUtils.isBlank(user_id)) {
+            return new RetData<Object>(false, "用户名不能为空");
+        }
+        if (StringUtils.isBlank(type)) {
+            return new RetData<Object>(false, "类型不能为空");
+        }
+        String sql = "select * from m_chronic_manage where user_id=" + user_id + " chronic_code=" + type;
+        List<Map<String, Object>> list = dao.select(sql);
+        return new RetData<List<Map<String, Object>>>(true, list);
+    }
+
+    @Override
+    public Object trackPlan(ChronicTrack form) {
+        try {
+            String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+            form.setCreate_date(date);
+            return dao.insert(form, "m_track_plan");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new BizException("添加失败");
+        }
+    }
+
+    @Override
+    public Object updatePlan(ChronicManage form) {
+        try {
+            return dao.update(form, "m_chronic_manage");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new BizException("更新失败");
+        }
+    }
+
+}

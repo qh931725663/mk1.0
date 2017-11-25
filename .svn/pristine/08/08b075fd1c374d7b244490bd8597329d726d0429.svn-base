@@ -1,0 +1,70 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.wechat.web;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.wechat.service.IWeixinBloodSugarService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/blood_sugar-wx")
+public class WeixinBloodSugarController {
+
+	@Resource
+	private IWeixinBloodSugarService service;
+	
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@RequestMapping("/graph.action")
+	public StdDTO getGraph(String open_id,Integer period, Integer days) {
+		StdDTO stdDTO = new StdDTO();
+		try {
+			if (days==null) {
+				days = 30;
+			}
+			stdDTO = service.getGraph(open_id,period, days);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return stdDTO;
+	};
+
+	@RequestMapping("/page.action")
+	public StdDTO getPage(String open_id, String year_month, Integer pageno, Integer pagesize) {
+		StdDTO stdDTO = new StdDTO();
+		try {
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+				stdDTO = service.getPage(open_id, year_month, pageno, pagesize);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}		
+		return stdDTO;
+	};
+
+
+	@RequestMapping("/months.action")
+	public StdDTO getMonths(String open_id) {
+		StdDTO stdDTO = new StdDTO();
+		try {
+			stdDTO = service.getMonths(open_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return stdDTO;
+	};
+
+}

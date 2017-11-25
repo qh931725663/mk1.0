@@ -1,0 +1,49 @@
+package com.haaa.cloudmedical.platform.plan;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.plan.model.PlanVo;
+import com.haaa.cloudmedical.platform.plan.service.IPlanManagerService;
+
+public class PlanManagerTest {
+    
+    ApplicationContext ac = null;
+    IPlanManagerService service = null;
+    
+    @Before
+    public void before(){
+        ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+        service = ac.getBean(IPlanManagerService.class);
+    }
+    
+    @Test
+    public void test1(){
+        PlanVo model = new PlanVo();
+        model.setPageno(1);
+        Page page = service.getPage(model);
+        System.out.println(page.getData());
+    }
+    
+    @Test
+    public void testPlanList(){
+        Object dto = service.getPlanList(1);
+        System.out.println();
+    }
+    
+    @Test
+    public void testPlanItem(){
+        service.getPlanItem(13);
+    }
+    
+    @Test
+    public void testtrackItemList(){
+        Object trackItemList = service.trackItemList("65", "365");
+        System.out.println(trackItemList);
+    }
+    
+}

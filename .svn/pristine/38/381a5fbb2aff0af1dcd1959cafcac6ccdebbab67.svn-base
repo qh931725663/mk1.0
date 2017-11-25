@@ -1,0 +1,261 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/pagination/css/pagination.css">
+<title>计划管理</title>
+<style>
+.lable_style {
+	display: inline-block;
+	width: 70px;
+	text-align: left;
+	font-weight: bold;
+}
+.lable_style_2{
+	display: inline-block;
+	text-align: left;
+	width: 130px;
+	font-weight: bold;
+}
+.lable-xu {
+	width: 360px;
+}
+
+.li-base {
+	width: 280px;
+}
+.li-base2 {
+	width: 350px;
+}
+.span-add{
+	float:right;
+	margin-right:20px;
+	color:red;
+	cursor:pointer;
+}
+.table td {
+	text-align: center;
+}
+.table a {
+	text-decoration: underline;
+}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconspan">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		健康档案 <span class="c-gray en">&gt;</span>&nbsp;&nbsp;填写 <a
+			class="btn btn-success radius r"
+			style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconspan">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<!-- 基本信息 -->
+		<div class="collection-baseinfo" id="userMessage" >
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>基本信息
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">姓名：</label>
+					<span data-name="user_name"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">身份证号：</label>
+					<span data-name="user_card"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">手机号：</label>
+					<span data-name="user_phone"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">是否会员：</label>
+					<span data-name="user_is_vip"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">性别：</label>
+					<span data-name="user_sex"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">年龄：</label>
+					<span data-name="user_age"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">婚姻状况：</label>
+					<span data-name="user_marriage"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">医保卡号：</label>
+					<span data-name="user_medicare_card"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">费用类型：</label>
+					<span data-name="user_medical_burden"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">工作强度：</label>
+					<span data-name="user_work"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">身高：</label>
+					<span data-name="user_height"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">体重：</label>
+					<span data-name="user_weight"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">血型：</label>
+					<span data-name="user_blood"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">创建时间：</label>
+					<span data-name="create_date"></span>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base2">
+					<label class="lable_style">慢病类型：</label>
+					<span data-name="chronic_name"></span>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style_2">管理计划完成情况：</label>
+					<span data-name="is_end"></span>
+				</li>
+			</ul>
+		</div>
+		<!-- 高血压管理计划-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>高血压管理计划
+				<span class="span-add" onclick="plan_detail.addChronicManager();">新增</span>
+			</div>
+			<table style="width:70%;margin:23px 23px;" id="hypertension"
+				class="table table-border table-bordered table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th style="width:25%">管理内容</th>
+						<th style="width:35%">备注</th>
+						<th style="width:10%">完成状态</th>
+						<th style="width:20%">操作</th>
+						<th style="width:10%">计划情况跟踪</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<!--  高脂血症管理计划 -->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span> 高脂血症管理计划
+				<span class="span-add" onclick="plan_detail.addChronicManager();">新增</span>
+			</div>
+			<table style="width:70%;margin:23px 23px;" id="hyperlipidemia"
+				class="table table-border table-bordered table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th style="width:25%">管理内容</th>
+						<th style="width:35%">备注</th>
+						<th style="width:10%">完成状态</th>
+						<th style="width:20%">操作</th>
+						<th style="width:10%">计划情况跟踪</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		
+		<!--  糖尿病管理计划-->
+		<div class="collection-baseinfo" id="healthPrevention">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span> 糖尿病管理计划
+				<span class="span-add" onclick="plan_detail.addChronicManager();">新增</span>
+			</div>
+			<table style="width:70%;margin:23px 23px;" id="diabetes"
+				class="table table-border table-bordered table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th style="width:25%">管理内容</th>
+						<th style="width:35%">备注</th>
+						<th style="width:10%">完成状态</th>
+						<th style="width:20%">操作</th>
+						<th style="width:10%">计划情况跟踪</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<!--  慢性阻塞性肺病管理计划-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span> 慢性阻塞性肺病管理计划
+				<span class="span-add" onclick="plan_detail.addChronicManager();">新增</span>
+			</div>
+			<table style="width:70%;margin:23px 23px;" id="pulmonary"
+				class="table table-border table-bordered table-bg table-striped">
+				<thead>
+					<tr class="text-c">
+						<th style="width:25%">管理内容</th>
+						<th style="width:35%">备注</th>
+						<th style="width:10%">完成状态</th>
+						<th style="width:20%">操作</th>
+						<th style="width:10%">计划情况跟踪</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		
+	</div>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<script type="text/javascript" src="js/plan-detail.js?v=1"></script>
+	
+	<script>
+	$(function(){
+		$('.check-box').on('click', function(){
+			$(this).find('.icheckbox-blue').toggleClass('checked');
+		});
+	})
+	</script>
+</body>
+</html>

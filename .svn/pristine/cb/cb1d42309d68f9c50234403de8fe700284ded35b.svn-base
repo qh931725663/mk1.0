@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>体检报告上传</title>
+<style type="text/css">
+.upload_pic{
+	position:relative;
+	float:left;
+	margin-top:10px;
+}
+.delete_img{
+	position:absolute;
+	top: 5px;
+    left: 100px;
+    display: none;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+<div class="page-container">
+		<div style="margin-bottom:30px;margin-left:50px;">
+			 <span class="c-red">*</span>
+			 <span style="display:inline-block;width:80px;">就诊时间：</span>
+			 <input class="input-text Wdate" id="clinic_report_time" name="clinic_report_time" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:172px;"/>
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			 <span class="c-red">*</span>
+			 <span style="display:inline-block;width:80px;">就诊医院：</span>
+			  <input type="hidden" id="hosp_order_id">
+			 <!-- <select class="radius" style="height:30px;width:260px;" id="hosp_name">
+					<option value="">请选择</option>
+			 </select> -->
+			 <input class="input-text" type="text" id="hosp_name" style="width:260px;">
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			 <!-- <span class="c-red">*</span> -->
+			 <span style="display:inline-block;width:80px;padding-left:10px;">就诊科室：</span>
+			 <input type="hidden" value="" id="department_name">
+			 <select class="radius" style="height:30px;width:150px;" id="department_order_id">
+					<option value="">全部</option>
+			 </select>
+		</div>
+		
+		<div style="margin-bottom:30px;margin-left:50px;">
+			 <!-- <span class="c-red">*</span> -->
+			 <span style="display:inline-block;width:80px;padding-left:10px;">主诊医生：</span>
+			 <input type="hidden" value="" id="doctor_name">
+			 <select class="radius" style="height:30px;width:150px;" id="doctor_id">
+					<option value="">全部</option>
+			 </select>
+		</div>
+		
+		<div style="margin-bottom:30px;margin-left:50px;">
+			 <span class="ml-10" style="display:inline-block;width:80px;position: relative;top: -50px;">病症：</span>
+			 <textarea class="comments" rows="6" cols="50" id="clinic_report_disease"> </textarea>
+	    </div>
+	    
+	    <div style="margin-bottom:30px;margin-left:50px;">
+			 <span class="ml-10" style="display:inline-block;width:80px;position: relative;top: -50px;">诊断：</span>
+			 <textarea class="comments" rows="6" cols="50" id="clinic_report_result"> </textarea>
+	    </div>
+	    
+	    <div style="margin-bottom:30px;margin-left:50px;">
+			<div class="row cl">
+	            <span class="ml-10" style="display:inline-block;width:80px;float:left;text-align:center;"><font style="color:red">*</font>上传：</span>
+	            <div class="formControls col-xs-8 col-sm-9" style="width:450px;" id="upload_file">
+	            	<form class="form">
+		            	<div class="upload_pic">
+			                <img src="../images/browse.jpg" class='bor' style="width:120px;height:120px;cursor: pointer;" onclick="javascript:$(this).next().click()">
+			                <input class="image file"  name="image" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+							<span class="btn-upload form-group">
+								<input type="file" multiple name="image1" class="input-file">
+							</span>
+							<img src="../images/delete.png" class="delete_img">
+						</div>
+					</form>
+					
+					<form class="form">
+		            	<div class="upload_pic">
+			                <img src="../images/browse.jpg" class='bor' style="width:120px;height:120px;cursor: pointer;" onclick="javascript:$(this).next().click()">
+			                <input class="image file"  name="image" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+							<span class="btn-upload form-group">
+								<input type="file" multiple name="image1" class="input-file">
+							</span>
+							<img src="../images/delete.png" class="delete_img">
+						</div>
+					</form>
+					
+					<form class="form">
+		            	<div class="upload_pic">
+			                <img src="../images/browse.jpg" class='bor' style="width:120px;height:120px;cursor: pointer;" onclick="javascript:$(this).next().click()">
+			                <input class="image file"  name="image" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+							<span class="btn-upload form-group">
+								<input type="file" multiple name="image1" class="input-file">
+							</span>
+							<img src="../images/delete.png" class="delete_img">
+						</div>
+					</form>
+					
+					<div class="upload_pic" id="add_pic">
+			        	<img src="../images/photo_01.png"  style="width:120px;height:120px;cursor: pointer;">
+					</div>
+	            </div>
+	            
+       		</div>
+	    </div>
+	     <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button class="btn btn-success radius btn-user-edit" type="button" onclick="do_save();" >保存</button>
+                <button class="btn btn-danger radius" type="button" onclick="layer_close()">取消</button>
+            </div>
+        </div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="js/jquery.tips.js"></script>
+<script type="text/javascript" src="js/mkh.common.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	//mkh.initHospital("#hosp_name");
+	//
+	mkh.hospitalAutocomplete({
+		showDept : function(id) {
+			$.ajax({
+				url : "../../../health-record/getDepartmentList.action",
+				type : "post",
+				dataType : 'json',
+				data : {hosp_order_id : id},
+				success : function(data) {
+					//
+					var html = "<option value=''>全部</option>";
+					if(data && data.length > 0){
+						$.each(data, function(i, item){
+							html+="<option value='"+item.order_id+"''>"+item.department_name+"</option>";
+						});
+					}
+					$('#department_order_id').empty();
+					$('#department_order_id').append(html);
+					//
+					$('#doctor_id').empty();
+					$('#doctor_id').append("<option value=''>全部</option>");
+				}
+			});
+		}
+	});
+	//
+	mkh.initPictures();
+});
+
+function getUrlParam(name){
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if(r!=null)return  unescape(r[2]); return null;
+}
+//选择图片
+var upload_check = function(){
+	$('#upload_file').on('change', 'input.image', function(){
+		var file = this.files[0];
+        var r = new FileReader();
+        r.readAsDataURL(file);
+        var $t = $(this);
+        $(r).load(function() {
+            $t.prev().attr({src:this.result,class:'no-bor'});
+        })
+    });
+}();
+
+//上传图片
+function upload_image(id){
+	var user_id = getUrlParam("id");
+    $('.form').each(function(){
+    	 var data = new FormData(this);
+    	 $.ajax({
+	        type:"post",
+	        url:"../../../upload/file.action",
+	        headers:{user_id : user_id, order_id : id, report_type : '500002'},
+	        data:data,
+	        dataType:"json",
+	        processData:false,
+	        contentType:false,
+	        success:function(data){         
+	            console.log(data);
+	        }
+    	});
+    });
+}
+
+//保存
+function do_save(){
+    mkh.filterInput();
+	var flag = true;
+    //
+    var data = {};
+    //就诊时间
+    var clinic_report_time = $("#clinic_report_time").val();
+    if(clinic_report_time){
+   		mkh.errTipsRemove("#clinic_report_time");
+    	data.clinic_report_time = clinic_report_time;
+    }else{
+    	mkh.errTips("#clinic_report_time", "请输入就诊时间！");
+    	flag = false;
+    }
+    //就诊机构
+    var hosp_order_id = $('#hosp_order_id').val();
+   	if(hosp_order_id){
+   		mkh.errTipsRemove("#hosp_name");
+   		data.hosp_order_id = $("#hosp_order_id").val();
+   		data.hosp_name = $("#hosp_name").val();
+   	}else{
+   		mkh.errTips("#hosp_name", "请选择就诊机构！");
+   		flag = false;
+   	}
+    //就诊科室
+    data.department_order_id = $('#department_order_id').val();
+    data.department_name = $('#department_name').val();
+    //就诊医生
+    data.doctor_name = $('#doctor_name').val();
+    data.doctor_id = $('#doctor_id').val();
+    //病症
+    var clinic_report_disease = $('#clinic_report_disease').val();
+    data.clinic_report_disease = $.trim(clinic_report_disease);
+    //诊断
+    var clinic_report_result = $('#clinic_report_result').val();
+    data.clinic_report_result = $.trim(clinic_report_result);
+    //ID
+   	var user_id = getUrlParam('id');
+   	data.user_id = user_id;
+   	
+   	//文件
+   	var img_len = $("#upload_file").find(".no-bor").length;
+   	if(img_len > 0){
+   		mkh.errTipsRemove("#upload_file");
+   	}else{
+   		mkh.errTips("#upload_file", "请上传文件！");
+   		flag = false;
+   	}
+   	if(!flag){
+   		return;
+   	}
+    //
+    $.ajax({
+        url:"../../../health-record/saveClinic.action",
+        type:"post",
+        dataType:'json',
+        data:data,
+        success:function(data){
+          var id = data.data;
+	   	  //执行上传
+	   	  upload_image(id);
+	   	  alert("上传成功");
+        }
+    });
+}
+</script>
+</body>
+</html>

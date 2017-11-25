@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>年度管理效果评估</title>
+	<style type="text/css">
+		.main{padding: 0 15px;}
+		.topnav{height: 35px;background: #ddd;line-height: 35px;padding: 0 5px;}
+		table{margin: 30px 15px;border:1px;border-color: #eee;border-collapse: collapse;width: 98%;color: #333;}
+		table th,table td{border: 1px solid #ddd;border-collapse: collapse;text-align: center;padding: 10px 0;}
+		table th{width: 13%;}
+		table tr td:nth-child(2),table tr td:last-child{padding: 5px 10px;line-height: 1.7;}
+		table tr td p{margin: 0;text-align: left;}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<h1 style="text-align: center;">糖尿病年度效果评估表</h1>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				非药物治疗
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>饮食指导</td>
+					<td>365</td>
+					<td>300</td>
+					<td>82</td>
+					<td>268</td>
+					<td>89</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>运动监测</td>
+					<td>365</td>
+					<td>300</td>
+					<td>82</td>
+					<td>268</td>
+					<td>89</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>体重监测</td>
+					<td>365</td>
+					<td>300</td>
+					<td>82</td>
+					<td>268</td>
+					<td>89</td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				药物治疗
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>合理用药指导</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				自我监测
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>空腹血糖监测</td>
+					<td>365</td>
+					<td>300</td>
+					<td>82</td>
+					<td>268</td>
+					<td>89</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>血压测量</td>
+					<td>365</td>
+					<td>300</td>
+					<td>82</td>
+					<td>268</td>
+					<td>89</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>餐后2h血糖检测</td>
+					<td>365</td>
+					<td>300</td>
+					<td>82</td>
+					<td>268</td>
+					<td>89</td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				实验室+影像检查
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>糖化血红蛋白检测</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>空腹血脂4项检测</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>血肌酐检测</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>促甲状腺激素检测</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>心电图</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>尿常规</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>尿微量白蛋白定量</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>心脏超声</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>颈动脉超声</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>下肢血管超声</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>X线胸片</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>视力与眼底镜检查</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				风险管理
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>足背动脉搏动</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>神经病变检查</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>疾病(并发症)风险评估</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				电话随访
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>常规电话随访</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				健康教育
+			</div>
+			<table>
+				<tr>
+					<th>评估内容</th>
+					<th>目标监测次数</th>
+					<th>实际监测次数</th>
+					<th>计划完成率(%)</th>
+					<th>达标次数</th>
+					<th>达标率(%)</th>
+					<th>监测数值(平均)</th>
+				</tr>
+				<tr>
+					<td>线下健康讲座</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>线上健康讲座</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>App健康教育信息推送</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		//获取地址栏order_id方法
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		var order_id=getUrlParam("order_id");
+		$.ajax({
+			url: '../../../chronicplan-app/getChronicPlanDetail.action',
+			type: "GET",
+			dataType: 'json',
+		});
+	});
+</script>
+</body>
+</html>

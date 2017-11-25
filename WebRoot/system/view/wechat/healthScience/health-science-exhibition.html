@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>健康科普</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../common/css/reset.css"/>
+    <link rel="stylesheet" href="../common/css/main.css"/>
+    <style>
+     	.container .content{min-height:500px;}
+        .container .health-science-list{padding: 25px 16px;}
+        .container .health-science-list li{margin-bottom: 20px;margin-top:10px;height:100px;border-bottom:1px solid #F0F0F0;}
+        .container .health-science-list li:last-child{border-bottom:none;}
+        .health-science-list .health-science-text{margin-left: 15px;}
+        .health-science-list .health-science-text span:nth-child(1){margin-top: -30px;display: block;color: #3D3D3D;font-size: 16px;width:195px;;overflow: hidden;white-space: nowrap;text-overflow:ellipsis;}
+        .health-science-list .health-science-text span:nth-child(2){display: block;font-size: 14px;color:#808080;margin-top: 10px;width:195px;;overflow: hidden;white-space: nowrap;text-overflow:ellipsis;}
+    </style>
+</head>
+<body>
+<div class="container">
+ <div class="content" style="margin-top: 30px;">
+    <ul class="health-science-list" id="demo" >
+    </ul>
+	<div class="show_message" style="text-align: center;display:none;">没有更多数据了...</div>
+</div>
+</div>
+<script src="../common/js/jquery-1.11.3.js"></script>	
+<script>
+	var pagecount;//定义总页数变量
+	$(function(){
+		//初始化加载数据
+		init(1);
+		
+		
+	});
+	function init(current){
+		var data=$.param({pageno:current});
+		$.ajax({
+	        url:"../../../../news-wx/news.action",
+	        type:"post",
+	        dataType : 'json',
+	        data:data,
+	        success:function(list) {
+	        	var list_data=list.data;
+				if(list.status==0){
+					var li= "";
+	            	$.each(list_data.data,function(i,p){
+	            		li+="<li>"+
+            				"<a class='line-align-left' href='"+p.url_index+"'>"+
+                			"<img src='"+p.pic_index+"' style='width: 30%;border-radius:3px;'/>"+
+                			"<div class='health-science-text'>"+
+                    		"<span>"+p.title+"</span>"+
+                    		"<span>"+p.short_introduction+"</span>"+
+                			"</div>"+
+            				"</a>"+
+        					"</li>";
+						
+	            	});
+	            	$("#demo").append(li);
+	            	pagecount=list_data.pageCount;				
+					//显示加载更多
+					if(list_data.pageNo==list_data.pageCount){
+						$(".show_message").show();
+					}
+				}
+	      	}
+ 		});		
+	}
+	
+  //滑动处理
+    var startX, startY, moveEndX, moveEndY, X, Y;
+    $('body').on('touchstart',function(e) {
+        var _touch = e.originalEvent.targetTouches[0];
+        startX= _touch.pageX;
+        startY= _touch.pageY;
+    });
+    var current1=1;
+    $('body').on('touchmove', function(e) {
+        var _touch2 = e.originalEvent.targetTouches[0];
+        moveEndX= _touch2.pageX;
+        moveEndY= _touch2.pageY;
+        X = moveEndX - startX;
+        Y = moveEndY - startY;
+        if (Y < 0) {
+	 		current1++;
+			if(current1<= pagecount){
+				init(current1);
+			}
+        }
+    });
+  
+</script>
+</body>
+</html>

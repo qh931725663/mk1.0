@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link rel="stylesheet" type="text/css" href="common/css/reset.css"/>
+	<link rel="stylesheet" type="text/css" href="common/css/login.css"/>
+	<title>忘记密码</title>
+	<style type="text/css">
+		input::placeholder{
+			font-size: 1.5rem;
+		}
+		.user_number{
+			width: 50%;
+			line-height: 51px;
+		}
+		.gain{
+			padding: 10px;
+			display: inline-block;
+			margin: 7px 0;
+			font-size: 1.4rem;
+			float: right;
+			background-color: #fff;
+			border: 1px solid #DA281F;
+			color: #DA281F;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<form action="" method="post" class="basicInfo">
+			<div class="infoBox">
+				<img class="login_imgone" src="common/image/phone.png"/>
+				<input type="number" class="user_phone" placeholder="请输入手机号" />
+				<span class="error"></span>
+			</div>
+			<div class="infoBox">
+				<img class="login_imgtwo" src="common/image/safe.png"/>
+				<input type="number" class="user_number" placeholder="请输入验证码" />
+				<input type="button" class="gain" value="获取验证码" />
+				<div class="clearfix"></div>
+			</div>
+			<div class="infoBox">
+				<img class="login_imgtwo" src="common/image/psd.png"/>
+				<input type="password" class="user_psd repsd" placeholder="请输入6-16位密码（仅限字母及数字）" />
+				<span class="error"></span>
+			</div>
+			<input type="button" value="重置" class="btn"/>
+		</form>
+	</div>
+	<script src="common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="common/js/regex.js" type="text/javascript" charset="utf-8"></script>
+	<script src="common/js/forgivepsd.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

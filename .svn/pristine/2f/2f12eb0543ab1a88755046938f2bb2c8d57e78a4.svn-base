@@ -1,0 +1,75 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+public class EarThermometer {
+	private Long order_id;
+	
+	private Long equipment_use_order_id;
+
+	private Float temperature;
+	
+	private Integer UnitState;
+	
+	private Date create_date;
+	
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	public Float getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(Float temperature) {
+		this.temperature = temperature;
+	}
+
+	public Integer getUnitState() {
+		return UnitState;
+	}
+
+	public void setUnitState(Integer unitState) {
+		UnitState = unitState;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	@Override
+	public String toString() {
+		return "EarThermometer [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id
+				+ ", temperature=" + temperature + ", UnitState=" + UnitState + ", create_date=" + create_date
+				+ ", update_date=" + update_date + "]";
+	}
+	
+	
+	
+}

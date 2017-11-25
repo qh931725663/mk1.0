@@ -1,0 +1,417 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.survey.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.dao.SurveyDao;
+import com.haaa.cloudmedical.entity.User;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+@Log(name = "app健康评估")
+public class SurveyAppService {
+
+	@Autowired
+	private SurveyDao dao;
+
+	@Resource
+	private CommonUserService commonUserService;
+
+	// 获取人员信息
+	public Map<String, Object> getUserInfo(String user_id) {
+		Map<String, Object> user = null;
+		String sql = "select a.user_name,a.user_card,a.user_birthday,findname(a.user_sex) user_sex,a.user_phone,a.email,a.user_address from	n_user a where a.user_id = ?";
+		List<Map<String, Object>> list = dao.select(sql, user_id);
+		if (list.size() > 0) {
+			user = list.get(0);
+		}
+		return user;
+	}
+
+	@Transactional
+	public Object saveAnswer(HttpServletRequest request) {
+
+		// 保存人员信息
+		String user_id = request.getParameter("user_id");
+		// 根据是否传递user_id判断从患者端还是医生端传递
+		user_id = commonUserService.getPatientId(user_id);
+		String email = request.getParameter("email");
+		String post_code = request.getParameter("post_code");
+		String user_address = request.getParameter("user_address");
+		String user_area = request.getParameter("user_area");
+		String user_height = request.getParameter("user_height");
+		String user_weight = request.getParameter("user_weight");
+		String user_waist = request.getParameter("user_waist");
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String doctor_id = request.getParameter("doctor_id");
+		// 根据用户类型给doctor_id赋值
+		doctor_id = commonUserService.getDoctorId();
+		Map<String, Object> survey = new HashMap<String, Object>();
+		survey.put("user_id", user_id);
+		survey.put("email", email);
+		survey.put("post_code", post_code);
+		survey.put("user_address", user_area + user_address);
+		survey.put("user_height", user_height);
+		survey.put("user_weight", user_weight);
+		survey.put("user_waist", user_waist);
+		survey.put("create_date", date);
+		survey.put("doctor_id", doctor_id);
+		// 初始化健康评估表
+		long order_id = this.addSurvey(survey);
+
+		// 获取答案并保存
+		List<Map<String, Object>> question_list = this.getSurveyQuestionList(order_id);
+		List<Map<String, Object>> answer_list = new ArrayList<Map<String, Object>>();
+		for (Map<String, Object> map : question_list) {
+			String survey_question_order_id = map.get("order_id").toString();// 问题ID
+			String question_k_order_id = map.get("question_k_order_id").toString();// 问题编码
+			String survey_option_order_id = request.getParameter("select_" + question_k_order_id);// key=问题编码,value=答案编码
+			if (survey_option_order_id != null && !"".equals(survey_option_order_id)) {
+				Map<String, Object> question = new HashMap<String, Object>();
+				question.put("survey_order_id", order_id);// 评估表ID
+				question.put("survey_question_order_id", survey_question_order_id);// 问题ID
+				question.put("survey_option_order_id", survey_option_order_id);// 答案ID
+				question.put("survey_option_content",
+						this.getSurveyAnswerContent(Long.parseLong(survey_option_order_id)));// 答案内容
+				question.put("create_date", date);
+				answer_list.add(question);
+				// 保存默认计划
+				// service.saveChronicManage(question_k_order_id, question,
+				// user_id);
+			}
+		}
+		this.saveAnswer(answer_list);
+		this.call(String.valueOf(order_id));
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(order_id);
+		return dto;
+	}
+
+	// 更新人员信息
+	public void updateUserInfo(User user) {
+		dao.update(user, "n_user");
+	}
+
+	// 新建一份健康调查
+	@Log(name = "新建一份健康调查")
+	public long addSurvey(Map<String, Object> survey) {
+		long order_id = 0;
+		try {
+			order_id = dao.insert(survey, "s_survey");
+			initSurvey(order_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return order_id;
+	}
+
+	// 初始化调查问题
+	public void initSurvey(long order_id) {
+		String sql = "insert into s_survey_question(survey_order_id,question_k_order_id,survey_question_content,survey_question_type,create_date) select ?,order_id,survey_question_content,survey_question_type,now() from s_survey_question_k";
+		try {
+			dao.execute(sql, order_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// 保存答案
+	@Log(name = "保存答案")
+	public void saveAnswer(List<Map<String, Object>> answer_list) {
+		List<Long> values = new ArrayList<Long>();
+		for (Map<String, Object> map : answer_list) {
+			try {
+				long order_id = dao.insert(map, "s_survey_answer");
+				values.add(order_id);
+			} catch (Exception e) {
+				e.printStackTrace();
+				String sql = "delete from s_survey_question where order_id in ("
+						+ StringUtils.repeat("?", ",", values.size()) + ")";
+				dao.execute(sql, values.toArray());
+			}
+
+		}
+
+	}
+
+	// 获取问题健康评估问题列表
+	public List<Map<String, Object>> getSurveyQuestionList(long survey_order_id) {
+		String sql = "select * from s_survey_question where survey_order_id = ?";
+		List<Map<String, Object>> question_list = dao.select(sql, survey_order_id);
+		return question_list;
+	}
+
+	public String getSurveyAnswerContent(long survey_option_order_id) {
+		String sql = "select survey_option_content from s_survey_option where order_id = ?";
+		String survey_option_content = dao.select(sql, new Object[] { survey_option_order_id }, String.class);
+		return survey_option_content;
+	}
+
+	/**
+	 * 
+	 * @Title: getTimeList
+	 * @Description: 根据user_id查询健康评估历史记录
+	 * @param user_id
+	 *            用户id
+	 * @return @throws
+	 */
+	public InfoJson getTimeList(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> list = dao.getTimeList(user_id);
+		infoJson.setData(list);
+		infoJson.setStatus(1);
+		infoJson.setCount(list.size());
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: call @Description: 调用存储过程计算ahdi @param order_id @throws
+	 */
+	public void call(String order_id) {
+		dao.call(order_id);
+	}
+
+	/**
+	 * 
+	 * @Title: getDetail
+	 * @Description: 根据order_id和查询健康评估调查报告详情，并对数据进行保证方便遍历
+	 * @param order_id
+	 *            调查id
+	 * @return @throws
+	 * @throws Exception
+	 */
+	@SuppressWarnings({ "serial", "unused" })
+	public InfoJson getDetail(String order_id) throws Exception {
+		InfoJson infoJson = new InfoJson();
+		List<Object> resultList = new ArrayList<Object>();
+		Map<String, Object> basicMap = dao.getBasicInfo(order_id);
+		basicMap.put("title", "基本信息");
+		List<Object> basicList = new ArrayList<Object>();
+		String idcard = (String) basicMap.get("user_card");
+		String mainland = (String) basicMap.get("mainland");
+		IdcardInfoExtractor idinfo;
+		if (idcard == null || idcard.equals("")) {
+			idinfo = new IdcardInfoExtractor("");
+		} else {
+			idinfo = new IdcardInfoExtractor(idcard);
+		}
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "姓名");
+				put("answer", basicMap.get("user_name") == null || basicMap.get("user_name").equals("") ? ""
+						: basicMap.remove("user_name"));
+			}
+		});
+
+		if (mainland.equals("1")) {
+			basicList.add(new HashMap<String, Object>() {
+				{
+					put("question", "性别");
+					put("answer",
+							idinfo.getGender() == null || idinfo.getGender().equals("") ? "" : idinfo.getGender());
+				}
+			});
+			basicList.add(new HashMap<String, Object>() {
+				{
+					put("question", "身份证号");
+					put("answer", basicMap.get("user_card") == null || basicMap.get("user_card").equals("") ? ""
+							: basicMap.remove("user_card"));
+				}
+			});
+			basicList.add(new HashMap<String, Object>() {
+				{
+					put("question", "生日");
+					put("answer", idinfo.getBirthday() == null || idinfo.getGender().equals("") ? ""
+							: DateUtil.dateFormat(idinfo.getBirthday(), "yyyy-MM-dd"));
+				}
+			});
+		}else{
+			basicList.add(new HashMap<String, Object>() {
+				{
+					put("question", "性别");
+					put("answer",
+							basicMap.get("user_sex") == null || basicMap.get("user_sex").equals("") ? ""
+									: basicMap.remove("user_sex"));
+				}
+			});
+			basicList.add(new HashMap<String, Object>() {
+				{
+					put("question", "护照");
+					put("answer", basicMap.get("passport") == null || basicMap.get("passport").equals("") ? ""
+							: basicMap.remove("passport"));
+				}
+			});
+			basicList.add(new HashMap<String, Object>() {
+				{
+					put("question", "生日");
+					put("answer", basicMap.get("user_birthday") == null || basicMap.get("user_birthday").equals("") ? ""
+							: basicMap.remove("user_birthday"));
+				}
+			});
+		}
+		
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "联系电话");
+				put("answer", basicMap.get("user_phone") == null || basicMap.get("user_phone").equals("") ? ""
+						: basicMap.remove("user_phone"));
+			}
+		});
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "邮箱");
+				put("answer", basicMap.get("email") == null || basicMap.get("email").equals("") ? ""
+						: basicMap.remove("email"));
+			}
+		});
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "家庭住址");
+				put("answer", basicMap.get("user_address") == null || basicMap.get("user_address").equals("") ? ""
+						: basicMap.remove("user_address"));
+			}
+		});
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "邮政编码");
+				put("answer", basicMap.get("post_code") == null || basicMap.get("post_code").equals("") ? ""
+						: basicMap.remove("post_code"));
+			}
+		});
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "身高");
+				put("answer", basicMap.get("user_height") == null || basicMap.get("user_height").equals("") ? ""
+						: basicMap.remove("user_height") + "cm");
+			}
+		});
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "体重");
+				put("answer", basicMap.get("user_weight") == null || basicMap.get("user_weight").equals("") ? ""
+						: basicMap.remove("user_weight") + "kg");
+			}
+		});
+		basicList.add(new HashMap<String, Object>() {
+			{
+				put("question", "腰围");
+				put("answer", basicMap.get("user_waist") == null || basicMap.get("user_waist").equals("") ? ""
+						: basicMap.remove("user_waist") + "cm");
+			}
+		});
+		basicMap.put("list", basicList);
+		Map<String, Object> chronicMap = new HashMap<String, Object>();
+		chronicMap.put("title", "慢性疾病");
+		List<Object> chronicList = new ArrayList<Object>();
+		chronicMap.put("list", chronicList);
+		Map<String, Object> healthMap = new HashMap<String, Object>();
+		healthMap.put("title", "健康信息");
+		List<Object> healthList = new ArrayList<Object>();
+		healthMap.put("list", healthList);
+		Map<String, Object> serviceMap = new HashMap<String, Object>();
+		serviceMap.put("title", "预防服务");
+		List<Object> serviceList = new ArrayList<Object>();
+		serviceMap.put("list", serviceList);
+		if (basicMap != null) {
+			List<Map<String, Object>> list = dao.getDetail(order_id);
+			list.forEach(s -> {
+				if ((int) s.get("question_k_order_id") < 200) {
+					chronicList.add(new HashMap<String, Object>() {
+						{
+							put("question", "您是否有" + s.get("survey_question_content") + "？");
+							put("answer", s.get("survey_option_content"));
+						}
+					});
+				} else if ((int) s.get("question_k_order_id") < 600) {
+					basicList.add(new HashMap<String, Object>() {
+						{
+							put("question", s.get("survey_question_content"));
+							put("answer", s.get("survey_option_content"));
+						}
+					});
+				} else if ((int) s.get("question_k_order_id") < 1500) {
+					healthList.add(new HashMap<String, Object>() {
+						{
+							put("question", s.get("survey_question_content"));
+							put("answer", s.get("survey_option_content"));
+						}
+					});
+				} else {
+					serviceList.add(new HashMap<String, Object>() {
+						{
+							put("question", "什么时候是您最后一次做" + s.get("survey_question_content") + "检查？");
+							put("answer", s.get("survey_option_content"));
+						}
+					});
+				}
+			});
+			resultList.add(basicMap);
+			resultList.add(chronicMap);
+			resultList.add(healthMap);
+			resultList.add(serviceMap);
+			infoJson.setData(resultList);
+			infoJson.setCount(1);
+
+		} else {
+		}
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	
+	/**
+	 * 
+	 * @Title: getDetail2 
+	 * @Description: 原样返回健康评估添加传输过来的码表数据数据
+	 * @param order_id
+	 * @return
+	 * @throws Exception
+	 * @throws
+	 */
+	public InfoJson getDetail2(String order_id) throws Exception {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> map = dao.getBasicInfo(order_id);
+		String idcard = (String) map.get("user_card");
+		IdcardInfoExtractor idinfo;
+		if (idcard == null || idcard.equals("")) {
+			idinfo = new IdcardInfoExtractor("");
+		} else {
+			idinfo = new IdcardInfoExtractor(idcard);
+		}
+		map.put("user_age", idinfo.getBirthday() == null || idinfo.getGender().equals("") ? ""
+				: DateUtil.getAge(idinfo.getBirthday()));
+		
+		List<Map<String, Object>> list = dao.getDetail(order_id);
+		list.stream().forEach(a -> {
+			map.put("select_" + a.get("question_k_order_id"), a.get("survey_option_order_id"));
+		});
+		infoJson.setData(map);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+}

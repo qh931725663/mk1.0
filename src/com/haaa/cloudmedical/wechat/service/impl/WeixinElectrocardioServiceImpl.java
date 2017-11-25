@@ -1,0 +1,130 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.wechat.service.impl;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.wechat.service.IWeixinElectrocardioService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class WeixinElectrocardioServiceImpl implements IWeixinElectrocardioService {
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private UserAppDao userAppDao;
+	private NumberFormat nFormat = DecimalFormat.getInstance();
+
+	@Override
+	public StdDTO getGraph(String open_id, String order_id) {
+		Map<String, Object> userMap = userAppDao.getUserByOpenId(open_id);
+		String user_id = String.valueOf(userMap.get("user_id"));
+		Map<String, Object> ecgMap = null;
+		if (order_id != null) {
+			ecgMap = electrocardiographDao.getEcgByUseId(Long.valueOf(order_id));
+		} else if (user_id != null) {
+			ecgMap = electrocardiographDao.getEcgByUserId(Long.valueOf(user_id));
+		}
+		List<String> ecgSignal = new LinkedList<String>();
+		nFormat.setMaximumFractionDigits(0);
+		ecgSignal.addAll(Arrays.asList(String.valueOf(ecgMap.remove("ecg1")).split(",")));
+		ecgSignal.addAll(Arrays.asList(String.valueOf(ecgMap.remove("ecg2")).split(",")));
+		ecgSignal.addAll(Arrays.asList(String.valueOf(ecgMap.remove("ecg3")).split(",")));
+		ecgSignal.addAll(Arrays.asList(String.valueOf(ecgMap.remove("ecg4")).split(",")));
+		ecgSignal.addAll(Arrays.asList(String.valueOf(ecgMap.remove("ecg5")).split(",")));
+		ecgMap.put("ecg", ecgSignal);
+		ecgMap.put("HeartRate", nFormat.format(ecgMap.get("HeartRate")));
+		return StdDTO.setSuccess(ecgMap);
+	}
+
+	@SuppressWarnings("serial")
+	@Override
+	public StdDTO getPage(String open_id, String year_month, int pageno, int pagesize) {
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		Map<String, Object> userMap = userAppDao.getUserByOpenId(open_id);
+		long user_id = (long) userMap.get("user_id");
+		List<Map<String, Object>> dataList;
+		int pagecount = 0;
+		if (StringUtil.isEmpty(year_month)) {
+			dataList = electrocardiographDao.pageQuery(user_id, pageno, pagesize);
+			pagecount = electrocardiographDao.pageNumber(user_id, pagesize);
+		} else {
+			dataList = electrocardiographDao.queryByMonth(user_id, year_month, pageno, pagesize);
+			pagecount = electrocardiographDao.pageNumberByMonth(user_id, year_month, pagesize);
+		}
+		nFormat.setMaximumFractionDigits(0);
+		Object data = dataList.stream()
+				.collect(Collectors.groupingBy(m -> DateUtil.dateFormat((Date) m.get("datetime"), "yyyy-MM")))
+				.entrySet().stream().map(s -> new HashMap<String, Object>() {
+					{
+						put("yearmonth", s.getKey());
+						s.getValue().forEach(ss -> {
+							ss.put("period", periodDefine(
+									Integer.parseInt(DateUtil.dateFormat((Date) ss.get("datetime"), "HH"))));
+							ss.put("datetime", DateUtil.dateFormat((Date) ss.get("datetime"), "yyyy-MM-dd HH:mm"));
+							ss.put("HeartRate", nFormat.format(ss.get("HeartRate")));
+							ss.remove("equipment_use_order_id");
+						});
+						put("datalist", s.getValue());
+					}
+				}).sorted((s1, s2) -> {
+					return String.valueOf(s2.get("yearmonth")).compareTo(String.valueOf(s1.get("yearmonth")));
+				}).collect(Collectors.toList());
+		retMap.put("monthlist", data);
+		retMap.put("pageno", pageno);
+		retMap.put("pagecount", pagecount);
+		retMap.put("pagesize", pagesize);
+		return StdDTO.setSuccess(retMap);
+	}
+
+	@Override
+	public StdDTO getMonths(String open_id) {
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		Map<String, Object> userMap = userAppDao.getUserByOpenId(open_id);
+		long user_id = (long) userMap.get("user_id");
+		retMap.put("list", electrocardiographDao.queryMonth(user_id));
+		return StdDTO.setSuccess(retMap);
+	}
+
+	/**
+	 * 
+	 * @Title: periodDefine @Description: 根据查询的时间 判断早中晚时间段，-1上午，0下午，1晚上 @param
+	 *         hour @return int 返回类型 @throws
+	 */
+	private int periodDefine(int hour) {
+		int period = 0;
+		if (hour < Constant.MORNING_END && hour >= 0) {
+			period = -1;
+		} else if (hour < Constant.NIGHT_BEGIN) {
+			period = 0;
+		} else {
+			period = 1;
+		}
+		return period;
+	}
+
+}

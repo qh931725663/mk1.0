@@ -1,0 +1,75 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+
+public class Electrocardiograph {
+	private Long order_id;
+
+	private Long equipment_use_order_id;
+
+	private Integer HeartRate;
+
+	private Integer result;
+
+	private Date create_date;
+
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	public Integer getHeartRate() {
+		return HeartRate;
+	}
+
+	public void setHeartRate(Integer heartRate) {
+		HeartRate = heartRate;
+	}
+
+	public Integer getResult() {
+		return result;
+	}
+
+	public void setResult(Integer result) {
+		this.result = result;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	@Override
+	public String toString() {
+		return "Electrocardiograph [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id
+				+ ", HeartRate=" + HeartRate + ", result=" + result + ", create_date=" + create_date + ", update_date="
+				+ update_date + "]";
+	}
+
+}

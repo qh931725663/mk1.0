@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+ 
+</head>
+<body>
+<form enctype="multipart/form-data>
+<h1>JS获取文件域完整路径的方法，兼容不同浏览器</h1>
+<div id="text" style="color:#f00;">212</div>
+<input type="file" id="file" onchange="filechange(this)" />
+ </form>
+<script type="text/javascript" src="view/lib/jquery/jquery-1.11.3.js"></script>
+
+<script type="text/javascript">
+/*function getvl(obj) {
+    debugger;
+     var file_url="";
+         if(obj)
+     {  
+         if (window.navigator.userAgent.indexOf("MSIE")>=1)
+        {
+            obj.select();
+            return document.selection.createRange().text;
+        }   
+         else if(window.navigator.userAgent.indexOf("Firefox")>=1)
+         {
+            if(obj.files)
+             {
+                    
+                    return obj.files.item(0).getAsDataURL();
+              }
+              file_url = obj.value;
+              console.log(file_url);
+         }
+        file_url = obj.value;
+
+    }
+             console.log(file_url);
+
+}
+*/
+
+ function filechange(obj)
+
+    {
+        var Sys = {};
+        var ua = navigator.userAgent.toLowerCase();
+        var s;
+        (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
+        (s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+        (s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+        (s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+        (s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+        var file_url = "";
+        if (Sys.ie <= "6.0") {
+            //ie5.5,ie6.0
+            file_url = obj.value;
+            alert(filePath);
+        } else if (Sys.ie >= "7.0") {
+            //ie7,ie8
+            obj.select();
+            file_url = document.selection.createRange().text;
+            alert(filePath);
+        } else if (Sys.firefox) {
+            //fx
+            //file_url = document.getElementById("file").files[0].getAsDataURL();//获取的路径为FF识别的加密字符串
+            file_url = readFileFirefox(obj);
+            alert(filePath);
+        } else if (Sys.chrome) {
+            file_url = obj.value;
+        }
+        filePath = file_url;
+        alert(filePath);
+        console.log($("#file").val());
+    }
+</script>
+</script>
+</body>
+</html>

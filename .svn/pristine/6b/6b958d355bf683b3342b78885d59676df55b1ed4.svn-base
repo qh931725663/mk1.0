@@ -1,0 +1,15 @@
+package com.haaa.cloudmedical.dao;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class SurveyDao extends BaseTemplateDao{
+	
+	public <T>T select(String sql,Object[] args,Class<T> cla){
+		T value=this.jdbcTemplate.queryForObject(sql, args, cla);
+		return value;
+	}
+
+}

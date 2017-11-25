@@ -1,0 +1,181 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/pagination/css/pagination.css">
+<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>管理员列表</title>
+<style type="text/css">
+.table td {
+	text-align: center;
+}
+
+.table a {
+	/* text-decoration: underline; */
+}
+.lable_style{
+	display: inline-block;
+	width: 80px;
+	text-align: left;
+}
+.li_style{
+	width:260px;
+	margin-bottom:10px;
+}
+.li_style2{
+	width:620px;
+	margin-bottom:10px;
+}
+.select_style{
+	height:31px;
+}
+.collection-baseinfo input,select{
+	width:150px;
+}
+.ul_style{
+	margin-bottom:10px;
+}
+.btn_style{
+	margin-left:10px;
+}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		健康档案 <span class="c-gray en">&gt;</span>&nbsp;&nbsp;列表 <a
+			class="btn btn-success radius r"
+			style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<form id="form">
+			<div class="collection-baseinfo">
+				<ul class="f-l ul_style"> 
+					<li class="f-l li_style">
+						<label class="lable_style">姓名：</label>
+						<input type="text" class="input-text radius" name="user_name"/>
+					</li>
+					<li class="f-l li_style">
+						<label class="lable_style">身份证号：</label>
+						<input type="text" class="input-text radius" name="user_card"/>
+					</li>
+					<li class="f-l li_style">
+						<label class="lable_style">慢病类型：</label>
+						<select class="radius select_style" data-type="chronic" name="chronic_code">
+							<option value="">全部</option>
+						</select>
+					</li>
+					<li class="f-l li_style">
+						<label class="lable_style">性别：</label>
+						<select class="radius select_style" data-type="sex" name="user_sex">
+							<option value="">全部</option>
+						</select>
+					</li>
+					<li class="f-l li_style">
+						<label class="lable_style">风险指数：</label>
+						<select class="radius select_style" name="">
+							<option value="">全部</option>
+						</select>
+					</li>
+					<li class="f-l li_style">
+						<label class="lable_style">工作强度：</label>
+						<select class="radius select_style" data-type="work" name="user_work">
+							<option value="">全部</option>
+						</select>
+					</li>
+					<li class="f-l li_style">
+						<label class="lable_style">完成状态：</label>
+						<select class="radius select_style" name="is_end">
+							<option value="">全部</option>
+							<option value="102">进行中</option>
+							<option value="101">已完成</option>
+						</select>
+					</li>
+					<li class="f-l li_style2">
+						<label class="lable_style">更新日期：</label>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate">
+						<button type="button" class="btn btn-success btn_style radius"><i class="Hui-iconfont">&#xe665;</i>&nbsp;查询</button>
+						<button type="button" class="btn btn-danger btn_style radius"><i class="Hui-iconfont">&#xe72a;</i>&nbsp;清空</button>
+					</li>
+				</ul>
+				
+			</div>
+		</form>
+		<table
+			class="table table-border table-bordered table-bg table-hover table-striped">
+			<thead>
+				<tr class="text-c">
+					<th>序号</th>
+					<th>姓名</th>
+					<th>身份证</th>
+					<th>手机号</th>
+					<th>风险指数</th>
+					<th>慢病类型</th>
+					<th>性别</th>
+					<th>年龄</th>
+					<th>婚姻状况</th>
+					<th>工作强度</th>
+					<th>管理计划完成状态</th>
+					<th>更新日期</th>
+					<th>管理计划</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+		<div id="Pagination" class="pagination"></div>
+	</div>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<script type="text/javascript" src="js/plan-list.js"></script>
+	<script type="text/javascript">
+
+</script>
+</body>
+</html>

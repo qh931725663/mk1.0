@@ -1,0 +1,405 @@
+package com.haaa.cloudmedical.app.user.service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.PatientListDTO;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.common.util.TokenUtil;
+import com.haaa.cloudmedical.dao.DoctorDao;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+public class DoctorAppService {
+	
+	@Autowired
+	private DoctorDao dao;
+	
+	public Object getInfoById(String doctor_id){
+		Object doctor = dao.getObject(doctor_id);
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_name,a.user_card,a.user_sex,a.user_age,c.hosp_order_id,d.hosp_name,"
+			+ "b.department_order_id,c.department_name,b.doctor_title,b.doctor_introduce,"
+			+ "concat('"+url+"',user_head_pic_upload_index) user_head_pic_upload_index from n_user a,d_doctor b,"
+			+ "k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id = c.order_id "
+			+ "and c.hosp_order_id = d.order_id and a.user_type= ? and a.user_id = ? ";
+		doctor = dao.selectOne(sql, Constant.USER_TYPE_DOCTOR,doctor_id);
+		dao.setObject(doctor_id, doctor);
+		
+		return doctor;
+	}
+	
+	public ResponseDTO login(String user_phone,String user_pwd){
+		ResponseDTO dto = new ResponseDTO();
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		StringBuilder sql = new StringBuilder("select * from n_user a where a.user_type = ? and a.user_phone = ?");
+		List<Map<String,Object>> list = dao.select(sql.toString(),Constant.USER_TYPE_DOCTOR,user_phone);
+		if(list.size()<=0){
+			dto.setErrmsg("手机号码不存在！");
+		}else{
+			sql.setLength(0);
+			sql.append("select * from n_user a where a.user_type = ? and a.user_phone = ? and a.user_pwd = ?");
+			list = dao.select(sql.toString(), Constant.USER_TYPE_DOCTOR,user_phone,user_pwd);
+			if(list.size()<=0){
+				dto.setErrmsg("密码错误！");
+			}else{
+				sql.setLength(0);
+				sql.append("select a.user_id,a.user_name,a.user_card,a.user_sex,a.user_age,c.hosp_order_id,d.hosp_name,"
+						+ "b.department_order_id,c.department_name,b.doctor_title,b.doctor_introduce,"
+						+ "concat('"+url+"',user_head_pic_upload_index) user_head_pic_upload_index from n_user a,d_doctor b,"
+						+ "k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id = c.order_id "
+						+ "and c.hosp_order_id = d.order_id and a.user_type= ? and a.user_phone = ? and a.user_pwd = ? ");
+				list = dao.select(sql.toString(), Constant.USER_TYPE_DOCTOR,user_phone,user_pwd);
+				if(list.size()>0){
+					Map<String,Object> doctor = list.get(0);
+					String token = TokenUtil.generateToken(doctor.get("user_id").toString(), user_phone);
+					dto.setData(doctor);
+					dto.setFlag(true);
+					dto.setLoginToken(token);
+					dao.setObject(doctor.get("user_id").toString(), doctor);
+					dao.setObject(token, token);
+				}
+			}
+		}
+		return dto;
+	}
+	
+	public ResponseDTO update(User user,Doctor doctor){
+		ResponseDTO dto = new ResponseDTO();
+		if(user.getUser_card()!=null&&!"".equals(user.getUser_card())){
+			int sex = 0;
+			String birthday = null;
+			String user_card = user.getUser_card();
+			if(user_card.length()==18){
+				birthday = user_card.substring(6, 14);
+				sex = Integer.parseInt(user_card.substring(16, 17));
+			}else if(user_card.length()==15){
+				birthday = "19"+user.getUser_card().substring(6, 12);
+				sex = Integer.parseInt(user_card.substring(14, 15));
+			}			
+			user.setUser_sex(sex%2==0?"200002":"200001");
+			user.setUser_birthday(birthday);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+			user.setUser_age(String.valueOf(LocalDate.parse(birthday,formatter).until(LocalDate.now(),ChronoUnit.YEARS)));				
+		}else{
+			dto.setErrmsg("身份证号码为空！");
+		}
+		try{
+			dao.update(user, "n_user");
+			doctor.setDoctor_id(user.getUser_id());
+			doctor.setDoctor_name(user.getUser_name());
+			try{
+				dao.update(doctor, "d_doctor");
+				String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+				String sql = "select a.user_id,a.user_name,a.user_card,user_sex,a.user_age,c.hosp_order_id,d.hosp_name,"
+						+ "b.department_order_id,c.department_name,b.doctor_title,b.doctor_introduce,"
+						+ "concat('"+url+"',user_head_pic_upload_index) user_head_pic_upload_index from n_user a,d_doctor b,"
+						+ "k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id = c.order_id "
+						+ "and c.hosp_order_id = d.order_id and a.user_type= ? and a.user_id = ? ";
+				Map<String,Object> doctor_after = dao.selectOne(sql, Constant.USER_TYPE_DOCTOR,user.getUser_id());
+				dao.setObject(user.getUser_id(), doctor_after);
+				dto.setFlag(true);
+				dto.setData(doctor_after);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
+	public ResponseDTO getPatientList(String doctor_id){
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		url="";
+		String sql = "select a.user_id,a.user_name,a.user_phone,a.user_card,"
+				+ "ifnull(a.user_sex,if(substr(a.user_card,17,1),200002,200001)) user_sex,"
+				+ "year(from_days(datediff(now(),ifnull(a.user_birthday,substr(a.user_card,7,8))))) user_age,a.user_height,"
+				+ "a.user_weight,a.user_blood,concat('"+url+"',a.user_head_pic_upload_index) user_head_pic_upload_index,"
+				+ "substr(getpy(a.user_name),1,1) type,a.ahdi_value,a.ahdi_level,a.mrs_value,a.mrs_level,a.chronic "
+				+ "from n_user a,d_patient b where a.user_id = b.patient_id and b.doctor_id = ? ";
+		ResponseDTO dto = new ResponseDTO();
+		List<Map<String,Object>> patientList = dao.select(sql, doctor_id);
+		for (Map<String, Object> map : patientList) {
+			map.forEach((k,v)->{
+				map.putIfAbsent(k, "");
+			});
+		}
+		
+		List<PatientListDTO> mailList = new ArrayList<>();
+		Map<String,List<Map<String,Object>>> result = patientList
+				.stream()
+				.sorted((m1,m2)->String.valueOf(m1.get("type")).compareTo(String.valueOf(m2.get("type"))))
+				.collect(Collectors.groupingBy(m->String.valueOf(m.get("type"))));
+		result.forEach((k,v)->{
+			PatientListDTO pld = new PatientListDTO();
+			pld.setType(k);
+			pld.setList(v);
+			mailList.add(pld);
+		});
+		dto.setData(mailList);
+		dao.setList(doctor_id, mailList, 2);
+		dto.setFlag(true);
+		return dto;
+	}
+	
+	public ResponseDTO getPatientListByCondition(String doctor_id,String ahdi_level,String chronic){
+		List<PatientListDTO> patientList = dao.getList(doctor_id);
+		List<PatientListDTO> patientListAfter = new ArrayList<>();
+		for (PatientListDTO dto : patientList) {
+			List<Map<String,Object>> list = dto.getList();
+			PatientListDTO dtoAfter = new PatientListDTO();
+			List<Map<String,Object>> result = new ArrayList<>();
+			for (Map<String, Object> map : list) {
+				boolean flag1 = false;
+				boolean flag2 = false;
+				if(ahdi_level!=null&&!"".equals(ahdi_level)){
+					Object value = map.get("ahdi_level");
+					if(value!=null){
+						if(value.toString().equals(ahdi_level)){
+							flag1 = true;
+						}
+					}
+				}else{
+					flag1=true;
+				}
+				if(chronic!=null&&!"".equals(chronic)){
+					Object value = map.get("chronic");
+					if(value!=null){
+						if(value.toString().contains(chronic)){
+							flag2 = true;
+						}
+					}
+				}else{
+					flag2=true;
+				}
+				if(flag1&&flag2){
+					result.add(map);
+				}
+			}
+			if(result.size()>0){
+				dtoAfter.setType(dto.getType());
+				dtoAfter.setList(result);
+				patientListAfter.add(dtoAfter);
+			}
+		}
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(patientListAfter);
+		return dto;
+	}
+	
+	public ResponseDTO addPatient(String doctor_id,String user_name,String user_phone,String user_card){
+		String sql = "select * from n_user a,d_patient b where a.user_id = b.patient_id and (a.user_phone = ? or a.user_card = ? )";
+		List<Map<String,Object>> list = dao.select(sql, user_phone,user_card);
+		ResponseDTO dto = new ResponseDTO();
+		if(list.size()==2){
+			System.out.println("请先绑定手机号码和身份证号！");
+			dto.setErrmsg("请先绑定手机号码和身份证号！");
+		}else{
+			if(list.size()==1){
+				Map<String,Object> member = list.get(0);
+				if(member.get("doctor_id")!=null&&!"".equals(member.get("doctor_id").toString())){
+					System.out.println("该账号已与其他家庭医生绑定！");
+					dto.setErrmsg("该账号已与其他家庭医生绑定！");
+				}else{
+					dto = addPatientAT(doctor_id, user_name, user_phone, user_card);
+				}
+			}else{
+				dto = addPatientAT(doctor_id, user_name, user_phone, user_card);
+			}
+			if(dto.isFlag()){
+				dto = getPatientList(doctor_id);
+			}
+		}
+		return dto;
+	}
+	
+	public ResponseDTO addPatientAT(String doctor_id,String user_name,String user_phone,String user_card){
+		String initPassword = BeanUtil.getProperty("dbconfig").getString("initPassword");
+		IdcardInfoExtractor extractor = new IdcardInfoExtractor(user_card);
+		String create_date = LocalDateTime.now().toString();
+		User user = new User();
+		Patient patient = new Patient();
+		user.setUser_name(user_name);
+		user.setUser_card(user_card);
+		user.setUser_phone(user_phone);
+		user.setUser_birthday(DateUtil.DateFormat(extractor.getBirthday(), "yyyy-MM-dd"));
+		user.setUser_pwd(MD5Util.encode(initPassword));
+		user.setUser_sex(extractor.getGender()=="男"?"200001":"200002");
+		user.setUser_type(Constant.USER_TYPE_PATIENT);
+		user.setCreate_date(create_date);
+		ResponseDTO dto = new ResponseDTO();
+		try{
+			long user_id = dao.insert(user, "n_user");
+			patient.setPatient_id(String.valueOf(user_id));
+			patient.setPatient_name(user_name);
+			patient.setDoctor_id(doctor_id);
+			patient.setCreate_date(create_date);
+			try{
+				dao.insert(patient, "d_patient");
+				dto.setFlag(true);
+			}catch(Exception e){
+				System.out.println("写入d_patient表失败："+e.getMessage());
+				dao.delete("n_user", String.valueOf(user_id));
+			}
+		}catch(Exception e){
+			System.out.println("写入n_user表失败："+e.getMessage());
+		}
+		return dto;
+	}
+	
+	public ResponseDTO getPatientInfo(String patient_id){
+		String sql="select user_id,user_name,user_card,user_phone,date_format(user_birthday,'%Y-%m-%d') user_birthday,user_sex,"
+				+ "user_height,user_weight,user_blood,user_marriage,user_medicare_card,"
+				+ "user_work,user_medical_burden from n_user where user_id = ? ";
+		Map<String,Object> patient = dao.selectOne(sql, patient_id);
+		long age = LocalDate.parse(patient.get("user_birthday").toString()).until(LocalDate.now(), ChronoUnit.YEARS);
+		patient.put("user_age", age);
+		ResponseDTO dto = new ResponseDTO();
+		dto.setData(patient);
+		dto.setFlag(true);
+		return dto;		
+	}
+	
+	public ResponseDTO updatePatientInfo(User user){
+		dao.update(user, "n_user");
+		ResponseDTO dto = getPatientInfo(user.getUser_id());
+		return dto;
+	}
+	
+	public Page getNews(int pageno,int pagesize){
+		String url = BeanUtil.getProperty("dbcongfig").getString("pictureuploadhttp");
+		String sql="select a.order_id,b.user_name,concat('"+url+"',b.user_head_pic_upload_index) user_head_pic_upload_index,"
+				+ "a.title,concat('"+url+"',a.pic_index) pic_index,a.short_introduction,concat('"+url+"',a.url_index) url_index,"
+						+ "date_format(a.update_date,'%Y-%m-%d %H:%i') update_date from b_banner_news a,n_manager b "
+						+ "where a.user_id = b.user_id order by a.update_date desc";
+		Page page = dao.pageQuery(sql, pageno, pagesize);
+		return page;
+	}
+	
+	public ResponseDTO getHealthReport(String patient_id){
+		String sql = "select order_id,user_id,user_name,date_format(up_time,'%Y/%m/%d %H:%i') up_time,date_format(report_time,'%Y/%m/%d %H:%i') report_time,"
+				+ "report_type,hosp_name,report_no,report_year from medical_report where user_id = ? order by up_time desc";
+		List<Map<String,Object>> list = dao.select(sql, patient_id);
+		for (Map<String, Object> report : list) {
+			report.forEach((k,v)->{
+				if(v==null){
+					report.putIfAbsent(k, "");
+				}
+			});
+		}
+		Map<String,List<Map<String,Object>>> report = list.stream()
+				.sorted((p1,p2)->String.valueOf(p2.get("up_time")).compareTo(String.valueOf(p1.get("up_time"))))
+				.collect(Collectors.groupingBy(p->String.valueOf(p.get("report_year"))));
+		List<Map<String,Object>> result = new ArrayList<>();
+		report.forEach((k,v)->{
+			Map<String,Object> map = new HashMap<>();
+			map.put("year", k);
+			map.put("report", v);
+			result.add(map);
+		});
+		ResponseDTO dto  = new ResponseDTO();
+		dto.setData(result);
+		dto.setFlag(true);
+		return dto;
+	}
+	
+	public ResponseDTO getHealthReport(String order_id,String report_type){
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "";
+		if(report_type.equals(Constant.CHECK_REPORT)){
+			sql = "select a.order_id,a.user_name,date_format(a.check_time,'%Y-%m-%d') check_time,a.hosp_name,a.report_no from p_check_report a where a.order_id = ? ";
+		}
+		else if(report_type.equals(Constant.CLINIC_REPORT)){
+			sql="select a.order_id,date_format(a.clinic_report_time,'%Y-%m-%d') clinic_report_time,a.user_name,a.hosp_name,a.department_name,a.doctor_name,"
+					+ "a.clinic_report_disease,a.clinic_report_result from p_clinic_report a where a.order_id = ? ";
+		}
+		else if(report_type.equals(Constant.HOSPITAL_REPORT)){
+			sql="select a.order_id,a.patient_name,date_format(a.hospital_report_time,'%Y-%m-%d') hospital_report_time,a.hospital_report_days,a.hosp_name,a.department_name,a.doctor_name,"
+					+ "a.hospital_report_disease,a.hospital_report_result from p_hospital_report a where a.order_id = ? ";
+		}
+		else if(report_type.equals(Constant.INSURANCE_REPORT)){
+			sql="select a.order_id,(select c.user_medicare_card from n_user c where c.user_id = a.user_id) user_medicare_card,a.user_name,"
+					+ "(select c.user_card from n_user c where c.user_id = a.user_id) user_card,a.hosp_name,a.medical_insurance_type,"
+					+ "date_format(a.medical_insurance_time,'%Y-%m-%d') medical_insurance_time,a.medical_insurance_total,a.medical_insurance_reimbursement_amount,a.medical_insurance_subsidy_amount "
+					+ "from p_medical_insurance_report a where a.order_id = ? ";
+		}
+		Map<String,Object> report = dao.selectOne(sql, order_id);
+		sql="select b.pic_num,concat('"+url+"',b.medical_picture_upload) medical_picture_upload from p_picture b where b.parent_id= ? and b.pic_type = ? order by pic_num";
+		List<Map<String,Object>> picture = dao.select(sql, order_id,report_type);
+		report.put("picture", picture);
+		ResponseDTO dto  = new ResponseDTO();
+		dto.setData(report);
+		dto.setFlag(true);
+		return dto;
+	}
+	
+	public ResponseDTO saveHealthReport(CheckReport report){
+		ResponseDTO dto  = new ResponseDTO();
+		try{
+			long order_id = dao.insert(report, "p_check_report");
+			dto.setData(order_id);
+			dto.setFlag(true);
+		}catch(Exception e){
+			dto.setErrmsg("上传失败");
+		}
+		return dto;
+	}
+	public ResponseDTO saveHealthReport(ClinicReport report){
+		ResponseDTO dto  = new ResponseDTO();
+		try{
+			long order_id = dao.insert(report, "p_clinic_report");
+			dto.setData(order_id);
+			dto.setFlag(true);
+		}catch(Exception e){
+			dto.setErrmsg("上传失败");
+		}
+		return dto;
+	}
+	public ResponseDTO saveHealthReport(HospitalReport report){
+		ResponseDTO dto  = new ResponseDTO();
+		try{
+			long order_id = dao.insert(report, "p_hospital_report");
+			dto.setData(order_id);
+			dto.setFlag(true);
+		}catch(Exception e){
+			dto.setErrmsg("上传失败");
+		}
+		return dto;
+	}
+	public ResponseDTO saveHealthReport(InsuranceReport report){
+		ResponseDTO dto  = new ResponseDTO();
+		try{
+			long order_id = dao.insert(report, "p_medical_insurance_report");
+			dto.setData(order_id);
+			dto.setFlag(true);
+		}catch(Exception e){
+			dto.setErrmsg("上传失败");
+		}
+		return dto;
+	}
+	
+}

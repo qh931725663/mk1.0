@@ -1,0 +1,89 @@
+package com.haaa.cloudmedical.app.equipment.controller;
+
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.equipment.service.EarThermometerService;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+
+@RestController
+@RequestMapping({ "/ear_thermometer" })
+public class EarThermometerController {
+	@Resource
+	private EarThermometerService service;
+
+	private Logger logger = Logger.getLogger(EarThermometerController.class);
+
+	
+	@RequestMapping(value = { "/add.action" }, method = { RequestMethod.POST })
+	public InfoJson add(EquipmentUse equipmentUse,EarThermometer earThermometer, HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println("体温上传");
+		try {
+			if (earThermometer.getTemperature()!=null) {
+				infoJson = service.add(equipmentUse, earThermometer);
+			}else{
+				infoJson.setInfo("没有数据传入！！！");
+			}			
+		} catch (Exception e) {
+			logger.error("", e);
+		}        
+		return infoJson;
+	}
+	
+	
+
+	@RequestMapping(value = { "/query.action" }, method = { RequestMethod.GET })
+	public InfoJson query(Long user_id, String recent, String year_month, Integer pageno, Integer pagesize,
+			HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+			if (recent != null) {
+				infoJson = service.queryRecent(user_id);
+			}
+
+			else if (pageno != null) {
+				infoJson = service.pageQuery(user_id, year_month, pageno, pagesize);
+			}
+			System.out.println(infoJson);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping(value = { "/dataStat.action" }, method = { RequestMethod.GET })
+	public InfoJson dataStat(Long user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.dataStat(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping(value = { "/month.action" }, method = { RequestMethod.GET })
+	public InfoJson queryMonth(Long user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.queryMonth(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

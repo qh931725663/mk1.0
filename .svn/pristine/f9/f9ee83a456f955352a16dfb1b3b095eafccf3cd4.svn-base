@@ -1,0 +1,57 @@
+package com.haaa.cloudmedical.wechat.web;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.haaa.cloudmedical.wechat.kit.MessageKit;
+import com.haaa.cloudmedical.wechat.kit.SecurityKit;
+import com.haaa.cloudmedical.wechat.model.WeixinContext;
+
+@Controller
+@RequestMapping("/wx")
+public class WeixinController {
+
+    public static final String TOKEN = "fanbowen13013";
+
+    @RequestMapping(value = "/wget.action", method = RequestMethod.GET)
+    public void init(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        System.out.println("weget");
+        String signature = req.getParameter("signature");
+        String timestamp = req.getParameter("timestamp");
+        String nonce = req.getParameter("nonce");
+        String echostr = req.getParameter("echostr");
+        String[] arrs = { WeixinController.TOKEN, nonce, timestamp };
+        Arrays.sort(arrs);
+        StringBuffer sb = new StringBuffer();
+        for (String a : arrs) {
+            sb.append(a);
+        }
+        String sha1 = SecurityKit.sha1(sb.toString());
+        if (sha1.equals(signature)) {
+            resp.getWriter().println(echostr);
+        }
+    }
+
+    @RequestMapping(value = "/wget.action", method = RequestMethod.POST)
+    public void getInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Map<String, String> msgMap = MessageKit.reqMsg2Map(req);
+        String respCon = MessageKit.handlerMsg(msgMap);
+        resp.setContentType("application/xml;charset=UTF-8");
+        resp.setCharacterEncoding("UTF-8");
+        System.out.println(respCon);
+        resp.getWriter().write(respCon);
+    }
+
+    @RequestMapping("/at")
+    public void testAccessToken(HttpServletResponse resp) throws IOException {
+        resp.getWriter().println(WeixinContext.getAccessToken());
+    }
+}

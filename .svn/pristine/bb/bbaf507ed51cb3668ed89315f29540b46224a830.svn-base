@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>设备检测报告</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <style>
+        .equipment-box{display: -webkit-flex;display: flex;-webkit-flex-wrap: wrap;flex-wrap: wrap;width: 100%;}
+        .flex-item {width: 27%;margin: 10px;text-align: center;font-size: 15px;color: #2E2E2E;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="equipment-box">
+        <li class="flex-item">
+            <a href="http://192.168.1.104:8082/workspace/mkh1.0/WebRoot/system/view/wechat/myHealth/equipmentReport/electronic-sphygmomanomete.html">
+                <img src="../../common/image/myhealth/equipment_01.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>电子血压计</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_02.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>血糖仪</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_03.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>耳温仪</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_04.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>尿液分析仪</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_05.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>脉搏血氧仪</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_06.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>肺活量计</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_07.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>便携心电计</span>
+            </a>
+        </li>
+        <li class="flex-item">
+            <a href="#">
+                <img src="../../common/image/myhealth/equipment_08.png" alt="" style="width: 100px;margin-bottom: 12px;"/>
+                <span>腕表</span>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

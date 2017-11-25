@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>App下载</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../common/css/reset.css"/>
+    <link rel="stylesheet" href="../common/css/main.css"/>
+    <style>
+        .down-app{display: block;width: 316px;font-size:15px;height: 46px;background: #DA281F;color: #fff;border-radius: 5px;text-align:center;line-height: 46px; }
+        .btn-down{margin-top: 115px;}
+    </style>
+</head>
+<body style="background: #F0F0F0;">
+<div class="container">
+    <p class="line-align" style="margin-top: 92px;">
+        <img src="../common/image/aboutWe/logo.png" alt="" style="width: 35%;"/>
+    </p>
+    <p class="line-align btn-down">
+        <a class="down-app" href="#">立即下载</a>
+    </p>
+
+</div>
+<script src="../common/js/jquery-1.11.3.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //判断是安卓还是苹果机器
+        var u = navigator.userAgent;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if(isAndroid==true){
+            $(".down-app").attr({"href":"http://a.app.qq.com/o/simple.jsp?pkgname=com.meikanghui.haaa"});
+        }
+        if(isiOS==true){
+            $(".down-app").attr({"href":"https://itunes.apple.com/cn/app/id1267768568?mt=8"});
+        }
+    });
+
+
+</script>
+</body>
+</html>

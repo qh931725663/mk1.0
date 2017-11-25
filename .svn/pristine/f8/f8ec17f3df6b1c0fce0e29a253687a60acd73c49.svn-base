@@ -1,0 +1,341 @@
+package com.haaa.cloudmedical.common.util;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.entity.Electrocardiograph;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+public class DataTransfromUtil {
+
+	public static void urineTestTrans(UrineTest urineTest, Integer check_data_source) throws Exception {
+
+		System.out.println(urineTest);
+		if (urineTest.getUro() < 0 || urineTest.getUro() > 3) {
+			throw new Exception("uro输入越界");
+		}
+		switch (urineTest.getUro()) {
+		case 0:
+			urineTest.setUro(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setUro(Constant.URINEPLUS);
+			break;
+		case 2:
+			urineTest.setUro(Constant.URINETWOPLUS);
+			break;
+		case 3:
+			urineTest.setUro(Constant.URINETHREEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (urineTest.getBld() < 0 || urineTest.getBld() > 4) {
+			throw new Exception("bld输入越界");
+		}
+
+		switch (urineTest.getBld()) {
+		case 0:
+			urineTest.setBld(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setBld(Constant.URINEPLUSMINUS);
+			break;
+		case 2:
+			urineTest.setBld(Constant.URINEPLUS);
+			break;
+		case 3:
+			urineTest.setBld(Constant.URINETWOPLUS);
+			break;
+		case 4:
+			urineTest.setBld(Constant.URINETHREEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (urineTest.getBil() < 0 || urineTest.getBil() > 3) {
+			throw new Exception("bil输入越界");
+		}
+		switch (urineTest.getBil()) {
+		case 0:
+			urineTest.setBil(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setBil(Constant.URINEPLUS);
+			break;
+		case 2:
+			urineTest.setBil(Constant.URINETWOPLUS);
+			break;
+		case 3:
+			urineTest.setBil(Constant.URINETHREEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (urineTest.getKet() < 0 || urineTest.getKet() > 3) {
+			throw new Exception("ket输入越界");
+		}
+		switch (urineTest.getKet()) {
+		case 0:
+			urineTest.setKet(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setKet(Constant.URINEPLUS);
+			break;
+		case 2:
+			urineTest.setKet(Constant.URINETWOPLUS);
+			break;
+		case 3:
+			urineTest.setKet(Constant.URINETHREEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (urineTest.getGlu() < 0 || urineTest.getGlu() > 5) {
+			throw new Exception("glu输入越界");
+		}
+		switch (urineTest.getGlu()) {
+		case 0:
+			urineTest.setGlu(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setGlu(Constant.URINEPLUSMINUS);
+			break;
+		case 2:
+			urineTest.setGlu(Constant.URINEPLUS);
+			break;
+		case 3:
+			urineTest.setGlu(Constant.URINETWOPLUS);
+			break;
+		case 4:
+			urineTest.setGlu(Constant.URINETHREEPLUS);
+			break;
+		case 5:
+			urineTest.setGlu(Constant.URINEFOURPLUS);
+		default:
+			break;
+		}
+
+		if (urineTest.getPro() < 0 || urineTest.getPro() > 4) {
+			throw new Exception("pro输入越界");
+
+		}
+		switch (urineTest.getPro()) {
+		case 0:
+			urineTest.setPro(Constant.URINEMINUS);
+		case 1:
+			urineTest.setPro(Constant.URINEPLUSMINUS);
+			break;
+		case 2:
+			urineTest.setPro(Constant.URINEPLUS);
+			break;
+		case 3:
+			urineTest.setPro(Constant.URINETWOPLUS);
+			break;
+		case 4:
+			urineTest.setPro(Constant.URINETHREEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (check_data_source % 2 == 0) {
+			if (urineTest.getPh() < 0 && urineTest.getPh() > 14) {
+				throw new Exception("ph输入越界");
+			}
+		} else {
+			if (urineTest.getPh() <0 || urineTest.getPh() > 4) {
+				throw new Exception("ph输入越界");
+			}
+			switch (urineTest.getPh().intValue()) {
+			case 0:
+				urineTest.setPh(5f);
+				break;
+			case 1:
+				urineTest.setPh(6f);
+				break;
+			case 2:
+				urineTest.setPh(7f);
+				break;
+			case 3:
+				urineTest.setPh(8f);
+				break;
+			case 4:
+				urineTest.setPh(9f);
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (urineTest.getLeu() < 0 || urineTest.getLeu() > 4) {
+			throw new Exception("leu输入越界");
+		}
+		switch (urineTest.getLeu()) {
+		case 0:
+			urineTest.setLeu(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setLeu(Constant.URINEPLUSMINUS);
+			break;
+		case 2:
+			urineTest.setLeu(Constant.URINEPLUS);
+			break;
+		case 3:
+			urineTest.setLeu(Constant.URINETWOPLUS);
+			break;
+		case 4:
+			urineTest.setLeu(Constant.URINETHREEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (urineTest.getVc() < 0 || urineTest.getVc() > 4) {
+			throw new Exception("leu输入越界");
+		}
+		switch (urineTest.getVc()) {
+		case 0:
+			urineTest.setVc(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setVc(Constant.URINEPLUSMINUS);
+			break;
+		case 2:
+			urineTest.setVc(Constant.URINEPLUS);
+			break;
+		case 3:
+			urineTest.setVc(Constant.URINETWOPLUS);
+			break;
+		case 4:
+			urineTest.setVc(Constant.URINETHREEPLUS);
+		default:
+			break;
+		}
+
+		if (urineTest.getNit() < 0 || urineTest.getNit() > 1) {
+			throw new Exception("nit输入越界");
+		}
+		switch (urineTest.getNit()) {
+		case 0:
+			urineTest.setNit(Constant.URINEMINUS);
+			break;
+		case 1:
+			urineTest.setNit(Constant.URINEPLUS);
+			break;
+		default:
+			break;
+		}
+
+		if (check_data_source % 2 == 0) {
+			if (urineTest.getSg() < 0 || urineTest.getSg() > 3) {
+
+			}
+		} else {
+			if (urineTest.getSg() < 0 || urineTest.getSg() > 5) {
+				throw new Exception("leu输入越界");
+			}
+			switch (urineTest.getSg().intValue()) {
+			case 0:
+				urineTest.setSg(Constant.URINESG[0]);
+			case 1:
+				urineTest.setSg(Constant.URINESG[1]);
+				break;
+			case 2:
+				urineTest.setSg(Constant.URINESG[2]);
+				break;
+			case 3:
+				urineTest.setSg(Constant.URINESG[3]);
+				break;
+			case 4:
+				urineTest.setSg(Constant.URINESG[4]);
+				break;
+			case 5:
+				urineTest.setSg(Constant.URINESG[5]);
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
+
+	public static void electroTrans(Electrocardiograph electrocardiograph) throws Exception {
+		if (electrocardiograph.getResult() < 0 || electrocardiograph.getResult() > 13) {
+			throw new Exception("输入越界");
+		}
+		switch (electrocardiograph.getResult()) {
+		case 0:
+			electrocardiograph.setResult(Constant.HEARTRESULT[0]);
+			break;
+		case 1:
+			electrocardiograph.setResult(Constant.HEARTRESULT[1]);
+			break;
+		case 2:
+			electrocardiograph.setResult(Constant.HEARTRESULT[2]);
+			break;
+		case 3:
+			electrocardiograph.setResult(Constant.HEARTRESULT[3]);
+			break;
+		case 4:
+			electrocardiograph.setResult(Constant.HEARTRESULT[4]);
+			break;
+		case 5:
+			electrocardiograph.setResult(Constant.HEARTRESULT[5]);
+			break;
+		case 6:
+			electrocardiograph.setResult(Constant.HEARTRESULT[6]);
+			break;
+		case 7:
+			electrocardiograph.setResult(Constant.HEARTRESULT[7]);
+			break;
+		case 8:
+			electrocardiograph.setResult(Constant.HEARTRESULT[8]);
+			break;
+		case 9:
+			electrocardiograph.setResult(Constant.HEARTRESULT[9]);
+			break;
+		case 10:
+			electrocardiograph.setResult(Constant.HEARTRESULT[10]);
+			break;
+		case 11:
+			electrocardiograph.setResult(Constant.HEARTRESULT[11]);
+			break;
+		case 12:
+			electrocardiograph.setResult(Constant.HEARTRESULT[12]);
+			break;
+		case 13:
+			electrocardiograph.setResult(Constant.HEARTRESULT[13]);
+			break;
+		default:
+			break;
+		}
+	}
+
+
+	public static Integer urineTestString2Unicode(String str){
+		switch (str) {
+		case "normal":
+			return Constant.URINEMINUS;
+		case "-":		
+			return Constant.URINEMINUS;
+		case "'+-'":
+			return Constant.URINEPLUSMINUS;
+		case "1+":
+			return Constant.URINEPLUS;
+		case "2+":
+			return Constant.URINETWOPLUS;
+		case "3+":
+			return Constant.URINETHREEPLUS;
+		case "4+":
+			return Constant.URINEFOURPLUS;
+
+		default:
+			return null;
+		}
+		
+	}
+
+}

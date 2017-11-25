@@ -1,0 +1,533 @@
+package com.haaa.cloudmedical.app.user.controller;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.user.service.UserAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.IdCard;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.common.util.redis.RedisCacheUtil;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+import com.taobao.api.ApiException;
+import com.taobao.api.DefaultTaobaoClient;
+import com.taobao.api.TaobaoClient;
+import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
+import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+
+/**
+ * 
+ * @author James
+ * 
+ */
+
+@Controller
+@RequestMapping("/user-app")
+public class UserAppController {
+
+	@Autowired
+	private UserAppService service;
+
+	@Autowired
+	private CommonUserService common;
+
+	@Autowired
+	public RedisCacheUtil<Object> redis;
+
+	private Logger logger = Logger.getLogger(UserAppController.class);
+
+	/**
+	 * 生成验证表达式
+	 * 
+	 * @param user_phone
+	 * @return
+	 */
+	@RequestMapping("/createNum.action")
+	@ResponseBody
+	public ResponseDTO createNum(String user_phone) {
+		Random random = new Random();
+		int[] nums = { random.nextInt(100), random.nextInt(100) };
+		redis.setCacheObject("validate_" + user_phone, String.valueOf(nums[0] + nums[1]));
+		Map<String, String> map = new HashMap<>();
+		map.put("formula", nums[0] + " + " + nums[1] + " = ?");
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(map);
+		return dto;
+	}
+
+	/**
+	 * 校验表达式结果
+	 * 
+	 * @param user_phone
+	 * @param result
+	 * @param op_type
+	 * @return
+	 */
+	@RequestMapping("/validateNum.action")
+	@ResponseBody
+	public ResponseDTO validateNum(String user_phone, String result, String op_type) {
+		ResponseDTO dto = new ResponseDTO();
+		if (result != null && result.length() > 0) {
+			Object validate = redis.getCacheObject("validate_" + user_phone);
+			if (validate != null) {
+				if (result.equals(validate.toString())) {
+					redis.deleteCache("validate_" + user_phone);
+					dto = sendMessage(user_phone, op_type);
+				} else {
+					dto.setErrmsg("输入有误");
+				}
+			} else {
+				dto.setErrmsg("手机号码不正确");
+			}
+		} else {
+			dto.setErrmsg("结果为空");
+		}
+		return dto;
+	}
+
+	/**
+	 * 获取验证码
+	 * 
+	 * @param user_phone
+	 * @param 前置条件op_type
+	 *            1:手机号码不存在 2:手机号码已存在 3:手机号码存在或者不存在
+	 * @return
+	 */
+	@RequestMapping("/sendMessage.action")
+	@ResponseBody
+	public ResponseDTO sendMessage(String user_phone, String op_type) {
+		String errmsg = "";
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = this.contain(user_phone);
+		if (op_type.equals("1")) {
+			if (flag) {
+				errmsg = "该号码已注册！";
+				dto.setErrmsg(errmsg);
+				logger.error(user_phone + ":" + errmsg);
+				return dto;
+			}
+		} else if (op_type.equals("2")) {
+			if (!flag) {
+				errmsg = "该号码不存在！";
+				dto.setErrmsg(errmsg);
+				logger.error(user_phone + ":" + errmsg);
+				return dto;
+			}
+		} else if (op_type.equals("3")) {
+
+		}
+
+		long validate = Math.round((Math.random() * 9 + 1) * 100000);
+		String url = Constant.MESSAGE_URL;
+		String appkey = Constant.MESSAGE_APPKEY;
+		String secret = Constant.MESSAGE_SECRET;
+		TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
+		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
+		req.setSmsType("normal");
+		req.setSmsFreeSignName(Constant.MESSAGE_SIGN_NAME);
+		req.setSmsParamString("{'code':'" + validate + "','time':'2'}");
+		req.setRecNum(user_phone);
+		req.setSmsTemplateCode(Constant.MESSAGE_TEMPLATE_CODE);
+		AlibabaAliqinFcSmsNumSendResponse rsp = null;
+		try {
+			rsp = client.execute(req);
+			if (rsp.isSuccess()) {
+				redis.setCacheObject(user_phone, String.valueOf(validate)); // 验证码有效期120s
+				redis.expire(user_phone, 120);
+				dto.setFlag(true);
+			}else{
+				dto.setErrmsg(rsp.getSubMsg());
+				logger.error(rsp.getSubMsg());
+			}
+		} catch (ApiException e) {
+			dto.setErrmsg("验证码发送失败。");
+			logger.error("发送验证码失败：" + e.getMessage());
+		}
+		return dto;
+	}
+
+	/**
+	 * 检验验证码
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @param validate
+	 * @return
+	 */
+	public boolean validate(String user_phone, String validate) {
+		boolean flag = false;
+		Object validate_redis = redis.getCacheObject(user_phone);
+		if (validate_redis != null && validate_redis.toString().length() > 0) {
+			if (validate.equals(validate_redis.toString()))
+				flag = true;
+		}
+		return flag;
+	}
+
+	/**
+	 * 新用户注册
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @param validate
+	 * @return
+	 */
+	@RequestMapping("/register.action")
+	@ResponseBody
+	public Object register(String user_phone, String user_pwd, String mainland, String validate) {
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = this.validate(user_phone, validate);
+		if (flag) {
+			try {
+				dto = service.register(user_phone, MD5Util.encode(user_pwd), mainland);
+			} catch (Exception e) {
+				dto.setErrmsg("注册失败");
+				logger.error("注册失败", e);
+			}
+		} else {
+			dto.setErrmsg("验证码错误");
+			logger.error(user_phone + ":" + "验证码错误");
+		}
+		return dto;
+	}
+
+	/**
+	 * 用户登录
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public Object login(String account, String user_pwd, String os_type) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto = service.login(account, MD5Util.encode(user_pwd), os_type);
+		} catch (Exception e) {
+			dto.setErrmsg("账号或密码错误");
+			logger.debug("账号或密码错误",e);
+		}
+		return dto;
+	}
+
+	/**
+	 * 用户退出登录
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/logout.action")
+	@ResponseBody
+	public void logout(String loginToken) {
+		redis.deleteCache(loginToken);
+	}
+
+	/**
+	 * 保存或完善用户基本信息
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/updateUser.action")
+	@ResponseBody
+	public Object save(User user, String doctor_id) {
+		ResponseDTO dto = new ResponseDTO();
+		Patient patient = new Patient();
+		patient.setPatient_name(user.getUser_name());
+		patient.setDoctor_id(doctor_id);
+		
+		if(user.getMainland().equals("1")){
+			String user_card = user.getUser_card()==null?null:user.getUser_card().trim().toUpperCase();
+			if (user_card != null && user_card.length() > 0) {
+				IdCard card = IdCard.of(user_card);
+				if (card.flag) {
+					user.setUser_age(card.getAge() + "");
+					user.setUser_birthday(card.getBirthday());
+					user.setUser_sex(card.getSex() == 1 ? "200001" : "200002");
+				} else {
+					dto.setErrmsg("身份证不合法");
+					logger.debug("身份证不合法");
+					return dto;
+				}
+			}
+		}else if(user.getMainland().equals("0")){
+			String user_birthday =user.getUser_birthday();
+			if(user_birthday!=null){
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				long age =  LocalDate.parse(user_birthday.toString(),formatter).until(LocalDate.now(), ChronoUnit.YEARS);
+				user.setUser_age(age+"");
+			}
+		}
+		
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			user.setUser_id(user_map.get("user_id").toString());
+			patient.setPatient_id(user.getUser_id());
+			try {
+				dto = service.updatePatientInfo(user, patient);
+			} catch (Exception e) {
+				logger.error("更新失败", e);
+				dto.setErrmsg("更新失败");
+			}
+			
+		}
+		return dto;
+	}
+
+	/**
+	 * 绑定身份证和手机号
+	 * 
+	 * @param user_phone
+	 * @param user_card
+	 * @param validate
+	 * @return
+	 */
+	@RequestMapping("/bind.action")
+	@ResponseBody
+	public Object bind(String user_phone, String user_card, String validate) {
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = validate(user_phone, validate);
+		if (flag) {
+			try {
+				dto = service.bind(user_phone, user_card);
+			} catch (Exception e) {
+				dto.setErrmsg("绑定失败");
+				logger.error("绑定失败", e);
+			}
+		} else {
+			dto.setErrmsg("验证码错误!");
+			logger.debug("验证码错误");
+		}
+		return dto;
+	}
+
+	/**
+	 * 获取用户基本信息
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/getUserInfo.action")
+	@ResponseBody
+	public ResponseDTO getUser() {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String user_id = user_map.get("user_id").toString();
+			Map<String, Object> patientInfo = service.getPatientInfo(user_id);
+			dto.setData(patientInfo);
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+
+	/**
+	 * 验证用户登录状态 1:Android 2:IOS 检验系统是否需要更新
+	 * 
+	 * @param loginToken
+	 * @param verson
+	 * @param os_type
+	 * @return
+	 */
+	@RequestMapping("/isLogin.action")
+	@ResponseBody
+	public Map<String, Object> validateLogin(String loginToken, String verson, String os_type, String user_type) {
+		Map<String, Object> map = new HashMap<>();
+
+		// 验证是否已登陆
+		if (loginToken != null && loginToken.toString().length() > 0) {
+			Map<String, Object> validate = redis.getCacheMap(loginToken);
+			if (validate != null) {
+				map.put("flag", true);
+			} else {
+				map.put("flag", false);
+			}
+		} else {
+			map.put("flag", false);
+		}
+
+		String key_verson = "";
+		String key_url = "";
+
+		// andriod
+		if (os_type.equals("1")) {
+			if (user_type.equals(Constant.USER_TYPE_PATIENT)) {
+				key_verson = "patient_andriod_verson";
+				key_url = "download_app_patient_url";
+			} else if (user_type.equals(Constant.USER_TYPE_DOCTOR)) {
+				key_verson = "doctor_andriod_verson";
+				key_url = "download_app_doctor_url";
+			}
+			String andriod_verson = BeanUtil.getProperty("dbconfig").getString(key_verson);
+			if (!andriod_verson.equals(verson)) {
+				String download_app_url = BeanUtil.getProperty("dbconfig").getString(key_url);
+				map.put("update", 1);
+				map.put("verson", andriod_verson);
+				map.put("download_app_url", download_app_url);
+			} else {
+				map.put("update", 0);
+			}
+		}
+		// ios
+		if (os_type.equals("2")) {
+			if (user_type.equals(Constant.USER_TYPE_PATIENT)) {
+				key_verson = "patient_ios_verson";
+			} else if (user_type.equals(Constant.USER_TYPE_DOCTOR)) {
+				key_verson = "doctor_ios_verson";
+			}
+			String ios_verson = BeanUtil.getProperty("dbconfig").getString(key_verson);
+			if (!ios_verson.equals(verson)) {
+				map.put("update", 1);
+				map.put("verson", ios_verson);
+			} else {
+				map.put("update", 0);
+			}
+		}
+		return map;
+	}
+
+	/**
+	 * 用户重置密码
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/password.action")
+	@ResponseBody
+	public Object password(String user_phone, String user_pwd, String validate) {
+		boolean flag = false;
+		flag = this.validate(user_phone, validate);
+		ResponseDTO dto = new ResponseDTO();
+		if (flag) {
+			try {
+				service.password(user_phone, user_pwd);
+				dto.setFlag(true);
+			} catch (Exception e) {
+				dto.setErrmsg("重置密码失败");
+				logger.error("重置密码失败", e);
+			}
+		} else {
+			dto.setErrmsg("验证码错误");
+		}
+		return dto;
+	}
+	
+	/**
+	 * 获取Ahdi值
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getAhdiValue.action")
+	@ResponseBody
+	public Object getAhdi() {
+		double ahdi_value = 0;
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String user_id = user_map.get("user_id").toString();
+			try {
+				ahdi_value = service.getAhdiValue(user_id);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("ahdi", ahdi_value);
+		return map;
+	}
+
+	/**
+	 * 获取系统时间
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/getSysDate.action")
+	@ResponseBody
+	public String getMysqlTime() {
+		String year = service.getCurrentYear();
+		return year;
+	}
+
+	@RequestMapping("/getAhdi.action")
+	@ResponseBody
+	public Object getAhdi(String user_card, String user_phone) {
+		String ahdi_value = "";
+		Map<String, Object> map = new HashMap<>();
+		double ahdi = service.getAhdi(user_phone, user_card);
+		if (ahdi != -1) {
+			if (ahdi >= 0 && ahdi < 2.5)
+				ahdi_value = "高";
+			else if (ahdi >= 2.5 && ahdi < 5)
+				ahdi_value = "中高";
+			else if (ahdi >= 5 && ahdi < 7.5)
+				ahdi_value = "中";
+			else if (ahdi >= 7.5 && ahdi < 10)
+				ahdi_value = "低";
+		}
+		map.put("ahdi", ahdi_value);
+		return map;
+	}
+
+	/**
+	 * 检验手机号码是否已存在
+	 * 
+	 * @param user_phone
+	 * @return
+	 */
+	public boolean contain(String user_phone) {
+		boolean flag = false;
+		int size = service.countByPhone(user_phone);
+		if (size > 0)
+			flag = true;
+		return flag;
+	}
+
+	/**
+	 * 检验身份证号码是否已存在
+	 * 
+	 * @param user_phone
+	 * @return
+	 */
+	@RequestMapping("/checkUserCard.action")
+	@ResponseBody
+	public boolean checkUserCard(String user_card) {
+		boolean flag = false;
+		user_card = user_card==null?null:user_card.trim().toUpperCase();
+		int size = service.countByCard(user_card);
+		if (size > 0)
+			flag = true;
+		return flag;
+	}
+	
+	@RequestMapping("/getMrsAndChronicPlan.action")
+	@ResponseBody
+	public ResponseDTO getMrsAndChronicPlan(){
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String patient_id = user_map.get("user_id").toString();
+			dto = service.getChronicPlan(patient_id);
+		}
+		return dto;
+	}
+	
+	
+
+}

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>电子耳温计</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <style>
+        .highcharts-background,.highcharts-root,.highcharts-container{height:350px;}
+    </style>
+</head>
+<body style="background: #f0f0f0">
+<div class="container">
+    <div class="pressure-result-box" style="background: white;">
+        <div class="line-align date-show">
+            <img src="../../common/image/myhealth/test-date-1.png" style="width: 21px;margin-right: 10px;"/>
+            <span id="datetime" style="font-size: 15px;line-height: 30px;"></span>
+        </div>
+        <div class="line-align test-result-box">
+            <p style="font-size: 15px;margin-right: 15px;color: #3D3D3D;height30px;line-height: 30px;">体温测量数据<span id="temperature" style="font-size:28px;color: #3D3D3D;margin-left:20px;"></span>℃</p>
+        </div>
+    </div>
+    <div class="blood-pressure-trend" style="background: white;">
+	    <form id="from_ear_thermoment">
+	        <div class="blood-title-box">
+	            <p><h4 style="font-size: 17px;color: #3D3D3D;">体温数据走势</h4>(℃)</p>
+	            <select name="days" id="days" style="border-radius: 5px;margin-left: 10px;">
+	                <option value="7" >7天</option>
+	                <option value="30" selected>30天</option>
+	                <option value="90" >90天</option>
+	            </select>
+	        </div>
+	     </form>
+        <ul style="margin-top: 10px;">
+            <li class="line-align-left" style="margin-bottom: 5px;">
+                <span style="margin-right:8px;background: #F85E34;display: inline-block;width: 16px;height: 2px;"></span><span style="margin-right: 8px;">体温</span>
+                <span style="background: #C6E3FF;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>正常区间</span>
+            </li>
+        </ul>
+<!--        <div style="overflow: scroll;height: 250px;">
+            <canvas id="cvs" style="width:500px;"></canvas>
+        </div>-->
+        <div class="can_1" style="position: relative; width: 600px;; height: 220px">
+            <canvas id="axes" width="41" height="200" style="position: absolute; top: 5px; left: 0; z-index: 3"></canvas>
+            <div class="can_2" style="width: 100%; overflow: scroll; position: absolute; left: 41px">
+                <canvas id="cvs" width="3000" height="200" ></canvas>
+            </div>
+        </div>
+        <div class="line-align search-button">
+            <button id="blood-search-detail">查看结果详情</button>
+        </div>
+    </div>
+    <div class="blood-pressure-total" style="background: white;">
+        <p style="font-size: 17px;font-weight:600;margin-right: 15px;color: #3D3D3D;">体温数据统计</p>
+           <div class="line-align-left">
+
+
+            <ul style="margin-top: -276px;width: 30%;">
+                <li class="line-align-left" style="margin-bottom: 5px;"><span style="background: #F85E34;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>高于正常值</span></li>
+                <li class="line-align-left" style="margin-bottom: 5px;"><span style="background: #F7CE40;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>正常</span></li>
+                <li class="line-align-left"><span style="background: #4DBFEE;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>低于正常值</span></li>
+            </ul>
+            <div id="container" style="width: 70%;"></div>
+           </div>
+    <div>
+</div>
+<script src="../../common/js/jquery-1.11.3.js"></script>
+<script src="js/RGraph.common.core.js"></script>
+<script src="js/RGraph.common.dynamic.js"></script>
+<script src="js/RGraph.common.tooltips.js"></script>
+<script src="js/RGraph.drawing.yaxis.js"></script>
+<script src="js/RGraph.line.js"></script>
+<script src="js/highcharts.js"></script>
+<script src="js/exporting.js"></script>
+<script>
+$(function () {
+	//初始化加载数据
+	init();
+	//选择天数
+
+	var label_trend=[];
+	$("#days").change(function(){
+	 	data_trend.length=0;
+ 		label_trend.length=0;
+ 		
+		/*$("#cvs_rgraph_domtext_wrapper").empty();*/
+		//new RGraph.Line({data:data_trend}).draw();
+		
+		init();
+		
+	});
+	function init(){
+		var data=$("#from_ear_thermoment").serialize();
+		$.ajax({
+		    url : "../../../../../ear_thermometer-wx/graph.action",
+		    type : "post",
+		    dataType : 'json',
+		    data:data,
+		    success : function(response) {
+		    	var result=response.data;
+		    	$("#datetime").html(result.datetime);
+		    	$("#temperature").html(result.temperature);
+		    	ear_thermoment_data_trend(result);//曲线走势图显示
+		    	ear_thermoment_total(result);//环形曲线图 
+		    	
+		    	
+		   }
+		});	
+	}
+
+	var data_trend=[];
+	function ear_thermoment_data_trend(result){
+		
+		data_trend.push(result.temperatureList);
+		
+		for(aa in result.TimeList){//处理日期换行显示
+			var aa1=result.TimeList[aa].substr(5);
+			label_trend.push(aa1.replace(" ", " \n "));
+		}
+	    $(".can_1").css({'width':$(window).width()-20});
+	    $(".can_2").css({'width':$(window).width()-71});
+			console.log(label_trend);
+	    var line = new RGraph.Line({
+	        id: 'cvs',
+	        data: data_trend,
+	        options: {
+	            labels: label_trend,
+	            backgroundHbars: [
+	                [35,30,'rgba(229,242,255,0.5)'],
+	                [10,28,'rgba(255,255,255,0.8)']
+	            ],
+	
+	            tooltipsCoordsPage: true,
+	            noxaxis: true,
+	            noyaxis: true,
+	            ymin:34,
+	            ymax:42,
+	            ylabels: false,
+	            hmargin: 25,
+	            gutterLeft: 0,
+	            textAccessible: true,
+	            linewidth: 1,
+	            tickmarks:'filledcircle',
+	            backgroundGridDashed: true,
+	            shadow: null,
+	            highlightStyle: 'halo',
+	            colors: ['RGB(248,94,52)']
+	        }
+	    }).draw();
+	
+	    var yaxis = new RGraph.Drawing.YAxis({
+	        id: 'axes',
+	        x: 40,
+	        options: {
+	            max: line.max,
+	            min: line.min,
+	            colors: ['black'],
+	            textAccessible: true
+	        }
+	    }).draw();
+    
+ 	}  
+//环形图
+function ear_thermoment_total(result){
+    var cicle_data=[];
+    var high=[];
+    var normal=[];
+    var low=[];
+    high.push(result.high+'次',result.high);
+    normal.push(result.normal+'次',result.normal);
+    low.push(result.low+'次',result.low);
+    cicle_data.splice(0, cicle_data.length);
+    cicle_data.push(high,normal,low);
+
+    $('#container').highcharts({
+        tooltip: {
+            backgroundColor: 'rgba(255,255,255,0.1)',   // 背景颜色
+            borderColor: 'rgba(255,255,255,0.1)',         // 边框颜色
+            shadow: false,
+            headerFormat: '',
+            pointFormat: ''
+        },
+        title: {
+            text: ''
+        },
+        credits: {
+            enabled:false
+        },
+        exporting: {
+            enabled:false
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -30,
+                    style: {
+                        fontWeight: 'normal',
+                        color: 'white'
+                    }
+                },
+            }
+        },
+        series: [{
+            type: 'pie',
+            innerSize: '40%',
+            data: cicle_data,
+            colors: ['#f85e34','#F7CE40','#F7CE40']
+        }]
+    });
+}
+    //查看结果详情
+    $("#blood-search-detail").click(function(){
+        window.location.href="ear-thermometer-sugar-show-detail.html";
+    });
+});
+</script>
+</body>
+</html>

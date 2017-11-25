@@ -1,0 +1,159 @@
+package com.haaa.cloudmedical.platform.RemindManage.service;
+
+import java.util.Map;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.entity.ChronicManage;
+import com.haaa.cloudmedical.entity.MeasurementRemind;
+import com.haaa.cloudmedical.entity.User;
+
+public interface RemindService {
+    
+    /**
+     * 分页查询
+     * @Description: 
+     * @author 吴琪
+     * @param user
+     * @param model
+     * @param pageno
+     * @param datemin
+     * @param datemax
+     * @return 
+     * @date: 2017年6月1日 上午9:28:33
+     */
+    public Page queryPage(User user, int pageno, String datemin, String datemax);
+    
+    /**
+     * 保存测量提醒
+     * @Description: 
+     * @author 吴琪
+     * @param map 
+     * @date: 2017年6月13日 下午3:46:22
+     */
+    public long saveOrUpdateMeasure(Map<String, Object> map);
+    
+    /**
+     * 获取测量列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id 
+     * @date: 2017年6月13日 下午5:06:54
+     */
+    public Object getMeasureList(String user_id);
+    
+    /**
+     * 查询测量信息
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月14日 下午1:39:24
+     */
+    public Object getMeasure(String order_id);
+    
+    /**
+     * 测试列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id 
+     * @date: 2017年6月14日 下午5:13:39
+     */
+    public Object getMeasureTypeList(String user_id);
+    
+    /**
+     * 保存或更新用药提醒
+     * @Description: 
+     * @author 吴琪
+     * @param map
+     * @return 
+     * @date: 2017年6月15日 下午4:04:59
+     */
+    public Object saveOrUpdateMedicine(Map<String, Object> map);
+    
+    /**
+     * 获取用药列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id
+     * @return 
+     * @date: 2017年6月15日 下午4:39:54
+     */
+    public Object getMedicineList(String user_id);
+    
+    /**
+     * 获取用药提醒
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月15日 下午6:07:33
+     */
+    public Object getMedicine(String order_id);
+    
+    /**
+     * 查询药品列表
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年6月16日 上午10:10:18
+     */
+    public Object getDrugList();
+    
+    /**
+     * 查询字典
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年6月16日 上午10:13:29
+     */
+    public Object getUnicodeList();
+    
+    /**
+     * 获取医院
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年6月16日 下午2:15:20
+     */
+    public Object getHospitalList();
+    
+    /**
+     * 获取科室
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年6月16日 下午2:37:43
+     */
+    public Object getDepartList(String hosp_order_id);
+    
+    /**
+     * 保存或更新就诊提醒
+     * @Description: 
+     * @author 吴琪
+     * @param map
+     * @return 
+     * @date: 2017年6月16日 下午3:19:16
+     */
+    public Object saveOrUpdateDoctor(Map<String, Object> map);
+    
+    /**
+     * 查询就诊列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id
+     * @return 
+     * @date: 2017年6月16日 下午3:22:38
+     */
+    public Object getDoctorList(String user_id);
+    
+    /**
+     * 获取就诊信息
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月16日 下午4:12:36
+     */
+    public Object getDoctor(String order_id);
+    
+}

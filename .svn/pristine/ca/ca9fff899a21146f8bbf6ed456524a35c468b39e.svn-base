@@ -1,0 +1,208 @@
+package com.haaa.cloudmedical.platform.RemindManage.controller;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.entity.DoctorRemind;
+import com.haaa.cloudmedical.entity.MeasurementRemind;
+import com.haaa.cloudmedical.entity.MedicationRemind;
+import com.haaa.cloudmedical.platform.RemindManage.service.RemindManageService;
+
+@Controller
+@RequestMapping("/remind")
+public class RemindManageController {
+
+	@Autowired
+	private RemindManageService service;
+
+	
+	/**
+	 * 获取药品列表
+	 * @param helpname
+	 * @return
+	 */
+	@RequestMapping("/getMedicalList.action")
+	@ResponseBody
+	public Object getMedicalList(String helpname) {
+		List<Map<String, Object>> dto = service.getMedicalList(helpname.toUpperCase());
+		return dto;
+	}
+	
+	/**
+	 * 获取所有的提醒
+	 * @param helpname
+	 * @return
+	 */
+	@RequestMapping("/getRemind.action")
+	@ResponseBody
+	public Object getRemind(String user_id){
+		ResponseDTO dto = service.getRemind(user_id);
+		return dto;
+	}
+
+	/**
+	 * 平台端获取测量提醒详情
+	 * @return
+	 */
+	@RequestMapping("/getMeasurementRemind.action")
+	@ResponseBody
+	public Object getMeasurementRemind(String user_id) {
+		ResponseDTO dto = service.getRemind(user_id, Constant.remind_type_measurement);
+		return dto;
+	}
+
+	/**
+	 * 获取用药提醒详情
+	 * @return
+	 */
+	@RequestMapping("/getMedicationRemind.action")
+	@ResponseBody
+	public Object getMedicationRemind(String user_id) {
+		ResponseDTO dto = service.getRemind(user_id, Constant.remind_type_medication);
+		return dto;
+	}
+
+	/**
+	 * 获取就诊提醒详情
+	 * @return
+	 */
+	@RequestMapping("/getDoctorRemind.action")
+	@ResponseBody
+	public Object getDoctorRemind(String user_id) {
+		ResponseDTO dto = service.getRemind(user_id, Constant.remind_type_doctor);
+		System.out.println(dto);
+		return dto;
+	}
+
+	/**
+	 * 增加测量提醒
+	 * @return
+	 */
+	@RequestMapping("/addMeasurementRemind.action")
+	@ResponseBody
+	public Object addMeasurementRemind(MeasurementRemind remind) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		remind.setCreate_date(date);
+		if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_bloodpressure))
+			remind.setMeasurement_remind_content(Constant.measurement_message_bloodpressure);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_bloodsugar))
+			remind.setMeasurement_remind_content(Constant.measurement_message_bloodsugar);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_heartrate))
+			remind.setMeasurement_remind_content(Constant.measurement_message_heartrate);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_oxygen))
+			remind.setMeasurement_remind_content(Constant.measurement_message_oxygen);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_temperature))
+			remind.setMeasurement_remind_content(Constant.measurement_message_temperature);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_urine))
+			remind.setMeasurement_remind_content(Constant.measurement_message_urine);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_vitalcapacity))
+			remind.setMeasurement_remind_content(Constant.measurement_message_vitalcapacity);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_weight))
+			remind.setMeasurement_remind_content(Constant.measurement_message_weight);		
+		boolean flag = service.addRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_measurement);
+		return flag;
+	}
+
+	/**
+	 * 增加用药提醒
+	 * @return
+	 */
+	@RequestMapping("/addMedicationRemind.action")
+	@ResponseBody
+	public Object addMedicationRemind(MedicationRemind remind) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		remind.setCreate_date(date);
+		boolean flag = service.addRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_medication);
+		return flag;
+	}
+
+	/**
+	 * 增加就诊提醒
+	 * @return
+	 */
+	@RequestMapping("/addDoctorRemind.action")
+	@ResponseBody
+	public Object addDoctorRemind(DoctorRemind remind) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		remind.setCreate_date(date);
+		boolean flag = service.addRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_doctor);
+		return flag;
+	}
+	
+	/**
+	 * 删除测量提醒功能
+	 * @return
+	 */
+	@RequestMapping("/deleteMeasurementRemind.action")
+	@ResponseBody
+	public Object deleteMeasurementRemind(String order_id){
+		boolean flag = service.deleteRemind(order_id, Constant.remind_type_measurement);
+		return flag;
+	}
+	
+	/**
+	 * 删除用药提醒功能
+	 * @return
+	 */
+	@RequestMapping("/deleteMedicationRemind.action")
+	@ResponseBody
+	public Object deleteMedicationRemind(String order_id){
+		boolean flag = service.deleteRemind(order_id, Constant.remind_type_medication);
+		return flag;
+	}
+	
+	/**
+	 * 删除就诊提醒功能
+	 * @return
+	 */
+	@RequestMapping("/deleteDoctorRemind.action")
+	@ResponseBody
+	public Object deleteDoctorRemind(String order_id){
+		boolean flag = service.deleteRemind(order_id, Constant.remind_type_doctor);
+		return flag;
+	}
+	
+	/**
+	 * 修改就诊提醒功能
+	 * @return
+	 */
+	@RequestMapping("/updateDoctorRemind.action")
+	@ResponseBody
+	public Object updateDoctorRemind(DoctorRemind remind){
+		boolean flag = service.updateRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_doctor);
+		return flag;
+	}
+	
+	/**
+	 * 修改测量提醒功能
+	 * @return
+	 */
+	@RequestMapping("/updateMeasurementRemind.action")
+	@ResponseBody
+	public Object updateMeasurementRemind(MeasurementRemind remind){
+		boolean flag = service.updateRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_measurement);
+		return flag;
+	}
+	
+	/**
+	 * 修改用药提醒功能
+	 * @return
+	 */
+	@RequestMapping("/updateMedicationRemind.action")
+	@ResponseBody
+	public Object updateMedicationRemind(MedicationRemind remind){
+		boolean flag = service.updateRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_medication);
+		return flag;
+	}
+
+}

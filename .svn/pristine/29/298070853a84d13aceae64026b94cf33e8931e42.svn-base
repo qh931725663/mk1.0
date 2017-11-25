@@ -1,0 +1,120 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.entity.User;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Repository
+public class BasicInfoSurveyDao extends BaseTemplateDao {
+
+	public Map<String, Object> getBasiceInfo(String user_id) {
+		String sql = "SELECT user_name,findName(user_sex) user_sex, user_card,user_phone,user_height,user_weight,user_waist,user_address,findName(user_marriage) user_marriage,findName(user_blood) user_blood "
+				+ "FROM n_user WHERE user_id=?";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, user_id);
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+	public Number insertAndGetKey(final Map<String, Object> map, String table) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		Map<String, Object[]> property = this.getParamsAndValues(map);
+		Object[] params = property.get("params");
+		Object[] values = property.get("values");
+		String sql = "insert into " + table + " (" + StringUtils.join(params, ",") + ") values("
+				+ StringUtils.repeat("?", ",", params.length) + ")";
+		System.out.println(sql);
+		this.jdbcTemplate.update(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql, 1);
+				for (int i = 0; i < values.length; i++) {
+					ps.setObject(i + 1, values[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
+
+		Number generatedId = keyHolder.getKey();
+		return generatedId;
+	}
+
+	public Map<String, Object> getQuestionById(String question_id) {
+		String sql = "SELECT order_id,question_content,parent_id,question_type,table_id FROM s_base_question_k WHERE order_id=?";
+		return jdbcTemplate.queryForMap(sql, question_id);
+	}
+
+	public List<Map<String, Object>> getBasicInfoSurveyHistory(String datemax, String datemin, String user_id) {
+		List<Object> list = new LinkedList<Object>();
+		list.add(user_id);
+		StringBuffer sql = new StringBuffer("SELECT order_id,DATE_FORMAT(create_date,'%Y-%m-%d')datetime FROM s_base WHERE user_id=?");
+		if (StringUtil.isBlank(datemax) && StringUtil.isBlank(datemin)) {
+/*			sql += " AND DATE_SUB(NOW(),INTERVAL 1 YEAR) <= create_date ORDER BY create_date DESC ";
+*/		} else {
+			if (StringUtil.isNotBlank(datemax)) {
+				sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')<=? ");
+				list.add(datemax);
+			}
+			if (StringUtil.isNotBlank(datemin)) {
+				sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')<=? ") ;
+				list.add(datemin);
+			}
+		}
+		sql.append(" ORDER BY create_date DESC ");
+		return jdbcTemplate.queryForList(sql.toString(), list.toArray());
+	}
+	
+	
+	public Map<String,Object> getBasicInfroSurveyHistoryDetail(String order_id){
+		String sql = "SELECT * FROM s_base WHERE order_id=?";
+		return jdbcTemplate.queryForMap(sql, order_id);
+	}
+	
+
+	public List<Map<String, Object>> getBasicInfoSurveyDetail(String order_id) {
+		String sql = "SELECT question_k_order_id,table_id,question_index,answer FROM (SELECT k.table_id,q.question_k_order_id,q.question_index,q.order_id from s_base_question q,s_base_question_k k WHERE q.base_order_id =? AND k.order_id = q.question_k_order_id ) mt , (SELECT answer,question_order_id FROM s_base_answer WHERE base_order_id=?) a WHERE mt.order_id = a.question_order_id";
+		return jdbcTemplate.queryForList(sql, order_id,order_id);
+	}
+
+	public Map<String, Object> getQuestionTableId(String order_id) {
+		String sql = "SELECT table_id FROME s_base WHERE order_id=?";
+		return jdbcTemplate.queryForMap(sql, order_id);
+	}
+	
+	
+	public int updateUserInfo(User user){
+		return this.update(user, "n_user");
+	}
+	
+	
+	public void callSync(String order_id,String user_id){
+		String sql = "{call proc_sync_base2survey(?,?)}";
+		jdbcTemplate.update(sql,order_id,user_id);
+	}
+	
+	public void callSyncBase2Chronic(String base_order_id,String user_id){
+		String sql = "{call proc_sync_base2chronic_dm(?, ?)}";
+		jdbcTemplate.update(sql,base_order_id,user_id);
+	}
+}

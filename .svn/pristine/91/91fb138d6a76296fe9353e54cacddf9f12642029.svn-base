@@ -1,0 +1,149 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.BloodPressure;
+
+@Repository
+public class BloodPressureDao extends EquipmentDao {
+
+	public long add(BloodPressure bloodPressure) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, bloodPressure);
+		return insert(map, "c_blood_pressure");
+	}
+
+	/**
+	 * 查询最近数据 AND A.create_date<NOW()
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecent(long user_id, int recent) {
+		String sql = "SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.HighPressure,B.LowPressure,B.PulseRate "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date  ORDER BY A.create_date DESC";
+		return jdbcTemplate.queryForList(sql, user_id, recent);
+	}
+
+	public List<Map<String, Object>> queryByMonth(Long user_id, String year_month, int pageno, int pagesize) {
+		String sql = "SELECT B.equipment_use_order_id,A.order_id,A.create_date datetime,B.HighPressure,B.LowPressure,B.PulseRate "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_FORMAT(A.create_date,'%Y-%m')=?  ORDER BY A.create_date DESC LIMIT ?,? ";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, year_month, start, pagesize);
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT B.equipment_use_order_id,A.order_id,A.create_date datetime, B.HighPressure,B.LowPressure,B.PulseRate "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ?  ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+	public List<Map<String, Object>> queryYearMonth(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT DISTINCT(DATE_FORMAT(A.create_date,'%Y-%m')) yearmonth "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ?  ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+	/*
+	 * public List<Map<String, Object>> pageQueryAndroid(long user_id, int
+	 * pageno, int pagesize) { String sql =
+	 * "SELECT A.create_date datetime, B.HighPressure,B.LowPressure,B.PulseRate "
+	 * + " FROM c_equipment_use A,c_blood_pressure B " +
+	 * " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ?  ORDER BY A.create_date DESC LIMIT ?,?"
+	 * ; int start = (pageno - 1) * pagesize; System.out.println(sql); return
+	 * jdbcTemplate.queryForList(sql, user_id, start, pagesize); }
+	 */
+
+	/*
+	 * 查询一个年内有数据的月份
+	 */
+	public List<Map<String, Object>> queryMonth(long user_id) {
+		String sql = "SELECT DISTINCT(DATE_FORMAT(A.create_date,'%Y-%m')) yearmonth "
+				+ " FROM c_equipment_use A,c_blood_pressure B WHERE "
+				+ " A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL 1 YEAR) <A.create_date ORDER BY A.create_date DESC ";
+		return jdbcTemplate.queryForList(sql, user_id);
+	}
+
+	public List<Map<String, Object>> getDataByTime(String user_id, String datemin, String datemax) {
+		List<Object> list = new ArrayList<Object>();
+		String sql = "SELECT A.order_id,A.create_date,B.HighPressure,B.LowPressure "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ";
+		list.add(user_id);
+		if (datemin != null && !datemin.equals("") && datemax != null && !datemax.equals("")) {
+			sql += " AND A.create_date>? AND A.create_date <? ";
+			list.add(datemin);
+			list.add(datemax);
+		} else if (datemin != null && !datemin.equals("")) {
+			sql += " AND A.create_date>? ";
+			list.add(datemin);
+		} else if (datemax != null && !datemax.equals("")) {
+			sql += " AND A.create_date<? ";
+			list.add(datemax);
+		} else {
+			sql += " AND DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date ";
+			list.add(Constant.RECENT);
+		}
+		sql += " ORDER BY A.create_date DESC ";
+		return jdbcTemplate.queryForList(sql, list.toArray());
+	}
+
+	
+	public int pageNumber(String user_id,int pagesize){
+		String sql= "SELECT COUNT(*) "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ";
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user_id);
+		return count<1?0:((count-1)/pagesize)+1;
+	}
+	
+	public int pageNumberByMonth(String user_id,String yearMonth,int pagesize){
+		String sql= "SELECT COUNT(*) "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND DATE_FORMAT(A.create_date,'%Y-%m')=?  ";
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user_id,yearMonth);
+		return count<1?0:((count-1)/pagesize)+1;
+	}
+	
+	
+	public Page pageQueryByTime(String user_id,String datemin,String datemax,int pageno,int pagesize){
+		List<Object> list = new ArrayList<Object>();
+		String sql = "SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.HighPressure,B.LowPressure,B.PulseRate "
+				+ " FROM c_equipment_use A,c_blood_pressure B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ";
+		list.add(user_id);
+		if (datemin != null && !datemin.equals("") && datemax != null && !datemax.equals("")) {
+			sql += " AND A.create_date>? AND A.create_date <? ";
+			list.add(datemin);
+			list.add(datemax);
+		} else if (datemin != null && !datemin.equals("")) {
+			sql += " AND A.create_date>? ";
+			list.add(datemin);
+		} else if (datemax != null && !datemax.equals("")) {
+			sql += " AND A.create_date<? ";
+			list.add(datemax);
+		} else {
+			sql += " AND DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date ";
+			list.add(Constant.RECENT);
+		}
+		sql += " ORDER BY A.create_date DESC ";
+		return super.pageQuery(sql, list.toArray(), pageno, pagesize);
+	}
+}

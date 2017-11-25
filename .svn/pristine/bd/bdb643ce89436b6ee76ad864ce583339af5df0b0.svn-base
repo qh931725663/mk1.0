@@ -1,0 +1,65 @@
+package com.haaa.cloudmedical.platform.roleManage.controller;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.platform.roleManage.service.RoleManageService;
+
+@RestController
+@RequestMapping("/role")
+public class RoleManageController {
+
+	@Resource
+	private RoleManageService service;
+
+	private Logger logger = Logger.getLogger(RoleManageController.class);
+
+	@RequestMapping("/add.action")
+	public InfoJson addRole(@RequestParam Map<String, Object> data) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.addRole(data);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/delete.action")
+	public InfoJson deleteRole(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.deleteRole(order_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/get.action")
+	public InfoJson getRolesByCondition(String roleName, String authority, String downTime, String upTime,
+			Integer pageno, Integer pagesize) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (pageno == null) {
+				pageno = 1;
+			}
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+			infoJson = service.getRoleByCondition(roleName, authority, downTime, upTime, pageno, pagesize);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

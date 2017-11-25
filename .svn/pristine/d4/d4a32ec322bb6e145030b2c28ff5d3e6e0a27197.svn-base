@@ -1,0 +1,1016 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>辅助检查</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" href="css/diabetes-comm.css"/>
+    <link rel="stylesheet" href="css/diabete-main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/jquery.step.css"/>
+    <link rel="stylesheet" type="text/css" href="layer/css/layer.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="step-body" id="myStep">
+        <form id="form-supplementary-write">
+            <div class="step-header" style="width:90%">
+                <ul id="nav-title">
+                    <li data_obj="0"><p>辅助检查</p></li>
+                    <li data_obj="1"><p>药物治疗</p></li>
+                </ul>
+            </div>
+            <div class="step-content box-step-container">
+                <div class="step-list">
+                    <ul class="step-list-ul">
+                        <li><label><span class="red-asterisk">*</span>空腹血糖</label>
+                            <input class="survey_answer" type="text" name="5004" placeholder="请输入"  style="direction: rtl;font-size: 14px;margin-left: 5px;"/>
+                            <select id="select-company-01">
+                                <option value="5004">mmol/L</option>
+                                <option value="5005">mg/dL</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label><span class="red-asterisk">*</span>随机血糖</label>
+                            <input class="survey_answer" type="text" name="5006" placeholder="请输入"  style="direction: rtl;font-size: 14px;margin-left: 5px;"/>
+                            <select id="select-company-02">
+                                <option value="5006">mmol/L</option>
+                                <option value="5007">mg/dL</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label><span class="red-asterisk">*</span>餐后2小时血糖</label>
+                            <input class="survey_answer" type="text" name="5008" placeholder="请输入"  style="direction: rtl;font-size: 14px;margin-left: 5px;"/>
+                            <select id="select-company-03">
+                                <option value="5008">mmol/L</option>
+                                <option value="5009">mg/dL</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <h4 style="font-size: 18px;margin-top: 10px;">血常规</h4>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血红蛋白</label><input class="survey_answer" type="text" name="5010" placeholder="请输入"  style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">g/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">白细胞</label><input class="survey_answer" type="text" name="5011" placeholder="请输入"  style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">g/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血小板</label><input class="survey_answer" type="text" name="5012" placeholder="请输入"  style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">g/L</span></li>
+                        <li><label style="padding-left: 20px;">其他</label><input class="survey_answer" type="text" name="5013" placeholder="请输入"  style="direction: rtl;font-size: 14px;"/></li>
+                        <h4 style="font-size: 18px;margin-top: 10px;"><span class="red-asterisk">*</span>尿常规</h4>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">尿蛋白</label><input class="urinalysis survey_answer" type="text" name="5014" placeholder="请输入" style="direction: rtl;font-size: 14px;"/></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">尿糖</label><input class="urinalysis survey_answer" type="text" name="5015" placeholder="请输入" style="direction: rtl;font-size: 14px;"/></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">尿酮体</label><input class="urinalysis survey_answer" type="text" name="5016" placeholder="请输入" style="direction: rtl;font-size: 14px;"/></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">尿潜血</label><input class="urinalysis survey_answer" type="text" name="5017" placeholder="请输入" style="direction: rtl;font-size: 14px;"/></li>
+                        <li><label style="padding-left: 20px;">其他</label><input class="urinalysis survey_answer" type="text" name="5018" placeholder="请输入"  style="direction: rtl;font-size: 14px;"/></li>
+                        <li><label style="width:70%;"><span class="red-asterisk">*</span>尿微量白蛋白</label><input class="survey_answer" type="text" name="5019" placeholder="请输入"  style="direction: rtl;width: 20%;font-size: 14px;"/><span style="margin-left: 5px;">mg/dL</span></li>
+                        <li>
+                            <label style="width:74%;">大便潜血</label>
+                            <select class="check_select" name="5020" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000473">阴性</option>
+                                <option value="1000474">阳性</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span></li>
+                        <h4 style="font-size: 18px;margin-top: 10px;">肝功能</h4>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血清谷丙转氨酶</label><input class="survey_answer" type="text" name="5021" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">U/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血清谷草转氨酶</label><input class="survey_answer" type="text" name="5022" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">U/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">白蛋白</label><input class="survey_answer" type="text" name="5023" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">g/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">总胆红素</label><input class="survey_answer" type="text" name="5024" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">结合胆红素</label><input class="survey_answer" type="text" name="5025" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <h4 style="font-size: 18px;margin-top: 10px;"><span class="red-asterisk">*</span>肾功能</h4>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血清肌酐</label><input class="renal survey_answer" type="text" name="5026" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血尿素氮</label><input class="renal survey_answer" type="text" name="5027" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血钾浓度</label><input class="renal survey_answer" type="text" name="5028" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血钠浓度</label><input class="renal survey_answer" type="text" name="5029" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <h4 style="font-size: 18px;margin-top: 10px;"><span class="red-asterisk">*</span>血   脂</h4>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">总胆固醇</label><input class="blood-fat survey_answer" type="text" name="5030" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">mmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">甘油三酯</label><input class="blood-fat survey_answer" type="text" name="5031" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">mmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血清低密度脂蛋白胆固醇</label><input class="blood-fat survey_answer" type="text" name="5032" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">mmol/L</span></li>
+                        <li style="border-bottom:1px dotted #ddd;"><label style="padding-left: 20px;">血清高密度脂蛋白胆固醇</label><input class="blood-fat survey_answer" type="text" name="5033" placeholder="请输入" style="direction: rtl;font-size: 14px;"/><span style="margin-left: 5px;">mmol/L</span></li>
+                        <li><label style="width:70%;"><span class="red-asterisk">*</span>糖化血红蛋白</label><input class="survey_answer" type="text" name="5034" placeholder="请输入"  style="direction: rtl;width: 20%;font-size: 14px;"/><span style="margin-left: 5px;">%</span></li>
+                        <li><label style="width:70%;">血尿酸</label><input class="survey_answer" type="text" name="5035" placeholder="请输入"  style="direction: rtl;width: 20%;font-size: 14px;"/><span style="margin-left: 5px;">μmol/L</span></li>
+                        <li><label style="width:70%;">促甲状腺激素</label><input class="survey_answer" type="text" name="5036" placeholder="请输入"  style="direction: rtl;width: 20%;font-size: 14px;"/><span style="margin-left: 5px;">mU/L</span></li>
+                        <li><label style="width:74%;"><span class="red-asterisk">*</span>眼底镜</label>
+                            <select class="check_select" name="5037" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000541">正常</option>
+                                <option value="1000542">异常</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label style="width:74%;"><span class="red-asterisk">*</span>心电图</label>
+                            <select class="check_select" name="5038" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000545">正常</option>
+                                <option value="1000546">异常</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label style="width:74%;">胸部X线片</label>
+                            <select class="check_select" name="5039" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000549">正常</option>
+                                <option value="1000550">异常</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label style="width:74%;">心脏超声</label>
+                            <select class="check_select" name="5040" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000553">正常</option>
+                                <option value="1000554">异常</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label style="width:74%;">颈动脉超声</label>
+                            <select class="check_select" name="5041" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000557">正常</option>
+                                <option value="1000558">异常</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                        <li><label style="width:74%;">下肢血管超声</label>
+                            <select class="check_select" name="5042" style="direction: rtl;width: 20%;font-size: 14px;">
+                                <option value="1000561">正常</option>
+                                <option value="1000562">异常</option>
+                            </select>
+                            <span class="gt" style="margin-left: 5px;"></span>
+                        </li>
+                    </ul>
+                </div>
+               <div class="step-list">
+                    <h2 style="padding-top: 35px;font-size: 15px;">1.是否服用降压药</h2>
+                    <ul class="step2-list-ul">
+                        <li style="border: none;">
+                            <input type="radio" id="jyy-1" class="magic bas-close check_radio" name="8001" value="1000569" style="width: 25px;height: 25px;" checked/><label for="jyy-1" style="width: 5%;">否</label>
+                            <input type="radio" id="jyy-2" class="magic bas-open check_radio" name="8001" value="1000565" style="width: 25px;height: 25px;"/><label for="jyy-2" style="width: 5%;">是</label>
+                        </li>
+                    </ul>
+                    <ul class="step4-list-ul data-show-or-hide" style="padding: 10px 8px;border: 2px dashed #ddd;display: none;">
+                        <li  id="append-jiangya">
+                            <div class="inlin-blok yw jiangya-list">
+                                <label class="label-width">药物名称</label><input class="height-25 yaowu-name yw-answer clear" name="8002-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                                <label class="label-width">用法</label><input class="height-25 yw-answer clear" name="8003-1"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>
+                                <label class="label-width">用量</label><input class="height-25 yw-answer clear" name="8004-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                                <label class="label-width">用药时间</label><input class="height-25 yw-answer clear" name="8005-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                                <label class="label-width" style="width: 75%;">是否有低血糖反应</label>
+                                <select class="yw-select clear" name="8006-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                                	<option value="">选择</option>
+                                    <option value="1000589">是</option>
+                                    <option value="1000590">否</option>
+                                </select>
+                                <span>&gt;</span>
+                                <label class="label-width" style="width: 75%;">服药依从性</label>
+                                <select class="yw-select clear" name="8007-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                                	<option value="">选择</option>
+                                    <option value="1000593">规律</option>
+                                    <option value="1000594">间断</option>
+                                    <option value="1000595">不服药</option>
+                                </select>
+                                <span>&gt;</span>
+                                <label class="label-width" style="width: 75%;">是否有药物不良反应</label>
+                                <select class="yw-select clear" name="8008-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                                	<option value="">选择</option>
+                                    <option value="1000597">是</option>
+                                    <option value="1000598">否</option>
+                                </select>
+                                <span>&gt;</span>
+                            </div>
+                        </li>
+                        <li style="text-align: center;"><button type="button" class="btn btn-red del-1" style="margin-right: 15%;width: 250px;display: none;">删除</button><button type="button" class="btn btn-green addTexInput" style="width: 250px;">添加</button></li>
+                    </ul>
+                   <h2 style="padding-top: 35px;font-size: 15px;">2.是否服用降糖药</h2>
+                   <ul class="step2-list-ul">
+                       <li style="border: none;">
+                           <input type="radio" id="jty-1" class="magic bas-close check_radio" name="8009" value="1000605" style="width: 25px;height: 25px;" checked/><label for="jty-1" style="width: 5%;">否</label>
+                           <input type="radio" id="jty-2" class="magic bas-open check_radio" name="8009" value="1000601" style="width: 25px;height: 25px;"/><label for="jty-2" style="width: 5%;">是</label>
+                       </li>
+                   </ul>
+                   <ul class="step4-list-ul data-show-or-hide" style="padding: 10px 8px;border: 2px dashed #ddd;display: none;">
+                       <li id="append-jiangtang">
+                           <div class="inlin-blok yw jiangtang-list">
+                               <label class="label-width">药物名称</label><input class="height-25 yaowu-name yw-answer clear yw-answer" name="8010-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width">用法</label><input class="height-25 yw-answer clear yw-answer" name="8011-1"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>
+                               <label class="label-width">用量</label><input class="height-25 yw-answer clear yw-answer" name="8012-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width">用药时间</label><input class="height-25 yw-answer clear yw-answer" name="8013-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width" style="width: 75%;">是否有低血糖反应</label>
+                               <select class="clear yw-select" name="8014-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000625">是</option>
+                                   <option value="1000626">否</option>
+                               </select>
+                               <span>&gt;</span>
+                               <label class="label-width" style="width: 75%;">服药依从性</label>
+                               <select class="clear yw-select" name="8015-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000629">规律</option>
+                                   <option value="1000630">间断</option>
+                                   <option value="1000631">不服药</option>
+                               </select>
+                               <span>&gt;</span>
+                               <label class="label-width" style="width: 75%;">是否有药物不良反应</label>
+                               <select class="clear yw-select" name="8016-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000633">是</option>
+                                   <option value="1000634">否</option>
+                               </select>
+                               <span>&gt;</span>
+                           </div>
+                       </li>
+                       <li style="text-align: center;"><button type="button" class="btn btn-red del-2" style="margin-right: 15%;width: 250px;display: none;">删除</button><button type="button" class="btn btn-green addTexInput2" style="width: 250px;">添加</button></li>
+                   </ul>
+                   <h2 style="padding-top: 35px;font-size: 15px;">3.是否服用降脂药</h2>
+                   <ul class="step2-list-ul">
+                       <li style="border: none;">
+                           <input type="radio" id="jzy-1" class="magic bas-close check_radio" name="8017" value="1000641" style="width: 25px;height: 25px;" checked/><label for="jzy-1" style="width: 5%;">否</label>
+                           <input type="radio" id="jzy-2" class="magic bas-open check_radio" name="8017" value="1000637" style="width: 25px;height: 25px;"/><label for="jzy-2" style="width: 5%;">是</label>
+                       </li>
+                   </ul>
+                   <ul class="step4-list-ul data-show-or-hide" style="padding: 10px 8px;border: 2px dashed #ddd;display: none;">
+                       <li id="append-jiangzhi">
+                           <div class="inlin-blok yw jiangzhi-list">
+                               <label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8018-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8019-1"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>
+                               <label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8020-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8021-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width" style="width: 75%;">是否有低血糖反应</label>
+                               <select class="clear yw-select" name="8022-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000661">是</option>
+                                   <option value="1000662">否</option>
+                               </select>
+                               <span>&gt;</span>
+                               <label class="label-width" style="width: 75%;">服药依从性</label>
+                               <select class="clear yw-select" name="8023-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000665">规律</option>
+                                   <option value="1000666">间断</option>
+                                   <option value="1000667">不服药</option>
+                               </select>
+                               <span>&gt;</span>
+                               <label class="label-width" style="width: 75%;">是否有药物不良反应</label>
+                               <select class="clear yw-select" name="8024-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000669">是</option>
+                                   <option value="1000670">否</option>
+                               </select>
+                               <span>&gt;</span>
+                           </div>
+                       </li>
+                       <li style="text-align: center;"><button type="button" class="btn btn-red del-3" style="margin-right: 15%;width: 250px;display: none;">删除</button><button type="button" class="btn btn-green addTexInput3" style="width: 250px;">添加</button></li>
+                   </ul>
+                   <h2 style="padding-top: 35px;font-size: 15px;">4.是否服用其它药物</h2>
+                   <ul class="step2-list-ul">
+                       <li style="border: none;">
+                           <input type="radio" id="qty-1" class="magic bas-close check_radio" name="8025" value="1000677" style="width: 25px;height: 25px;" checked/><label for="qty-1" style="width: 5%;">否</label>
+                           <input type="radio" id="qty-2" class="magic bas-open check_radio" name="8025" value="1000673" style="width: 25px;height: 25px;"/><label for="qty-2" style="width: 5%;">是</label>
+                       </li>
+                   </ul>
+                   <ul class="step4-list-ul data-show-or-hide" style="padding: 10px 8px;border: 2px dashed #ddd;display: none;">
+                       <li id="append-qita">
+                           <div class="inlin-blok yw qita-list">
+                               <label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8026-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8027-1"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>
+                               <label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8028-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8029-1" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>
+                               <label class="label-width" style="width: 75%;">是否有低血糖反应</label>
+                               <select class="clear yw-select" name="8030-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000697">是</option>
+                                   <option value="1000698">否</option>
+                               </select>
+                               <span>&gt;</span>
+                               <label class="label-width" style="width: 75%;">服药依从性</label>
+                               <select class="clear yw-select" name="8031-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000701">规律</option>
+                                   <option value="1000702">间断</option>
+                                   <option value="1000703">不服药</option>
+                               </select>
+                               <span>&gt;</span>
+                               <label class="label-width" style="width: 75%;">是否有药物不良反应</label>
+                               <select class="clear yw-select" name="8032-1" style="direction: rtl;width: 20%;font-size: 14px;">
+                               		<option value="">选择</option>
+                                   <option value="1000705">是</option>
+                                   <option value="1000706">否</option>
+                               </select>
+                               <span>&gt;</span>
+                           </div>
+                       </li>
+                       <li style="text-align: center;"><button type="button" class="btn btn-red del-4" style="margin-right: 15%;width: 250px;display: none;">删除</button><button type="button" class="btn btn-green addTexInput4" style="width: 250px;">添加</button></li>
+                   </ul>
+               </div>
+            </div>
+        </form>
+    </div>
+    <div style="padding: 20px 10px;margin-bottom: 20px;overflow:hidden; ">
+        <button id="preBtn" class="fl btn btn-green" type="button" style="width: 255px;">上一步</button>
+        <button id="nextBtn" class="fr btn btn-red" type="button" style="width: 255px;">下一步</button>
+        <button id="save" class="fr btn btn-red" type="button" style="width: 255px;display: none;">保存</button>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../../js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.step.js"></script>
+<script type="text/javascript" src="layer/layer.js"></script>
+<script>
+
+$(function(){
+		//获取地址栏order_id方法
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		var order_id=getUrlParam("order_id");
+        //定义既往史全局变量
+        var num= 1,num2= 1,num3= 1,num4=1;
+        //既往史 删除表格行
+        function del(del,pard,yw){
+            $(del).click(function(){
+                $(this).parent("li").prev(pard).find(yw).remove();
+                if(del==".del-1"){
+                    num--;
+                    if(num<2){
+                        $(this).css("display","none");
+                    }
+                }
+                if(del==".del-2"){
+                    num2--;
+                    if(num2<2){
+                        $(this).css("display","none");
+                    }
+                }
+                if(del==".del-3"){
+                    num3--;
+                    if(num3<2){
+                        $(this).css("display","none");
+                    }
+                }
+                if(del==".del-4"){
+                    num4--;
+                    if(num4<2){
+                        $(this).css("display","none");
+                    }
+                }
+            });
+        }
+        del(".del-1","#append-jiangya",".yw:last");
+        del(".del-2","#append-jiangtang",".yw:last");
+        del(".del-3","#append-jiangzhi",".yw:last");
+        del(".del-4","#append-qita",".yw:last");
+
+        $.ajax({
+            url: "../../../diabetesDoc-app/getAnswers.action",
+            type: "GET",
+            dataType: 'json',
+            data: {order_id:order_id,scope_flag:'2'},
+            success: function (response) {
+            	var p1=response.data.basic;
+				var p2=response.data.answer;
+                if(response.status=='1'){
+					if(p2.t0!=undefined){
+ 						//单选按钮赋值
+ 						$(".box-step-container .check_radio").each(function(){
+							var va = $(this).val();
+							var name = $(this).attr("name");
+							var _self = this;
+		  					$.each(p2.t0.c0, function(i,m){
+ 			  					if(va == m.option_order_id && name==m.question_k_order_id){
+									$(_self).attr("checked",true).click();
+									return false;
+								} 
+							});
+						});
+						//文本框赋值
+						$(".box-step-container input.survey_answer").each(function(){
+							var name = $(this).attr("name");
+							var _self =this;
+		  					$.each(p2.t0.c0, function(i,m){
+			  					if(name == m.question_k_order_id && m.question_type==3){
+									$(_self).val(m.option_content);
+									return false;
+								}else{ 
+									if(name =='5004' && m.question_k_order_id=='5005'){
+										$(_self).attr({'name':m.question_k_order_id});
+										$(_self).val(m.option_content);
+										$(_self).next("select").find("option[value='5005']").attr("selected",true);
+										//return false;
+										
+									}
+									if(name =='5006'  && m.question_k_order_id=='5007'){
+										$(_self).attr({'name':m.question_k_order_id});
+										$(_self).val(m.option_content);
+										$(_self).next("select").find("option[value='5007']").attr("selected",true);
+										//return false;
+									}
+									if(name == '5008' && m.question_k_order_id=='5009'){
+										$(_self).attr({'name':m.question_k_order_id});
+										$(_self).val(m.option_content);
+										$(_self).next("select").find("option[value='5009']").attr("selected",true);
+										//return false;
+									} 
+								} 
+							});
+						});
+						//下拉框
+						$(".box-step-container select.check_select").each(function(){
+							var name = $(this).attr("name");
+							var _self =this;
+		  					$.each(p2.t0.c0, function(i,m){
+			  					if(name == m.question_k_order_id && m.question_type==1){
+			  						$(_self).find("option[value='"+m.option_order_id+"']").attr("selected",true);
+									//$(_self).val(m.option_content);
+									return false;
+								}else{
+									$(_self).val("");
+								}  
+							});
+						});
+					}
+					
+					//降压
+					if(p2.t6!=undefined){
+			            num++;
+			            var html='<div class="inlin-blok yw jiangya-list">'+
+			                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name yw-answer clear" name="8002-'+num+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width">用法</label><input class="height-25 yw-answer clear" name="8003-'+num+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+			                    '<label class="label-width">用量</label><input class="height-25 yw-answer clear" name="8004-'+num+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width">用药时间</label><input class="height-25 yw-answer clear" name="8005-'+num+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+			                    '<select class="yw-select clear" name="8006-'+num+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000589">是</option>'+
+			                    '<option value="1000590">否</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+			                    '<select class="yw-select clear" name="8007-'+num+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000593">规律</option>'+
+			                    '<option value="1000594">间断</option>'+
+			                    '<option value="1000595">不服药</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+			                    '<select class="yw-select clear" name="8008-'+num+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000597">是</option>'+
+			                    '<option value="1000598">否</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '</div>';
+			            $(".del-1").css("display","inline-block");
+						$.each(p2.t6, function(i,m){
+							$("#append-jiangya").find(".jiangya-list").last().each(function(){
+								$(this).find("input.yw-answer").each(function(index){
+									var name = $(this).attr("name");
+									var that = this;
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});
+								});
+							});
+ 	   						$("#append-jiangya").find(".jiangya-list").last().each(function(){
+								$(this).find(".yw-select").each(function(){
+									var name = $(this).attr("name");
+									var va = $(this).val();
+									//console.log(name);
+									name = name.substring(0, name.indexOf("-"));
+									var that = this;
+	 								$.each(m, function(j, n){
+	 								
+	 									if(n.question_k_order_id==name){
+											$(that).find("option[value='"+n.option_order_id+"']").attr("selected",true);
+											return false;
+										}
+									}); 
+								});
+							});
+							//追加
+							$("#append-jiangya").find(".jiangya-list").last().after(html);
+						});
+						//移出最后一条
+						$("#append-jiangya").find(".jiangya-list").last().remove();
+					}
+					
+					//降糖药
+					if(p2.t7!=undefined){
+			            num2++;
+			           var html='<div class="inlin-blok yw jiangtang-list">'+
+			                   '<label class="label-width">药物名称</label><input class="height-25 yaowu-name yw-answer clear" name="8010-'+num2+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                   '<label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8011-'+num2+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+			                   '<label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8012-'+num2+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                   '<label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8013-'+num2+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                   '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+			                   '<select class="clear yw-select" name="8014-'+num2+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                   '<option value="">选择</option>'+
+			                   '<option value="1000625">是</option>'+
+			                   '<option value="1000626">否</option>'+
+			                   '</select>'+
+			                   '<span>&gt;</span>'+
+			                   '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+			                   '<select class="clear yw-select" name="8015-'+num2+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                   '<option value="">选择</option>'+
+			                   '<option value="1000629">规律</option>'+
+			                   '<option value="1000630">间断</option>'+
+			                   '<option value="1000631">不服药</option>'+
+			                   '</select>'+
+			                   '<span>&gt;</span>'+
+			                   '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+			                   '<select class="clear yw-select" name="8016-'+num2+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                   '<option value="">选择</option>'+
+			                   '<option value="1000633">是</option>'+
+			                   '<option value="1000634">否</option>'+
+			                   '</select>'+
+			                   '<span>&gt;</span>'+
+			                   '</div>';
+			            $(".del-2").css("display","inline-block");
+						$.each(p2.t7, function(i,m){
+							$("#append-jiangtang").find(".jiangtang-list").last().each(function(){
+								$(this).find("input.yw-answer").each(function(index){
+									var name = $(this).attr("name");
+									var that = this;
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});
+								});
+							});
+ 	   						$("#append-jiangtang").find(".jiangtang-list").last().each(function(){
+								$(this).find(".yw-select").each(function(){
+									var name = $(this).attr("name");
+									var va = $(this).val();
+									//console.log(name);
+									name = name.substring(0, name.indexOf("-"));
+									var that = this;
+	 								$.each(m, function(j, n){
+	 								
+	 									if(n.question_k_order_id==name){
+											$(that).find("option[value='"+n.option_order_id+"']").attr("selected",true);
+											return false;
+										}
+									}); 
+								});
+							});
+							//追加
+							$("#append-jiangtang").find(".jiangtang-list").last().after(html);
+						});
+						//移出最后一条
+						$("#append-jiangtang").find(".jiangtang-list").last().remove();
+					}
+										
+					//降脂药
+					if(p2.t8!=undefined){
+			            num3++;
+			            var html='<div class="inlin-blok yw jiangzhi-list">'+
+			                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8018-'+num3+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8019-'+num3+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+			                    '<label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8020-'+num3+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8021-'+num3+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+			                    '<select class="clear yw-select" name="8022-'+num3+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000661">是</option>'+
+			                    '<option value="1000662">否</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+			                    '<select class="clear yw-select" name="8023-'+num3+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000665">规律</option>'+
+			                    '<option value="1000666">间断</option>'+
+			                    '<option value="1000667">不服药</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+			                    '<select class="clear yw-select" name="8024-'+num3+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000669">是</option>'+
+			                    '<option value="1000670">否</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '</div>';
+			            $(".del-3").css("display","inline-block");
+						$.each(p2.t8, function(i,m){
+							$("#append-jiangzhi").find(".jiangzhi-list").last().each(function(){
+								$(this).find("input.yw-answer").each(function(index){
+									var name = $(this).attr("name");
+									var that = this;
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});
+								});
+							});
+ 	   						$("#append-jiangzhi").find(".jiangzhi-list").last().each(function(){
+								$(this).find(".yw-select").each(function(){
+									var name = $(this).attr("name");
+									var va = $(this).val();
+									//console.log(name);
+									name = name.substring(0, name.indexOf("-"));
+									var that = this;
+	 								$.each(m, function(j, n){
+	 								
+	 									if(n.question_k_order_id==name){
+											$(that).find("option[value='"+n.option_order_id+"']").attr("selected",true);
+											return false;
+										}
+									}); 
+								});
+							});
+							//追加
+							$("#append-jiangzhi").find(".jiangzhi-list").last().after(html);
+						});
+						//移出最后一条
+						$("#append-jiangzhi").find(".jiangzhi-list").last().remove();
+					}
+										
+					//其他药物					
+					if(p2.t9!=undefined){
+			            num4++;
+			            var html='<div class="inlin-blok yw qita-list">'+
+			                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8026-'+num4+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8027-'+num4+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+			                    '<label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8028-'+num4+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8029-'+num4+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+			                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+			                    '<select class="clear yw-select" name="8030-'+num4+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000697">是</option>'+
+			                    '<option value="1000698">否</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+			                    '<select class="clear yw-select" name="8031-'+num4+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000701">规律</option>'+
+			                    '<option value="1000702">间断</option>'+
+			                    '<option value="1000703">不服药</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+			                    '<select class="clear yw-select" name="8032-'+num4+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+			                    '<option value="">选择</option>'+
+			                    '<option value="1000705">是</option>'+
+			                    '<option value="1000706">否</option>'+
+			                    '</select>'+
+			                    '<span>&gt;</span>'+
+			                    '</div>';
+			            $(".del-4").css("display","inline-block");
+						$.each(p2.t9, function(i,m){
+							$("#append-qita").find(".qita-list").last().each(function(){
+								$(this).find("input.yw-answer").each(function(index){
+									var name = $(this).attr("name");
+									var that = this;
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});
+								});
+							});
+ 	   						$("#append-qita").find(".qita-list").last().each(function(){
+								$(this).find(".yw-select").each(function(){
+									var name = $(this).attr("name");
+									var va = $(this).val();
+									//console.log(name);
+									name = name.substring(0, name.indexOf("-"));
+									var that = this;
+	 								$.each(m, function(j, n){
+	 								
+	 									if(n.question_k_order_id==name){
+											$(that).find("option[value='"+n.option_order_id+"']").attr("selected",true);
+											return false;
+										}
+									}); 
+								});
+							});
+							//追加
+							$("#append-qita").find(".qita-list").last().after(html);
+						});
+						//移出最后一条
+						$("#append-qita").find(".qita-list").last().remove();
+					}					
+					
+                }
+            }
+        });
+        //空腹血糖 随机血糖 餐后2小时血糖 选择单位切换name值
+        function change_select(sel_id,option1,option2){
+            $(sel_id).change(function(){
+                var va=$(this).val();
+                var _self=this;
+                if(va==option1){
+                    $(_self).prev("input").attr({'name':option1});
+                }else{
+                    $(_self).prev("input").attr({'name':option2});
+                }
+            });
+        }
+        change_select("#select-company-01","5004","5005");
+        change_select("#select-company-02","5006","5007");
+        change_select("#select-company-03","5008","5009");
+
+        //新增降压药
+        $(".addTexInput").click(function(){
+            num++;
+            var html='<div class="inlin-blok yw jiangya-list">'+
+                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name yw-answer clear" name="8002-'+num+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用法</label><input class="height-25 yw-answer clear" name="8003-'+num+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+                    '<label class="label-width">用量</label><input class="height-25 yw-answer clear" name="8004-'+num+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用药时间</label><input class="height-25 yw-answer clear" name="8005-'+num+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+                    '<select class="yw-select clear" name="8006-'+num+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000589">是</option>'+
+                    '<option value="1000590">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+                    '<select class="yw-select clear" name="8007-'+num+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000593">规律</option>'+
+                    '<option value="1000594">间断</option>'+
+                    '<option value="1000595">不服药</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+                    '<select class="yw-select clear" name="8008-'+num+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000597">是</option>'+
+                    '<option value="1000598">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '</div>';
+            $("#append-jiangya").append(html);
+            $(".del-1").css("display","inline-block");
+        });
+        //新增降糖药
+        $(".addTexInput2").click(function(){
+            num2++;
+            var html='<div class="inlin-blok yw jiangtang-list">'+
+                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8010-'+num2+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8011-'+num2+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+                    '<label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8012-'+num2+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8013-'+num2+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+                    '<select class="clear yw-select" name="8014-'+num2+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000625">是</option>'+
+                    '<option value="1000626">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+                    '<select class="clear yw-select" name="8015-'+num2+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000629">规律</option>'+
+                    '<option value="1000630">间断</option>'+
+                    '<option value="1000631">不服药</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+                    '<select class="clear yw-select" name="8016-'+num2+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000633">是</option>'+
+                    '<option value="1000634">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '</div>';
+            $("#append-jiangtang").append(html);
+            $(".del-2").css("display","inline-block");
+        });
+        //新增降脂药
+        $(".addTexInput3").click(function(){
+            num3++;
+            var html='<div class="inlin-blok yw jiangzhi-list">'+
+                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8018-'+num3+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8019-'+num3+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+                    '<label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8020-'+num3+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8021-'+num3+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+                    '<select class="clear yw-select" name="8022-'+num3+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000661">是</option>'+
+                    '<option value="1000662">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+                    '<select class="clear yw-select" name="8023-'+num3+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000665">规律</option>'+
+                    '<option value="1000666">间断</option>'+
+                    '<option value="1000667">不服药</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+                    '<select class="clear yw-select" name="8024-'+num3+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000669">是</option>'+
+                    '<option value="1000670">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '</div>';
+            $("#append-jiangzhi").append(html);
+            $(".del-3").css("display","inline-block");
+        });
+        //新增其他药物
+        $(".addTexInput4").click(function(){
+            num4++;
+            var html='<div class="inlin-blok yw qita-list">'+
+                    '<label class="label-width">药物名称</label><input class="height-25 yaowu-name clear yw-answer" name="8026-'+num4+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用法</label><input class="height-25 clear yw-answer" name="8027-'+num4+'"  placeholder="请输入" style="direction: rtl;font-size: 14px;width: 158px;"/>'+
+                    '<label class="label-width">用量</label><input class="height-25 clear yw-answer" name="8028-'+num4+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width">用药时间</label><input class="height-25 clear yw-answer" name="8029-'+num4+'" placeholder="请输入" style="direction: rtl;font-size: 14px;"/>'+
+                    '<label class="label-width" style="width: 75%;">是否有低血糖反应</label>'+
+                    '<select class="clear yw-select" name="8030-'+num4+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000697">是</option>'+
+                    '<option value="1000698">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">服药依从性</label>'+
+                    '<select class="clear yw-select" name="8031-'+num4+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000701">规律</option>'+
+                    '<option value="1000702">间断</option>'+
+                    '<option value="1000703">不服药</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '<label class="label-width" style="width: 75%;">是否有药物不良反应</label>'+
+                    '<select class="clear yw-select" name="8032-'+num4+'" style="direction: rtl;width: 20%;font-size: 14px;">'+
+                    '<option value="">选择</option>'+
+                    '<option value="1000705">是</option>'+
+                    '<option value="1000706">否</option>'+
+                    '</select>'+
+                    '<span>&gt;</span>'+
+                    '</div>';
+            $("#append-qita").append(html);
+            $(".del-4").css("display","inline-block");
+        });
+
+        //保存
+        $("#save").click(function(){
+            //是否服药
+            var flag = true;
+/*            function check7(ob){
+                var result7=true;
+                $(ob).find("div input.yaowu-name").each(function(){
+                    if($(this).val()==''){
+                        result7=false;
+                    }
+                });
+                return result7;
+            }
+
+            if(!$("#jyy-1").is(":checked")) {
+                var result=check7("#append-jiangya");
+                if(!result){
+                    layer.open({content: '请输入降压药名称！',skin: 'msg',time: 2});
+                    flag = false;
+                    return false;
+                }
+            }
+            if(!$("#jty-1").is(":checked")) {
+                var result2=check7("#append-jiangtang");
+                if(!result2){
+                    layer.open({content: '请输入降糖药名称！',skin: 'msg',time: 2});
+                    flag = false;
+                    return false;
+                }
+            }
+            if(!$("#jzy-1").is(":checked")) {
+                var result3=check7("#append-jiangzhi");
+                if(!result3){
+                    layer.open({content: '请输入降脂药名称！',skin: 'msg',time: 2});
+                    flag = false;
+                    return false;
+                }
+            }
+            if(!$("#qty-1").is(":checked")) {
+                var result4=check7("#append-qita");
+                if(!result4){
+                    layer.open({content: '请输入其他药物名称！',skin: 'msg',time: 2});
+                    flag = false;
+                    return false;
+                }
+            }*/
+            if(flag){
+               var data=$.param({order_id:order_id,scope_flag:2})+'&'+ $('#form-supplementary-write').serialize();
+               $.ajax({
+                    url:"../../../diabetesDoc-app/updateAnswers.action",
+                    type:"post",
+                    dataType:'json',
+                    data:data,
+                    success:function(response){
+                        if(response.status=="1"){
+                            alert("保存成功！");
+                        }else{
+                            alert("添加失败！");
+                        }
+                    }
+               });
+            }
+        });
+        //选择隐藏显示
+        $(".bas-close").click(function(){
+            $(this).parents(".step2-list-ul").next(".data-show-or-hide").hide().find("li :input.clear").val("");
+        });
+        $(".bas-open").click(function(){
+            $(this).parents(".step2-list-ul").next(".data-show-or-hide").show();
+        });
+        //上一步 下一步
+        var step= $("#myStep").step();
+        $("#preBtn").click(function(event) {
+            var yes=step.preStep();//上一步
+            $("#nextBtn").show();
+            $("#save").hide();
+
+        });
+        $("#nextBtn").click(function(event) {
+            var yes;
+            $("#nav-title li").each(function(index){
+                var istrue=$(this).hasClass("step-active");
+                var val=$(this).attr("data_obj");
+                if(istrue){
+                    var flag=true;
+                    if(val==0){
+/*                        if($("input[name='5004']").val()=="" || $("input[name='5005']").val()==""){
+                            layer.open({content: '请输入空腹血糖！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+                        if($("input[name='5006']").val()=="" || $("input[name='5007']").val()==""){
+                            layer.open({content: '请输入随机血糖！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+                        if($("input[name='5008']").val()=="" || $("input[name='5009']").val()==""){
+                            layer.open({content: '请输入餐后2小时血糖！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+                        function check6(ob){//校验公共方法
+                            var result6=true;
+                            $(ob).each(function(){
+                                var vl=$(this).val();
+                                var _self=this;
+                                if(vl==""){
+                                    result6=false;
+                                }
+                            });
+                            return result6;
+                        }
+                        var result=check6("input.urinalysis");
+                        if(!result){
+                            layer.open({content: '请输入完整尿常规！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+
+                        if($("input[name='5019']").val()==""){
+                            layer.open({content: '请输入尿微量白蛋白！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+
+                        var result1=check6("input.renal");
+                        if(!result1){
+                            layer.open({content: '请输入完整肾功能！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+                        var result2=check6("input.blood-fat");
+                        if(!result2){
+                            layer.open({content: '请输入完整血脂！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }
+                        if($("input[name='5034']").val()==""){
+                            layer.open({content: '请输入糖化血红蛋白！',skin: 'msg',time: 2});
+                            flag=false;
+                            return false;
+                        }*/
+                        if(flag){
+                            var yes=step.nextStep();
+                            $("#nextBtn").hide();
+                            $("#save").show();
+                        }else{
+                            return false;
+                        }
+                        return false;
+                    }
+                    if(val==1){
+                        return false;
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

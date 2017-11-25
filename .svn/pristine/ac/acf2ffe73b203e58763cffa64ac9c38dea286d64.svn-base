@@ -1,0 +1,90 @@
+@charset "utf-8";
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+		"Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun,
+		sans-serif;
+}
+
+a{
+	color: black;	
+}
+ 
+.nav {
+	margin-top: 0.7rem;
+}
+
+.nav>ul {
+	display: flex;
+	justify-content: space-around;
+}
+
+.nav>ul>li>img {
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 0.4rem;
+	height: 1rem;
+}
+
+.nav>ul>li>span {
+	display: block;
+	width: 1.5rem;
+	text-align: center;
+}
+
+.content {
+	margin-bottom: 1rem;
+}
+
+.content .year {
+	height: 1rem;
+	background-color: #F0F0F0;
+	line-height: 1rem;
+	padding-left: 0.5rem;
+	margin-top: 0.5rem;
+	font-size: 0.4rem;
+}
+
+.content .item-list .item {
+	height: 2.5rem;
+	margin-top: 0.5rem;
+}
+
+.content .item-list .item>.time {
+	float: left;
+	line-height: 2.5rem;
+	margin-left: 0.5rem;
+	font-size: 0.4rem;
+}
+
+.content .item-list .item>.data {
+	float: left;
+	height: 100%;
+	display: flex;
+	align-items: center;
+}
+
+.content .item-list .item>.item-pic {
+	float: left;
+	height: 2rem;
+	margin-left: 0.5rem;
+	margin-top: 0.3rem;
+}
+
+.content .item-list .item>.data p {
+	font-size: 0.4rem;
+	margin: 0.1rem 0;
+	margin-left: 0.5rem;
+}
+
+.content .item-list .item>.jt {
+	float: right;
+	margin-right: 0.5rem;
+	margin-top: 1rem;
+	height: 0.5rem;
+}
+
+.content .data-no{
+	text-align: center;
+	margin-top: 2rem;
+}

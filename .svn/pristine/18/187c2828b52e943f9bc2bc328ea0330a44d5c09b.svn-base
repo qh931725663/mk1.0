@@ -1,0 +1,27 @@
+mkh.driverClassName=com.mysql.jdbc.Driver
+mkh.url=jdbc:mysql://192.168.1.52:3306/mkh_dev?characterEncoding=utf8&useSSL=true&noAccessToProcedureBodies=true
+mkh.username=dev_usr
+mkh.password=123456
+filters=stat
+maxActive=20
+initialSize=1
+maxWait=60000
+minIdle=10
+maxIdle=15
+timeBetweenEvictionRunsMillis=60000
+minEvictableIdleTimeMillis=300000
+validationQuery=SELECT 'x'
+testWhileIdle=true
+testOnBorrow=false
+testOnReturn=false
+maxOpenPreparedStatements=20
+removeAbandoned=true
+removeAbandonedTimeout=1800
+logAbandoned=true
+pictureuploadhttp=http://localhost:8080/
+pictureuploaddir=D:/Java/apache-tomcat-7.0.77/webapps/
+
+initPassword=123456
+
+mkh.admin.username=admin
+mkh.admin.password=5A375A2E2FF721EC76A3238A1843E926

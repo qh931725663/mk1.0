@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.chrondoc.controller;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+public class DiabetesDocAppController {
+
+}

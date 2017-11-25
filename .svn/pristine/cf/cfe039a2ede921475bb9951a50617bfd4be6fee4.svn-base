@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>健康设备</title>
+	<script src="../common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		.main{margin-top: 0.5rem ;}
+		.main img{width: 100%;}
+		.main ul{margin: 0 0.4rem;font-size: 0.4rem;}
+		.main ul li{margin-bottom:0.19rem;letter-spacing: 1px;}
+		.main ul li span:first-child{
+			display: inline-block;
+			vertical-align:middle;
+			margin-top:-0.1rem;
+			margin-right: 0.1rem;
+			border: 0.08rem solid #8E8E8E;
+			border-radius: 100%;
+		}
+		.main ul li span:last-child{color: #666;}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<img src="../common/image/healthScience/equipment.png"/>
+		<ul>
+			<li>
+				<span></span>
+				<span>名称 : </span>
+				<span>智能健康管理监测腕表</span>
+			</li>
+			<li>
+				<span></span>
+				<span>配置 : </span>
+				<span>腕表、指套式血氧探头</span>
+			</li>
+			<li>
+				<span></span>
+				<span>单价 : </span>
+				<span>RMB 1980/套</span>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>健康科普</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../common/css/reset.css"/>
+    <link rel="stylesheet" href="../common/css/main.css"/>
+    <style>
+        .container .health-science-list{padding: 25px 16px;}
+        .container .health-science-list li{margin-bottom: 20px;}
+        .health-science-list .health-science-text{margin-left: 20px;}
+        .health-science-list .health-science-text span:nth-child(1){margin-top: -30px;display: block;color: #3D3D3D;font-size: 17px;}
+        .health-science-list .health-science-text span:nth-child(2){display: block;font-size: 15px;margin-top: 10px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="health-science-list">
+        <li>
+            <a class="line-align-left" href="#">
+                <img src="../common/image/healthScience/heal_01.png" alt="" style="width: 30%;"/>
+                <div class="health-science-text">
+                    <span>孕期能做放射检查吗？</span>
+                    <span>研究表明胎儿只有收到高于...</span>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="line-align-left" href="#">
+                <img src="../common/image/healthScience/heal_02.png" alt="" style="width: 30%;"/>
+                <div class="health-science-text">
+                    <span>孕期能做放射检查吗？</span>
+                    <span>研究表明胎儿只有收到高于...</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

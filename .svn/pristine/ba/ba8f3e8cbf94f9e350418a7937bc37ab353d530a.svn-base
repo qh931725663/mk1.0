@@ -1,0 +1,227 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>计划管理</title>
+    <style type="text/css">
+        .table td {text-align: center;}
+        .table a {/* text-decoration: underline; */}
+        .lable_style{display: inline-block;width: 80px;text-align: left;}
+        .li_style{width:260px;margin-bottom:10px;}
+        .li_style2{width:620px;margin-bottom:10px;}
+        .select_style{height:31px;}
+        .collection-baseinfo input,select{width:150px;}
+        .ul_style{margin-bottom:10px;}
+        .btn_style{margin-left:10px;}
+    </style>
+</head>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont"></i>计划管理 <span class="c-gray en">&gt;</span>管理列表
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+    <form id="form-plan-management">
+        <div class="collection-baseinfo">
+            <ul class="f-l ul_style">
+                <li class="f-l li_style">
+                    <label class="lable_style">姓名：</label>
+                    <input type="text" class="input-text radius" name="user_name" placeholder="请输姓名" />
+                </li>
+                <li class="f-l li_style">
+                    <label class="lable_style">身份证号：</label>
+                    <input type="text" class="input-text radius" name="user_card" placeholder="请输身份证" />
+                </li>
+                <li class="f-l li_style">
+                    <label class="lable_style">慢病类型：</label>
+                    <select class="radius select_style chronic" data-type="chronic" name="chronic">
+                        <option value="">全部</option>
+                        <option value="114">高血压</option>
+                        <option value="110">糖尿病</option>
+                        <option value="113">高脂血症</option>
+                        <option value="105">慢性阻塞性肺病 </option>
+                    </select>
+                </li>
+                <li class="f-l li_style">
+                    <label class="lable_style">家庭医生：</label>
+                    <input type="text" class="input-text radius" name="doctor_name" placeholder="家庭医生" />
+                </li>
+                <li class="f-l li_style">
+                    <button type="button" class="btn btn-success btn_style radius btn-search"><i class="Hui-iconfont">&#xe665;</i>&nbsp;查询</button>
+                    <button type="button" class="btn btn-danger btn_style radius btn-clean"><i class="Hui-iconfont">&#xe72a;</i>&nbsp;清空</button>
+                </li>                
+            </ul>
+        </div>
+    </form>
+    <table class="table table-border table-bordered table-bg table-hover table-striped plan-tablelist">
+        <thead>
+        <tr class="text-c">
+            <th>序号</th>
+            <th>姓名</th>
+            <th>身份证</th>
+            <th>手机号</th>
+            <th>家庭医生</th>
+            <th style="width:300px;">慢病类型</th>
+            <th>高血压档案</th>
+            <th>糖尿病档案</th>
+        </tr>
+        </thead>
+        <tbody class="plan-tbody">
+        </tbody>
+    </table>
+    <div id="Pagination" class="pagination"></div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+<script type="text/javascript">
+$(function(){
+    //用户管理初始化加载数据
+    getDataList(0,null);
+    //条件查询
+    var initFlag2="";
+    $(".btn-search").click(function(){
+        initFlag2=true;
+        getDataList(0,null);
+    });
+
+    var initFlag = true;
+    //查询函数
+    function getDataList(currPage, jg) {
+        var data=$.param({pageno :currPage+1})+'&'+ $('#form-plan-management').serialize();
+        mkh.ajax({
+            url : "../../../chronicRecord/pageData.action",
+            type : "post",
+            dataType : 'json',
+            data : data,
+            success : function(response) {
+                var page_count=response.data.recordCount;
+                if (initFlag) {
+                    $("#Pagination").pagination(page_count,{
+                        callback : getDataList//回调函数
+                    });
+                    initFlag = false;
+                }
+                if (initFlag2) {
+                    $("#Pagination").pagination(page_count,{
+                        callback : getDataList//回调函数
+                    });
+                    initFlag2 = false;
+                }
+                //调用数据展示函数
+                show_list(response);
+            }
+        });
+    }
+
+    //数据展示公共函数
+    function show_list(response){
+        var html ="";
+        var pn=response.data.pageNo;
+        var num=(pn-1)*10+1;
+        $.each(response.data.data, function(i,p){
+            html +="<tr class='text-c'>"+
+            "<td>"+(num+i)+"</td>"+
+            "<td>"+p.user_name+"</td>"+
+            "<td>"+p.user_card+"</td>"+
+            "<td>"+p.user_phone+"</td>"+
+            "<td>"+p.doctor_name+"</td>"+
+            "<td>"+p.chronic_name+"</td>"+
+            "<td class='td-manage'>"+
+            "<span class='btn btn-primary btn-user-edit radius' style='margin-right:15px;' onclick='add_hypertension("+p.user_id+")'><i class='Hui-iconfont'>&#xe60c;</i>添加</span>" +           
+            "<span class='btn btn-primary btn-user-edit radius'><i class='Hui-iconfont'>&#xe60c;</i>档案计划列表</span>" +
+            "</td>"+
+            "<td class='td-manage'>"+
+            "<span class='btn btn-primary btn-user-edit radius' style='margin-right:15px;' onclick='add_diabetes("+p.user_id+")'><i class='Hui-iconfont'>&#xe60c;</i>添加</span>" +           
+            "<span class='btn btn-primary btn-user-edit radius' onclick='user_detail("+p.user_id+")'><i class='Hui-iconfont'>&#xe60c;</i>档案计划列表</span>" +
+            "</td>"+
+            "</tr>";
+        });
+        $(".plan-tablelist .plan-tbody").html(html);
+        $(".page-count").html(response.data.pageCount);
+    }
+});
+
+//获取返回order_id
+function test(user_id){
+	var orderId=""; 
+	$.ajax({
+       	url : "../../../diabetesDoc-app/addDoc.action",
+       	type : "post",
+       	async:false,
+       	dataType : 'json',
+       	data : {patient_id:user_id},
+       	success : function(response) {
+       		orderId=response.data;
+ 		}
+	});
+	return orderId;
+
+}
+function test1(user_id){
+	var orderId1=""; 
+	$.ajax({
+       	url : "../../../hypertension-app/addNewHypertension.action",
+       	type : "post",
+       	async:false,
+       	dataType : 'json',
+       	data : {patient_id:user_id},
+       	success : function(response) {
+       		orderId1=response.data;
+ 		}
+	});
+	return orderId1;
+
+}
+/*高血压入口*/
+function add_hypertension(user_id){
+	var order_id=test1(user_id);
+	if(order_id==0){
+		layer.msg("本年慢病档案已经存在，无法添加新的计划！");
+	}else{
+		window.location.href = "chronicDisease-hypertension-index.html?order_id="+order_id;
+	}
+}
+/*糖尿病入口*/
+function add_diabetes(user_id){
+	var order_id=test(user_id);
+	if(order_id==0){
+		layer.msg("本年慢病档案已经存在，无法添加新的计划！");
+	}else{
+		window.location.href = "chronicDisease-file-index.html?order_id="+order_id;
+	}
+}
+</script>
+</body>
+</html>

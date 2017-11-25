@@ -1,0 +1,164 @@
+package com.haaa.cloudmedical.platform.survey.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.SurveyDao;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+@Log(name = "调查管理")
+public class SurveyService {
+
+    @Autowired
+    private SurveyDao dao;
+
+    // 获取人员信息
+    public Map<String, Object> getUserInfo(String user_id) {
+        Map<String, Object> user = null;
+        String sql = "select a.user_name,a.user_card,a.user_birthday,findname(a.user_sex) user_sex,a.user_phone,a.email,a.user_address from	n_user a where a.user_id = ?";
+        List<Map<String, Object>> list = dao.select(sql, user_id);
+        if (list.size() > 0) {
+            user = list.get(0);
+        }
+        return user;
+    }
+
+    //更新人员信息
+    public void updateUserInfo(User user) {
+        dao.update(user, "n_user");
+    }
+
+    // 新建一份健康调查
+    @Log(name = "新建健康调查")
+    public long addSurvey(Map<String, Object> survey) {
+        long order_id = 0;
+        try {
+            order_id = dao.insert(survey, "s_survey");
+            initSurvey(order_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order_id;
+    }
+
+    // 初始化调查问题
+    public void initSurvey(long order_id) {
+        String sql = "insert into s_survey_question(survey_order_id,question_k_order_id,survey_question_content,survey_question_type,create_date) select ?,order_id,survey_question_content,survey_question_type,now() from s_survey_question_k";
+        try {
+            dao.execute(sql, order_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 保存答案
+    @Log(name = "保存答案")
+    public void saveAnswer(List<Map<String, Object>> answer_list) {
+        List<Long> values = new ArrayList<Long>();
+        for (Map<String, Object> map : answer_list) {
+            try {
+                long order_id = dao.insert(map, "s_survey_answer");
+                values.add(order_id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                String sql = "delete from s_survey_question where order_id in (" + StringUtils.repeat("?", ",", values.size()) + ")";
+                dao.execute(sql, values.toArray());
+            }
+
+        }
+
+    }
+
+    // 获取问题健康评估问题列表
+    public List<Map<String, Object>> getSurveyQuestionList(long survey_order_id) {
+        String sql = "select * from s_survey_question where survey_order_id = ?";
+        List<Map<String, Object>> question_list = dao.select(sql, survey_order_id);
+        return question_list;
+    }
+
+    public String getSurveyAnswerContent(long survey_option_order_id) {
+        String sql = "select survey_option_content from s_survey_option where order_id = ?";
+        System.out.println(survey_option_order_id);
+        String survey_option_content = dao.select(sql, new Object[] { survey_option_order_id }, String.class);
+        return survey_option_content;
+    }
+
+    public List<Map<String, Object>> querySurvey(String user_id, String start, String end) {
+        //查询调查
+        String sql = "select a.*, date_format(a.create_date,'%Y-%m-%d') date from s_survey a where user_id = ?";
+        List<Map<String, Object>> list = null;
+        //时间
+        if (StringUtil.isBlank(start) && StringUtil.isNotBlank(end)) {
+            sql += " and create_date <= ? order by a.create_date desc";
+            list = dao.select(sql, user_id, end);
+        } else if (StringUtil.isNotBlank(start) && StringUtil.isBlank(end)) {
+            sql += " and create_date >= ? order by a.create_date desc";
+            list = dao.select(sql, user_id, start);
+        } else if (StringUtil.isNotBlank(start) && StringUtil.isNotBlank(end)) {
+            sql += " and create_date >= ? and create_date <= ? order by a.create_date desc";
+            list = dao.select(sql, user_id, start, end);
+        } else {
+            sql += " order by a.create_date desc";
+            list = dao.select(sql, user_id);
+        }
+        //
+        for (Map<String, Object> map : list) {
+            String order_id = map.get("order_id").toString();
+            sql = "select a.*, b.question_k_order_id from s_survey_answer a, s_survey_question b where b.order_id = a.survey_question_order_id and a.survey_order_id = "
+                  + order_id;
+            List<Map<String, Object>> answers = dao.select(sql);
+            map.put("answers", answers);
+        }
+        return list;
+    }
+
+    public void saveChronicManage(String question_k_order_id, Map<String, Object> question, String user_id) {
+        //高血压 900002
+        if ("114".equals(question_k_order_id) && "是".equals(question.get("survey_option_content"))) {
+            this.saveChronicManage(user_id, "900002", "高血压 ", "临床评估", "1", null);
+            this.saveChronicManage(user_id, "900002", "高血压 ", "血清肌酐酸检测", "1", null);
+            //高脂血症 900003
+        } else if ("113".equals(question_k_order_id) && "是".equals(question.get("survey_option_content"))) {
+            this.saveChronicManage(user_id, "900003", "高脂血症  ", "血脂检测", "1", null);
+            //糖尿病   900001
+        } else if ("110".equals(question_k_order_id) && "是".equals(question.get("survey_option_content"))) {
+            this.saveChronicManage(user_id, "900001", "糖尿病  ", "临床评估", "2", null);
+            this.saveChronicManage(user_id, "900001", "糖尿病  ", "糖化血红蛋白检测", "2", null);
+            this.saveChronicManage(user_id, "900001", "糖尿病  ", "血清肌酸酐检测", "1", null);
+            this.saveChronicManage(user_id, "900001", "糖尿病  ", "血脂检测", "1", null);
+            this.saveChronicManage(user_id, "900001", "糖尿病  ", "尿白蛋白/尿肌酐比率测定和总蛋白测定", "1", "若患者没有肾病或者血管紧张素转化酶抑制剂/血管紧张素受体阻滞剂的治疗");
+            //慢性阻塞性肺病    900004 
+        } else if ("106".equals(question_k_order_id) && "是".equals(question.get("survey_option_content"))) {
+            this.saveChronicManage(user_id, "900004", "慢性阻塞性肺病   ", "临床评估", "1", null);
+            this.saveChronicManage(user_id, "900004", "慢性阻塞性肺病   ", "肺活量测试", "1", null);
+        }
+
+    }
+
+    private void saveChronicManage(String user_id, String chronic_code, String chronic_name, String manage_text, String check_target,
+                                   String remarks) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_id", user_id);
+        map.put("chronic_code", chronic_code);
+        map.put("chronic_name", chronic_name);
+        map.put("manage_text", manage_text);
+        map.put("check_target", check_target);
+        map.put("remarks", remarks == null ? manage_text : remarks);
+        map.put("chronic_source", "900005");
+        map.put("check_num", "0");
+        map.put("create_date", DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        map.put("is_end", "102");
+        dao.insert(map, "m_chronic_manage");
+    }
+}

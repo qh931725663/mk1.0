@@ -1,0 +1,87 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="view/lib/html5shiv.js"></script>
+	<script type="text/javascript" src="view/lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="view/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="view/static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="view/lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="view/static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="view/static/h-admin/css/main.css" />
+<!--[if IE 6]>
+	<script type="text/javascript" src="view/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>美康惠健康管理系统</title>
+</head>
+<body>
+<aside class="Hui-aside">
+	<div class="menu_dropdown bk_2" id="menu-btn">
+
+
+	</div>
+</aside>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="view/lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="view/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="view/static/h-admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="view/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+<script type="text/javascript">
+	var json = [
+		{ "MID": "M001", "MName": "用户中心", "Url": "#", "menulist": [
+			{ "MID": "M0010", "MName": "运营用户", "Url": "#", "menulist": ""},
+			{ "MID": "M0011", "MName": "会员用户", "Url": "#", "menulist": "" }
+		] },
+		{ "MID": "M002", "MName": "权限管理", "Url": "#", "menulist":
+				[
+					{ "MID": "M0020", "MName": "权限管理1", "Url": "#"},
+					{ "MID": "M0021", "MName": "角色管理", "Url": "#", "menulist": "" }
+				]
+		}
+	];
+	$(function(){
+		var json2 = [
+			{ "MID": "M001", "MName": "用户中心", "Url": "#", "menulist":"" },
+			{ "MID": "M002", "MName": "权限管理", "Url": "#", "menulist":"" }
+		];
+
+	});
+
+
+	/*
+	var html="";
+	var html2="";
+	var dl="";
+	$.each(json,function(k,v){
+		dl=$('<dl class="menu-admin"></dl>');
+		$("#menu-btn").append(dl);
+		console.log(v.MName);
+		html=`<dt>${v.MName}</dt>`;
+		$(".menu-admin").append(html);
+		$.each(v,function(kk,vv){
+			if(kk==='menulist'){
+				$.each(vv,function(kkk,vvv){
+					console.log(vvv);
+					console.log('2');
+				html2+=`<dd>${vvv.MName}</dd>`;
+				})
+				$(".menu-admin").append(html2);
+			}
+		})
+	});*/
+</script>
+</body>
+</html>

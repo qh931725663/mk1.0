@@ -1,0 +1,147 @@
+package com.haaa.cloudmedical.platform.hospital.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.HospitalDao;
+import com.haaa.cloudmedical.entity.Department;
+import com.haaa.cloudmedical.entity.Hospital;
+
+@Service
+public class HospitalService {
+	
+	@Autowired
+	private HospitalDao dao;
+	
+	//分页查询
+	public Page gridQuery(Hospital hospital,String startDate,String endDate,int pageno){
+		StringBuilder sql = new StringBuilder("select order_id,hosp_name,area_id,create_date,hosp_level,hosp_icon,hosp_property from k_hosp where 1=1");
+		List<String> values = new ArrayList<>();
+		String hosp_name = hospital.getHosp_name();
+		if(hosp_name!=null&&!"".equals(hosp_name)){
+			sql.append(" and hosp_name like ? ");
+			values.add(hosp_name);
+		}
+		String area_id = hospital.getArea_id();
+		if(area_id!=null&&!"".equals(area_id)){
+			sql.append(" and area_id = ? ");
+			values.add(area_id);
+		}
+		String hosp_level = hospital.getHosp_level();
+		if(hosp_level!=null&&!"".equals(hosp_level)){
+			sql.append(" and hosp_level = ? ");
+			values.add(hosp_level);
+		}
+		String hosp_property = hospital.getHosp_property();
+		if(hosp_property!=null&&!"".equals(hosp_property)){
+			sql.append(" and hosp_property = ? ");
+			values.add(hosp_property);
+		}
+		if(startDate!=null&&!"".equals(startDate)){
+			sql.append(" and date_format(create_date,'%Y-%m-%d') >= ? ");
+			values.add(startDate);
+		}
+		if(endDate!=null&&!"".equals(endDate)){
+			sql.append(" and date_format(create_date,'%Y-%m-%d') <= ? ");
+			values.add(endDate);
+		}
+		Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+		return page;		
+	}
+	
+	//新增一家医院
+	public ResponseDTO addHospital(Hospital hospital,String department_name){
+		ResponseDTO dto = new ResponseDTO();
+		String[] department_names = department_name.split(",");
+		String sql = "select * from k_department where hosp_order_id = ? and department_name = ? ";
+		try{
+			long order_id = dao.insert(hospital, "k_hosp");
+			for (String name : department_names) {
+				if(dao.select(sql, order_id,department_name).size()==0){
+					Department department = new Department();
+					department.setDepartment_name(name);
+					department.setHosp_order_id(String.valueOf(order_id));
+					department.setCreate_date(DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+					try{
+						dao.insert(department, "k_department");
+						dto.setFlag(true);
+					}catch(Exception e){
+						dto.setErrmsg("添加科室失败");
+						e.printStackTrace();
+					}
+				}
+			}
+		}catch(Exception e){
+			dto.setErrmsg("添加医院失败");
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
+	//修改医院信息
+	public ResponseDTO modifyHospital(Hospital hospital,String department_name){
+		ResponseDTO dto = new ResponseDTO();
+		String hosp_order_id =hospital.getOrder_id();
+		String[] department_names = department_name.split(",");
+		String sql = "select * from k_department where hosp_order_id = ? and department_name = ? ";
+		try{
+			dao.update(hospital, "k_hosp");
+			for (String name : department_names) {
+				if(dao.select(sql, hosp_order_id,department_name).size()==0){
+					Department department = new Department();
+					department.setDepartment_name(name);
+					department.setHosp_order_id(hosp_order_id);
+					department.setCreate_date(DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+					try{
+						dao.insert(department, "k_department");
+						dto.setFlag(true);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
+	//删除科室
+	public ResponseDTO deleteDepartment(String department_order_id){
+		String sql = "delete from k_department where order_id = ? ";
+		dao.execute(sql, department_order_id);
+		dao.execute("update d_doctor ser department_order_id = '' where department_order_id = ? ",department_order_id);
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		return dto;
+	}
+	
+	//获取医院信息
+	public ResponseDTO getHospitalInfo(String order_id){
+		StringBuilder sql = new StringBuilder();
+		sql.append("select a.order_id,a.hosp_name,a.area_id,a.hosp_level,a.hosp_property,a.hosp_icon from k_hosp a where a.order_id = ? ");
+		/*String sql="select a.order_id,a.hosp_name,a.area_id,a.hosp_level,a.hosp_property,a.hosp_icon,b.order_id b.department_order_id,"
+				+ "b.department_name from k_hosp a,k_department b where a.order_id = b.hosp_order_id and a.order_id = ? ";*/
+		List<Map<String,Object>> hospList = dao.select(sql.toString(), order_id);
+		
+		sql.setLength(0);
+		sql.append("select b.order_id b.department_order_id,b.department_name from k_department b where b.hosp_order_id = ? ");
+		List<Map<String,Object>> departmentList = dao.select(sql.toString(), order_id);
+		ResponseDTO dto = new ResponseDTO();
+		if(hospList.size()>0){
+			Map<String,Object> hosp = hospList.get(0);
+			hosp.put("departmentList", departmentList);
+			dto.setData(hosp);
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+}

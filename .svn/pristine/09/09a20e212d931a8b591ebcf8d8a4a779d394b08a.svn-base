@@ -1,0 +1,62 @@
+package com.haaa.cloudmedical.app.plan;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+
+public class TestPlan {
+    
+    @Test
+    public void testGetList(){
+        Map<String,String> map = new HashMap();
+        map.put("user_id", "1241");
+        map.put("type", "900001");
+        String url = "http://localhost:8080/mkh1.0/plan-app/getList.action";
+        Map<String, String> request = NativeHTTPUtil.sendPostRequest(url, map, "UTF-8");
+        System.out.println("HTT响应正文如下");  
+        System.out.println(request.get("respBody"));  
+    }
+    
+    @Test
+    public void testAddPlan(){
+        Map<String,String> map = new HashMap();
+        map.put("user_id", "1241");
+        map.put("chronic_code", "900001");
+        map.put("chronic_name", "糖尿病");
+        map.put("manage_text", "管理内容");
+        map.put("check_target", "2");
+        map.put("remarks", "糖尿病");
+        map.put("chronic_source", "900005");
+        String url = "http://localhost:8080/mkh1.0/plan-app/addPlan.action";
+        Map<String, String> request = NativeHTTPUtil.sendPostRequest(url, map, "UTF-8");
+        System.out.println("HTT响应正文如下");  
+        System.out.println(request.get("respBody"));  
+    }
+    
+    @Test
+    public void testUpdatePlan(){
+        Map<String,String> map = new HashMap();
+        map.put("order_id", "677");
+        map.put("chronic_code", "900001");
+        map.put("chronic_name", "糖尿病1");
+        map.put("manage_text", "管理内容1");
+        map.put("check_target", "3");
+        map.put("remarks", "糖尿病1");
+        map.put("chronic_source", "900005");
+        String url = "http://localhost:8080/mkh1.0/plan-app/updatePlan.action";
+        Map<String, String> request = NativeHTTPUtil.sendPostRequest(url, map, "UTF-8");
+        System.out.println("HTT响应正文如下");  
+        System.out.println(request.get("respBody"));  
+    }
+    
+    @Test
+    public void testGetTemplateList(){
+        Map<String,String> map = new HashMap();
+        map.put("type", "900001");
+        String url = "http://localhost:8080/mkh1.0/plan-app/getTemplateList.action";
+        Map<String, String> request = NativeHTTPUtil.sendPostRequest(url, map, "UTF-8");
+        System.out.println("HTT响应正文如下");  
+        System.out.println(request.get("respBody"));  
+    }
+}

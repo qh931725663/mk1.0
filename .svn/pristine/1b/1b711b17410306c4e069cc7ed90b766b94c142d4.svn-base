@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>管理计划列表</title>
+    <style type="text/css">
+    	.header{margin: 50px auto;width:60%;}
+        .table td {text-align: center;}
+        .table a {/* text-decoration: underline; */}
+        .lable_style{display: inline-block;width: 80px;text-align: left;}
+        .li_style{width:260px;margin-bottom:10px;}
+        .li_style2{width:620px;margin-bottom:10px;}
+        .select_style{height:31px;}
+        .collection-baseinfo input,select{width:150px;}
+        .ul_style{margin-bottom:10px;}
+        .btn_style{margin-left:10px;}
+    </style>
+</head>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont"></i>慢病管理 <span class="c-gray en">&gt;</span>糖尿病列表
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container header">
+	<input type="hidden" id="order_id" value=""/>
+	<table class="table table-border table-bordered table-bg table-hover table-font">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>管理级别</th>
+				<th>创建时间</th>
+				<th>状态</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="plan-tbody"></tbody>
+	</table>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		//获取地址栏order_id方法
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		var order_id=getUrlParam("order_id");
+		$("#order_id").val(order_id);
+		/* 加载信息 */
+		getinfo(order_id);
+		function getinfo(order_id){
+			$.ajax({
+				url: "../../../diabetesDoc-app/getDocList.action",
+				type: "GET",
+				dataType: 'json',
+				data: {patient_id : order_id},
+				success: function(list){
+					if(list.status==1){
+						var html = "";
+						$.each(list.data,function(i,m){
+							html +='<tr><td>'+(i+1)+'</td><td>'+(m.level==null?"":m.level=='2400005'?'强化管理':'常规管理')+'</td><td>'+m.create_time+'</td><td>'+(m.status == 0 ?"进行中":"已完成")+'</td><td><span class="btn btn-primary btn-user-edit radius" onclick="goIndex('+m.order_id+')">查看</span></td></tr>';
+						});
+						$(".plan-tbody").append(html);
+					}
+				}
+			});
+		}
+	});
+	/* 计划管理 */
+	function goIndex(order_id){
+		window.location.href = "chronicDisease-file-index.html?order_id="+order_id;
+	}
+</script>
+</body>
+</html>

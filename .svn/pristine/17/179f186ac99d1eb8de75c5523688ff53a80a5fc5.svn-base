@@ -1,0 +1,29 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class SurveyDao extends BaseTemplateDao{
+	
+	public <T>T select(String sql,Object[] args,Class<T> cla){
+		T value=this.jdbcTemplate.queryForObject(sql, args, cla);
+		return value;
+	}
+	
+	
+	public List<Map<String, Object>> getTimeList(String user_id){
+		String sql = "select a.*, date_format(a.create_date,'%Y-%m-%d') date from s_survey a where user_id = ?";
+	    return jdbcTemplate.queryForList(sql, user_id);
+	}
+
+	
+	public List<Map<String, Object>> getDetail(String order_id){
+		String sql = "select a.*, b.question_k_order_id from s_survey_answer a, s_survey_question b where b.order_id = a.survey_question_order_id and a.survey_order_id = ?";
+		return jdbcTemplate.queryForList(sql, order_id);
+	}
+}

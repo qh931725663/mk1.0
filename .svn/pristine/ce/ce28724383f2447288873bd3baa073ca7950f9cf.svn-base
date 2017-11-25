@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>新增用户 </title>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-member-edit" enctype="multipart/form-data">
+        <div class="row cl member-list-input">
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <input type="text"  readonly="true"  id="user_name" name="user_name" style="width: 240px;border: none;">
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>身份证号</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <input id="user_card" readonly="true" name="user_card" style="width:240px;border:none;">
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>家庭医生:</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <input id="doctor_id" class="input-text" name="doctor_id" placeholder="编号/身份证号" style="width:240px;">
+                </div>
+                <span id="doctor_id_mes" style="color:#d22f4c;"></span>
+            </div>
+
+
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>手机号码</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <input id="user_phone" class="input-text" readonly="true"  placeholder="可填子女手机号" name="user_phone" style="width:240px;border:none;">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <input id="email" class="input-text"  name="email" style="width:240px;">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">医生卡号</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <input type="text" class="input-text" placeholder="请输入医保卡号" id="user_medicare_card" name="user_medicare_card" style="width:240px;">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <span class="select-box" style="width:140px;">
+                        <select id="user_sex" class="select" name="user_sex" size="1" disabled="true" style="border: none;">
+                            <option id="sex-search" value="0" selected>请选择</option>
+                            <option id="sex-man" value="200001">男</option>
+                            <option id="sex-wen" value="200002">女</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄</label>
+                <div class="formControls col-xs-5 col-sm-5">
+<!--
+                    <input id="user_age" readonly="true" name="user_age" style="border: none;width:35px;">
+-->
+                    <span id="user_age"></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">身&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;高</label>
+                <div class="formControls col-xs-5 col-sm-5">
+                    <input id="user_height" class="input-text" name="user_height" style="width:220px;">
+                    <span>cm</span>
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">体&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;重</label>
+                <div class="formControls col-xs-5 col-sm-5">
+                    <input id="user_weight" class="input-text" name="user_weight" style="width:220px;">
+                    <span>kg</span>
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">Q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q</label>
+                <div class="formControls col-xs-5 col-sm-5">
+                    <input id="qq" class="input-text" name="qq" style="width:220px;">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">微&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;信</label>
+                <div class="formControls col-xs-5 col-sm-5">
+                    <input id="wechat" class="input-text" name="wechat" style="width:220px;">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">血&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型</label  >
+                <div class="formControls col-xs-7 col-sm-7">
+                    <span class="select-box" style="width:140px;">
+                        <select id="user_blood" class="select" name="user_blood" size="1">
+                            <option value="100001" selected>A型</option>
+                            <option value="100002">B型</option>
+                            <option value="100003">AB型</option>
+                            <option value="100004">O型</option>
+                            <option value="57">其他</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">婚姻状况</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <select id="user_marriage" class="select" name="user_marriage" size="1" style="height:30px;width: 140px;">
+                        <option value="300002">未婚</option>
+                        <option value="300001">已婚</option>
+                        <option value="300003">离婚</option>
+                        <option value="300004">丧婚</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 member-input-1" >
+                <label class="form-label col-xs-2 col-sm-2">费用类型</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <span class="select-box" style="width:140px;">
+
+                        <select id="user_medical_burden"  class="select" name="user_medical_burden" size="1">
+                            <option value="1300002">医保</option>
+                            <option value="1300001">自费</option>
+                            <option value="1300003">商业保险</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <h5 class="form-label col-xs-2 col-sm-2">身份证照</h5>
+                <div style="display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;margin:15px 0 -24px 15px">
+                    <div style="margin-right: 10px;">
+                        <img src="../images/idcard_01.png" class='bor'  id="look_img" style="width:170px;height:130px;cursor: pointer;" onclick="javascript:$('#image').click()">
+                        <p class="text-c">正面</p>
+                        <input class="file" id="image" name="image" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+					<span class="btn-upload form-group">
+						<input type="file" multiple name="image-1" class="input-file">
+					</span>
+                    </div>
+                    <div>
+                        <img src="../images/idcard_02.png" class='bor'  id="look_img2" style="width:170px;height:130px;cursor: pointer" onclick="javascript:$('#image2').click()">
+                        <p class="text-c">反面</p>
+                        <input class="file" id="image2" name="image2" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+					<span class="btn-upload form-group">
+						<input type="file" multiple name="image2-1" class="input-file">
+					</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-2">
+                <button class="btn btn-success radius" type="button" onclick="member_edit();">保存</button>
+                <button class="btn btn-danger radius" type="button" onclick="layer_close()">取消</button>
+            </div>
+        </div>
+    </form>
+</article>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/verification-check.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/jquery.validation/js/jquery.validate.js"></script>
+<script type="text/javascript">
+    var ulist="";
+    var user_id="";
+    var c_menu_code="";
+    $(function(){
+        //获取地址栏的参数
+        var a = window.location.href;
+        var s=a.indexOf("?");
+        var t=a.substring(s+1);
+        ulist=t.split("&");
+        user_id=ulist[1];
+        c_menu_code=ulist[0];
+        $.ajax({
+            url:"../../../user-platform/query.action",
+            type:"post",
+            dataType:'json',
+            data:{user_id:user_id,user_type:"1500001"},
+            success:function(p) {
+                console.log(p);
+                $("#user_name").val(p.user_name);
+                $("#user_card").val(p.user_card);
+                $("#doctor_id").val(p.doctor_id);
+                $("#user_phone").val(p.user_phone);
+                $("#email").val(p.email);
+                $("#user_medicare_card").val(p.user_medicare_card);
+                $("#user_sex  option[value='"+p.user_sex+"']").attr("selected",true);
+                $("#user_age").html(p.user_age);
+                $("#user_height").val(p.user_height);
+                $("#user_weight").val(p.user_weight);
+                $("#qq").val(p.qq);
+                $("#wechat").val(p.wechat);
+                $("#user_blood  option[value='"+p.user_blood+"']").attr("selected",true);
+                $("#user_marriage  option[value='"+p.user_marriage+"']").attr("selected",true);
+                $("#user_medical_burden  option[value='"+p.user_medical_burden+"']").attr("selected",true);
+                if(p.user_card_front_upload_index!="" || p.user_card_back_upload_index!=""){
+                    $("#look_img").attr("src",p.user_card_front_upload_index);
+                    $("#look_img2").attr("src",p.user_card_back_upload_index);
+                }
+
+            }
+        });
+    });
+    //点击修改
+    function member_edit(){
+        //调用会员编辑校验
+        var result=member_add_check();
+        if(result){
+            var data=$.param({user_id:user_id,c_menu_code:c_menu_code})+'&'+ $('#form-member-edit').serialize();
+            $.ajax({
+                url:"../../../user-platform/modifyMember.action",
+                type:"post",
+                dataType:'json',
+                data:data,
+                success:function(response){
+                    if(response){
+                        upload_image(user_id);
+                        layer.msg('修改成功!');
+                        setTimeout(function () {
+                            parent.location.reload();
+                            layer_close()
+                        }, 1000);
+                    }else{
+                        layer.msg("修改失败！");
+                    }
+                }
+            });
+        }
+    }
+    //保存上传图片
+    function upload_image(user_id){
+        console.log(user_id);
+        var data=new FormData($("#form-member-edit")[0]);
+        $.ajax({
+            type:"post",
+            url:"../../../upload/file.action",
+            headers:{user_id:user_id,report_type:'500005',user_type:"2"},
+            data:data,
+            dataType:"json",
+            processData:false,
+            contentType:false,
+            success:function(data){
+                console.log(data);
+                files = data;
+            }
+        });
+    }
+
+    //上传身份证组件
+    function upload_img(up_img,show_img){
+        $(up_img).change(function() {
+            var file = this.files[0];
+            var r = new FileReader();
+            r.readAsDataURL(file);
+            $(r).load(function() {
+                $(show_img).attr({src:this.result,class:'no-bor'});
+            })
+        })
+    }
+    upload_img("#image","#look_img");
+    upload_img("#image2","#look_img2");
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

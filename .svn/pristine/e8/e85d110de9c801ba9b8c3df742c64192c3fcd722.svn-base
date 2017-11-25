@@ -1,0 +1,300 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>管理员列表</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		会员管理 <span class="c-gray en">&gt;</span> 会员管理
+		<a class="btn btn-danger radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+<div class="page-container">
+	<form id="form">
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:50px;">姓&nbsp;&nbsp;&nbsp;名</span>
+			<input type="text" class="input-text input-width radius" id="user_name"  name="user_name" placeholder="请输入姓名"/>
+			<span class="ml-5" style="display:inline-block;width:59px;">身&nbsp;&nbsp;份&nbsp;&nbsp;证</span>
+			<input type="text" class="input-text input-width radius" id="user_card" name="user_card" placeholder="请输入身份证">
+			<span class="ml-5" style="display:inline-block;width:58px;">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</span>
+			<select class="radius" id="user_sex" name="user_sex" style="height:30px;width:94px;">
+				<option value="" selected>全部</option>
+				<option value="200001">男</option>
+				<option value="200002">女</option>
+			</select>
+			<span style="display:inline-block;width:59px;">会员等级</span>
+			<select class="radius" id="user_is_vip" name="user_is_vip" style="height:30px;width:97px;">
+				<option value="" selected>全部</option>
+				<option value="101">vip会员</option>
+				<option value="102">普通会员</option>
+			</select>
+			<button type="button" class="btn btn-danger btn-search radius">查询</button>
+			<button type="button" class="btn btn-danger btn_style btn-clean radius">清空</button>
+			<button type="button" class="btn btn-success f-r ml-5 radius member_batch_upload" >批量导入</button>
+			<button type="button" class="btn btn-success btn-member-add radius f-r">新增</button>
+		</div>
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:50px;">手机号</span>
+			<input type="text" class="input-text input-width radius" id="user_phone"  name="user_phone" placeholder="请输入手机号"/>
+			<span class="ml-5" style="display:inline-block;width:58px;">家庭医生</span>
+			<input type="text" class="input-text input-width radius" id="doctor_name"  name="doctor_name" placeholder="请输入家庭医生"/>
+			<span class="ml-5">创建时间</span>
+			<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="startDate" placeholder="开始日期" class="input-text Wdate" style="width:120px;">
+			至
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="endDate" placeholder="结束日期" class="input-text Wdate" style="width:120px;">
+		</div>
+	</form>
+	<table class="table table-border table-bordered table-striped table-bg table-hover member-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>姓名</th>
+				<th>身份证号</th>
+				<th>手机号</th>
+				<th>会员等级</th>
+				<th>医院</th>
+				<th>科室</th>
+				<th>家庭医生</th>
+				<th>性别</th>
+				<th style="display: none;">年龄</th>
+				<th>婚姻状况</th>
+				<th>创建日期</th>
+				<th>操作</th>
+				<th style="display:none;">上传身份证</th>
+			</tr>
+		</thead>
+		<tbody class="member-tbody">
+		</tbody>
+	</table>
+		<div id="Pagination" class="pagination"></div>
+</div>
+<div id="layer_idcard_upload" style="width:100%;display:none;">
+		<div style="background:#5eb95e;height:30px;padding:5px 0 5px 5px;line-height: 30px;color:#fff;">上传身份证</div>
+		<div>
+			<form id="form-member-upload-image" enctype="multipart/form-data">
+			<div style="display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;margin:36px 0 10px 15px">
+				<div style="vertical-align: top;height: 181px;margin-right: 10px;">
+					<span class="c-red">*</span>身份证照
+				</div>
+				<div style="margin-right: 10px;">
+					<img src="../images/idcard_01.png" class='bor'  id="look_img" style="width:170px;height:130px;cursor: pointer;" onclick="javascript:$('#image').click()">
+					<p class="text-c">正面</p>
+					<input class="file" id="image" name="image" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+					<span class="btn-upload form-group">
+						<input type="file" multiple name="image" class="input-file">
+					</span>
+				</div>
+				<div>
+					<img src="../images/idcard_02.png" class='bor'  id="look_img2" style="width:170px;height:130px;cursor: pointer" onclick="javascript:$('#image2').click()">
+					<p class="text-c">反面</p>
+					<input class="file" id="image2" name="image2" type="file" MULTIPLE="true" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+					<span class="btn-upload form-group">
+						<input type="file" multiple name="image2" class="input-file">
+					</span>
+				</div>
+			</div>
+			</form>
+			<button class="btn btn-success radius" type="button" onclick="upload_image();" style="margin-left: 86px;width: 200px;">保存</button>
+		</div>
+</div>
+
+	<!--会员批量上传弹框-->
+<div id="layer_member_batch_upload"  style="width:100%;display:none;">
+<form id="form_member_batch_upload" enctype="multipart/form-data">
+	<div style="background:#5eb95e;color:#fff;height:30px;padding:5px 0 5px 5px;line-height: 30px;">批量导入
+	</div>
+	<div style="width:390px;margin:45px auto;">
+		<div style="width: 20px;"></div>
+		<span class="btn-upload">
+			<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" nullmsg="请添加附件！" style="width:209px;margin-left:48px;">
+			<input type="file" id="input-file" multiple name="file-2" class="input-file">
+			<span class="btn btn-success radius" style="font-size:13px;font-style: normal">浏览</span>
+		</span>
+		<span id="upload-file" class="btn" style="background: #da281f;color:#fff;" >导入</span>
+		<p style="color:#b5b5b5;margin-left: 46px;margin-top: 3px;">按照模板格式填写数据，上传Excel表格
+		</p>
+	</div>
+	<a href="../files/memberexcel.xlsx" style="display: block;margin:10px 24px;text-align: right;"><i class="dowload-excel"></i>下载模板</a>
+</form>
+</div>
+<!-- 上传信息提示 -->	
+<div id="layer_batch_upload_mes" style="width:100%;display:none;">
+	<div style="background:#5eb95e;color:#fff;height:30px;padding:5px 0 5px 5px;line-height: 30px;">
+	上传信息提示
+	</div>
+	<span id='layer_mes' style='display:inline-block;width:100%;margin: 17px 0px;'>数据正在加载,请耐心等待...<span>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript">
+var menucode="";
+$(function(){
+	//获取地址栏后面菜单code
+	 var a = window.location.href;
+	 var s=a.indexOf("?");
+	 menucode=a.substring(s+1);
+	 //会员管理列表初始化加载
+	 getDataList(0,null);
+
+	 //条件查询
+    var initFlag2="";
+    $(".btn-search").click(function(){
+		initFlag2=true;
+		getDataList(0,null);
+    });
+
+    var initFlag = true;
+	//查询函数
+	function getDataList(currPage, jg) {
+	    var page=currPage+1;
+	    var data={pageno :currPage+1,c_menu_code:menucode,user_name:$("#user_name").val(),user_card:$("#user_card").val(),user_phone:$("#user_phone").val(),user_is_vip:$("#user_is_vip").val(),user_sex:$("#user_sex").val(),doctor_name:$("#doctor_name").val(),startDate:$("#datemin").val(),endDate:$("#datemax").val()};
+		mkh.ajax({
+		    url : "../../../user-platform/membergridquery.action",
+		    type : "post",
+		    dataType : 'json',
+		    data : data,
+		    success : function(response) {
+		    var page_count=response.recordCount;
+		    if (initFlag) {
+	        	$("#Pagination").pagination(page_count,{
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag = false;
+            }
+            if (initFlag2) {
+		    	//debugger;
+	        	$("#Pagination").pagination(page_count,{
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag2 = false;
+            }	
+	    	//调用数据展示函数
+		   show_list(response);
+		   }
+		});
+	}	
+
+	//数据展示公共函数
+	function show_list(response){
+	   var html = '';
+	   var pn=response.pageNo;
+	   var num=(pn-1)*10+1;
+	    $.each(response.data, function(i,p){
+	        html +="<tr class='text-c'>"+
+	               	"<td>"+(num+i)+"</td>"+
+	                "<td>"+p.user_name+"</td>"+
+	                "<td>"+p.user_card+"</td>"+
+	                "<td>"+p.user_phone+"</td>"+
+	                "<td>"+p.user_is_vip+"</td>"+
+	                "<td>"+p.hosp_name+"</td>"+
+	                "<td>"+p.department_name+"</td>"+
+	                "<td>"+p.doctor_name+"</td>"+
+	                "<td>"+p.user_sex+"</td>"+
+	                "<td>"+p.user_marriage+"</td>"+
+	                "<td>"+p.ceate_date+"</td>"+
+					"<td class='td-manage'>"+
+						"<span style='width:75px;color:#da281f;cursor: pointer' onclick='member_edit("+p.user_id+","+menucode+")'>编辑</span>"+
+					"</td>"+
+					"<td style='display:none;'>"+
+						"<span class='idcard-upload'  style='width:75px;cursor: pointer' onclick='idcard_upload("+p.user_id+")' >上传</span>"+
+					"</td>"+
+	                "</tr>";
+	    });
+	    $(".member-tablelist .member-tbody").html(html);
+	    $(".page-count").html(response.pageCount);
+	}
+
+
+	//用户批量上传
+	$(".member_batch_upload").click(function(){
+		index_layer_receivable_fund=layer.open({
+			type: 1,
+			area: ['450px', '250px'],
+			title: false,
+			content:$('#layer_member_batch_upload')
+		});
+	});
+	//数据导入
+	$("#upload-file").click(function(){
+		var data=new FormData($("#form_member_batch_upload")[0]);
+		$("#layer_mes").html("数据正在加载,请耐心等待...");
+		if($("#uploadfile").val()!=""){
+			setTimeout(function(){
+				layer.close(index_layer_receivable_fund);
+				index_layer_upload_mes=layer.open({
+						type: 1,
+						area: ['300px', '200px'],
+						title: false,
+						content: $("#layer_batch_upload_mes")
+					});
+				$(".layui-layer-setwin .layui-layer-close2").click(function(){
+					location.replace(location.href);//刷新
+				});
+			},10);
+			mkh.ajax({
+			    url : "../../../batch/read.action",
+			    type : "post",
+			    dataType : 'json',
+			    timeout:10000,
+				headers:{data_type:'1'},
+				data:data,
+				processData:false,
+				contentType:false,
+				success : function(response) {
+					console.log(response);
+					if(response.flag){
+						$("#layer_mes").html(response.data);
+						//setTimeout(function(){location.replace(location.href);},3000)
+					}else{
+						$("#layer_mes").html("导入失败！请重新导入！");
+					}
+				}
+			}); 
+		}		
+	});
+});
+
+/*管理员-增加*/
+$(".btn-member-add").click(function(){
+	layer_show('新增会员','member-add.html?'+menucode,'100','100');
+});
+/*会员编辑*/
+function member_edit(id){
+	layer_show('编辑会员','member-edit.html?'+menucode+'&'+id,'100','100');
+
+}
+</script>
+</body>
+</html>

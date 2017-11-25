@@ -1,0 +1,141 @@
+package com.haaa.cloudmedical.platform.allinone.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.common.util.XMLUtil;
+import com.haaa.cloudmedical.dao.UserAppDao;
+
+
+@Service
+public class AIOService {
+
+	@Resource
+	private UserAppDao userAppDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+	
+	private Logger logger = Logger.getLogger(AIOService.class);
+
+	public Map<String, Object> login(String requestXml) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		try {
+			Map<String, Object> userMap = XMLUtil.xml2Map(requestXml);
+			String authType = (String) userMap.get("AuthType");
+			Map<String, Object> userMap2 = null;
+			if (authType.equals("2")) {
+				String identityCard = (String) userMap.get("AuthData");
+				userMap2 = userAppDao.selectByIdCard(identityCard);
+			} else if (authType.equals("7")) {
+				Map<String, Object> authData = (Map<String, Object>) userMap.get("AuthData");
+				String account = (String) authData.get("Account");
+				String pwd = (String) authData.get("Pwd");
+				pwd = MD5Util.encode(pwd);
+				userMap2 = userAppDao.selectByAccount(account, pwd);
+			}
+			if (userMap2 != null) {
+				responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH-mm-ss"));
+				responseMap.put("ResultCode", "0");
+				responseMap.put("ResultMsg", "");
+				responseMap.put("ResultData", new HashMap<String, Object>());
+				Map<String, Object> map = (Map<String, Object>) responseMap.get("ResultData");
+				map.put("UserId", userMap2.get("user_id"));
+				map.put("UserName", userMap2.get("user_name"));
+				if (userMap2.get("user_sex") != null) {
+					map.put("UserSex", unicodeService.getById((String) userMap2.get("user_sex")));
+				}
+				map.put("IdentityCard", userMap2.get("user_id"));
+				map.put("Birthday", userMap2.get("user_birthday"));
+			} else {
+				responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH-mm-ss"));
+				responseMap.put("ResultCode", "1");
+				responseMap.put("ResultMsg", "不存在该用户！！！");
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+			responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH-mm-ss"));
+			responseMap.put("ResultCode", "9");
+			responseMap.put("ResultMsg", "");
+		}
+		return responseMap;
+	}
+
+	public Map<String, Object> getData(String requestData) {
+		Map<String, Object> dataMap = XMLUtil.xml2Map(requestData);
+		Map<String, Object> dataMap2 = new HashMap<String, Object>();
+		//TODO
+		
+		
+		Object item = dataMap.get("Item");
+		if (item instanceof Map) {
+			fieldTrans(dataMap2, (Map<String, Object>)item);
+		}else{
+			for (Map<String, Object> element : (List<Map<String, Object>>)item) {
+				fieldTrans(dataMap2, element);
+			}
+		}
+		return dataMap2;
+	}
+	
+	public void fieldTrans(Map<String, Object> map,Map<String, Object> dataMap){
+        String type = (String) dataMap.get("ItemType");
+        Map<String, Object> itemDataMap = (Map<String, Object>) dataMap.get("ItemData");
+        switch (type) {
+		case "bloodPress":
+			map.put("HighPressure", itemDataMap.get("SBP"));
+			map.put("LowPressure", itemDataMap.get("DBP"));
+			map.put("PulseRate", itemDataMap.get("PulseRate"));
+			break;
+		case "bloodGlucose":
+			map.put("BloodSugar", itemDataMap.get("BloodGlucose"));
+			break;
+		case "bloodOxygen":
+			map.put("Oxygen", itemDataMap.get("BloodOxygen"));
+			map.put("PulseRate", itemDataMap.get("PulseRate"));
+			break;
+		case "heigthWeight":
+			map.put("user_height", itemDataMap.get("Height"));
+			map.put("user_weight", itemDataMap.get("weight"));
+			map.put("BMI", itemDataMap.get("BMI"));
+			break;
+		case "temperature":
+			map.put("temperature", itemDataMap.get("thermometer"));
+			break;
+		case "lungFunction":
+			map.put("fvc", itemDataMap.get("FVC"));
+			map.put("fev1", itemDataMap.get("FevOne"));
+			map.put("pef", itemDataMap.get("PEF"));
+			map.put("fef25", itemDataMap.get("FiveOne"));
+			map.put("fef2575", itemDataMap.get("FiveTwo"));
+			map.put("fef75", itemDataMap.get("FiveThree"));
+			break;
+		case "":
+			break;
+		default:
+			map.put("LEU", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("LEU")));
+			map.put("PH", itemDataMap.get("PH"));
+			map.put("NIT",DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("NIT")));
+			map.put("GLU", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("GLU")));
+			map.put("VC", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("VC")));
+			map.put("SG", itemDataMap.get("SG"));
+			map.put("URO", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("UBG")));
+			map.put("BIL", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("LRY")));
+			map.put("KET", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("KET")));
+			map.put("BLD", DataTransfromUtil.urineTestString2Unicode((String)itemDataMap.get("BU")));
+			break;
+		}
+		
+	}
+}

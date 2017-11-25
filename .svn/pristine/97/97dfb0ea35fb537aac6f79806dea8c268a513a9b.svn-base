@@ -1,0 +1,190 @@
+/*头部*/
+*{font-family: "微软雅黑";}
+input{border: none;outline: none;text-align: right;}
+input::placeholder{color: #B0B0B0;}
+.header{
+	font-family: "微软雅黑";
+	font-size: 0.35rem;
+	color: #AFAFAF;
+	background-color: #F0F0F0;
+	padding-top: 0.64rem;
+	height: 1rem;
+}
+.dotBox{
+	margin: 0 0.43rem;
+	height: 0.04rem;
+	background-color: #DEDCDC;
+}
+.circle>p,.txtBox>p{
+	width: 24%;
+	display: inline-block;
+	text-align: center;
+}
+.txtBox{
+	margin-top: -0.18rem;
+}
+.circle>p{
+	position: relative;
+	width: 23.8%;
+}
+.dot{
+	display: inline-block;
+	background-color: #DEDCDC;
+	width: 0.22rem;
+	height: 0.22rem;
+	border-radius: 50%;
+	position: absolute;
+	top:-0.45rem;
+}
+/*选中样式*/
+.on{
+	width: 0.24rem;
+	height: 0.24rem;
+	background-color: #6196DA;
+	border: 3px solid #9FC5F8;
+	top:-0.50rem;
+}
+.onFont{
+	color: #999999;
+}
+/*主体*/
+.main{
+	font-size: 0.4rem;
+	color: #545454;
+}
+.main>ul{
+	margin: 0.2rem 0.50rem;
+}
+.main>ul>li{
+	line-height: 1.6rem;
+	border-bottom: 0.03rem solid #DEDCDC;
+}
+.main>ul>li>p{
+	line-height: 1REM;
+}
+.info_left,.info_rgt{display: inline-block;}
+.info_left{
+	width: 20%;
+}
+.info_rgt{
+	width: 79%;
+	text-align: right;
+}
+/*点击隐藏显示*/
+.hide_cont{
+	background: #F0F0F0;
+	margin-right: -0.5rem;
+	margin-left: -0.5rem;
+	line-height: 1.6rem;
+	margin-bottom: 0.3rem;
+	padding: 0 0 0 0.95rem;
+}
+.sport{
+	margin-left: -1.15rem;
+}
+.sel_op{
+	border: 1px solid #CCCCCC;
+	border-radius: 10px;
+	padding:0.2rem 0.6rem;
+	margin: 0 0.2rem;
+	color: #666;
+	background: #fff;
+}
+/*点击选择*/
+.change{
+	background: #CD412F;
+	color: #fff;
+}
+/*箭头*/
+.arrow{
+	vertical-align: middle;
+	margin-left: 8px;
+	width:20px;
+	height:20px;
+}
+.next{
+	display: block;
+	margin: 0.8rem auto;
+	width: 8rem;
+	color: #fff;
+	background: #CD412F;
+	border-radius: 10px;
+	padding: 0.25rem 0;
+	text-align: center;
+}
+.checkBox{
+	padding: 0 0 0 0.65rem;
+}
+/*复选框*/
+.opt{
+	display: inline-block;
+	margin: 0 0.2rem;
+}
+.lab {display: inline;padding-left: 10px;}  
+.magic[type=checkbox]{
+    font-size:1em;
+    visibility: hidden;
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+}
+.magic[type=checkbox]:before{
+    top:12%;
+    display: inline-block;
+    position: absolute;
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    display: block;
+    background: url("../image/before.png") no-repeat;
+    background-size: 1em 1em;
+}
+.magic[type=checkbox]:checked:before{
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    background: url("../image/after.png") no-repeat;
+    background-size: 1em 1em;
+}
+/*单选框*/
+.magic[type=radio]{
+    font-size:1em;
+    visibility: hidden;
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+}
+.magic[type=radio]:before{
+    top:12%;
+    display: inline-block;
+    position: absolute;
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    display: block;
+    background: url("../image/dot1.png") no-repeat;
+    background-size: 1em 1em;
+}
+.magic[type=radio]:checked:before{
+    content:' ';
+    visibility: visible;
+    height: 1em;
+    width: 1em;
+    background: url("../image/dot2.png") no-repeat;
+    background-size: 1em 1em;
+}
+/*单选样式*/
+.rad_left{
+	width: 60%;
+}
+.rad_rgt{
+	width: 39%;
+}
+.rad_rgt>input{
+	width: 1.7rem;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>电子心电仪</title>
+	<script src="../../common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="../../common/css/Oximeter.css"/>
+	<style type="text/css">
+		 p { max-height: 100%; }
+		 @media only screen and (max-width:360px ) {
+		 	.view-button{
+		 		margin-top: -4rem;
+		 	}
+		 } 
+	</style>
+</head>
+<body>
+	<div class="header">
+		<p class="header_time">
+			<img src="../../common/image/myhealth/test-date-1.png"/>
+			<span class="day">2017-04-24</span><span class="hourtime">13:20</span>
+		</p>
+		<div class="header_result oximeter">
+			<h3>心电测量数据</h3>
+			<span class="result">98</span><span class="unit">次/分钟</span>
+		</div>
+	</div>
+	<div class="chart_section">
+		<div class="blood-title-box">
+	        <p><span style="font-size: 0.5rem;color: #3D3D3D;">心电走势 </p>
+	    </div>
+		<div class="canvasBox" style="position: relative;height: 315px;overflow: auto;margin-top:1rem">
+	        <canvas id="cvs" width="600" height="250" style="border-radius: 5px; background-color: black"></canvas>
+		</div>
+		<div class="view-button">
+            <a href="Oximeter-detail.html"><button>查看结果说明</button></a>
+        </div>
+	</div>
+	
+	<script src="../../common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.common.core.js"></script>
+	<script src="js/RGraph.common.dynamic.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.common.tooltips.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.drawing.yaxis.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.line.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/hearRate.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

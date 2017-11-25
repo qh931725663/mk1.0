@@ -1,0 +1,164 @@
+package com.haaa.cloudmedical.platform.news.service;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.dao.NewsDao;
+import com.haaa.cloudmedical.entity.BannerNews;
+
+@Service
+public class NewsManageService {
+
+	@Resource
+	private NewsDao dao;
+
+	private Logger logger = Logger.getLogger(NewsManageService.class);
+	
+	
+
+	//条件分页查询
+	public Page getNewsByCondition(String the_text,String user_id, String news_type,String startDate, String endDate, Integer pageno) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.order_id,a.title,concat('"+url+"',a.pic_index) pic_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,"
+				+ "a.is_push_to_patient,a.is_push_to_doctor,a.is_push_to_frontpage,a.short_introduction,a.url_index,a.the_text,b.user_name"
+				+ " from b_banner_news a,n_manager b where a.user_id=b.user_id";
+		List<Object> list = new ArrayList<Object>();
+		if (the_text != null && !the_text.equals("")) {
+			sql += " and a.title like ? ";
+			list.add("%"+the_text.trim()+"%");
+		}
+		if (user_id != null && !user_id.equals("")) {
+			sql += " and a.user_id = ? ";
+			list.add(user_id);
+		}
+		if (news_type != null && !news_type.equals("")) {
+			sql += " and a.news_type = ? ";
+			list.add(news_type);
+		}
+		if (startDate != null && !startDate.equals("")) {
+			sql += " and date_format(a.create_date,'%Y-%m-%d') >= ?";
+			list.add(startDate);
+		}
+		if (endDate != null && !endDate.equals("")) {
+			sql += " and date_format(a.create_date,'%Y-%m-%d') <= ?";
+			list.add(endDate);
+		}
+		sql += " order by a.create_date desc";
+		Page page = dao.pageQuery(sql, list.toArray(), pageno);
+		return page;
+	}
+	
+	//查询
+	public ResponseDTO getNewsById(String order_id){
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select order_id,title,is_push_to_patient,is_push_to_doctor,is_push_to_frontpage,concat('"+url+"',pic_index) pic_index,"
+				+ "short_introduction,concat('"+url+"',url_index) url_index,the_text,create_date,news_type from b_banner_news where order_id=?";
+		List<Map<String,Object>> list = dao.select(sql, order_id);
+		ResponseDTO dto  =new ResponseDTO();
+		if(list.size()>0){
+			dto.setData(list.get(0));
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+	
+	//获取人员ID
+	public String getUserId(String user_phone){
+		String sql = "select user_id from n_manager where user_phone = ? ";
+		String user_id = dao.select(sql, new Object[]{user_phone}, String.class);
+		return user_id;
+	}
+	
+	//添加新闻
+	public long add(BannerNews news){
+		long order_id = 0l;
+		try{
+			order_id = dao.insert(news, "b_banner_news");
+			news.setOrder_id(String.valueOf(order_id));
+			createHtml(news);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return order_id;
+	}
+	
+	//编辑新闻
+	public boolean update(BannerNews news){
+		boolean flag = false;
+		try{
+			dao.update(news, "b_banner_news");
+			createHtml(news);
+			flag=true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	//删除新闻
+	public boolean delete(String order_id){
+		boolean flag = false;
+		try{
+			dao.delete("b_banner_news", order_id);
+			flag = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	//获取所有的发布者
+	public ResponseDTO getManagerList(){
+		String sql="select a.user_id,b.user_name from b_banner_news a,n_manager b where a.user_id=b.user_id group by a.user_id";
+		List<Map<String,Object>> list = dao.select(sql);
+		ResponseDTO dto = new ResponseDTO();
+		dto.setData(list);
+		dto.setFlag(true);
+		return dto;
+	}
+	
+	//生成网页
+	public void createHtml(BannerNews news){
+		String order_id = news.getOrder_id();
+		String head="<!doctype html><html><head><meta charset='utf-8'><title></title><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/></head><body>";
+		String tail="</body></html>";
+		String name = StringUtils.join(new String[] { java.util.UUID.randomUUID().toString(),".","html"});
+		String text = news.getThe_text();
+		String dateDir = DateFormatUtils.format(new Date(), "yyyy/MM/dd");
+		String uploadUrl = BeanUtil.getProperty("dbconfig").getString("pictureuploaddir");
+		String uploadDir = "upload/news/html/"+dateDir+"/";
+		File dir = new File(uploadUrl+uploadDir);
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
+		File html = new File(uploadUrl+uploadDir+name);
+		if(!html.exists()){
+			try {
+				html.createNewFile();
+				String sql="update b_banner_news a set a.url_index = ? where a.order_id = ? ";
+				dao.execute(sql, uploadDir+name,order_id);
+				PrintWriter pw = new PrintWriter(html,"utf8");
+				pw.println(head+text+tail);
+				pw.flush();
+				pw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

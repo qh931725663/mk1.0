@@ -1,0 +1,235 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.BloodSugar;
+
+@Repository
+public class BloodSugarDao extends EquipmentDao {
+
+	public long add(BloodSugar bloodSugar) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		//通过自定义工具类将需要持久化的对象转换成map(通过反射方式拿到对象里面的字段)
+		BeanPropertyUtil.toMapFromObject(map, bloodSugar);
+		return insert(map, "c_blood_sugar");
+	}
+
+	/**
+	 * 搜索所有阶段
+	 * 
+	 * 
+	 * AND A.create_date<NOW()
+	 * 
+	 * @param user_id
+	 * @param period
+	 * 
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecentAll(long user_id, int recent) {
+		String sql = "SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.BloodSugar,findName(B.measurement_period) period,B.measurement_period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ?  AND "
+				+ " DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date  ORDER BY A.create_date DESC";
+		return jdbcTemplate.queryForList(sql, user_id, recent);
+	}
+
+	/**
+	 * 近期数据查询
+	 * 
+	 * @param user_id
+	 * @param period
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecent(long user_id, int period, int recent) {
+		List<Object> list = new ArrayList<Object>();
+		list.add(user_id);
+		StringBuffer sql = new StringBuffer(
+				"SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.BloodSugar ,findName(B.measurement_period) period,B.measurement_period "
+						+ " FROM c_equipment_use A,c_blood_sugar B WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ");
+		if (period == Constant.EMPTY_STOMACH) {
+			sql.append("  AND B.measurement_period =? ");
+			list.add(Constant.EMPTY_STOMACH);
+		} else if (period == Constant.AFTER_BREAKFAST || period == Constant.AFTER_DINNER
+				|| period == Constant.AFTER_LUNCH) {
+			sql.append("  AND (B.measurement_period =? OR B.measurement_period =? OR B.measurement_period =?)");
+			list.add(Constant.AFTER_BREAKFAST);
+			list.add(Constant.AFTER_DINNER);
+			list.add(Constant.AFTER_LUNCH);
+		} else if (period == Constant.BEFORE_DINNER || period == Constant.BEFORE_LUNCH
+				|| period == Constant.BEFORE_SLEEP) {
+			sql.append("  AND (B.measurement_period =? OR B.measurement_period =? OR B.measurement_period =?) ");
+			list.add(Constant.BEFORE_DINNER);
+			list.add(Constant.BEFORE_LUNCH);
+			list.add(Constant.BEFORE_SLEEP);
+		}
+		list.add(recent);
+		sql.append(" AND DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date ORDER BY A.create_date DESC");
+		return jdbcTemplate.queryForList(sql.toString(), list.toArray());
+	}
+
+	public List<Map<String, Object>> queryRecent(long user_id, int recent) {
+		List<Object> list = new ArrayList<Object>();
+		list.add(user_id);
+		String sql = "SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.BloodSugar ,findName(B.measurement_period) period,B.measurement_period "
+				+ " FROM c_equipment_use A,c_blood_sugar B WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ";
+		list.add(recent);
+		sql += " AND DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date ORDER BY A.create_date DESC";
+		return jdbcTemplate.queryForList(sql, list.toArray());
+	}
+
+	public List<Map<String, Object>> queryByMonth(long user_id, String year_month, int pageno, int pagesize) {
+		String sql = "SELECT B.equipment_use_order_id,A.order_id,A.create_date datetime,B.BloodSugar ,findName(B.measurement_period) period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id  AND A.user_id = ? AND "
+				+ " DATE_FORMAT(A.create_date,'%Y-%m')=? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, year_month, start, pagesize);
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT B.equipment_use_order_id,A.order_id,A.create_date datetime,B.BloodSugar BloodSugar,findName(B.measurement_period) period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+	/*
+	 * 鏌ヨ涓�涓勾鍐呮湁鏁版嵁鐨勬湀浠�
+	 */
+	public List<Map<String, Object>> queryMonth(long user_id) {
+		String sql = "SELECT DISTINCT(DATE_FORMAT(A.create_date,'%Y-%m')) yearmonth "
+				+ " FROM c_equipment_use A,c_blood_sugar B WHERE "
+				+ " A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL 1 YEAR) <=A.create_date  ORDER BY A.create_date DESC ";
+		return jdbcTemplate.queryForList(sql, user_id);
+	}
+
+	public int pageNumber(long user_id, int pagesize) {
+		String sql = "SELECT COUNT(*) " + " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ";
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user_id);
+		return count < 1 ? 0 : ((count - 1) / pagesize) + 1;
+	}
+
+	public int pageNumberByMonth(long user_id, String yearMonth, int pagesize) {
+		String sql = "SELECT COUNT(*) " + " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND DATE_FORMAT(A.create_date,'%Y-%m')=?  ";
+		int count = jdbcTemplate.queryForObject(sql, Integer.class, user_id, yearMonth);
+		return count < 1 ? 0 : ((count - 1) / pagesize) + 1;
+	}
+
+	public List<Map<String, Object>> getDataByTime(long user_id, int period, String datemin, String datemax) {
+		List<Object> list = new ArrayList<Object>();
+		list.add(user_id);
+		StringBuffer sql = new StringBuffer(
+				"SELECT A.order_id,A.create_date,B.BloodSugar ,findName(B.measurement_period) period,B.measurement_period "
+						+ " FROM c_equipment_use A,c_blood_sugar B WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ");
+		if (period == Constant.EMPTY_STOMACH) {
+			sql.append("  AND B.measurement_period =? ");
+			list.add(Constant.EMPTY_STOMACH);
+		} else if (period == Constant.AFTER_BREAKFAST || period == Constant.AFTER_DINNER
+				|| period == Constant.AFTER_LUNCH) {
+			sql.append("  AND (B.measurement_period =? OR B.measurement_period =? OR B.measurement_period =?)");
+			list.add(Constant.AFTER_BREAKFAST);
+			list.add(Constant.AFTER_DINNER);
+			list.add(Constant.AFTER_LUNCH);
+		} else if (period == Constant.BEFORE_DINNER || period == Constant.BEFORE_LUNCH
+				|| period == Constant.BEFORE_SLEEP) {
+			sql.append("  AND (B.measurement_period =? OR B.measurement_period =? OR B.measurement_period =?) ");
+			list.add(Constant.BEFORE_DINNER);
+			list.add(Constant.BEFORE_LUNCH);
+			list.add(Constant.BEFORE_SLEEP);
+		}
+		if (datemin != null && !datemin.equals("") && datemax != null && !datemax.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')>=? AND DATE_FORMAT(A.create_date,'%Y-%m-%d') <=? ");
+			list.add(datemin);
+			list.add(datemax);
+		} else if (datemin != null && !datemin.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')>=? ");
+			list.add(datemin);
+		} else if (datemax != null && !datemax.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')<=? ");
+			list.add(datemax);
+		} else {
+			sql.append(" AND DATE_SUB(NOW(),INTERVAL ? DAY) <=A.create_date ");
+			list.add(365);
+		}
+		sql.append(" ORDER BY A.create_date ASC ");
+		return jdbcTemplate.queryForList(sql.toString(), list.toArray());
+	}
+
+	public Page pageQueryByTime(long user_id, int period, String datemin, String datemax, int pageno, int pagesize) {
+		List<Object> list = new ArrayList<Object>();
+		list.add(user_id);
+		StringBuffer sql = new StringBuffer(
+				"SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.BloodSugar ,findName(B.measurement_period) period,B.measurement_period "
+						+ " FROM c_equipment_use A,c_blood_sugar B WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ");
+		if (period == Constant.EMPTY_STOMACH) {
+			sql.append("  AND B.measurement_period =? ");
+			list.add(Constant.EMPTY_STOMACH);
+		} else if (period == Constant.AFTER_BREAKFAST || period == Constant.AFTER_DINNER
+				|| period == Constant.AFTER_LUNCH) {
+			sql.append("  AND (B.measurement_period =? OR B.measurement_period =? OR B.measurement_period =?)");
+			list.add(Constant.AFTER_BREAKFAST);
+			list.add(Constant.AFTER_DINNER);
+			list.add(Constant.AFTER_LUNCH);
+		} else if (period == Constant.BEFORE_DINNER || period == Constant.BEFORE_LUNCH
+				|| period == Constant.BEFORE_SLEEP) {
+			sql.append("  AND (B.measurement_period =? OR B.measurement_period =? OR B.measurement_period =?) ");
+			list.add(Constant.BEFORE_DINNER);
+			list.add(Constant.BEFORE_LUNCH);
+			list.add(Constant.BEFORE_SLEEP);
+		}
+		if (datemin != null && !datemin.equals("") && datemax != null && !datemax.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')>=? AND DATE_FORMAT(A.create_date,'%Y-%m-%d') <=? ");
+			list.add(datemin);
+			list.add(datemax);
+		} else if (datemin != null && !datemin.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')>=? ");
+			list.add(datemin);
+		} else if (datemax != null && !datemax.equals("")) {
+			sql.append(" AND DATE_FORMAT(A.create_date,'%Y-%m-%d')<=? ");
+			list.add(datemax);
+		} else {
+			sql.append(" AND DATE_SUB(NOW(),INTERVAL ? DAY) <=A.create_date ");
+			list.add(365);
+		}
+		sql.append(" ORDER BY A.create_date DESC ");
+		return super.pageQuery(sql.toString(), list.toArray(), pageno, pagesize);
+	}
+
+	public Map<String, Object> getMostRecentData(long user_id) {
+		String sql = "SELECT a.BloodSugar,a.measurement_period,DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i')datetime FROM c_blood_sugar a LEFT JOIN c_equipment_use b ON a.equipment_use_order_id = b.order_id WHERE b.user_id=? order by b.create_date desc limit 1";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, user_id);
+		if (list != null && list.size() == 0) {
+			return null;
+		}
+		return list.get(0);
+	}
+
+	//查询用户的管理计划 :这里需要根据用户的测量时间 对应管理计划dic表里面的两种检测时段进行区分
+	public List<Map<String, Object>> getPlan(String patient_id,String period) {
+		if (Integer.parseInt(patient_id) == Constant.EMPTY) {
+			String sql = "SELECT p.user_id user_id, p.order_id  plan_order_id,d.order_id dic_order_id "
+					+ "FROM p_plan p LEFT JOIN p_plan_dict d ON  p.type =d.type AND p.plan_level = d.plan_level AND d.plan_name='空腹血糖检测' "
+					+ "WHERE p.user_id=?";	
+			return jdbcTemplate.queryForList(sql,patient_id);
+		}else if (Integer.parseInt(patient_id) == Constant.AFTER_BREAKFAST || Integer.parseInt(patient_id) == Constant.AFTER_DINNER
+				|| Integer.parseInt(patient_id) == Constant.AFTER_LUNCH) {
+			String sql = "SELECT p.user_id user_id, p.order_id  plan_order_id,d.order_id dic_order_id "
+					+ "FROM p_plan p LEFT JOIN p_plan_dict d ON  p.type =d.type AND p.plan_level = d.plan_level AND  d.plan_name='餐后2h血糖检测'  "
+					+ "WHERE p.user_id=?";	
+			return jdbcTemplate.queryForList(sql,patient_id);
+		}
+		return null;		
+	}
+}

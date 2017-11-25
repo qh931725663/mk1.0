@@ -1,0 +1,48 @@
+package com.haaa.cloudmedical.platform.allinone.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.haaa.cloudmedical.entity.AIO6500;
+import com.haaa.cloudmedical.platform.allinone.service.AIO6500Service;
+
+@Controller
+@RequestMapping("/aio6500")
+public class AIO6500Controller {
+	
+	@Resource
+	private AIO6500Service service;
+	
+	
+	@RequestMapping("/login.action")
+	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType("text/html");
+        response.setCharacterEncoding("GB2312");
+        PrintWriter out = response.getWriter();
+		String paitInfo = service.login(request);
+        out.print(paitInfo);
+	}
+
+	@RequestMapping("/saveData.action")
+	public void saveData(AIO6500 aio, HttpServletResponse response) throws IOException{
+		System.out.println("-6500传数据");
+		System.out.println(aio);
+        PrintWriter out = response.getWriter();
+	    String responseStr = service.saveData(aio);
+	    out.print(responseStr);
+//		return "ERR_DB_UPLOAD_TREND:服务器端数据库操作失败";
+	}
+}

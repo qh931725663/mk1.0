@@ -1,0 +1,26 @@
+package com.haaa.cloudmedical.app.user.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.user.service.DoctorAppService;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.MD5Util;
+
+@Controller
+@RequestMapping("/doctor-app")
+public class DoctorAppController {
+	
+	@Autowired
+	private DoctorAppService service;
+	
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public ResponseDTO login(String user_phone,String user_pwd){
+		ResponseDTO dto = service.login(user_phone,MD5Util.encode(user_pwd));
+		return dto;
+	}
+
+}

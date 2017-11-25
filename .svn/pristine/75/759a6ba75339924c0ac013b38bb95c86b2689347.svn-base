@@ -1,0 +1,63 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.allinone.controller;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.allinone.service.AIOAppService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+
+@RestController
+@RequestMapping("/aio-app")
+public class AIOAppController {
+
+	@Resource
+	private AIOAppService aioService;
+
+	private Logger logger = Logger.getLogger(AIOAppController.class);
+
+	@RequestMapping("/getTimeList.action")
+	public InfoJson getTimeList(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = aioService.getTimeList(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/getDetail.action")
+	public InfoJson getDetail(String user_id, String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = aioService.getDetail(user_id, order_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+
+	@RequestMapping("/getIOSDetail.action")
+	public InfoJson getIOSDetail(String user_id, String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = aioService.getIOSDetail(user_id, order_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

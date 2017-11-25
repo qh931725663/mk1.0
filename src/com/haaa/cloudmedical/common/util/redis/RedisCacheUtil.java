@@ -1,0 +1,259 @@
+ 
+package com.haaa.cloudmedical.common.util.redis;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Service;
+ 
+@Service
+public class RedisCacheUtil<T>
+{
+ 
+    @Autowired @Qualifier("redisTemplate")
+    public RedisTemplate redisTemplate;
+ 
+   
+    /**
+	 * 缓存基本的对象，Integer、String、实体类等
+	 * 
+	 * @param key
+	 *            缓存的键值
+	 * @param value
+	 *            缓存的值
+	 * @return 缓存的对象
+	 */
+	public <T> BoundValueOperations<String, T> setCacheObject(String key, T value) {
+		BoundValueOperations<String, T> operations = redisTemplate.boundValueOps(key);
+		operations.set(value);
+		return operations;
+	}
+
+	
+	/**
+	 * 获得缓存的基本对象。
+	 * 
+	 * @param key
+	 *            缓存键值
+	 * @param operation
+	 * @return 缓存键值对应的数据
+	 */
+	public <T> T getCacheObject(
+			String key/* ,ValueOperations<String,T> operation */) {
+		BoundValueOperations<String, T> operations = redisTemplate.boundValueOps(key);
+		return operations.get();
+	}
+
+	/**
+	 * 缓存List数据
+	 * 
+	 * @param key
+	 *            缓存的键值
+	 * @param dataList
+	 *            待缓存的List数据
+	 * @return 缓存的对象
+	 */
+	public <T> BoundListOperations<String, T> setCacheList(String key, List<T> dataList) {
+		BoundListOperations<String, T> listOperations = redisTemplate.boundListOps(key);
+		if (null != dataList) {
+			Long size = listOperations.size();
+			/*
+			 * 清空redis内键为key的list,重新设置
+			 */
+			for (int i = 0; i < size; i++) {
+				listOperations.leftPop();
+			}
+
+			int size1 = dataList.size();
+			for (int i = 0; i < size1; i++) {
+				listOperations.rightPush(dataList.get(i));
+			}
+		}
+
+		return listOperations;
+	}
+
+	/**
+	 * 获得缓存的list对象
+	 * 
+	 * @param key
+	 *            缓存的键值
+	 * @return 缓存键值对应的数据
+	 */
+	public <T> List<T> getCacheList(String key) {
+		// List<T> dataList = new ArrayList<T>();
+		BoundListOperations<String, T> listOperations = redisTemplate.boundListOps(key);
+		// Long size = listOperation.size();
+		//
+		// for(int i = 0 ; i < size ; i ++)
+		// {
+		// dataList.add((T) listOperation.leftPop());
+		// }
+		//
+		return listOperations.range(0, -1);
+	}
+
+	/**
+	 * 缓存Set
+	 * 
+	 * @param key
+	 *            缓存键值
+	 * @param dataSet
+	 *            缓存的数据
+	 * @return 缓存数据的对象
+	 */
+	public <T> BoundSetOperations<String, T> setCacheSet(String key, Set<T> dataSet) {
+		BoundSetOperations<String, T> setOperations = redisTemplate.boundSetOps(key);
+
+		if (null != dataSet) {
+			/*
+			 * 清空redis内键为key的set,重新设置
+			 */
+			Long size = setOperations.size();
+			for (int i = 0; i < size; i++) {
+				setOperations.pop();
+			}
+			Iterator<T> it = dataSet.iterator();
+			while (it.hasNext()) {
+				setOperations.add(it.next());
+			}
+		}
+		return setOperations;
+	}
+
+	/**
+	 * 获得缓存的set
+	 * 
+	 * @param key
+	 * @param operation
+	 * @return
+	 */
+	public Set<T> getCacheSet(
+			String key/* ,BoundSetOperations<String,T> operation */) {
+		// Set<T> dataSet = new HashSet<T>();
+		BoundSetOperations<String, T> setOperations = redisTemplate.boundSetOps(key);
+
+		// Long size = setOperations.size();
+		// for(int i = 0 ; i < size ; i++)
+		// {
+		// dataSet.add(setOperations.pop());
+		// }
+		return setOperations.members();
+	}
+
+	/**
+	 * 缓存Map
+	 * 
+	 * @param key
+	 * @param dataMap
+	 * @return
+	 */
+	public <T> BoundHashOperations<String, String, T> setCacheMap(String key, Map<String, T> dataMap) {
+
+		BoundHashOperations hashOperations = redisTemplate.boundHashOps(key);
+		if (null != dataMap) {
+			/*
+			 * 清空redis内键为key的map,重新设置
+			 */
+			Map<String, T> map = hashOperations.entries();
+			for (Map.Entry<String, T> entry : map.entrySet()) {
+				hashOperations.delete(entry.getKey());
+			}
+			/*System.out.println(dataMap);*/
+			 for (Map.Entry<String, T> entry : dataMap.entrySet()) {  				 
+	                /*System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  */
+	                hashOperations.put(entry.getKey(),entry.getValue());
+	            } 		}
+		return hashOperations;
+	}
+
+	/**
+	 * 获得缓存的Map
+	 * 
+	 * @param key
+	 * @param hashOperation
+	 * @return
+	 */
+	public <T> Map<String, T> getCacheMap(
+			String key/* ,HashOperations<String,String,T> hashOperation */) {
+		BoundHashOperations hashOperations = redisTemplate.boundHashOps(key);
+		/* Map<String, T> map = hashOperation.entries(key); */
+		return hashOperations.entries();
+	}
+
+	/**
+	 * 缓存Map
+	 * 
+	 * @param key
+	 * @param dataMap
+	 * @return
+	 */
+	public <T> BoundHashOperations<String, Integer, T> setCacheIntegerMap(String key, Map<Integer, T> dataMap) {
+		BoundHashOperations hashOperations = redisTemplate.boundHashOps(key);
+		if (null != dataMap) {
+			/*
+			 * 清空redis内键为key的set,重新设置
+			 */
+			Map<Integer, T> map = hashOperations.entries();
+			for (Map.Entry<Integer, T> entry : map.entrySet()) {
+				hashOperations.delete(entry.getKey());
+			}
+			 for (Map.Entry<Integer, T> entry : dataMap.entrySet()) {  
+				 
+	                /*System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  */
+	                hashOperations.put(entry.getKey(),entry.getValue());
+	            } 
+		}
+
+		return hashOperations;
+	}
+
+	/**
+	 * 获得缓存的Map
+	 * 
+	 * @param key
+	 * @param hashOperation
+	 * @return
+	 */
+	public <T> Map<Integer, T> getCacheIntegerMap(
+			String key/* ,HashOperations<String,String,T> hashOperation */) {
+		BoundHashOperations hashOperations = redisTemplate.boundHashOps(key);
+		/* Map<String, T> map = hashOperation.entries(key); */
+		return hashOperations.entries();
+	}
+	
+	/**
+	 * 删除缓存
+	 * @Description: 
+	 * @author 吴琪
+	 * @param key 
+	 * @date: 2017年5月22日 上午10:01:21
+	 */
+    public void deleteCache(String key) {
+        redisTemplate.delete(key);
+    }
+    
+    @SuppressWarnings("unchecked")
+	public void expire(String key, long second) {
+		redisTemplate.expire(key, second, TimeUnit.SECONDS);
+	}
+}

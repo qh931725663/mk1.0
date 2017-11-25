@@ -1,0 +1,39 @@
+package com.haaa.cloudmedical.platform.allinone.controller;
+
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.platform.allinone.service.AIOService;
+
+
+
+
+@RestController
+@RequestMapping("/aio")
+public class AIOController {
+	
+	
+	private AIOService service;
+
+	@RequestMapping(value = {"/login.action"},method={RequestMethod.POST})
+	public Map<String, Object> login(HttpServletRequest request){
+		System.out.println("------9900一体机登陆");
+		String requestXml = request.getParameter("requestXml");
+		System.out.println(requestXml);
+		Map<String, Object> responseMap = service.login(requestXml);
+		return responseMap;
+	}
+	
+	@RequestMapping(value = {"/getData.action"},method={RequestMethod.POST})
+	public Map<String, Object> getData(HttpServletRequest request){
+		String requestData = request.getParameter("requestData");
+		System.out.println(requestData);
+        return null;
+	}
+}

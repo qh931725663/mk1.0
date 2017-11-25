@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../css/comm.css"/>
+    <link rel="stylesheet" href="../css/main.css"/>
+    <style>
+        img{max-width: 100%; height: auto;}
+        .logo_show{text-align: center;margin-top: 15px;margin-bottom: 25px;}
+        .fl{float: left;}
+        .fr{float: right;}
+        .iphone,.android{width: 130px;}
+        .iphone{margin-left: 28px;}
+        .android{margin-right: 28px;}
+        .ft-color{color:rgb(50,168,251);text-decoration:underline;}
+        .a_p{width: 130px;}
+    </style>
+</head>
+<body>
+<div class="container test">
+    <div class="logo_show">
+        <img src="../images/img/down-app/logo_down.png" alt="美康惠" style="width: 25%;"/>
+    </div>
+    <div style="width: 100%;">
+        <p style="margin-bottom: 15px;">
+            <span style="border: 3px solid #f8a100;margin-left: 15px;margin-right: 8px;vertical-align: middle;"></span>
+            <span style="font-size: 16px;font-weight: 550;vertical-align: middle;">居民端</span>
+        </p>
+        <p style="overflow: hidden;margin-left: 40px;margin-right: 18px;margin-bottom: 10px;">
+            <span class="fl a_p"><img src="../images/img/down-app/downapp/iphone.png" style="width: 85%;"/></span>
+            <span class="fr a_p"><img src="../images/img/down-app/downapp/android.png" style="width: 85%;"/></span>
+        </p>
+        <p style="overflow: hidden;">
+            <a class="fl iphone" href="https://itunes.apple.com/cn/app/id1267768568?mt=8"><img src="../images/img/down-app/ios_02.png" alt="iphone下载" style="width: 100%;"/></a>
+            <a class="fr android" href="http://118.178.252.129:80/upload/patient1-0-3.apk "><img src="../images/img/down-app/Android_2.png" alt="Android下载" style="width: 100%;"/></a>
+            <p style="margin-top: 5px;overflow: hidden;">
+                <a class="ft-color fr" style="margin-right: 50px;" href="http://a.app.qq.com/o/simple.jsp?pkgname=com.meikanghui.haaa">通过应用宝下载</a>
+            </p>
+        </p>
+
+        <p style="margin-bottom: 15px;margin-top: 15px;clear: both;">
+            <span style="border: 3px solid #f8a100;margin-left: 15px;margin-right: 8px;vertical-align: middle;"></span>
+            <span style="font-size: 16px;font-weight: 550;vertical-align: middle;">医生端<i style="color:red;margin-left: 5px;">(推荐使用9.7寸iPad或者10.1寸安卓平板)</i></span>
+        </p>
+        <p style="overflow: hidden;margin-left: 40px;margin-right: 18px;margin-bottom: 10px;">
+            <span class="fl a_p"><img src="../images/img/down-app/downapp/iPad.png" style="width: 85%;"/></span>
+            <span class="fr a_p"><img src="../images/img/down-app/downapp/androidIpad.png" style="width: 85%;"/></span>
+        </p>
+        <p style="overflow: hidden;">
+            <a class="fl iphone" href="https://itunes.apple.com/cn/app/id1270597887?mt=8"><img src="../images/img/down-app/iPad.png" alt="iphone下载" style="width: 100%;"/></a>
+            <a class="fr android" href="http://118.178.252.129:80/upload/doctor1-0-2.apk"><img src="../images/img/down-app/AndroidPad.png" alt="Android下载" style="width: 100%;"/></a>
+            <p style="margin-top: 5px;overflow: hidden;">
+                <a class="ft-color fr" style="margin-right: 50px;" href="http://a.app.qq.com/o/simple.jsp?pkgname=com.haaa.mkydoctor">通过应用宝下载</a>
+            </p>
+        </p>
+    </div>
+    <div style="width: 100%;margin-top: 20px;">
+        <img src="../images/img/down-app/downapp_show.png" alt="" style="width: 100%;"/>
+    </div>
+</div>
+<script type="text/javascript" src="../js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript">
+ /*   $(function(){
+        is_weixin();
+    });
+    function is_weixin() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    var isWeixin = is_weixin();
+    var winHeight = typeof window.innerHeight != 'undefined' ? window.innerHeight : document.documentElement.clientHeight;
+    var weixinTip = $('<div id="weixinTip"><p><img src="../images/img/live_weixin.png" alt="微信打开"/></p></div>');
+
+    if(isWeixin){
+        $("body").append(weixinTip);
+    }
+    $("#weixinTip").css({
+        "position":"fixed",
+        "left":"0",
+        "top":"0",
+        "height":winHeight,
+        "width":"100%",
+        "z-index":"1000",
+        "background-color":"rgba(0,0,0,0.8)",
+        "filter":"alpha(opacity=80)"
+    });
+    $("#weixinTip p").css({
+        "text-align":"center",
+        "margin-top":"10%",
+        "padding-left":"5%",
+        "padding-right":"5%"
+    });*/
+</script>
+</body>
+</html>

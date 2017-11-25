@@ -1,0 +1,77 @@
+package com.haaa.cloudmedical.app.util;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.util.redis.RedisCacheUtil;
+
+import sun.net.www.content.text.plain;
+
+@Component
+public class CommonUserService {
+
+	@Autowired
+	public RedisCacheUtil<Object> redis;
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getUserMap() {
+		// 获取Request
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+				.getRequest();
+		// token
+		String token = request.getHeader("token");
+		Map<String, Object> map = redis.getCacheMap(token);
+		if (map != null) {
+			Object obj = map.get("user");
+			Map<String, Object> userMap = (Map<String, Object>) obj;
+			if (userMap != null) {
+				return userMap;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @Title: getUserId @Description:
+	 * app数据查询，如果token中user类型为医生，直接返回user_id,否则从token中取user_id @param
+	 * user_id @return @throws
+	 */
+	public Long getPatientId(Long user_id) {
+		Map<String, Object> user = getUserMap();
+		if (String.valueOf(user.get("user_type")).equals(Constant.USER_TYPE_DOCTOR))
+			return user_id;
+		else
+			return (Long)user.get("user_id");
+	}
+
+	/**
+	 * 
+	 * @Title: getUserId @Description:
+	 * app数据查询，如果token中user类型为医生，直接返回user_id,否则从token中取user_id @param
+	 * user_id @return @throws
+	 */
+	public String getPatientId(String user_id) {
+		Map<String, Object> user = getUserMap();
+		if (String.valueOf(user.get("user_type")).equals(Constant.USER_TYPE_DOCTOR))
+			return user_id;
+		else
+			return String.valueOf(user.get("user_id"));
+	}
+
+	public String getDoctorId() {
+		Map<String, Object> user = getUserMap();
+		if (String.valueOf(user.get("user_type")).equals(Constant.USER_TYPE_DOCTOR))
+			return String.valueOf(user.get("user_id"));
+		else
+			return null;
+	}
+	
+}

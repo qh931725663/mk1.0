@@ -1,0 +1,220 @@
+package com.haaa.cloudmedical.dao;
+
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Repository;
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class SmokingDao extends BaseTemplateDao{
+    //查询性别和年龄信息
+	public Map<String,Object> findUserAgeSex(Long user_id){
+		Map<String,Object> map ;
+		try {
+			String sql="select user_id,user_age,user_sex user_sex from n_user where user_id=?";
+		   	map = this.jdbcTemplate.queryForMap(sql, user_id);
+		} catch (Exception e) {
+			map=null;
+		}
+		
+		return map;
+	}
+	//查询是已经存在戒烟基本信息
+	public Object findIsBase(Long user_id){
+		String sql="select count(1) num1 from q_quit_smoking_base_info where user_id=?";
+	   	Map<String,Object> map = this.jdbcTemplate.queryForMap(sql, user_id);
+	   	Object i=map.get("num1"); 
+		return i;
+	}
+	//查询所有用户计划
+	public List<Map<String,Object>> selectAllPlan(Long user_id){
+		String sql = "select * from q_quit_smoking_plan where user_id = ? order by order_id desc";
+		List<Map<String,Object>> list = this.jdbcTemplate.queryForList(sql, user_id);
+		return list;
+	}	
+	//查询基本信息
+	public Map<String,Object> findUserBaseInfo(Long user_id){
+		String sql="select * from q_quit_smoking_base_info where user_id=?";
+		Map<String,Object> map ;
+		try {
+			map = this.jdbcTemplate.queryForMap(sql, user_id);
+		} catch (Exception e) {
+			return null;
+		}
+		return map;	
+	}
+	//更新基本信息使no_smoke_plan为101
+		public Long updateNoSmokingPlan(Long user_id){
+			String sql="update q_quit_smoking_base_info set no_smoke_plan=101 where user_id=?";
+            Long row=(long) this.jdbcTemplate.update(sql, user_id);
+			return row;
+		}
+
+
+	//查询是否已签到
+	public  Integer isSignate(Long user_id) {
+			Date date=new Date();
+			SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd");
+			String sql = "select * from q_quit_smoking_plan where user_id = ? and quit_smoking_plan_end=102 order by order_id desc";
+			String sql1 = "select * from q_quit_smoking_plan where user_id = ?";
+			List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+			Map<String, Object> map =new HashMap<String, Object>();
+			List<Map<String, Object>> list1=new ArrayList<Map<String,Object>>();
+            list1=this.jdbcTemplate.queryForList(sql1,user_id);
+            if(list1.size()==0) return -4;		
+			
+			try {
+				list = this.jdbcTemplate.queryForList(sql,user_id);	
+				map = list.get(0);
+			} catch (Exception e) {
+				//如果没有找到未完成计划，返回-2
+				return -2;
+			}
+			if(map.get("sign_date")!=null)
+               {if(map.get("sign_date").toString().equals(s.format(date.getTime()).toString()))
+              	 //如果当天已经签到 返回-3
+          	       return -3;
+               }
+		return 1;
+		
+	}
+	// 戒烟签到
+	public  Integer signate(Long user_id) {
+		   Integer rows=0;
+			Date date=new Date();
+			SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd");
+			String sql = "select * from q_quit_smoking_plan where user_id = ? and quit_smoking_plan_end=102 order by order_id desc";
+			String sql1 = "select * from q_quit_smoking_plan where user_id = ?";
+			List<Map<String, Object>> list=new ArrayList<Map<String,Object>>();
+			List<Map<String, Object>> list1=new ArrayList<Map<String,Object>>();
+			Map<String, Object> map=new HashMap<String, Object>();
+
+
+                     list1=this.jdbcTemplate.queryForList(sql1,user_id);
+                     if(list1.size()==0) return -4;
+
+			try {
+				list = this.jdbcTemplate.queryForList(sql,user_id);	
+				map = list.get(0);
+			} catch (Exception e) {
+				//如果没有找到未完成计划，返回-2
+				return -2;
+			}
+			if(map.get("sign_date")!=null)
+                 {if(map.get("sign_date").toString().equals(s.format(date.getTime())))
+                	 //如果当天已经签到 返回-3
+            	       return -3;
+                 }
+			int i=(Integer) map.get("quit_smoking_plan_day")+1;
+			map.put("quit_smoking_plan_day", i);
+			int j=(Integer) map.get("quit_smoking_plan_target");
+			// 如果没有到目标天数，天数加1，返回1；如果达到目标天数，设置计划完成标志位，返回-1
+			if( i<j){
+
+				map.put("sign_date", s.format(date.getTime()).toString());
+			    rows=this.update(map, "q_quit_smoking_plan");
+			}else
+			{
+				map.put("quit_smoking_plan_end", 101);
+				map.put("sign_date", s.format(date.getTime()).toString());
+				this.update(map, "q_quit_smoking_plan");
+				rows=-1;
+			}
+			sql = "update q_quit_smoking_plan set sign_date= ? where order_id=?";
+			this.jdbcTemplate.update(sql,map.get("sign_date").toString(),map.get("order_id").toString());
+			return rows;
+		}
+	//更新戒烟计划目标根数
+	public Integer updatePlan(Long order_id,int quit_smoking_plan_number){
+		int rows=0;
+		String sql = "update q_quit_smoking_plan set quit_smoking_plan_number= ? where order_id= ? ";
+		rows=this.jdbcTemplate.update(sql,quit_smoking_plan_number,order_id);
+		return rows;
+	}
+    //查询用户信息
+	public Map<String,Object> findUser(Long user_id){
+		String sql="select * from n_user where user_id=?";
+		System.out.println(sql);
+		System.out.println(user_id);
+		Map<String,Object> map;
+		try {
+		   	 map= this.jdbcTemplate.queryForMap(sql, user_id);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return null;
+		}
+
+		return map;
+	}
+    //查询家庭医生
+	public Map<String,Object> findDoctor(Long user_id){
+	   	String sql="select * from d_patient where patient_id=?";
+	   	Map<String,Object> map = this.jdbcTemplate.queryForMap(sql, user_id);
+	   	sql="select doctor_name from d_doctor where doctor_id=?";
+	   	Map<String,Object> map1 = this.jdbcTemplate.queryForMap(sql, map.get("doctor_id"));
+	   	map.put("doctor_name", map1.get("doctor_name"));
+		return map;
+	}	
+	//后台戒烟模块查询用户信息view
+
+	public List<Map<String,Object>> queryWhere(Map<String,Object> mapW) {
+		Map<String, Object[]> map=getWhere(mapW);
+		List<Map<String,Object>> list =new ArrayList<Map<String,Object>>();
+		Object[] params = map.get("params");
+		Object[] values  =map.get("values");
+		String sql ="select * from q_smoking_platform_view where "+StringUtils.join(params, "= ? and ") +" = ? ";
+		sql=sql+"and q_plan_create > ? and q_plan_create < ? ";
+		System.out.println(sql);
+		System.out.println(values.length);
+		try {
+			list=this.jdbcTemplate.queryForList(sql, values);
+		} catch (Exception e) {
+			return null;
+		}
+
+		return list;
+	}
+	//后台戒烟模块查询where拼接
+	protected Map<String, Object[]> getWhere(Map<String,Object> map) {
+		Object dateAfter = null;
+		Object dateBefore = null;
+		System.out.println(map.get("dateAfter"));
+		System.out.println(map.get("dateBefore"));
+		Map<String, Object[]> property = null;
+		List<String> params = new ArrayList<String>();
+		List<Object> values = new ArrayList<Object>();
+		Set<String> keys = map.keySet();
+		for (String key : keys) {
+			Object value = map.get(key);
+			if(key.equals("dateAfter")) dateAfter=value;
+			  else
+				if(key.equals("dateBefore")) dateBefore=value;
+				 else
+			if(value!=null&&!"".equals(value.toString())){
+				params.add(key);
+				values.add(value);
+			}			
+		}
+		if (dateAfter==null||"".equals(dateAfter.toString())) dateAfter="2000-12-12";
+		if (dateBefore==null||"".equals(dateBefore.toString())) dateBefore="2999-12-12";
+		values.add(dateAfter);
+		values.add(dateBefore);
+		if (params.size() > 0 && values.size() > 0) {
+			property = new HashMap<String, Object[]>();
+			property.put("params", params.toArray());
+			property.put("values", values.toArray());
+		}
+		return property;
+	}
+	
+	
+
+}

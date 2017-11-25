@@ -1,0 +1,124 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+
+@Repository
+public class UserPlatformDao extends BaseTemplateDao {
+	
+	public Map<String,Object> selectByAccount(String user_phone,String user_pwd){
+		Map<String,Object> user = null;
+		String sql = "select * from n_manager where user_phone = ? and user_pwd = ? and user_flag= ? ";
+		List<Map<String,Object>> user_list = select(sql, user_phone,user_pwd,Constant.USER_FLAG_START);
+		if(user_list.size()>0){
+			user = user_list.get(0);
+		}
+		return user;
+	}
+	
+	public List<Map<String,Object>> getMenu(String user_phone) {
+		List<Map<String,Object>> all_father_menus = this.selectALlFmenu();
+		String sql = "select c.c_menu_code,c.c_menu_name,c.c_action_path,c.pic_index,c.c_menu_father from n_manager a,n_role_menu b,n_menu c where a.role_code=b.role_code and b.menu_code = c.c_menu_code and a.user_phone = ? ";
+		List<Map<String,Object>> all_son_menu = this.jdbcTemplate.queryForList(sql,user_phone);
+		List<Map<String, Object>> menu = menu(all_father_menus, all_son_menu);
+		return menu;
+	}
+	
+	public List<Map<String,Object>> selectALlFmenu(){
+		String sql = "select distinct a.c_menu_name,a.c_menu_code from n_menu a,n_menu b where a.c_menu_code=b.c_menu_father";
+		List<Map<String,Object>> one_menu = this.jdbcTemplate.queryForList(sql);
+		return one_menu;
+	}
+	public List<Map<String,Object>> menu(List<Map<String,Object>> all_father_menus,List<Map<String,Object>> all_son_menu){
+		List<Map<String,Object>> menu = new ArrayList<Map<String,Object>>();
+		List<Map<String,Object>> menu_list =null;
+		for (Map<String, Object> father_map : all_father_menus) {
+			menu_list = new ArrayList<Map<String,Object>>();			
+			String c_menu_code = father_map.get("c_menu_code").toString();
+			for (Map<String, Object> son_map : all_son_menu) {
+				if(son_map.get("c_menu_father").toString().equals(c_menu_code)){
+					menu_list.add(son_map);
+				}				
+			}
+			if(menu_list.size()>0){
+				father_map.put("menu_list", menu_list);
+				menu.add(father_map);
+			}
+		}
+		return menu;
+	}
+	
+	public Map<String,Object> query(String sql,String arg){
+		Map<String,Object> map = this.jdbcTemplate.queryForMap(sql,arg);
+		return map;
+	}
+	
+	public boolean validateDoctor(String doctor_id){
+		String sql = "select * from d_doctor where doctor_id = ? ";
+		List<Map<String,Object>> list = this.select(sql, doctor_id);
+		if(list.size()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public Page getPatientList(String doctor_id,String user_name,String user_card,String user_phone,int pageno,int pagesize){
+		StringBuilder sql = new StringBuilder("select a.user_id,a.user_name,a.user_sex,a.user_phone,a.user_card from n_user a,d_patient b where a.user_id = b.patient_id and doctor_id = ? ");
+		List<String> params = new ArrayList<>();
+		params.add(doctor_id);
+		if(user_name!=null){
+			sql.append(" and a.user_name like ? ");
+			params.add("%"+user_name+"%");
+		}
+		if(user_card!=null){
+			sql.append(" and a.user_card like ? ");
+			params.add("%"+user_card+"%");
+		}
+		if(user_phone!=null){
+			sql.append(" and a.user_phone like ? ");
+			params.add("%"+user_phone+"%");
+		}
+		Page page = this.pageQuery(sql.toString(), params.toArray(), pageno, pagesize);
+		return page;
+		
+	}
+	
+	public Page getMessageList(String patient_id,String measurement_type,String measurement_result,String start,String end, Integer pageno,Integer pagesize){
+		StringBuilder sql = new StringBuilder();
+		sql.append("select order_id,patient_id,doctor_id,measurement_value,measurement_period,measurement_type,measurement_result,is_read,"
+				+ "date_format(create_date,'%Y-%m-%d %T') create_date,date_format(update_date,'%Y-%m-%d %T') update_date "
+				+ "from c_push_message where patient_id = ? ");
+		List<String> params = new ArrayList<>();
+		params.add(patient_id);
+		if(measurement_type!=null){
+			sql.append(" and measurement_type = ? ");
+			params.add(measurement_type);
+		}
+		if(measurement_result!=null){
+			sql.append(" and measurement_result = ? ");
+			params.add(measurement_result);
+		}
+		if(start!=null){
+			sql.append(" and date_format(update_date,'%Y-%m-%d %T') >= ? ");
+			params.add(start);
+		}
+		if(end!=null){
+			sql.append(" and date_format(update_date,'%Y-%m-%d %T') <= ? ");
+			params.add(end);
+		}
+		sql.append("order by update_date desc");
+		Page page = this.pageQuery(sql.toString(), params.toArray(), pageno, pagesize);
+		return page;
+				
+	}
+	
+
+}

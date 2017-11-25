@@ -1,0 +1,153 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.IdCard;
+
+@Repository
+public class DoctorDao extends BaseTemplateDao {
+
+	/*
+	 * @SuppressWarnings("rawtypes")
+	 * 
+	 * @Autowired private RedisTemplate redisTemplate;
+	 * 
+	 * // 基本类型
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> void setObject(String key,T
+	 * value) { BoundValueOperations<String,T> operation =
+	 * redisTemplate.boundValueOps("o" + key); operation.set(value); }
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> T getObject(String key) {
+	 * BoundValueOperations<String, T> operation =
+	 * redisTemplate.boundValueOps("o" + key); return operation.get(); }
+	 * 
+	 * // 列表
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> void setList(String key,
+	 * List<T> list, int flag) { BoundListOperations<String, T> operation =
+	 * redisTemplate.boundListOps("l" + key);
+	 * 
+	 * if (list != null) { if (flag == 2) { Long size = operation.size(); for
+	 * (int i = 0; i < size; i++) { operation.leftPop(); } } for (T e : list) {
+	 * operation.rightPush(e); } }
+	 * 
+	 * }
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> List<T> getList(String key) {
+	 * BoundListOperations<String, T> operation = redisTemplate.boundListOps("l"
+	 * + key); return operation.range(0, -1); }
+	 * 
+	 * // 集合
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> void setSet(String key, Set<T>
+	 * set, int flag) { BoundSetOperations<String, T> operation =
+	 * redisTemplate.boundSetOps("s" + key); if (set != null) { if (flag == 2) {
+	 * Long size = operation.size(); for (int i = 0; i < size; i++) {
+	 * operation.pop(); } } for (T e : set) { operation.add(e); } } }
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> Set<T> getSet(String key) {
+	 * BoundSetOperations<String, T> operation = redisTemplate.boundSetOps("s" +
+	 * key); return operation.members(); }
+	 * 
+	 * // 映射
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> void setMap(String key,
+	 * Map<String, T> map, int flag) { BoundHashOperations<String, String, T>
+	 * operation = redisTemplate.boundHashOps("m" + key); if (map.size() > 0) {
+	 * if (flag == 2) { for (Map.Entry<String, T> entry : map.entrySet()) {
+	 * operation.delete(entry.getKey()); } } for (Map.Entry<String, T> entry :
+	 * map.entrySet()) { operation.put(entry.getKey(), entry.getValue()); } } }
+	 * 
+	 * @SuppressWarnings("unchecked") public <T> Map<String, T> getMap(String
+	 * key) { BoundHashOperations<String, String, T> operation =
+	 * redisTemplate.boundHashOps("m" + key); return operation.entries(); }
+	 * 
+	 * @SuppressWarnings("unchecked") public void expire(String key,long time){
+	 * redisTemplate.expire(key, time, TimeUnit.SECONDS); }
+	 * 
+	 * public Map<String,Object> selectOne(String sql,Object...args){
+	 * Map<String,Object> result = null; try{ result =
+	 * this.jdbcTemplate.queryForMap(sql, args); }catch(Exception e){ result =
+	 * new HashMap<String, Object>(); } return result; }
+	 */
+	public int countByAccount(String user_phone) {
+		String sql = "select count(*) from n_user where user_type = ? and user_phone = ? ";
+		int count = this.getValue(sql, new Object[] { Constant.USER_TYPE_DOCTOR, user_phone }, Integer.class);
+		return count;
+	}
+
+	public int countByAccount(String user_phone, String user_pwd) {
+		String sql = "select count(*) from n_user where  user_type = ? and user_phone = ? and user_pwd = ?";
+		int count = this.getValue(sql, new Object[] { Constant.USER_TYPE_DOCTOR, user_phone, user_pwd }, Integer.class);
+		return count;
+	}
+
+	public String getDoctorId(String user_phone, String user_pwd) {
+		String sql = "select user_id from n_user where user_phone = ? and user_pwd = ? ";
+		String doctor_id = this.getValue(sql, new Object[] { user_phone, user_pwd }, String.class);
+		return doctor_id;
+	}
+
+	public Map<String, Object> getDoctorInfo(String doctor_id) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_name,a.user_phone,a.user_card,a.user_sex,a.user_age,c.hosp_order_id,d.hosp_name,"
+				+ "b.department_order_id,c.department_name,b.doctor_title,b.doctor_introduce," + "concat('" + url
+				+ "',user_head_pic_upload_index) user_head_pic_upload_index from n_user a,d_doctor b,"
+				+ "k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id = c.order_id "
+				+ "and c.hosp_order_id = d.order_id and a.user_id = ? ";
+		Map<String, Object> doctorInfo = this.get(sql, new Object[] { doctor_id });
+		if (doctorInfo.get("user_card") != null) {
+			IdCard cardInfo = IdCard.of(doctorInfo.get("user_card").toString());
+			if (cardInfo.flag) {
+				doctorInfo.put("user_age", cardInfo.getAge());
+				doctorInfo.putIfAbsent("user_sex", cardInfo.getSex() == 0 ? 200002 : 200001);
+				doctorInfo.putIfAbsent("user_birthday", cardInfo.getBirthday());
+			}
+		}
+		int count = this.getValue("select count(*) from c_push_message where is_read = '0' and doctor_id = ?",
+				new Object[] { doctor_id }, Integer.class);
+		if (count > 0) {
+			doctorInfo.put("message_flag", "1");
+		} else {
+			doctorInfo.put("message_flag", "0");
+		}
+		return doctorInfo;
+	}
+
+	public Page getMessageList(String doctor_id, int pageno, int pagesize) {
+		this.execute("update c_push_message set is_read = '1' where doctor_id = ? ", new Object[] { doctor_id });
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.order_id,a.patient_id,b.user_name,a.measurement_value,a.measurement_period,a.measurement_type,"
+				+ "a.measurement_result,a.is_read,date_format(a.create_date,'%Y-%m-%d %T') create_date,concat('" + url
+				+ "',b.user_head_pic_upload_index) user_head_pic_upload_index,"
+				+ "date_format(a.update_date,'%Y-%m-%d %T') update_date from c_push_message a,n_user b "
+				+ "where a.patient_id = b.user_id and a.doctor_id = ? order by update_date desc";
+		Page page = this.pageQuery(sql, new Object[] { doctor_id }, pageno, pagesize);
+		return page;
+	}
+
+	public Map<String, Object> getPatientInfo(String patient_id) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_name,a.user_card,a.user_phone,date_format(a.user_birthday,'%Y-%m-%d') user_birthday,a.user_sex,"
+				+ "a.user_height,a.user_weight,a.user_blood,a.user_marriage,a.user_medicare_card,a.ahdi_value,a.mrs_value,a.chronic,a.user_phs_phone,"
+				+ "a.user_work,user_medical_burden,concat('" + url
+				+ "',a.user_head_pic_upload_index) user_head_pic_upload_index,b.doctor_id,b.is_send from n_user a,d_patient b where a.user_id = b.patient_id and user_id = ? ";
+		Map<String, Object> patient = this.get(sql, new Object[] { patient_id });
+		if (patient.get("user_card") != null) {
+			IdCard card = IdCard.of(patient.get("user_card").toString());
+			if (card.flag) {
+				patient.put("user_age", card.getAge());
+				patient.putIfAbsent("user_birthday", card.getBirthday());
+				patient.putIfAbsent("user_sex", card.getSex() % 2 == 1 ? "200001" : "200002");
+			}
+		}
+		return patient;
+	}
+}

@@ -1,0 +1,2376 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css" href="../static/view-image/css/lightbox.css">
+<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>健康调查</title>
+<style type="text/css">
+.f-l span{margin-left: 15px;}
+.check_img img{margin-left: 15px;}
+.show_data {span-size: 14px;color: #008000;}
+.unit-m {margin-left: 6px;}
+.lable_style {display: inline-block;width: 140px;text-align: left;font-weight: bold;}
+.lable_style_2 {display: inline-block;width: 100px;text-align: left;width: 220px;font-weight: bold;}
+.lable-xu {width: 160px;}
+.li-base {width: 300px;}
+.li-xu {width: 400px;}
+.check-box input {display:block;width: 140%;height:140%;margin:0;padding:0;border: 0;opacity: 0; background: rgb(255, 255, 255);}
+.li-rel{position: relative;}
+.li-rel .check-box {position: absolute;left: 240px;}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconspan">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		健康档案 <span class="c-gray en">&gt;</span>详情 <a
+			class="btn btn-success radius r"
+			style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconspan">&#xe68f;</i></a>
+	</nav>
+	<div class="position-container">
+		<span class="btn-show-show pointer">&lt;&lt;</span>
+		<span class="btn-show-hidden pointer">&gt;&gt;</span>
+		<ul class="position-nav">
+			<li class="na-menu">导航菜单</li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am1'">基本信息</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am2'">健康问题</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am3'">家族史</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am4'">既往史</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am5'">手术史</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am6'">用药史</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am7'">心里压力</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am8'">娱乐活动</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am9'">生活习惯</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am10'">症状回顾</a></li>
+			<li class="n-list"><a href="javascript:void(0)" onclick="window.location.hash='am11'">近期症状</a></li>
+		</ul>
+	</div>
+	<div class="page-container">
+		<form class="form form-horizontal" id="form-article-add">
+			<div id="tab-system" class="HuiTab">
+				<div class="tabBar cl">
+					<span>住院报告</span> <span>门诊报告</span> <span>医保记录</span> <span>体检报告</span>
+					<span>健康评估</span><span id="health_servey_tab">健康调查</span>
+				</div>
+				<!-- 住院报告 -->
+				<div class="tabCon" id="hospital_report">住院报告</div>
+				<!-- 门诊报告 -->
+				<div class="tabCon" id="clinic_report">门诊报告</div>
+				<!-- 医保记录 -->
+				<div class="tabCon" id="insurance_report">医保记录</div>
+				<!-- 体检报告 -->
+				<div class="tabCon" id="check_report">体检报告</div>
+				<!-- 健康评估 -->
+				<div class="tabCon" id="survey_report">健康评估</div>
+				<!-- 健康调查 -->
+				<div class="tabCon" id="health_report">
+					<form id="health-yw">
+					<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="datemin" class="input-text Wdate" style="width:172px;">
+						至
+						<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="datemax" class="input-text Wdate" style="width:182px;">
+						<button type="button" class="btn btn-success" style="margin-left:15px;" onclick="search_health();">查询</button>
+						<button type="button" class="btn btn-danger">清空</button>
+					</div>
+					<div class="cl pd-5 bg-1 bk-gray mt-20" style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">健康评估</span>
+						<div style="float:right;">
+							<span style="display:inline-block;width:150px;margin-top:2px;color:#fff">历史健康风险评估表：</span>
+							<select class="radius survey" id="health-risk-assess" style="height:30px;width:150px;">
+								<option value="" select>全部</option>
+							</select>
+						</div>
+					</div>
+					</form>
+					<!-- 基本信息 -->
+					<div class="collection-baseinfo" id="userMessage">
+						<div class="navbar-collection" id="am1">
+							<span style="margin-right:6px;">|</span>基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base">
+								<label class="lable_style">姓名：</label>
+								<span id="user_name"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">出生日期：</label>
+								<span id="user_birthday"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">性别：</label>
+								<span id="user_sex"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-base">
+								<label class="lable_style">身高(cm)：</label>
+								<span id="user_height"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">体重(kg)：</label>
+								<span id="user_weight"></span>
+							</li>
+							<li class="f-l" style="width:500px;">
+								<label class="lable_style">邮箱：</label>
+								<span id="email"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base">
+								<label class="lable_style">脉搏(次)：</label>
+								<span id="PulseRate"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">手机号码：</label>
+								<span id="user_phone"></span>
+							</li>
+							<li class="f-l" style="width:500px;">
+								<label class="lable_style">血压(mmHg)：</label>
+								<span id="HighPressure"></span>
+								<span id="LowPressure"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base">
+								<label class="lable_style">语言：</label>
+								<span id="language"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">婚姻状况：</label>
+								<span id="user_marriage"></span>
+							</li>
+							<li class="f-l" style="width:500px;">
+								<label class="lable_style">固定电话：</label>
+								<span id="fixed_telephone"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base">
+								<label class="lable_style">医疗保险险种：</label>
+								<span id="medical_insurance"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">医疗保险单号：</label>
+								<span id="medical_insurance_code"></span>
+							</li>
+							<li class="f-l" style="width:500px;">
+								<label class="lable_style">就业状况：</label>
+								<span id="employment_status"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base">
+								<label class="lable_style">紧急联系人姓名：</label>
+								<span id="emergency_contact"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">紧急联系人电话：</label>
+								<span id="emergency_contact_phone"></span>
+							</li>
+							<li class="f-l" style="width:500px;">
+								<label class="lable_style">最后一次体检时间：</label>
+								<span id="last_check"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base" style="width:640px;">
+								<label class="lable_style">家庭住址：</label>
+								<span id="user_address"></span>
+							</li>
+							<li class="f-l li-base">
+								<label class="lable_style">紧急联系人与本人关系：</label>
+								<span id="emergency_contact_with"></span>
+							</li>
+						</ul>
+					</div>
+					<!--目前健康问题-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am2">
+							<span style="margin-right:6px;">|</span>目前健康问题
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;" id="userBaseMsg">
+							<li class="f-l" style="width:21%;">
+								<label class="lable_style">损伤来源：</label>
+								<span class="survey_answer" id="101"></span>
+							</li>
+							<li class="f-l" style="width:19%;">
+								<label class="lable_style">损伤日期:</label>
+								<span class="survey_answer" id="102"></span>
+							</li>
+							<li class="f-l" style="width:30%;">
+								<label class="lable_style">症状出现日期：</label>
+								<span class="survey_answer" id="103"></span>
+							</li>
+							<li class="f-l" style="width:21%;">
+								<label class="lable_style">你以前有同样的状况吗：</label>
+								<span class="survey_answer" id="104"></span>
+							</li>
+							<li class="f-l" style="width:30%;">
+								<label class="lable_style">如果有什么时候：</label>
+								<span class="survey_answer" id="105"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-base" style="width:100%;">
+								<label class="lable_style" style="width:12%;">请描述，以前同样的状况：</label>
+								<span class="survey_answer" id="106"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-base" style="width:100%;" >
+								<label class="lable_style" style="width:13%;">其他医生对这次损伤的意见：</label>
+								<span class="survey_answer" id="107"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-base" style="width:100%;" >
+								<label class="lable_style" style="width:20%;">你曾今有做过正骨治疗吗？如果有，请描述：</label>
+								<span class="survey_answer" id="108"></span>
+							</li>
+						</ul>
+					</div>
+					<!--家族史-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am3">
+							<span style="margin-right:6px;">|</span>家族史（请注明您的亲属是否有下列疾病（父母和兄弟姐妹为主））<span style="color:#c02029;">如果是收养的，不填以下问题。</span>
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">是否被收养</label>
+								<span class="survey_answer" id="201"></span>
+							</li>
+							<li class="f-l li-xu class="icheckbox-blue">
+								<label class="lable_style lable-xu">家中亲属有哪些</label>
+								<span class="survey_answer" id="202"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">没有已知重大疾病史</label>
+								<span class="survey_answer" id="205"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">脂肪肝</label>
+								<span class="survey_answer" id="207"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">皮肤癌</label>
+								<span class="survey_answer" id="258"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">牙科病</label>
+								<span class="survey_answer" id="217"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">关节炎</label>
+								<span class="survey_answer" id="215"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">结核病</label>
+								<span class="survey_answer" id="267"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">阿尔茨海默病</label>
+								<span class="survey_answer" id="243"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">结肠息肉</label>
+								<span class="survey_answer" id="223"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">偏头痛</label>
+								<span class="survey_answer" id="249"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">出血或凝血障碍</label>
+								<span class="survey_answer" id="269"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">癫痫症</label>
+								<span class="survey_answer" id="231"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">牛皮癣</label>
+								<span class="survey_answer" id="219"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">自身免疫性疾病</label>
+								<span class="survey_answer" id="260"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">高血压</label>
+								<span class="survey_answer" id="239"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">异常出血</label>
+								<span class="survey_answer" id="241"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">酒精中毒/滥用毒品</label>
+								<span class="survey_answer" id="251"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">肾病</label>
+								<span class="survey_answer" id="247"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">骨质疏松</label>
+								<span class="survey_answer" id="273"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">肝炎（甲肝、乙肝或丙肝）</label>
+								<span class="survey_answer" id="237"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">红斑狼疮</label>
+								<span class="survey_answer" id="256"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">高胆固醇</label>
+								<span class="survey_answer" id="233"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">肺气肿（慢性阻塞性肺病）</label>
+								<span class="survey_answer" id="213"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">精神疾病</label>
+								<span class="survey_answer" id="265"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">胃肠道疾病</label>
+								<span class="survey_answer" id="211"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">二型糖尿病（成人期发病）</label>
+								<span class="survey_answer" id="221"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">中风</label>
+								<span class="survey_answer" id="271"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">甲状腺疾病</label>
+								<span class="survey_answer" id="227"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">一型糖尿病（儿童期发病）</label>
+								<span class="survey_answer" id="229"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">哮喘</label>
+								<span class="survey_answer" id="209"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">艾滋病感染</label>
+								<span class="survey_answer" id="235"></span>
+							</li>
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">冠状动脉疾病</label>
+								<span class="survey_answer" id="245"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu">
+								<label class="lable_style lable-xu">心脏病</label>
+								<span class="survey_answer" id="225"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu" style="width:460px;">
+								<label class="lable_style lable-xu">恶性肿瘤</label>
+								<span class="survey_answer" id="275"></span>
+								<span class="survey_answer" id="276"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu" style="width:460px;">
+								<label class="lable_style lable-xu">抑郁症/自杀/焦虑</label>
+								<span class="survey_answer" id="253"></span>
+								<span  class="survey_answer" id="254"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+							<li class="f-l li-xu" style="width:460px;">
+								<label class="lable_style lable-xu" style="width:142px;">遗传性疾病（请解释）</label>
+								<span class="survey_answer" id="262"></span>
+								<span class="survey_answer" id="263"></span>
+							</li>
+						</ul>
+					</div>
+
+					<!-- 既往史-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am4">
+							<span style="margin-right:6px;">|</span> 既往史<span style="color:#c02029;margin-left: 20px;">如果否，不用填以下问题。</span>
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:1038px;">
+								<span class="survey_answer" id="301"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">痛风：</label>
+								<span class="survey_answer" id=302></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">甲减：</label>
+								<span class="survey_answer" id="304"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">乳腺癌：</label>
+								<span class="survey_answer" id="327"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">焦虑 ：</label>
+								<span class="survey_answer" id="306"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肺癌：</label>
+								<span class="survey_answer" id="335"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">静脉曲张：</label>
+								<span class="survey_answer" id="373"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">贫血：</label>
+								<span class="survey_answer" id="310"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肝病：</label>
+								<span class="survey_answer" id="339"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">胆囊疾病：</label>
+								<span class="survey_answer" id="369"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">甲亢：</label>
+								<span class="survey_answer" id="376"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">智力发育迟缓：</label>
+								<span class="survey_answer" id="332">	</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">一型糖尿病：</label>
+								<span class="survey_answer" id="364"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">哮喘 ：</label>
+								<span class="survey_answer" id="318"></span>
+							</li>
+
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">中风：</label>
+								<span class="survey_answer" id="372"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">二型糖尿病：</label>
+								<span class="survey_answer" id="360"></span>
+							</li>
+
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">性病：</label>
+								<span class="survey_answer" id="358"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">痴呆：</label>
+								<span class="survey_answer" id="363"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">泌尿系感染：</label>
+								<span class="survey_answer" id="309"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">房颤：</label>
+								<span class="survey_answer" id="326"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肺炎：</label>
+								<span class="survey_answer" id="355"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">滥用酒精/毒品：</label>
+								<span class="survey_answer" id="329"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">输血：</label>
+								<span class="survey_answer" id="377"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">抑郁症：</label>
+								<span class="survey_answer" id="359"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">冠心病/心脏病：</label>
+								<span class="survey_answer" id="352"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">肾结石：</label>
+								<span class="survey_answer" id="334"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">白内障：</label>
+								<span class="survey_answer" id="351"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">囊性纤维化疾病：</label>
+								<span class="survey_answer" id="321"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">艾滋病：</label>
+								<span class="survey_answer" id="314"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">胃溃疡：</label>
+								<span class="survey_answer" id="368"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肠道易激综合症：</label>
+								<span class="survey_answer" id="325"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">高血压：</label>
+								<span class="survey_answer" id="322"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肝硬化：</label>
+								<span class="survey_answer" id="343"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">类风湿性关节炎：</label>
+								<span class="survey_answer" id="378"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">憩室炎：</label>
+								<span class="survey_answer" id="371"></span>
+
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">结肠癌：</label>
+								<span class="survey_answer" id="331"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">克罗恩式心脏病：</label>
+								<span class="survey_answer" id="356"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">胰腺炎:</label>
+								<span class="survey_answer" id="350"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">青光眼：</label>
+								<span class="survey_answer" id="308"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">自身免疫性疾病：</label>
+								<span class="survey_answer" id="317"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">躁郁症：</label>
+								<span class="survey_answer" id="303"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">炎性肠病：</label>
+								<span class="survey_answer" id="323"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">妇科疾病（肌瘤）：</label>
+								<span class="survey_answer" id="313"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">高胆固醇：</label>
+								<span class="survey_answer" id="330"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">骨量减少：</label>
+								<span class="survey_answer" id="347"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">慢性阻塞性肺疾病：</label>
+								<span class="survey_answer" id="370"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">癫痫发作：</label>
+								<span class="survey_answer" id="362"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">非法用药史：</label>
+								<span class="survey_answer" id="316"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">乳房症状（良性的）：</label>
+								<span class="survey_answer" id="333"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">睡眠困难：</label>
+								<span class="survey_answer" id="367"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">血色沉着病：</label>
+								<span class="survey_answer" id="320"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">关节炎（骨关节炎）：</label>
+								<span class="survey_answer" id="345"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">前列腺癌：</label>
+								<span class="survey_answer" id="338"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">骨质疏松症：</label>
+								<span class="survey_answer" id="336"></span>
+
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">偏头痛/紧张性头痛：</label>
+								<span class="survey_answer" id="337"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">红斑狼疮：</label>
+								<span class="survey_answer" id="342"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肾功能衰竭：</label>
+								<span class="survey_answer" id="328"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">睡眠呼吸暂停综合症：</label>
+								<span class="survey_answer" id="357"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">凝血障碍：</label>
+								<span class="survey_answer" id="346"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">消化性溃疡：</label>
+								<span class="survey_answer" id="344"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">皮肤病（湿疹/牛皮癣）：</label>
+								<span class="survey_answer" id="341"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">膀胱问题：</label>
+								<span class="survey_answer" id="307"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">过敏/花粉热：</label>
+								<span class="survey_answer" id="312"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肝炎-甲肝/乙肝/丙肝：</label>
+								<span class="survey_answer" id="353"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">不孕不育：</label>
+								<span class="survey_answer" id="311"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">先天性心脏病：</label>
+								<span class="survey_answer" id="340"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">妇科疾病（子宫内膜异位）：</label>
+								<span class="survey_answer" id="349"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">心率不齐：</label>
+								<span class="survey_answer" id="315"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">周围血管疾病：</label>
+								<span class="survey_answer" id="348"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肺气肿（慢性阻塞性肺疾病）：</label>
+								<span class="survey_answer" id="361"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style_2">结肠息肉：</label>
+								<span class="survey_answer" id="354"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">凝血块（退/肺）：</label>
+								<span class="survey_answer" id="324"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">胃灼热/反流（胃食管反流病）：</label>
+								<span class="survey_answer" id="379"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">妊娠期糖尿病：</label>
+								<span class="survey_answer" id="305"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style_2">皮肤癌：</label>
+								<span class="survey_answer" id="374"></span>
+								<span class="survey_answer" id="375"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style_2">癌症（其他类型）：</label>
+								<span class="survey_answer" id="365"></span>
+								<span class="survey_answer" id="366"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style_2">其他请列出：</label>
+								<span class="survey_answer" id="380"></span>
+							</li>
+						</ul>
+					</div>
+					<!-- 手术史-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am5">
+							<span style="margin-right:6px;">|</span>手术史<span style="color:#c02029;margin-left: 20px;">如果没有手术史，不用填以下问题。</span>
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width: 40%;">
+								<label class="lable_style_2" style="width:190px;">是否有手术史：</label>
+								<span class="survey_answer" id="401"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">输精管结扎术：</label>
+								<span class="survey_answer" id="442"></span>
+								<span class="survey_answer" id="443"></span>
+								<span class="survey_answer" id="444"></span>
+							</li>
+						</ul>
+
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">疝修补：</label>
+								<span class="survey_answer" id="402"></span>
+								<span class="survey_answer" id="403"></span>
+								<span class="survey_answer" id="404"></span>
+
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">白内障(右/左/两侧)：</label>
+								<span class="survey_answer" id="417"></span>
+								<span class="survey_answer" id="418"></span>
+								<span class="survey_answer" id="419"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">活检（局部）：</label>
+								<span class="survey_answer" id="408"></span>
+								<span class="survey_answer" id="409"></span>
+								<span class="survey_answer" id="410"></span>
+
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">背部/颈部（脊柱）手术：</label>
+								<span class="survey_answer" id="405"></span>
+								<span class="survey_answer" id="406"></span>
+								<span class="survey_answer" id="407"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">阑尾切除术：</label>
+								<span class="survey_answer" id="414"></span>
+								<span class="survey_answer" id="415"></span>
+								<span class="survey_answer" id="416"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">膝关节手术（右/左/两侧）：</label>
+								<span class="survey_answer" id="445"></span>
+								<span class="survey_answer" id="446"></span>
+								<span class="survey_answer" id="447"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">子宫全切或部分切除：</label>
+								<span class="survey_answer" id="451"></span>
+								<span class="survey_answer" id="452"></span>
+								<span class="survey_answer" id="453"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">食管胃十二直肠镜（胃镜）：</label>
+								<span class="survey_answer" id="424"></span>
+								<span class="survey_answer" id="425"></span>
+								<span class="survey_answer" id="426"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">髋关节手术（范围：右/左/两侧）：</label>
+								<span class="survey_answer" id="439"></span>
+								<span class="survey_answer" id="440"></span>
+								<span class="survey_answer" id="441"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">胆囊切除手术（开放性/腹腔镜）：</label>
+								<span class="survey_answer" id="436"></span>
+								<span class="survey_answer" id="437"></span>
+								<span class="survey_answer" id="438"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">卵巢切除或输卵管结扎：</label>
+								<span class="survey_answer" id="457"></span>
+								<span class="survey_answer" id="458"></span>
+								<span class="survey_answer" id="459"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">乳腺活检/手术（右/左/两侧）：</label>
+								<span class="survey_answer" id="411"></span>
+								<span class="survey_answer" id="412"></span>
+								<span class="survey_answer" id="413"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">结肠镜/乙状结肠镜检查：</label>
+								<span class="survey_answer" id="433"></span>
+								<span class="survey_answer" id="434"></span>
+								<span class="survey_answer" id="435"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">胃束带/胃旁路手术（减肥手术）：</label>
+								<span class="survey_answer" id="430"></span>
+								<span class="survey_answer" id="431"></span>
+								<span class="survey_answer" id="432"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style_2" style="width:190px;">冠状动脉旁路手术或支架：</label>
+								<span class="survey_answer" id="427"></span>
+								<span class="survey_answer" id="428"></span>
+								<span class="survey_answer" id="429"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">心脏手术（除了冠状动脉旁路手术）：</label>
+								<span class="survey_answer" id="454"></span>
+								<span class="survey_answer" id="455"></span>
+								<span class="survey_answer" id="456"></span>
+							</li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+								<label class="lable_style_2" style="width: 486px;">您身体这些部位（背部、臀部、腕关节）有金属置入或是曾经做过手术吗？：</label>
+								<span class="survey_answer" id="460"></span>
+								<span class="survey_answer" id="461"></span>
+								<span class="survey_answer" id="462"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+								<label class="lable_style_2" style="width: 486px;">美容整形手术（抗衰老治疗、塑形、修复或者重造乳房）：</label>
+								<span class="survey_answer" id="448"></span>
+								<span class="survey_answer" id="449"></span>
+								<span class="survey_answer" id="450"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+								<label class="lable_style_2" style="width: 486px;">骨折（请列出部位）：</label>
+								<span class="survey_answer" id="420"></span>
+								<span class="survey_answer" id="421"></span>
+								<span class="survey_answer" id="422"></span>
+								<span class="survey_answer" id="423"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+								<label class="lable_style_2" style="width: 486px;">其他（请列出）：</label>
+								<span class="survey_answer" id="463"></span>
+								<span class="survey_answer" id="464"></span>
+								<span class="survey_answer" id="465"></span>
+								<span class="survey_answer" id="466"></span>
+							</li>
+						</ul>
+					</div>
+
+
+					<!-- 用药史-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am6">
+							<input type="hidden" id="search-cases-pict"/>
+							<span class="f-l" style="margin-right:6px;">|&nbsp;&nbsp;用药史</span><span class="f-l" style="color:#c02029;margin-left: 20px;">如果没有用药史，不用填以下问题。</span>
+							<span class="f-r pointer" id="search-cases" style="margin-right: 20px;">查看病例图片</span>
+						</div>
+						<div id="use-medication-history" class="baseinfo-list" style="margin: 13px 20px;">
+							<table class="table table-border table-bordered table-bg table-striped table-hover health-tablelist">
+								<thead>
+								<tr class="text-c">
+									<th>药名</th>
+									<th>用量</th>
+									<th >用药时间</th>
+									<th>药品类型</th>
+									<th>作用</th>
+								</tr>
+								</thead>
+								<tbody class="health-tbody">
+<!--								<td class="text-c">维生素D</td>
+								<td class="text-c">每日三次</td>
+								<td class="text-c">每八小时一次</td>
+								<td class="text-c">矿物质</td>
+								<td class="text-c">糖尿病</td>-->
+								</tbody>
+							</table>
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:20px;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">利尿剂：</label>
+								<span class="survey_answer" id="510"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">抗惊厥药：</label>
+								<span class="survey_answer" id="511"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">肝素：</label>
+								<span class="survey_answer" id="512"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">化疗药物：</label>
+								<span class="survey_answer" id="513"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">钙剂：</label>
+								<span class="survey_answer" id="515"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">维生素D：</label>
+								<span class="survey_answer" id="516"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">安妥良：</label>
+								<span class="survey_answer" id="517"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">福善美：</label>
+								<span class="survey_answer" id="518"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">骨维壮：</label>
+								<span class="survey_answer" id="519"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">类固醇（7.5mg使用超过3个月）：</label>
+								<span class="survey_answer" id="509"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style_2">甲状腺药物：</label>
+								<span class="survey_answer" id="514"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:75%;">
+								<label class="lable_style_2" style="width: 65%;">密固达（唑来膦酸、重组甲状旁腺激素、降钙素、易维特、雌激素、三苯氧胺、司他夫定、齐多夫定）：</label>
+								<span class="survey_answer" id="520"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">若为糖尿病患者，是否服用以下药物</p>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:20px;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style_2">服药时间：</label>
+								<span class="survey_answer" id="522"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">甲福明：</label>
+								<span class="survey_answer" id="525"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">格列本脲+二甲双胍：</label>
+								<span class="survey_answer" id="524"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style_2">格列吡嗪+二甲双胍：</label>
+								<span class="survey_answer" id="526"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style_2">格华止：</label>
+								<span class="survey_answer" id="523"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">过敏药物</p>
+						<ul class="baseinfo-list gmyw" style="margin-left:20px;background: #f8f7f7;border:1px solid #b7b7b7;">
+
+						</ul>
+					</div>
+					<!-- 潜在心理压力-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am7">
+							<span style="margin-right:6px;">|</span>潜在的心里压力
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">谁和您生活在一起：</label>
+								<span class="survey_answer" id="601"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:500px;">
+								<label class="lable_style" style="width:300px;">目前生活中，您最大的压力来源是什么：</label>
+								<span class="survey_answer" id="602"></span>
+							</li>
+						</ul>
+					</div>
+					<!-- 娱乐活动-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am8">
+							<span style="margin-right:6px;">|</span>娱乐活动
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+							<li class="f-l li-base li-rel" style="position:relative;width:500px;">
+								<label class="lable_style">平时喜欢的的娱乐活动：</label>
+								<span class="survey_answer" id="701"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:550px;">
+								<label class="lable_style" style="width:132px;">平时怎么处理压力：</label>
+								<span class="survey_answer" id="702"></span>
+							</li>
+						</ul>
+					</div>
+					<!--生活习惯/危险因素-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am9">
+							<span style="margin-right:6px;">|</span>生活习惯/危险因素
+						</div>
+						<p class="baseinfo-list">1.饮食</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">您的饮食怎么样：</label>
+								<span class="survey_answer" id="811"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">您是否需要饮食建议：</label>
+								<span class="survey_answer" id="812"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">素食主义者：</label>
+								<span class="survey_answer" id="813"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">2.运动</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style" style="width:225px;">您是否定期进行强度较大的运动：</label>
+								<span class="survey_answer" id="821"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">一周锻炼几次：</label>
+								<span class="survey_answer" id="822"></span>
+								<span class="monad">次</span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">3.抽烟</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">是否抽烟：</label>
+								<span class="survey_answer" id="831"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">一天几包：</label>
+								<span class="survey_answer" id="832"></span>
+								<span class="monad">包</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">烟龄：</label>
+								<span class="survey_answer" id="833"></span>
+								<span class="monad">年</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;">
+								<label class="lable_style">抽烟类型：</label>
+								<span class="survey_answer" id="836"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width: 40%;">
+								<label class="lable_style">吸烟起止时间：</label>
+								<span class="survey_answer" id="834"></span>
+								至
+								<span class="survey_answer" id="835"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">4.消费</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style" style="width:225px;">咖啡：</label>
+<!--
+								<span class="survey_answer" id="841"></span>
+-->
+								<span class="survey_answer" id="842"></span>
+								<span class="monad">杯/天</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style">茶：</label>
+<!--
+								<span class="survey_answer" id="843"></span>
+-->
+								<span class="survey_answer" id="844"></span>
+								<span class="monad">杯/天</span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">5.饮酒</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style" style="width:225px;">饮酒：</label>
+								<span class="survey_answer" id="851"></span>，
+								<span class="survey_answer" id="852"></span>
+								<span class="monad">杯/天</span>，
+								<span class="survey_answer" id="853"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">6.软性毒品</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">软性毒品服药情况：</label>
+								<span class="survey_answer" id="861"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">使用针剂注射毒品：</label>
+								<span class="survey_answer" id="862"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">滥用处方药：</label>
+								<span class="survey_answer" id="863"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">曾寻求帮助（戒毒）：</label>
+								<span class="survey_answer" id="864"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">7.性生活</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">性生活：</label>
+								<span class="survey_answer"  id="871"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">去年有几位性伴侣：</label>
+								<span class="survey_answer"  id="872"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">曾经性伴侣有乙肝、吸毒或是性工作者：</label>
+								<span class="survey_answer"  id="873"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">8.安全<span	>工作经历（现在或过去）</span></p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">开车总是系安全带：</label>
+								<span class="survey_answer"  id="881"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">矿井工作：</label>
+								<span class="survey_answer"  id="882"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">家里有烟雾报警器：</label>
+								<span class="survey_answer" id="883"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">接触粉尘、石棉或化学药品：</label>
+								<span class="survey_answer" id="884"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">家里有一氧化碳警报器：</label>
+								<span class="survey_answer" id="885"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">接触辐射：</label>
+								<span class="survey_answer" id="886"></span>
+							</li>
+						</ul>
+					</div>
+					<!--症状回顾-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection" id="am10">
+							<span style="margin-right:6px;">|</span>症状回顾<span>请选择您目前或曾经是否有过下列症状。</span>
+						</div>
+						<p class="baseinfo-list">1.一般情况</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无异常：</label>
+								<span class="survey_answer" id="9011"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无故失重：</label>
+								<span class="survey_answer" id="9012"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">失眠：</label>
+								<span class="survey_answer" id="9020"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">发烧/出汗：</label>
+								<span class="survey_answer" id="9014"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">入眠困难：</label>
+								<span class="survey_answer" id="9015"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">贫血：</label>
+								<span class="survey_answer" id="9021"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">四肢乏力：</label>
+								<span class="survey_answer" id="9017"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">白天坐着易瞌睡：</label>
+								<span class="survey_answer" id="9016"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">常受感染：</label>
+								<span class="survey_answer" id="9019"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">食欲改变：</label>
+								<span class="survey_answer" id="9013"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">每年体重增加超过2.3kg：</label>
+								<span class="survey_answer" id="9018"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">2.皮肤</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无问题：</label>
+								<span class="survey_answer" id="9031"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">脱发掉发：</label>
+								<span class="survey_answer" id="9043"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">指甲改变：</label>
+								<span class="survey_answer" id="9044"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">持续性皮肤瘙痒：</label>
+								<span class="survey_answer" id="9039"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">痣发生改变：</label>
+								<span class="survey_answer" id="9040"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">淋巴腺肿大：</label>
+								<span class="survey_answer" id="9042"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">近两年内容易擦伤：</label>
+								<span class="survey_answer" id="9041"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style">皮疹或皮肤颜色改变（皮疹，肿块，疼痛）：</label>
+								<span class="survey_answer" id="9032"></span>
+								<span class="survey_answer" id="9033"></span>
+								<span class="survey_answer" id="9034"></span>
+								<span class="survey_answer" id="9035"></span>
+								<span class="survey_answer" id="9036"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<span class="survey_answer" id="9037"></span>
+								<span class="survey_answer" id="9038"></span>
+
+							</li>
+						</ul>
+						<p class="baseinfo-list">3.眼</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无问题</label>
+								<span class="survey_answer" id="9051"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">视力丧失</label>
+								<span class="survey_answer" id="9052"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">视物模糊或重影</label>
+								<span class="survey_answer" id="9053"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">眼痛或发红</label>
+								<span class="survey_answer" id="9054"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">眼睛问题/异常分泌物</label>
+								<span class="survey_answer" id="9055"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">戴眼镜或隐性眼镜</label>
+								<span class="survey_answer" id="9056"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">4.耳，鼻，喉</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您双耳听力是否一致？</label>
+								<span class="survey_answer" id="9061"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">听力丧失</label>
+								<span class="survey_answer" id="9062"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">助听器</label>
+								<span class="survey_answer" id="9063"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您曾经出现过听力问题吗？</label>
+								<span class="survey_answer" id="9064"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+								<label class="lable_style" style="width:225px;">最近您双耳是否有异常分泌物？</label>
+								<span class="survey_answer" id="9065"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:75%;">
+								<span class="survey_answer" id="9066">描述</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">耳鸣：</label>
+								<span class="survey_answer" id="9068"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">耳内疼痛：</label>
+								<span class="survey_answer" id="9069"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">头晕/眩晕：</label>
+								<span class="survey_answer" id="9070"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">频繁流鼻血：</label>
+								<span class="survey_answer" id="9071"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">鼻窦问题：</label>
+								<span class="survey_answer" id="9072"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">经常鼻塞或流鼻涕：</label>
+								<span class="survey_answer" id="9073"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">持续咽喉痛：</label>
+								<span class="survey_answer" id="9074"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">吞咽困难：</label>
+								<span class="survey_answer" id="9075"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">牙龈或鼻出血：</label>
+								<span class="survey_answer" id="9076"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">声音改变或嘶哑：</label>
+								<span class="survey_answer" id="9077"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">5.呼吸系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无症状:</label>
+								<span class="survey_answer" id="9081"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">气喘:</label>
+								<span class="survey_answer" id="9083"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">打鼾:</label>
+								<span class="survey_answer" id="9087"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">痰或粘液里带血:</label>
+								<span class="survey_answer" id="9084"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">咳痰:</label>
+								<span class="survey_answer" id="9093"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">咳血:</label>
+								<span class="survey_answer" id="9094"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">运动时-呼吸短促:</label>
+								<span class="survey_answer" id="9089"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">慢性咳嗽</label>
+								<span class="survey_answer" id="9082"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">入睡后易惊醒</label>
+								<span class="survey_answer" id="9091"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">躺下时-呼吸短促</label>
+								<span class="survey_answer" id="9092"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">睡觉时呼吸改变</label>
+								<span class="survey_answer" id="9088"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">爬行一段楼梯时</label>
+								<span class="survey_answer" id="9090"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">结核菌素实验阳性</label>
+								<span class="survey_answer" id="9085"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:45%;">
+								<label class="lable_style">胸部X线扫描异常</label>
+								<span class="survey_answer" id="9086"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您是否曾接触过石棉?</label>
+								<span class="survey_answer" id="9095"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+								<label class="lable_style" style="width:225px;">过去两周里，您是否打过造影剂？</label>
+								<span class="survey_answer" id="9097"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您惯用左手还是右手?</label>
+								<span class="survey_answer" id="9098"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">过去3年中，您是否进行过核医学通气血流比（V/Q）肺部扫描？</label>
+								<span class="survey_answer" id="9096"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">6.神经系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无症状:</label>
+								<span class="survey_answer" id="9101"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">震颤:</label>
+								<span class="survey_answer" id="9113"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">晕厥:</label>
+								<span class="survey_answer" id="9110"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">记忆丧失:</label>
+								<span class="survey_answer" id="9104"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">单眼失明:</label>
+								<span class="survey_answer" id="9106"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">全身无力:</label>
+								<span class="survey_answer" id="9107"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">全身麻木:</label>
+								<span class="survey_answer" id="9108"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">身体失衡:</label>
+								<span class="survey_answer" id="9109"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">经常跌倒:</label>
+								<span class="survey_answer" id="9114"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">脚步不稳:</label>
+								<span class="survey_answer" id="9112"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">阵发性眩晕:</label>
+								<span class="survey_answer" id="9102"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">反复性头痛:</label>
+								<span class="survey_answer" id="9103"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">癫痫或抽搐:</label>
+								<span class="survey_answer" id="9105"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:45%;">
+								<label class="lable_style">脑血流图筛查:</label>
+								<span class="survey_answer" id="9111"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">7.肌肉骨骼系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无异常</label>
+								<span class="survey_answer" id="9121"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">骨骼疼痛或关节痛</label>
+								<span class="survey_answer" id="9122"></span>
+								<span class="survey_answer" id="9123"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">肌无力</label>
+								<span class="survey_answer" id="9127"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">关节僵直</label>
+								<span class="survey_answer" id="9128"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">关节活动不灵便</label>
+								<span class="survey_answer" id="9129"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">肌肉疼痛</label>
+								<span class="survey_answer" id="9124"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">关节肿胀</label>
+								<span class="survey_answer" id="9125"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" >静脉炎或腿静脉红肿</label>
+								<span class="survey_answer" id="9126"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">8.内分泌系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" >无异常</label>
+								<span class="survey_answer" class="survey_answer" id="9131"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">异常口干</label>
+								<span class="survey_answer" class="survey_answer" id="9133"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">过度饥饿</label>
+								<span class="survey_answer" class="survey_answer" id="9135"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">高/低血糖</label>
+								<span class="survey_answer" class="survey_answer" id="9136"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">甲状腺问题</label>
+								<span class="survey_answer" class="survey_answer" id="9132"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">对冷、热敏感</label>
+								<span class="survey_answer" class="survey_answer" id="9134"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">9.泌尿生殖系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无问题</label>
+								<span class="survey_answer" id="9141"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">尿频</label>
+								<span class="survey_answer" id="9143"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">夜间起来小便</label>
+<!--
+								<span class="survey_answer" id="9144"></span>
+-->
+								<span class="survey_answer" id="9145"></span>
+								<span class="monad">次</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">尿失禁</label>
+								<span class="survey_answer" id="9146"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">血尿</label>
+								<span class="survey_answer" id="9147"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">担心性功能问题</label>
+								<span class="survey_answer" id="9152"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">小便无力</label>
+								<span class="survey_answer" id="9148"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">肾结石</label>
+								<span class="survey_answer" id="9150"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">灼烧感或排尿疼痛</label>
+								<span class="survey_answer" id="9142"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">睾丸疼/肿</label>
+								<span class="survey_answer" id="9153"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">性病/性传染病</label>
+								<span class="survey_answer" id="9149"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">分泌物：阴茎或阴道</label>
+								<span class="survey_answer" id="9151"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">10.消化系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无问题</label>
+								<span class="survey_answer" id="9161"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">腹痛</label>
+								<span class="survey_answer" id="9165"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">黄疸病</label>
+								<span class="survey_answer" id="9170"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">恶心/呕吐</label>
+								<span class="survey_answer" id="9162"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">痔疮</label>
+								<span class="survey_answer" id="9171"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">没食欲</label>
+								<span class="survey_answer" id="9175"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">血便或黑便</label>
+								<span class="survey_answer" id="9167"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">肝脏问题</label>
+								<span class="survey_answer" id="9169"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">排便异常</label>
+								<span class="survey_answer" id="9168"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">胃灼热/反流</label>
+								<span class="survey_answer" id="9172"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">进食困难</label>
+								<span class="survey_answer" id="9174"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">胃灼热或消化不良</label>
+								<span class="survey_answer" id="9164"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">胃肠道气体过多</label>
+								<span class="survey_answer" id="9176"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">呕血或咖啡状物质</label>
+								<span class="survey_answer" id="9163"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">11.心血管系统</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无问题</label>
+								<span class="survey_answer" id="9181"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">腿部或脚踝肿胀</label>
+								<span class="survey_answer" id="9187"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">睡觉需要多于一个枕头</label>
+								<span class="survey_answer" id="9184"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">血压偏高</label>
+								<span class="survey_answer" id="9188"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">风湿热/心脏杂音</label>
+								<span class="survey_answer" id="9185"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">心动过速、心动过缓或心律不齐</label>
+								<span class="survey_answer" id="9182"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">心动超声筛查</label>
+								<span class="survey_answer" id="9189"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">手臂感觉放射样改变</label>
+								<span class="survey_answer" id="9183"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">行走时小腿肌肉痉挛综合征</label>
+								<span class="survey_answer" id="9186"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">心电图筛查异常</label>
+								<span class="survey_answer" id="9190"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">胸痛或胸闷</label>
+								<span class="survey_answer" id="9191"></span>
+								<span class="survey_answer" id="9192"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">12.情感</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">无问题</label>
+								<span class="survey_answer" id="9201"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">兴趣不高</label>
+								<span class="survey_answer" id="9205"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">突发精神坑奋</label>
+								<span class="survey_answer" id="9210"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">厌食</label>
+								<span class="survey_answer" id="9215"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">暴饮暴食</label>
+								<span class="survey_answer" id="9216"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">常常焦虑或烦躁</label>
+								<span class="survey_answer" id="9204"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">焦虑紧张</label>
+								<span class="survey_answer" id="9211"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">幻听或幻视</label>
+								<span class="survey_answer" id="9209"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">心情压抑或者抑郁症</label>
+								<span class="survey_answer" id="9203"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">睡眠不好</label>
+								<span class="survey_answer" id="9212"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">常常感到紧张</label>
+								<span class="survey_answer" id="9202"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">想法异常或情绪低落</label>
+								<span class="survey_answer" id="9208"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">行为改变</label>
+								<span class="survey_answer" id="9213"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">注意力不集中</label>
+								<span class="survey_answer" id="9207"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">精力下降或缺乏积极性</label>
+								<span class="survey_answer" id="9206"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">性格改变</label>
+								<span class="survey_answer" id="9214"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">13.男士</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">早泄</label>
+								<span class="survey_answer" id="9222"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">疝气</label>
+								<span class="survey_answer" id="9223"></span>
+							</li>
+
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您现在服用激素吗？</label>
+								<span class="survey_answer" id="9230"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">性欲低下</label>
+								<span class="survey_answer" id="9221"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">阳痿</label>
+								<span class="survey_answer" id="9224"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:118px;">您有几个孩子？</label>
+								<span class="survey_answer" id="9231"></span>
+								<span class="monad">个</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">性生活质量</label>
+								<span class="survey_answer" id="9225"></span>
+								<span class="survey_answer" id="9226"></span>
+
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:65%;">
+								<label class="lable_style">激素替代疗法</label>
+								<span class="survey_answer" id="9227"></span>
+								<span class="survey_answer" id="9228"></span>
+								<span class="survey_answer" id="9229"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">14.女士</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">活产数：</label>
+								<span class="survey_answer" id="19236"></span>
+								<span class="monad">次</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">怀孕次数：</label>
+								<span class="survey_answer" id="19234"></span>
+								<span class="monad">次</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">上次经期持续天数、周期：</label>
+								<span class="survey_answer" id="19231"></span>
+								<span class="monad">天</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">流产次数：</label>
+								<span class="survey_answer" id="19235"></span>
+								<span class="monad">次</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">月经周期：</label>
+								<span class="survey_answer" id="19232"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您现在怀孕或者计划怀孕吗？</label>
+								<span class="survey_answer" id="19237"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您现在有几个孩子？</label>
+								<span class="survey_answer" id="19233"></span>
+								<span class="monad">个</span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">卵巢切除手术？</label>
+								<span class="survey_answer" id="19239"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">您是否进行过子宫摘除手术？</label>
+								<span class="survey_answer" id="19238"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style" style="width:225px;">乳房手术</label>
+								<span class="survey_answer" id="19246"></span>
+								<span class="survey_answer" id="19247"></span>
+								<span class="survey_answer" id="19248"></span>
+								<span class="survey_answer" id="19249"></span>
+								<span class="survey_answer" id="19250"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style" style="width:253px;">上次乳房钼靶检查（检查时间和结果）</label>
+								<span class="survey_answer" id="19244"></span>
+								<span class="survey_answer" id="9245"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style" style="width:253px;">上次子宫颈抹片检查（检查时间和结果）</label>
+								<span class="survey_answer" id="19241"></span>
+								<span class="survey_answer" id="19242"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="border: 1px solid #e2dfdf;margin:10px 0;width:100%;"></li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style" style="width:253px;">上次妇科B超筛查（检查时间和结果）</label>
+								<span class="survey_answer" id="9252"></span>
+								<span class="survey_answer" id="9253"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">绝经前期：</label>
+								<span class="survey_answer" id="19254"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">绝经后期：</label>
+								<span class="survey_answer" id="19255"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+								<label class="lable_style">停经年龄：</label>
+								<span class="survey_answer" id="19256"></span>
+								<span class="survey_answer" id="19257"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">月经失调:</label>
+								<span class="survey_answer" id="19259"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" >担忧性功能:</label>
+								<span class="survey_answer" id="19269"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">乳头疼:</label>
+								<span class="survey_answer" id="19266"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">绝经期后出血:</label>
+								<span class="survey_answer" id="19261"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">经期前紧张综合证:</label>
+								<span class="survey_answer" id="19262"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">更年期综合证:</label>
+								<span class="survey_answer" id="19258"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">乳头异常分泌物:</label>
+								<span class="survey_answer" id="19267"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">近期阴道分泌物增多:</label>
+								<span class="survey_answer" id="19260"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">常常潮红或盗汗:</label>
+								<span class="survey_answer" id="19263"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">性交疼痛或性交后出血:</label>
+								<span class="survey_answer" id="19268"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">乳腺肿块，疼痛或异常分泌物:</label>
+								<span class="survey_answer" id="19264"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style">过多或异常出血:</label>
+								<span class="survey_answer" id="19265"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="border: 1px solid #e2dfdf;margin:10px 0;width:100%;"></li>
+							<li class="f-l li-base li-rel" style="position:relative;width:32%;">
+								<label class="lable_style">激素替代疗法？</label>
+								<span class="survey_answer" id="19273"></span>
+								<span class="survey_answer" id="19274"></span>
+								<span class="survey_answer" id="19275"></span>
+
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:25%;">
+								<label class="lable_style" style="width:155px;">性生活质量</label>
+								<span class="survey_answer" id="19272"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">目前采用的避孕方式是</label>
+								<span class="survey_answer" id="19270"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label class="lable_style" style="width:225px;">您现在服用性激素吗？</label>
+								<span class="survey_answer" id="19276"></span>
+								<span class="survey_answer" id="19277"></span>
+							</li>
+						</ul>
+						<p class="baseinfo-list">15.疾病预防</p>
+						<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label>不清楚免疫接种情况</label>
+								<span class="survey_answer" id="9281"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">破伤风</label>
+								<span class="survey_answer" id="19282"></span>
+								<span class="survey_answer" id="19283"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">肺炎：</label>
+								<span class="survey_answer" id="19284"></span>
+								<span class="survey_answer" id="19285"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">水痘：</label>
+								<span class="survey_answer" id="19286"></span>
+								<span class="survey_answer" id="19287"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">脑膜炎：</label>
+								<span class="survey_answer" id="19298"></span>
+								<span class="survey_answer" id="19299"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">乙型肝炎：</label>
+								<span class="survey_answer" id="19292"></span>
+								<span class="survey_answer" id="19293"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">流感</label>
+								<span class="survey_answer" id="19296"></span>
+								<span class="survey_answer" id="19297"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">麻腮风</label>
+								<span class="survey_answer" id="19288"></span>
+								<span class="survey_answer" id="19289"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">甲型肝炎</label>
+								<span class="survey_answer" id="19294"></span>
+								<span class="survey_answer" id="19295"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">人乳头状瘤病毒</label>
+								<span class="survey_answer" id="19300"></span>
+								<span class="survey_answer" id="19301"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="border: 1px solid #e2dfdf;margin:10px 0;width:100%;"></li>
+
+							<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+								<label>不清楚是否接受过检查</label>
+								<span class="survey_answer" id="19304"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">骨密度</label>
+								<span class="survey_answer" id="19305"></span>
+								<span class="survey_answer" id="19306"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">胆固醇检查</label>
+								<span class="survey_answer" id="19313"></span>
+								<span class="survey_answer" id="19314"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">前列腺癌检查（男士）：</label>
+								<span class="survey_answer" id="19311"></span>
+								<span class="survey_answer" id="19312"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">牙科检查：</label>
+								<span class="survey_answer" id="19307"></span>
+								<span class="survey_answer" id="19308"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">健康维护筛选：</label>
+								<span class="survey_answer" id="19315"></span>
+								<span class="survey_answer" id="19316"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">阴道镜筛选（女士）：</label>
+								<span class="survey_answer" id="19317"></span>
+								<span class="survey_answer" id="19318"></span>
+							</li>
+							<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+								<label class="lable_style" style="width:225px;">结肠镜检查</label>
+								<span class="survey_answer" id="19309"></span>
+								<span class="survey_answer" id="19310"></span>
+							</li>
+						</ul>
+						<div class="collection-baseinfo">
+							<div class="navbar-collection" id="am11">
+								<span style="margin-right:6px;">|</span>近期医疗症状
+							</div>
+							<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+								<li class="f-l li-base li-rel" style="position:relative;width:1038px;">
+									<span class="survey_answer" id="100000"></span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!--查看病例-->
+	<div id="layer_health_search_cases"  style="width:100%;display:none;">
+		<div style="background:#5eb95e;color:#fff;height:30px;padding:5px 0 5px 5px;line-height: 30px;">查看病例图片</div>
+		<ul class="cl portfolio-area" id="search-portfolio-area">
+
+		</ul>
+	</div>
+	<script type="text/javascript" src="../static/view-image/js/lightbox-plus-jquery.min.js"></script>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+	<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript">
+
+		$(function() {
+			//清空
+			$('.btn-danger').on('click', function(){
+				$(this).parent().find('input').val("");
+				$(this).parent().find('.btn-success').click();
+			});
+
+			function getUrlParam(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null) return unescape(r[2]);
+				return null;
+			}
+			var id=getUrlParam("id");
+
+			search_health(id);
+			//选项卡切换
+			$.Huitab("#tab-system .tabBar span", "#tab-system .tabCon", "current", "click", "0");
+			$(".tabBar #health_servey_tab").trigger("click");
+
+
+			$('#health_report').on('change', '.survey', function(){
+				var order_id= this.value;
+				$("#search-cases-pict").val(order_id);
+				search_health_survey(order_id);
+			});
+
+			//查看病例图片
+			$("#search-cases").click(function(){
+				var order_id=$("#search-cases-pict").val();
+				index_layer_receivable_fund=layer.open({
+					type: 1,
+					area: ['699px', '360px'],
+					title: false,
+					content:$('#layer_health_search_cases')
+				});
+				//查看病例图片
+				var html="";
+				$.ajax({
+					url : "../../../health-record/queryMedicalRecord.action",
+					type : "post",
+					dataType : 'json',
+					data : {order_id:order_id},
+					success : function(response){
+						$.each(response,function(i,p){
+							html+="<li class='item'>"+
+								"<div class='portfoliobox'>"+
+								"<div class='picbox'>" +
+									/*"<a href='"+p.medical_picture_upload+"' data-lightbox='gallery'>"+*/
+									"<img src='"+p.medical_picture_upload+"'></a></div>"+
+								"</div>"+
+								"</li>";
+						});
+						$("#search-portfolio-area").html(html);
+					}
+				});
+			});
+
+		});
+		//查看大图图片
+		//$.Huihover(".portfolio-area li");
+
+		$(window).load(function(){
+			//初次加载取最新一条记录
+			var order_id=$("#health_report .survey option:eq(1)").attr("value");
+			$("#search-cases-pict").val(order_id);
+			search_health_survey(order_id);
+		});
+		//查询数据方法
+		function search_health_survey(order_id){
+			$.ajax({
+				url : "../../../HealthSurvey/getHealthSurveyById.action",
+				type : "post",
+				dataType : 'json',
+				data : {order_id:order_id},
+				success : function(response){
+					console.log(response);
+					var p1=response.data;
+					if(response.status=="1"){
+						$("#user_name").html(p1.user_name);
+						$("#user_birthday").html(p1.user_birthday);
+						$("#user_sex").html(p1.user_sex=='200001'?"男":"女");
+						$("#user_phone").html(p1.user_phone);
+						$("#user_height").html(p1.user_height);
+						$("#user_weight").html(p1.user_weight );
+						$("#email").html(p1.email);
+						$("#PulseRate").html(p1.PulseRate);
+						$("#HighPressure").html(p1.HighPressure==null?"":"低压"+p1.HighPressure);
+						$("#LowPressure").html(p1.LowPressure==null?"":"高压"+p1.LowPressure);
+						$("#language").html(p1.language);
+						$("#user_marriage").html(p1.user_marriage);
+						$("#fixed_telephone").html(p1.fixed_telephone);
+						$("#medical_insurance").html(p1.medical_insurance);
+						$("#medical_insurance_code").html(p1.medical_insurance_code);
+						$("#employment_status").html(p1.employment_status);
+						$("#emergency_contact").html(p1.emergency_contact);
+						$("#emergency_contact_phone").html(p1.emergency_contact_phone);
+						$("#last_check").html(p1.last_check);
+						$("#user_address").html(p1.user_address);
+						$("#emergency_contact_with").html(p1.emergency_contact_with);
+						basic_answer(p1);
+						pharmacy(p1);
+						claritin(p1);
+						show_monad();
+					}
+				}
+			});
+		}
+		//健康基本信息
+		/*显示答案*/
+		function basic_answer(item){
+			$("span.survey_answer").each(function(){
+				var name = $(this).attr("id");
+				var self = $(this);
+				$.each(item.answers, function(i,m){
+					if(name == m.name){
+						self.html(m.value);
+						return false;
+					}
+				});
+			});
+		}
+		//列表显示
+		function pharmacy(item){
+			var aa=item.t1;
+			if(item.t1!=undefined){
+				var html="";
+				$.each(item.t1,function(i,m){
+					html+="<tr><td class='text-c'>"+ m.a501+"</td>"+
+					"<td class='text-c'>每日"+ m.a504+","+ m.a502+""+ m.a503+"/次</td>"+
+					"<td class='text-c'>每"+ m.a505+"1次，服用"+ m.a506+"</td>"+
+					"<td class='text-c'>"+ m.a507+"</td>"+
+					"<td class='text-c'>"+ m.a508+"</td></tr>";
+				});
+				$(".health-tbody").html(html);
+			}else{
+				$(".health-tbody").html("");
+				return false;
+			}
+
+		}
+		
+		function claritin(items){
+			if(items.t2!=undefined){
+				var html="";
+				$.each(items.t2,function(i,m1){
+					html+="<li class='f-l li-base li-rel' style='position:relative;width:100%;'>"+
+							"<label class='lable_style'>"+(i+1)+"药物名称</label>"+
+							"<span>"+m1.a528+"</span>"+
+							"<span>"+m1.a529+"</span>"+
+							"</li>";
+				});
+				$(".gmyw").html(html);
+			}else{
+				$(".gmyw").html("");
+				return false;
+			}
+		}
+
+		function getUrlParam1(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		function search_health(id){
+			var id=getUrlParam1("id");
+			//调用查询数据接口
+			var html="";
+			$.ajax({
+				url : "../../../HealthSurvey/getTimeList.action",
+				type : "post",
+				dataType : 'json',
+				data : {user_id:id,downTime:$("#datemin").val(),upTime:$("#datemax").val()},
+				success : function(response) {
+					if(response.status=='1'){
+						$.each(response.data,function(i,p){
+							html+="<option value="+p.order_id+">"+p.date+"</option>";
+						});
+						$("#health-risk-assess").html(html);
+					}
+				}
+			});
+		}
+
+		// tab标签页面
+	var tabsClick = function(){
+			$('.tabBar').find('span').on('click', function(){
+				var index = $(this).index();
+				if(index === 0){
+					var id=getUrlParam1("id");
+					window.location.href = "health-record-detail.html?id=" + id +"&type=hospital";
+				}else if(index === 1){
+					var id=getUrlParam1("id");
+					window.location.href = "health-record-detail.html?id=" + id +"&type=clinic";
+				}else if(index === 2){
+					var id=getUrlParam1("id");
+					window.location.href = "health-record-detail.html?id=" + id +"&type=insurance";
+				}else if(index === 3){
+					var id=getUrlParam1("id");
+					window.location.href = "health-record-detail.html?id=" + id +"&type=check";
+				}else if(index === 4){
+					var id=getUrlParam1("id");
+					window.location.href = "health-record-detail.html?id=" + id +"&type=survey";
+				}
+			});
+		}();
+
+	//单位显示隐藏
+	function show_monad(){
+		$(".monad").each(function(){
+			var span_vl=$(this).prev("span.survey_answer").html();
+			var span_vl_self=$(this);
+			if(span_vl==""){
+				span_vl_self.css("display","none");
+			}else{
+				span_vl_self.css("display","inline-block");
+			}
+		});
+
+	}
+	</script>
+</body>
+</html>

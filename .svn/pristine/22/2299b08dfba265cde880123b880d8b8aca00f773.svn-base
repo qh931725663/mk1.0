@@ -1,0 +1,16 @@
+package com.haaa.cloudmedical.platform.RemindManage;
+
+import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.haaa.cloudmedical.platform.RemindManage.service.RemindManageService;
+
+public class TestPush {
+    
+    @Test
+    public void test(){
+        ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+        RemindManageService bean = ac.getBean(RemindManageService.class);
+        bean.pushToUser();
+    }
+}

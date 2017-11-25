@@ -1,0 +1,93 @@
+package com.haaa.cloudmedical.app.chronicplan.service.impl;
+
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.app.chronicplan.service.ChronicPlanService;
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.common.util.redis.RedisCacheUtil;
+import com.haaa.cloudmedical.dao.ChronicPlanDao;
+
+
+
+/**
+ * 
+ * @author Owen
+ *
+ */
+@Service
+@Log(name = "慢性病计划管理")
+public class ChronicPlanServiceImpl implements ChronicPlanService{
+	@Autowired
+	public ChronicPlanDao chronicPlanDao;
+	
+
+	/**
+	 *  @description 添加跟踪检测的记录
+	 */
+	@Override
+	public void addPlanItems(List<Map> parseArray) {	
+		//添加iterm表
+		String plan_order_id =String.valueOf(parseArray.get(0).get("plan_order_id"));
+		String plan_dic_order_id = String.valueOf(parseArray.get(0).get("dic_order_id"));
+		String create_date = String.valueOf(parseArray.get(0).get("create_date"));
+		String create_by = String.valueOf(parseArray.get(0).get("create_by"));		
+		Long item_order_id= chronicPlanDao.addItem(plan_order_id, plan_dic_order_id,create_date,create_by);	
+		//调用存储过程进行不同类型的慢性病的检测数据同步共享
+		if (item_order_id!=null) {
+			chronicPlanDao.callStore(String.valueOf(item_order_id));					
+		}
+		//依次添加p_plan_item_content数据
+		for (Map map2 : parseArray) {
+			map2.remove("plan_order_id");
+			map2.remove("dic_order_id");
+			map2.put("item_order_id", item_order_id);
+			chronicPlanDao.insert(map2, "p_plan_item_content");
+		}				
+	}
+	
+	/**
+	 * @description 用于计划跟踪检测的列表展示
+	 */
+	@Override
+	public  List<Map<String,Object>> getPlanTrackItems(String plan_id, String dic_order_id) {	
+
+		//查询出每次提交的iterm
+		List<Map<String, Object>> allIterms =chronicPlanDao.getAllIterms(plan_id, dic_order_id);
+		if (allIterms!=null) {
+			for (Map<String, Object> map : allIterms) {		
+				BigInteger order_id= (BigInteger)map.get("item_order_id");
+				//通过Iterm的id获取每次提交的数据
+				List<Map<String,Object>> singleItermMap = chronicPlanDao.getAllOptionByIterm(order_id);
+				map.put("itemContents", singleItermMap);
+			}	
+		}
+		return allIterms;	
+	}
+	/**
+	 * 删除某次检测记录
+	 */
+	@Override
+	public void deletePlanItems(String item_order_id) {
+		chronicPlanDao.deletePlanItems(item_order_id);
+		chronicPlanDao.deletePlanContents(item_order_id);
+		
+	}	
+}

@@ -1,0 +1,43 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.chrondoc.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.chrondoc.service.DiabetesDocAppService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/diabetesDoc-app")
+public class DiabetesDocAppController {
+
+	@Resource
+	private DiabetesDocAppService diabetesDocAppService;
+
+	@RequestMapping("/addAnswers.action")
+	public Object addAnswers(@RequestParam MultiValueMap<String, Object> map) {
+		Map<String, List<Object>> map2 = map;
+		System.out.println(map2);
+		map2.forEach((k, v) -> {
+			System.out.println("k----->"+k);
+			v.forEach(s -> {
+				System.out.println("v----->"+s);
+			});
+		});
+		return map2;
+
+	}
+
+}

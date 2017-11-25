@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>基础信息</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<div class="header">
+		<div class="circle">
+			<div class="dotBox"></div>
+			<p><span class="dot on"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+		</div>
+		<div class="txtBox">
+			<p><span class="txt onFont">基础信息</span></p>
+			<p><span class="txt">生活方式</span></p>
+			<p><span class="txt">既往史</span></p>
+			<p><span class="txt">查体</span></p>
+		</div>
+	</div>
+	<form class="main" id="infoForm">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<div class="info_left"><span class="must">*</span>性别</div>
+				<div class="info_rgt infocla" data-id="user_sex"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>出生日期</div>
+				<div class="info_rgt infocla" data-id="user_birthday"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>年龄</div>
+				<div class="info_rgt infocla" data-id="user_age"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>身份证号</div>
+				<div class="info_rgt infocla" data-id="user_card"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>联系方式</div>
+				<div class="info_rgt infocla"  data-id="user_phone"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>身高</div>
+				<div class="info_rgt"><input type="text" class="bitian" data-val="身高" id="height" name="030501" placeholder="点击填写"/> <span class="mond">&nbsp;cm</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>体重</div>
+				<div class="info_rgt"><input type="text" class="bitian" data-val="体重" id="weight" name="030601" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;Kg</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>腰围</div>
+				<div class="info_rgt"><input type="text" class="bitian" data-val="腰围" name="030701" placeholder="点击填写"/> <span class="mond">&nbsp;cm</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>BMI</div>
+				<div class="info_rgt"><input type="text" class="bitian" name="030801" id="BMI" placeholder="点击填写"/> <span class="mond">Kg/m2</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>心率</div>
+				<div class="info_rgt"><input type="text" class="bitian" name="030101" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>脉搏</div>
+				<div class="info_rgt"><input type="text" class="bitian" name="030201" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>呼吸</div>
+				<div class="info_rgt"><input type="text" class="bitian" name="030301" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>血压</div>
+				<div class="info_rgt">
+					<select name="030403" data-val="血压分级" class="noboeder">
+						<option value="">请选择</option>
+						<option value="1">一级</option>
+						<option value="2">二级</option>
+						<option value="3">三级</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">伸张压</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="伸张压" name="030401" placeholder="点击填写"/> <span class="mond">mmHg</span></div>
+					</li>
+					<li>
+						<div class="info_left">收缩压</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="收缩压" name="030402" placeholder="点击填写"/> <span class="mond">mmHg</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p><span class="must">*</span>1、体育锻炼</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">锻炼频率</div>
+						<div class="info_rgt">
+							<select name="010101" data-val="锻炼频率" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">每天</option>
+								<option value="2">每周一次以上</option>
+								<option value="3">偶尔</option>
+								<option value="4">从不锻炼</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">每次锻炼时间</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="锻炼时间" name="010102" placeholder="请输入时间"/> <span class="mond">分钟</span></div>
+					</li>
+					<li>
+						<div class="info_left">锻炼方式</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="锻炼方式" name="010103" placeholder="请输入锻炼方式"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>2、饮食习惯</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">荤素比例</div>
+						<div class="info_rgt">
+							<select name="010201" data-val="荤素比例" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">荤素均衡</option>
+								<option value="2">荤食为主</option>
+								<option value="3">素食为主</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">偏好</div>
+						<div class="info_rgt">
+							<select name="010202" data-val="偏好" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">嗜盐</option>
+								<option value="2">嗜油</option>
+								<option value="3">嗜糖</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">每日摄盐量</div>
+						<div class="info_rgt"><input type="text" class="bitian" name="010203" placeholder="点击填写"/> <span class="mond">克</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>3、睡眠时间</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left rad_left">您平均每晚的睡眠时间能达到7个小时吗？</div>
+						<div class="info_rgt rad_rgt">
+							<select name="010301" data-val="睡眠时间" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">没有</option>
+								<option value="1">有</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>4、吸烟情况</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">吸烟状况</div>
+						<div class="info_rgt">
+							<select name="010401" data-val="吸烟状况" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">从不吸烟</option>
+								<option value="2">已戒烟</option>
+								<option value="3">吸烟</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">日吸烟量</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="日吸烟量" name="010402" placeholder="点击填入"/> <span class="mond">支</span></div>
+					</li>
+					<li>
+						<div class="info_left">烟龄</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="烟龄" name="010403" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+					<li>
+						<div class="info_left">戒烟年龄</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="戒烟年龄" name="010404" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>5、饮酒情况</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">饮酒频率</div>
+						<div class="info_rgt">
+							<select name="010501" data-val="饮酒频率" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">从不</option>
+								<option value="2">偶尔</option>
+								<option value="3">经常</option>
+								<option value="4">每天</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">日均饮酒量</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="日均饮酒量" name="010502" placeholder="点击填入"/> <span class="mond">两</span></div>
+					</li>
+					<li>
+						<div class="info_left">酒龄</div>
+						<div class="info_rgt"><input type="text" class="bitian" data-val="酒龄" name="010503" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+					<li>
+						<div class="info_left">近期是否饮酒</div>
+						<div class="info_rgt">
+							<select name="010504" data-val="是否饮酒" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">没有</option>
+								<option value="1">有</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">饮酒种类</div>
+						<div class="info_rgt">
+							<select name="010505" data-val="饮酒种类" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">白酒</option>
+								<option value="2">啤酒</option>
+								<option value="3">红酒</option>
+								<option value="4">黄酒</option>
+								<option value="5">其他</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>6、心理状态</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left rad_left">您与家人和朋友的关系好吗</div>
+						<div class="info_rgt rad_rgt">
+							<select name="020101" data-val="人际关系" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">不好</option>
+								<option value="2">一般</option>
+								<option value="3">好</option>
+								<option value="4">很好</option>
+								<option value="5">特别好</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left rad_left">您对现在的生活满意吗？</div>
+						<div class="info_rgt rad_rgt">
+							<select name="020201" data-val="生活满意" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">否</option>
+								<option value="1">是</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left rad_left">您会经常感觉郁闷焦虑吗？</div>
+						<div class="info_rgt rad_rgt">
+							<select name="020202" data-val="是否焦虑" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">否</option>
+								<option value="1">是</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p><span class="must">*</span>1、病史</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">高血压</div>
+						<div class="info_rgt"><input type="text" placeholder="点击填写"/> <span class="mond">&nbsp;年</span></div>
+					</li>
+					<li>
+						<div class="info_left">糖尿病</div>
+						<div class="info_rgt"><input type="text" placeholder="点击填写"/> <span class="mond">&nbsp;年</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>2、是否有疾病史</div>
+				<div class="info_rgt rad_rgt">
+					<select name="040101" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">没有</option>
+						<option value="1">有</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<div class="checkBox">
+		            <div class="hide_cont sport plusBox" style="display:block;">
+						<div class="opt">
+			                <input class="magic addtime" data-name="040102" name="04010201" value="1" type="checkbox" id="hypertension">
+			                <label class="lab" for="hypertension">高血压</label>
+			                <input type="text" name="04010301" data-name="040103" class="datetime" placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010202" data-name="040102" value="2" type="checkbox" id="diabetes">
+			                <label class="lab" for="diabetes">糖尿病</label>
+			                <input type="text" name="04010302" class="datetime" data-name="040103"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010203" data-name="040102" value="3" type="checkbox" id="heart">
+			                <label class="lab" for="heart">冠心病</label>
+			                <input type="text" name="04010303" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010204" data-name="040102" value="4" type="checkbox" id="slow">
+			                <label class="lab" for="slow">慢性阻塞性肺疾病</label>
+			                <input type="text" name="04010304" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010205" data-name="040102" value="5" type="checkbox" id="vicious">
+			                <label class="lab" for="vicious">恶性肿瘤</label>
+			                <input type="text" name="04010305" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010206" data-name="040102" value="6" type="checkbox" id="Stroke">
+			                <label class="lab" for="Stroke">脑卒中</label>
+			                <input type="text" name="04010306" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010207" data-name="040102" value="7" type="checkbox" id="mental">
+			                <label class="lab" for="mental">重性精神疾病</label>
+			                <input type="text" name="04010307" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010208" data-name="040102" value="8" type="checkbox" id="Tuberculosis">
+			                <label class="lab" for="Tuberculosis">结核病</label>
+			                <input type="text" name="04010308" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010209" data-name="040102" value="9" type="checkbox" id="hepatitis">
+			                <label class="lab" for="hepatitis">肝炎</label>
+			                <input type="text" name="04010309" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010210" data-name="040102" value="11" type="checkbox" id="Iother">
+			                <label class="lab" for="Iother">其他法定传染病</label>
+			                <input type="text" name="04010310" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010211" data-name="040102" value="10" type="checkbox" id="Ioth">
+			                <label class="lab" for="Ioth">其他</label>
+			                <input type="text" name="04010311" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>3、是否有手术史</div>
+				<div class="info_rgt rad_rgt">
+					<select name="040201" data-val="手术史" class="noboeder jibing">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<table class="sstable">
+							<tr class="first_tr"><td>手术史</td><td><span class="del">删除</span></td></tr><tr>
+							<td>手术名称</td>
+							<td><input type="text" name="040202" class="ssname addInp" placeholder="点击填写"/></td></tr><tr>
+							<td>手术时间</td>
+							<td><input type="text" name="040203" class="sstime addInpT" placeholder="点击填写"/></td></tr>
+						</table>
+					</div>
+		            <div class="hide_cont sport addpadding once">
+						<div class="plustable">
+							<div class="addbtn addshoushu">
+								<img src="image/plus.png" class="addimg"/>
+								<span>添加手术史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>4、是否有外伤史</div>
+				<div class="info_rgt rad_rgt">
+					<select name="040301" data-val="外伤史" class="noboeder jibing">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<table class="sstable">
+							<tr class="first_tr"><td>外伤史</td><td><span class="del">删除</span></td></tr><tr>
+							<td>外伤名称</td>
+							<td><input type="text" name="040302" class="ssname addInp" placeholder="点击填写"/></td></tr><tr>
+							<td>外伤时间</td>
+							<td><input type="text" name="040303" class="sstime addInpT" placeholder="点击填写"/></td></tr>
+						</table>
+					</div>
+		            <div class="hide_cont sport addpadding once">
+						<div class="plustable">
+							<div class="addbtn addshang">
+								<img src="image/plus.png" class="addimg"/>
+								<span>添加外伤史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>5、是否有输血史</div>
+				<div class="info_rgt rad_rgt">
+					<select name="040401" data-val="输血史" class="noboeder jibing">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<table class="sstable">
+							<tr class="first_tr"><td>输血史</td><td><span class="del">删除</span></td></tr><tr>
+							<td>输血原因</td>
+							<td><input type="text" name="040402" class="ssname addInp" placeholder="点击填写"/></td></tr>
+							<tr><td>输血时间</td>
+							<td><input type="text" name="040403" class="sstime addInpT" placeholder="点击填写"/></td></tr>
+						</table>
+					</div>
+		            <div class="hide_cont sport addpadding once">
+						<div class="plustable">
+							<div class="addbtn addblood">
+								<img src="image/plus.png" class="addimg"/>
+								<span>添加输血史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>6、是否有家庭成员病史</div>
+				<div class="info_rgt rad_rgt">
+					<select name="050101" class="noboeder jibing">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<div class="member">
+							<div class="first_tr member_num">
+								<p><span class="num_mm">家庭病史</span><span class="del_member">删除</span></p>
+							</div>
+							<div class="info_left f_left">家庭成员</div>
+							<div class="info_rgt f_rgt">
+								<select name="050102" class="noboeder">
+									<option value="">请选择</option>
+									<option value="1">父亲</option>
+									<option value="2">母亲</option>
+									<option value="3">兄</option>
+									<option value="4">弟</option>
+									<option value="5">姐</option>
+									<option value="6">妹</option>
+									<option value="7">儿子</option>
+									<option value="8">女儿</option>
+								</select>
+								<img class="arrow" src="image/rgt.png"/>
+							</div>
+							<div class="info_left f_left">选择所患疾病</div>
+							<div class="info_rgt f_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+							<div class="sickBox plusBox">
+								<div class="opt">
+									<input class="magic" name="050103" data-name="050103" value="1" type="checkbox">
+									<label class="lab">高血压</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" data-name="050103" value="2" type="checkbox">
+									<label class="lab">糖尿病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic plusBox" name="050103" data-name="050103" value="3" type="checkbox">
+									<label class="lab">冠心病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="4" data-name="050103" type="checkbox">
+									<label class="lab">慢性阻塞性肺疾病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="5" data-name="050103" type="checkbox">
+									<label class="lab">恶性肿瘤</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="6" data-name="050103" type="checkbox">
+									<label class="lab">脑卒中</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="7" data-name="050103" type="checkbox">
+									<label class="lab">重性精神疾病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="8" data-name="050103" type="checkbox">
+									<label class="lab">结核病</label>
+								</div><br/>
+								<div class="opt">
+								    <input class="magic" name="050103" value="9" data-name="050103" type="checkbox">
+									<label class="lab">肝炎</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="10" data-name="050103" type="checkbox">
+									<label class="lab">先天畸形</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="050103" value="11" data-name="050103" type="checkbox">
+									<label class="lab">其他</label>
+								</div>
+							</div>
+						</div>
+					</div>
+		            <div class="hide_cont sport addpadding once">
+						<div class="plustable">
+							<div class="addbtn addmember">
+								<img src="image/plus.png" class="addimg"/>
+								<span>新增家庭成员病史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<div class="info_left"><span class="must">*</span>1、下肢水肿</div>
+				<div class="info_rgt">
+					<select name="060101" data-val="下肢水肿" class="noboeder">
+						<option value="">请选择</option>
+						<option value="1">无</option>
+						<option value="2">单侧</option>
+						<option value="3">双侧不对称</option>
+						<option value="4">双侧对称</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left view"><span class="must">*</span>2、足背动脉搏动</div>
+				<div class="info_rgt" style="width: 73%;">
+					<select name="060102" data-val="足背动脉搏动" class="noboeder">
+						<option value="">请选择</option>
+						<option value="1">未触及</option>
+						<option value="2">触及双侧对称</option>
+						<option value="3">触及左侧弱或消失</option>
+						<option value="4">触及右侧弱或消失</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/layer-mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/highBloodPressure.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport"
+		  content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control"  content="no-siteapp" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+
+	<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+	<title>计划模板添加</title>
+</head>
+<body>
+<div class="page-container">
+	<form class="form form-horizontal" id="form-template-add" enctype="multipart/form-data">
+		<div class="row cl member-list-input">
+			<div class="col-xs-12 col-sm-12 member-input-1">
+				<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>慢病类型</label>
+				<div class="formControls col-xs-7 col-sm-7">
+					<select class="select-box" id="plan_type" name="plan_type" style="width: 240px;">
+						<option value="" selected>请选择</option>
+						<option value="900001">糖尿病</option>
+						<option value="900002">高血压</option>
+						<option value="900003">高脂血症</option>
+						<option value="900004">慢性阻塞性肺病</option>
+					</select>
+					<span class="c-red" id="plan_type_mes"></span>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 member-input-1">
+				<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>管理内容</label>
+				<div class="formControls col-xs-7 col-sm-7">
+					<input class="input-text" id="plan_title" name="plan_title"  placeholder="请输入管理内容" style="width:440px;">
+					<span class="c-red" id="plan_title_mes"></span>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 member-input-1">
+				<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>管理次数</label>
+				<div class="formControls col-xs-7 col-sm-7">
+					<input id="plan_num" name="plan_num" class="input-text"  placeholder="请输入管理次数" style="width:440px;">
+					<span class="c-red" id="plan_num_mes"></span>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-12 member-input-1">
+				<label class="form-label col-xs-2 col-sm-2">备注</label>
+				<div class="formControls col-xs-7 col-sm-7">
+					<textarea id="plan_text" name="plan_text" cols="63" rows="10" placeholder="请输入..."  style="font-size:14px;"></textarea>
+				</div>
+			</div>
+
+			<div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-2">
+				<button class="btn btn-success radius ml-10" type="button" onclick="plan_template_save()">保存</button>
+				<button class="btn btn-danger radius" type="button" onclick="layer_close()">取消</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../static/h-admin/js/verification-check.js"></script>
+<script type="text/javascript">
+function plan_template_save(){
+	var result=plan_template_add_check();
+	if(result){
+		var user_phone = window.localStorage.getItem("loginUname");
+		var data = {add_user_id:user_phone};
+		$(':input').each(function(){
+			if(this.name){
+				data[this.name] = $(this).val();
+			}
+		});
+		$.ajax({
+			url: "../../../chronicManage/addPlanTemplate.action",
+			type: "post",
+			dataType: 'json',
+			data: data,
+			success: function (response) {
+				if(response){
+					layer.msg('添加成功!');
+					//页面8秒钟后关闭
+					setTimeout(function () {
+						parent.location.reload(); // 父页面刷新
+						parent.layer.close(index);
+					}, 1000);				
+				}else{
+					layer.msg('添加失败!');
+				}
+			}
+		});
+		var index = parent.layer.getFrameIndex(window.name);
+	}
+}
+</script>
+</body>
+</html>

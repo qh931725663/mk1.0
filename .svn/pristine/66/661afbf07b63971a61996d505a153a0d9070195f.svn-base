@@ -1,0 +1,63 @@
+package com.haaa.cloudmedical.platform.RemindManage.service;
+
+import java.util.Map;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.entity.ChronicManage;
+import com.haaa.cloudmedical.entity.MeasurementRemind;
+import com.haaa.cloudmedical.entity.User;
+
+public interface RemindService {
+    
+    /**
+     * 分页查询
+     * @Description: 
+     * @author 吴琪
+     * @param user
+     * @param model
+     * @param pageno
+     * @param datemin
+     * @param datemax
+     * @return 
+     * @date: 2017年6月1日 上午9:28:33
+     */
+    public Page queryPage(User user, int pageno, String datemin, String datemax);
+    
+    /**
+     * 保存测量提醒
+     * @Description: 
+     * @author 吴琪
+     * @param map 
+     * @date: 2017年6月13日 下午3:46:22
+     */
+    public long saveOrUpdateMeasure(Map<String, Object> map);
+    
+    /**
+     * 获取测量列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id 
+     * @date: 2017年6月13日 下午5:06:54
+     */
+    public Object getMeasureList(String user_id);
+    
+    /**
+     * 查询测量信息
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月14日 下午1:39:24
+     */
+    public Object getMeasure(String order_id);
+    
+    /**
+     * 测试列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id 
+     * @date: 2017年6月14日 下午5:13:39
+     */
+    public Object getMeasureTypeList(String user_id);
+    
+}

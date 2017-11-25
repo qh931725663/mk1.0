@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<title>计划管理</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div class="page-container">
+		<input type="hidden" id="order_id">
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">*</span> <span
+				style="display:inline-block;width:80px;">慢病类型：</span> <span
+				id="chronic_name"></span>
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">*</span> <span
+				style="display:inline-block;width:80px;">管理内容：</span> <input
+				class="input-text" type="text" style="width:369px;" id="manage_text">
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">*</span> <span
+				style="display:inline-block;width:80px;">管理次数：</span> <input
+				class="input-text" type="text" style="width:369px;"
+				id="check_target">
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="ml-10"
+				style="display:inline-block;width:80px;position: relative;top: -50px;">备注：</span>
+			<textarea class="comments" rows="6" cols="50" id="remarks"> </textarea>
+		</div>
+
+		<div style="text-align: center;margin-top: 40px;">
+			<button class="btn btn-success radius btn-user-edit" type="button"
+				id="do_save">保存</button>
+			<button class="btn btn-danger radius" type="button"
+				onclick="do_colse()">取消</button>
+		</div>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../health/js/jquery.tips.js"></script>
+	<script type="text/javascript" src="../health/js/mkh.common.js?v=1"></script>
+	<script type="text/javascript">
+		$(function() {
+			//加载数据
+			var loadData = function() {
+				var order_id = mkh.getUrlParam('id');
+				$.ajax({
+					url : "../../../chronicManage/query.action",
+					type : "post",
+					dataType : 'json',
+					data : {
+						order_id : order_id
+					},
+					success : function(data) {
+						if (data) {
+							//缓存数据
+							$('#order_id').data('data', data);
+							//
+							var source = data.chronic_source;
+							if (source == '900005') {
+								$('#manage_text').attr("disabled", true);
+							}
+							//
+							for (var key in data) {
+								var id = "#" + key;
+								var value = data[key];
+								if ($(id).length > 0) {
+									if ($(id).is('span')) {
+										$(id).text(value);
+									} else {
+										$(id).val(value);
+									}
+								}
+							}
+						}
+					}
+				});
+			}();
+			//绑定保存
+			$('#do_save').on('click', function() {
+				do_save();
+			});
+	
+			//保存方法
+			var do_save = function() {
+				var param = {};
+				//id
+				var order_id = $('#order_id').val();
+				param.order_id = order_id;
+				//
+				var manage_text = $('#manage_text').val();
+				manage_text = $.trim(manage_text);
+				param.manage_text = manage_text;
+				//管理次数
+				var check_target = $('#check_target').val();
+				check_target = $.trim(check_target);
+				if(!/^[0-9]*$/.test(check_target)){
+			        mkh.errTips("#check_target", "请输入数字!");
+			        return;
+			    }else{
+			    	mkh.errTipsRemove("#check_target");  
+			    }
+			    var data = $('#order_id').data('data');
+			    if(data.check_num > check_target ){
+			    	mkh.errTips("#check_target", "必须大于已跟踪次数!");
+			        return;
+			    } else{
+			    	mkh.errTipsRemove("#check_target");  
+			    }
+			    //
+				param.check_target = check_target;
+				param.check_num = data.check_num;
+				//
+				var remarks = $('#remarks').val();
+				remarks = $.trim(remarks);
+				param.remarks = remarks;
+	
+				//保存
+				$.ajax({
+					url : "../../../chronicManage/modifyUserPlan.action",
+					type : "post",
+					dataType : 'json',
+					data : param,
+					success : function(data) {
+						if (data) {
+							layer.alert('保存成功', function(){
+								//关闭
+								var index = parent.layer.getFrameIndex(window.name);
+								parent.layer.close(index);
+							});       
+						}
+					}
+				});
+			};
+		});
+	
+		function do_colse() {
+			//
+			parent.plan_detail.reload();
+	
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+		}
+	</script>
+</body>
+</html>

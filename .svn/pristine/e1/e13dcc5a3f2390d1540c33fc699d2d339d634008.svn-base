@@ -1,0 +1,105 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+/**
+ * 
+ * @author haaa
+ *
+ */
+public class BloodOxygen {
+    
+	private Long order_id;
+	
+	private Long equipment_use_order_id;
+	
+	private Float oxygen;
+	
+	private Integer pulseRate;
+	
+	private Date create_date;
+	
+	private Date update_date;
+
+
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+
+
+	public Float getOxygen() {
+		return oxygen;
+	}
+
+
+
+	public void setOxygen(Float oxygen) {
+		this.oxygen = oxygen;
+	}
+
+
+
+	public Integer getPulseRate() {
+		return pulseRate;
+	}
+
+
+
+	public void setPulseRate(Integer pulseRate) {
+		this.pulseRate = pulseRate;
+	}
+
+
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "BloodOxygen [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id + ", oxygen="
+				+ oxygen + ", pulseRate=" + pulseRate + ", create_date=" + create_date + ", update_date=" + update_date
+				+ "]";
+	}
+	
+}

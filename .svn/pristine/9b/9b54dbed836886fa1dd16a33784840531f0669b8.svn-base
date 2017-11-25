@@ -1,0 +1,23 @@
+@charset "utf-8";
+/* 你自己的样式 */
+.input-width{width:150px;}
+/*采集数据*/
+.collection-baseinfo .baseinfo-list{margin:5px 20px;overflow: hidden;}
+.collection-baseinfo .baseinfo-list li{margin:10px 20px;}
+.navbar-collection{background: #ddd;height:30px;line-height: 30px;padding-left:5px;}
+.navbar-list{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;margin:25px 40px;}
+.navbar-list .navbar-input{margin-right:45px;}
+.navbar-lb{margin:10px 0;}
+.navbar-lb label{display: inline-block;width:124px;text-align:right;}
+.upload-excel{display:inline-block;width:74px;height:51px;background: url("../images/user_upload_01.png") no-repeat;background-size: 60px;}
+.dowload-excel{padding-right:5px;display:inline-block;width:19px;height:19px;background: url("../images/user_upload_02.png") no-repeat;background-size: 20px;}
+.member-list-input .member-input-1{margin-bottom:10px;}
+.pwd-edit-ipt{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;margin-bottom:10px;}
+.table td{text-align:center;/* font-size:14px; */ }
+.position-container{position: fixed;right:-115px;top:80px;background:#ea5e4e;z-index: 1000}
+.position-nav{width:115px;text-align: center;}
+.position-container .btn-show-show{display: inline-block;position: relative;color: #fff;left: -35px;top:204px;background:#ea5e4e;width: 35px;height:28px;line-height: 28px;font-size: 20px;}
+.position-container .btn-show-hidden{display: inline-block;position: relative;left: -36px;top:204px;background:#ea5e4e;width: 30px;height:28px;line-height: 28px;color: #fff;font-size: 20px;}
+.position-nav li.na-menu{border-bottom: 1px solid #fff;font-size: 16px;}
+.position-nav li,.position-nav li a{color:#fff;text-decoration: none;}
+.position-nav li{margin-bottom: 8px;width:115px;text-align: center;}

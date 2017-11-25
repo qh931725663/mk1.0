@@ -1,0 +1,98 @@
+//健康评估
+$(".table").on('click','.survey',function(){
+	//alert("clinic");
+	var id = $(this).parents('tr').attr('data-id');
+	window.location.href = "health-record-write.html?id=" + id;
+});
+//健康调查
+$(".table").on('click','.research',function(){
+	var id = $(this).parents('tr').attr('data-id');
+	window.location.href = "health-record-research-write.html?id=" + id;
+});
+//明细
+$(".table").on('click','.detail',function(){
+	//alert("medical");
+	var id = $(this).parents('tr').attr('data-id');
+	window.location.href = "health-record-detail.html?id=" + id;
+});
+
+var initDataFun = function(param){
+	var data = {pageNo : 1};
+	$('#form').find("input").each(function(){
+		var name = this.name;
+		if(name){
+			data[name] = $(this).val();
+		}
+	});
+	data = $.extend(data, param||{});
+	return $.ajax({
+	    url : "../../../health-record/pageData.action",
+	    type : "post",
+	    dataType : 'json',
+	    data : data,
+	    success : function(data) {
+	    	createTable(data);
+	   }
+	});
+}
+//回调
+initDataFun().done(function(data){
+	//console.log(data)
+	if(data){
+		$('#Pagination').pagination(data.recordCount, {
+		    jump: true,
+		    page_count:data.pageCount,
+		    callback:function(){
+		    	var pageNo = $('#pagevalue').val();
+		    	var param = {pageNo : pageNo};
+		    	initDataFun(param);
+		    }
+		});
+	}
+});
+//生成表
+var createTable = function(json){
+	//
+	var html = "";
+	$.each(json.data, function(i, item){
+		//console.log(item)
+		html +="<tr data-id='"+item.user_id+"'><td>"+(i+1)+"</td><td>"+item.user_name+"</td>" +
+				"<td>"+item.user_card+"</td><td>"+item.user_phone+"</td>" +
+				"<td><a class='survey btn btn-primary radius size-S'><i class='Hui-iconfont'>&#xe647;</i>&nbsp;填写</a></td>" +
+				"<td><a class='research btn btn-primary radius size-S'><i class='Hui-iconfont'>&#xe647;</i>&nbsp;填写</a></td>" +
+				"<td><a class='detail btn btn-primary radius size-S'><i class='Hui-iconfont'>&#xe627;</i>&nbsp;查看详情</a></td></tr>";
+				
+	});
+	$('.table tbody').empty();
+	$('.table tbody').append(html);
+}
+
+//查询
+var search_report = function(){
+	$('.btn-success','#form').on('click', function(){
+		initDataFun().done(function(data){
+			//console.log(data)
+			if(data){
+				$('#Pagination').pagination(data.recordCount, {
+				    jump: true,
+				    page_count:data.pageCount,
+				    callback:function(){
+				    	var pageNo = $('#pagevalue').val();
+				    	var param = {pageNo : pageNo};
+				    	initDataFun(param);
+				    }
+				});
+			}
+		});
+	});
+}();
+
+
+//清空
+var clear_report = function(){
+	$('.btn-danger').on('click', function(){
+		$('#form').find("input").each(function(){
+			$(this).val("");
+		});
+	});
+}();

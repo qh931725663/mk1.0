@@ -1,0 +1,366 @@
+package com.haaa.cloudmedical.entity;
+
+public class User {
+	private String user_id;
+	private String user_type;
+	private String user_is_vip;
+	private String user_name;
+	private String user_sex;
+	private String user_age;
+	private String user_birthday;
+	private String user_card;
+	private String user_height;
+	private String user_weight;
+	private String user_blood;
+	private String user_medicare_card;
+	private String user_marriage;
+	private String user_address;
+	private String user_phone;
+	private String user_pwd;
+	private String email;
+	private String user_work;
+	private String user_medical_burden;
+	private String user_waist;
+	private String picture_head_order_id;
+	private String user_head_pic_upload_index;
+	private String picture_card_front_order_id;
+	private String user_card_front_upload_index;
+	private String picture_card_back_order_id;
+	private String user_card_back_upload_index;
+	private String create_date;
+	private String update_date;
+	private String user_source;
+	private String user_flag;
+	private String ahdi_value;
+	private String user_nation;
+	private String clientId;
+	private String os_type;
+	private String qq;
+	private String wechat;
+	private String ahdi_level;
+	private String chronic;
+	
+    public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getUser_type() {
+		return user_type;
+	}
+
+	public void setUser_type(String user_type) {
+		this.user_type = user_type;
+	}
+
+	public String getUser_is_vip() {
+		return user_is_vip;
+	}
+
+	public void setUser_is_vip(String user_is_vip) {
+		this.user_is_vip = user_is_vip;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public String getUser_sex() {
+		return user_sex;
+	}
+
+	public void setUser_sex(String user_sex) {
+		this.user_sex = user_sex;
+	}
+
+	public String getUser_age() {
+		return user_age;
+	}
+
+	public void setUser_age(String user_age) {
+		this.user_age = user_age;
+	}
+
+	public String getUser_birthday() {
+		return user_birthday;
+	}
+
+	public void setUser_birthday(String user_birthday) {
+		this.user_birthday = user_birthday;
+	}
+
+	public String getUser_card() {
+		return user_card;
+	}
+
+	public void setUser_card(String user_card) {
+		this.user_card = user_card;
+	}
+
+	public String getUser_height() {
+		return user_height;
+	}
+
+	public void setUser_height(String user_height) {
+		this.user_height = user_height;
+	}
+
+	public String getUser_weight() {
+		return user_weight;
+	}
+
+	public void setUser_weight(String user_weight) {
+		this.user_weight = user_weight;
+	}
+
+	public String getUser_blood() {
+		return user_blood;
+	}
+
+	public void setUser_blood(String user_blood) {
+		this.user_blood = user_blood;
+	}
+
+	public String getUser_medicare_card() {
+		return user_medicare_card;
+	}
+
+	public void setUser_medicare_card(String user_medicare_card) {
+		this.user_medicare_card = user_medicare_card;
+	}
+
+	public String getUser_marriage() {
+		return user_marriage;
+	}
+
+	public void setUser_marriage(String user_marriage) {
+		this.user_marriage = user_marriage;
+	}
+
+	public String getUser_address() {
+		return user_address;
+	}
+
+	public void setUser_address(String user_address) {
+		this.user_address = user_address;
+	}
+
+	public String getUser_phone() {
+		return user_phone;
+	}
+
+	public void setUser_phone(String user_phone) {
+		this.user_phone = user_phone;
+	}
+
+	public String getUser_pwd() {
+		return user_pwd;
+	}
+
+	public void setUser_pwd(String user_pwd) {
+		this.user_pwd = user_pwd;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getUser_work() {
+		return user_work;
+	}
+
+	public void setUser_work(String user_work) {
+		this.user_work = user_work;
+	}
+
+	public String getUser_medical_burden() {
+		return user_medical_burden;
+	}
+
+	public void setUser_medical_burden(String user_medical_burden) {
+		this.user_medical_burden = user_medical_burden;
+	}
+
+	public String getUser_waist() {
+		return user_waist;
+	}
+
+	public void setUser_waist(String user_waist) {
+		this.user_waist = user_waist;
+	}
+
+	public String getPicture_head_order_id() {
+		return picture_head_order_id;
+	}
+
+	public void setPicture_head_order_id(String picture_head_order_id) {
+		this.picture_head_order_id = picture_head_order_id;
+	}
+
+	public String getUser_head_pic_upload_index() {
+		return user_head_pic_upload_index;
+	}
+
+	public void setUser_head_pic_upload_index(String user_head_pic_upload_index) {
+		this.user_head_pic_upload_index = user_head_pic_upload_index;
+	}
+
+	public String getPicture_card_front_order_id() {
+		return picture_card_front_order_id;
+	}
+
+	public void setPicture_card_front_order_id(String picture_card_front_order_id) {
+		this.picture_card_front_order_id = picture_card_front_order_id;
+	}
+
+	public String getUser_card_front_upload_index() {
+		return user_card_front_upload_index;
+	}
+
+	public void setUser_card_front_upload_index(String user_card_front_upload_index) {
+		this.user_card_front_upload_index = user_card_front_upload_index;
+	}
+
+	public String getPicture_card_back_order_id() {
+		return picture_card_back_order_id;
+	}
+
+	public void setPicture_card_back_order_id(String picture_card_back_order_id) {
+		this.picture_card_back_order_id = picture_card_back_order_id;
+	}
+
+	public String getUser_card_back_upload_index() {
+		return user_card_back_upload_index;
+	}
+
+	public void setUser_card_back_upload_index(String user_card_back_upload_index) {
+		this.user_card_back_upload_index = user_card_back_upload_index;
+	}
+
+	public String getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(String create_date) {
+		this.create_date = create_date;
+	}
+
+	public String getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(String update_date) {
+		this.update_date = update_date;
+	}
+
+	public String getUser_source() {
+		return user_source;
+	}
+
+	public void setUser_source(String user_source) {
+		this.user_source = user_source;
+	}
+
+	public String getUser_flag() {
+		return user_flag;
+	}
+
+	public void setUser_flag(String user_flag) {
+		this.user_flag = user_flag;
+	}
+
+	public String getAhdi_value() {
+		return ahdi_value;
+	}
+
+	public void setAhdi_value(String ahdi_value) {
+		this.ahdi_value = ahdi_value;
+	}
+
+	public String getUser_nation() {
+		return user_nation;
+	}
+
+	public void setUser_nation(String user_nation) {
+		this.user_nation = user_nation;
+	}
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public String getOs_type() {
+		return os_type;
+	}
+
+	public void setOs_type(String os_type) {
+		this.os_type = os_type;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getWechat() {
+		return wechat;
+	}
+
+	public void setWechat(String wechat) {
+		this.wechat = wechat;
+	}
+
+	public String getAhdi_level() {
+		return ahdi_level;
+	}
+
+	public void setAhdi_level(String ahdi_level) {
+		this.ahdi_level = ahdi_level;
+	}
+
+	public String getChronic() {
+		return chronic;
+	}
+
+	public void setChronic(String chronic) {
+		this.chronic = chronic;
+	}
+
+	@Override
+	public String toString() {
+		return "User [user_id=" + user_id + ", user_type=" + user_type + ", user_is_vip=" + user_is_vip + ", user_name="
+				+ user_name + ", user_sex=" + user_sex + ", user_age=" + user_age + ", user_birthday=" + user_birthday
+				+ ", user_card=" + user_card + ", user_height=" + user_height + ", user_weight=" + user_weight
+				+ ", user_blood=" + user_blood + ", user_medicare_card=" + user_medicare_card + ", user_marriage="
+				+ user_marriage + ", user_address=" + user_address + ", user_phone=" + user_phone + ", user_pwd="
+				+ user_pwd + ", email=" + email + ", user_work=" + user_work + ", user_medical_burden="
+				+ user_medical_burden + ", user_waist=" + user_waist + ", picture_head_order_id="
+				+ picture_head_order_id + ", user_head_pic_upload_index=" + user_head_pic_upload_index
+				+ ", picture_card_front_order_id=" + picture_card_front_order_id + ", user_card_front_upload_index="
+				+ user_card_front_upload_index + ", picture_card_back_order_id=" + picture_card_back_order_id
+				+ ", user_card_back_upload_index=" + user_card_back_upload_index + ", create_date=" + create_date
+				+ ", update_date=" + update_date + ", user_source=" + user_source + ", user_flag=" + user_flag
+				+ ", ahdi_value=" + ahdi_value + ", user_nation=" + user_nation + ", clientId=" + clientId
+				+ ", os_type=" + os_type + ", qq=" + qq + ", wechat=" + wechat + ", ahdi_level=" + ahdi_level
+				+ ", chronic=" + chronic + "]";
+	}
+
+}

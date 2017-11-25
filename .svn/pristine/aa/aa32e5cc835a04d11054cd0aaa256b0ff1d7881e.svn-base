@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>风险评估</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<input type="hidden" class="haha" value=""/>
+	<form class="main" id="assessForm">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<div class="info_left" style="width:60%;"><span class="must">*</span>1、年龄是否符合：男性＞55岁、女性＞65岁</div>
+				<div class="info_rgt">
+					<select name="090101" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>2、是否吸烟</div>
+				<div class="info_rgt fengx_rgt">
+					<select name="090201" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>3、血脂是否异常</div>
+				<div class="info_rgt fengx_rgt">
+					<select name="090301" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left" style="width: 52%;"><span class="must">*</span>4、是否存在早发心血管疾病家族史</div>
+				<div class="info_rgt" style="width: 47%;">
+					<select name="090401" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<p class="info_left" style="width: auto;"><span class="must">*</span>5、是否属于肥胖体制<span style="font-size: 0.3rem;">（体质指数≥28 kg/m2或腹型肥胖：腰围男≥90 cm，女≥85 cm）</span></p>
+				<div class="info_left fengx"></div>
+				<div class="info_rgt fengx_rgt">
+					<select name="090501" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>6、是否存在靶器官损害</div>
+				<div class="info_rgt fengx_rgt">
+					<select name="090601" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<p class="info_left" style="width: auto;"><span class="must">*</span>7、是否合并心脏病、脑血管病、肾脏病、周围血管病、视网膜病变</p>
+				<div class="info_left fengx"></div>
+				<div class="info_rgt fengx_rgt" style="width:60%">
+					<select name="090701" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>8、是否合并糖尿病</div>
+				<div class="info_rgt fengx_rgt">
+					<select name="090801" class="noboeder">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx">危险因素</div>
+				<div class="info_rgt fengx_rgt"><input type="number" name="090901" class="number" style="background: #fff;" placeholder="点击输入"/> <span class="mond">个</span></div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>疾病风险评估</div>
+				<div class="info_rgt fengx_rgt">
+					<select name="risk" class="noboeder">
+						<option value="">请选择</option>
+						<option value="2500001">低危</option>
+						<option value="2500002">中危</option>
+						<option value="2500003">高危</option>
+						<option value="2500004">很高危</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<span class="goback">返回</span><span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/layer-mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/assessment.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

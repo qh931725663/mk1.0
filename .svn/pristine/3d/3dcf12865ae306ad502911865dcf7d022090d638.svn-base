@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>新闻管理列表</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		新闻管理<span class="c-gray en">&gt;</span> Banner管理
+		<a class="btn btn-danger radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+<div class="page-container">
+	<form id="form-news-list">
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:60px;">新闻标题</span>
+			<input type="text" class="input-text input-width radius" id="the_text"  name="the_text" placeholder="请输入标题名称"/>
+			<span style="display:inline-block;width:59px;">发布者</span>
+			<select class="radius" id="user_id" name="user_id" style="height:30px;width:97px;"></select>
+			<span style="display:inline-block;width:59px;">发布平台</span>
+			<select class="radius" name="section" style="height:30px;width:155px;">
+				<option value="" selected>全部</option>
+				<option value="1">患者端APP-首页轮播图</option>
+				<option value="2">患者端APP-健康科普</option>
+				<option value="3">医生端APP-健康科普</option>
+				<option value="4">医生端APP-云课堂</option>
+				<option value="5">医生端APP-管理计划-糖尿病</option>
+				<option value="6">医生端APP-管理计划-高血压</option>
+			</select>
+			<span class="ml-5">创建时间</span>
+			<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="startDate" class="input-text Wdate" placeholder="开始时间" style="width:120px;">
+			至
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="endDate" class="input-text Wdate" placeholder="结束时间" style="width:120px;">
+			<button type="button" class="btn btn-success btn-search radius"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
+			<button type="button" class="btn btn-danger btn_style btn-clean radius"><i class="Hui-iconfont">&#xe72a;</i> 清空</button>
+			<button type="button" class="btn btn-primary btn-member-add f-r radius"><i class="Hui-iconfont">&#xe600;</i> 添加新闻</button>
+		</div>
+	</form>
+	<table class="table table-border table-bordered table-striped table-bg table-hover news-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th style="width:30px;">序号</th>
+				<th style="width:100px;">图片</th>
+				<th>文章标题</th>
+				<th>操作人</th>
+				<th>上传时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="news-tbody">
+		</tbody>
+	</table>
+		<div id="Pagination" class="pagination"></div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript">
+var menucode="";
+$(function(){
+	//获取地址栏后面菜单code
+	 var a = window.location.href;
+	 var s=a.indexOf("?");
+	 menucode=a.substring(s+1);
+	 //会员管理列表初始化加载
+	 getDataList(0,null);
+
+	 //条件查询
+    var initFlag2="";
+    $(".btn-search").click(function(){
+		initFlag2=true;
+		getDataList(0,null);
+    });
+
+    $(".btn-member-add").click(function(){
+		banner_add();
+	});
+
+	$.ajax({
+		url:"../../../news/getManagerList.action",
+		type:"post",
+		dataType:'json',
+		success:function(response){
+			$("#user_id").empty();
+			$("#user_id").append("<option value='' selected >全部</option>");
+			for(var i=0;i<response.data.length;i++){
+				$("#user_id").append("<option value="+response.data[i].user_id+">"+response.data[i].user_name+"</option>");
+			}
+		}
+	});
+
+    var initFlag = true;
+    var initFlag2 ='';
+	//查询函数
+	function getDataList(currPage, jg) {
+	    var page=currPage+1;
+		var data=$.param({pageno :currPage+1})+'&'+ $('#form-news-list').serialize();
+		$.ajax({
+		    url : "../../../news/gridquery.action",
+		    type : "post",
+		    dataType : 'json',
+		    data : data,
+		    success : function(response) {
+		    var page_count=response.recordCount;
+		    if (initFlag) {
+	        	$("#Pagination").pagination(page_count,{
+	        		items_per_page :5,
+              		//num_edge_entries : 1,
+                    //num_display_entries : 5,
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag = false;
+            }
+            if (initFlag2) {
+	        	$("#Pagination").pagination(page_count,{
+	        		items_per_page :5,
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag2 = false;
+            }
+	    	//调用数据展示函数
+		   show_list(response);
+		   }
+		});
+	}
+
+	//数据展示公共函数
+	function show_list(response){
+	   var html = '';
+	   var pn=response.pageNo;
+	   var num=(pn-1)*5+1;
+	    $.each(response.data, function(i,p){
+	        html +="<tr class='text-c'>"+
+	               	"<td>"+(num+i)+"</td>"+
+	               	"<td><img style='width:100%' src='"+(p.pic_index==""?"../images/news_no_picture.png":p.pic_index)+"'></td>"+
+	                "<td>"+p.title+"</td>"+
+	                "<td>"+p.user_name+"</td>"+
+	                "<td>"+p.create_date+"</td>"+
+					"<td class='td-manage'>"+
+						"<span onclick='banner_edit("+p.order_id+")' class='mr-15 btn btn-primary radius size-S'><i class='Hui-iconfont'>&#xe60c;</i>编辑</span>"+
+						"<span onclick='banner_delete("+p.order_id+")'class='pointer btn-user-edit mr-15 btn btn-danger radius size-S' ><i class='Hui-iconfont'>&#xe609;</i>删除</span>"+
+					"</td>"+
+	                "</tr>";
+	    });
+	    $(".news-tablelist .news-tbody").html(html);
+	    $(".page-count").html(response.pageCount);
+	}
+
+});
+function banner_edit(id){
+	/* layer_show('编辑新闻','news-edit.html?'+menucode+'&'+id,'100','100'); */
+		window.location.href = 'news-edit.html?'+menucode+'&'+id;
+}
+/* $(".table").on('click','.detail',function(){
+	//alert("medical");
+	var id = $(this).parents('tr').attr('data-id');
+	window.location.href = "health-record-detail.html?id=" + id;
+}); */
+
+function banner_add(){
+	/* layer_show('增加新闻','news-add.html?','100','100'); */
+	window.location.href = 'news-add.html';
+}
+
+function banner_delete(order_id){
+	layer.confirm('确认要删除吗？',function(index){
+		$.ajax({
+			url:"../../../news/delete.action",
+			type:"post",
+			data:{order_id:order_id},
+			dataType:'json',
+			success:function(response){
+				if(response){
+					layer.msg('删除成功!');
+					setTimeout(function () {
+					window.location.reload();
+					layer_close();
+					}, 1000);
+				}else{
+					layer.msg('删除失败!');
+				}
+
+			}
+		});
+	});
+}
+</script>
+</body>
+</html>

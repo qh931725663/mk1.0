@@ -1,0 +1,293 @@
+package com.haaa.cloudmedical.platform.RemindManage.service.impl;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.RemindManageDao;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.RemindManage.service.RemindService;
+
+@Service
+@Log(name = "测量管理")
+public class RemindServiceImpl implements RemindService {
+
+    @Resource
+    private RemindManageDao dao;
+
+    /**
+     * 分页查询
+     * @Description: 
+     * @author 吴琪
+     * @param user
+     * @param model
+     * @param pageno
+     * @param datemin
+     * @param datemax
+     * @return 
+     * @date: 2017年6月1日 上午9:28:33
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Page queryPage(User user, int pageno, String datemin, String datemax) {
+        String sql_info = "select a.user_id, a.user_name,a.user_card,a.user_phone, findname(a.user_sex) user_sex,"
+                          + "a.user_age,findname(a.user_marriage) user_marriage,findname(a.user_work) user_work,chronic "
+                          + "from n_user a where chronic != '0'";
+        StringBuilder sql = new StringBuilder(sql_info);
+        //
+        List<Object> values = new ArrayList<Object>();
+        // 姓名
+        String temp = user.getUser_name();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_name like ?");
+        }
+        // 身份证号码
+        temp = user.getUser_card();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_card like ?");
+        }
+        // 电话
+        temp = user.getUser_phone();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_phone like ?");
+        }
+        // 性别
+        temp = user.getUser_sex();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            sql.append(" and a.user_sex = ?");
+        }
+        // 风险指数
+
+        //慢病类型
+        temp = user.getChronic();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            sql.append(" and FIND_IN_SET(?, chronic)");
+        }
+        // 工作强度
+        temp = user.getUser_work();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            sql.append(" and a.user_work = ?");
+        }
+        sql.append(" order by a.update_date desc");
+        //查询
+        Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+        List<Map<String, Object>> data = (List<Map<String, Object>>) page.getData();
+        if (data != null && data.size() > 0) {
+            data = data.stream().map(x -> {
+                String chronic = x.get("chronic").toString();
+                StringBuffer bf = new StringBuffer("");
+                Arrays.asList(chronic.split(",")).stream().forEach(i -> {
+                    if (!"0".equals(i)) {
+                        String chr_sql = "select survey_question_content from s_survey_question_k where order_id = " + i;
+                        List<Map<String, Object>> list = dao.select(chr_sql);
+                        String name = list.get(0).get("survey_question_content").toString();
+                        bf.append(name).append(",");
+                    }
+                });
+                String chronic_name = bf.substring(0, bf.lastIndexOf(","));
+                x.put("chronic", chronic_name);
+                return x;
+            }).collect(Collectors.toList());
+        }
+        return page;
+    }
+
+    @Override
+    @Log(name="保存或更新测量提醒")
+    public long saveOrUpdateMeasure(Map<String, Object> map) {
+        Object order_id = map.get("order_id");
+        if (order_id == null) {
+            String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+            map.put("create_date", date);
+            map.put("measurement_remind_content", Constant.MEAS_TYPE.get(map.get("measrtrment_remind_type")));
+            map.put("measurement_remind_title", map.get("measrtrment_remind_type"));
+            return this.dao.insert(map, "r_measurement_remind");
+        } else {
+            return this.updateMeasure(map);
+        }
+
+    }
+
+    /**
+     * 更新测量提醒
+     * @Description: 
+     * @author 吴琪
+     * @param map
+     * @return 
+     * @date: 2017年6月14日 下午3:47:37
+     */
+    private long updateMeasure(Map<String, Object> map) {
+        String order_id = map.get("order_id").toString();
+        //更新
+        String sql = "";
+        String measrtrment_remind_type = map.get("measrtrment_remind_type").toString();
+        if ("1400006".equals(measrtrment_remind_type) || "1400011".equals(measrtrment_remind_type)) {
+            sql = "update r_measurement_remind set interval_day=" + map.get("interval_day") + ",time1="
+                  + (map.get("time1") != null ? ("'" + map.get("time1") + "'") : null) + ",time2="
+                  + (map.get("time2") != null ? ("'" + map.get("time2") + "'") : null) + ",time3="
+                  + (map.get("time3") != null ? ("'" + map.get("time3") + "'") : null) + ",time4="
+                  + (map.get("time4") != null ? ("'" + map.get("time4") + "'") : null) + ",begin_day="
+                  + (map.get("begin_day") != null ? ("'" + map.get("begin_day") + "'") : null) + " where order_id=" + order_id;
+        } else {
+            sql = "update r_measurement_remind set monday=" + map.get("monday") + ",tuesday=" + map.get("tuesday") + ",wednesday="
+                  + map.get("wednesday") + ",thursday=" + map.get("thursday") + ",friday=" + map.get("friday") + ",saturday=" + map.get("saturday")
+                  + ",sunday=" + map.get("sunday") + ",time1=" + (map.get("time1") != null ? ("'" + map.get("time1") + "'") : null) + ",time2="
+                  + (map.get("time2") != null ? ("'" + map.get("time2") + "'") : null) + ",time3="
+                  + (map.get("time3") != null ? ("'" + map.get("time3") + "'") : null) + ",time4="
+                  + (map.get("time4") != null ? ("'" + map.get("time4") + "'") : null) + ",begin_day="
+                  + (map.get("begin_day") != null ? ("'" + map.get("begin_day") + "'") : null) + " where order_id=" + order_id;
+        }
+        //更新
+        return this.dao.execute(sql);
+    }
+
+    @Override
+    public Object getMeasureList(String user_id) {
+        String sql = "select a.* from r_measurement_remind a where user_id=" + user_id;
+        List<Map<String, Object>> list = dao.select(sql);
+        return list;
+    }
+
+    @Override
+    public Object getMeasure(String order_id) {
+        String sql = "select * from r_measurement_remind where order_id = " + order_id;
+        return dao.select(sql).get(0);
+    }
+
+    @Override
+    public Object getMeasureTypeList(String user_id) {
+        String sql = "select a.* from k_unicode a where a.unicode_type = 'r_measurement_remind' and "
+                     + "a.order_id not in (select measrtrment_remind_type from r_measurement_remind where user_id = " + user_id + ")";
+        return dao.select(sql);
+    }
+
+    @Override
+    @Log(name="保存或更新用药提醒")
+    public Object saveOrUpdateMedicine(Map<String, Object> map) {
+        Object order_id = map.get("order_id");
+        if (null != order_id && StringUtils.isNotBlank(order_id.toString())) {
+            String sql = "update r_medication_remind set drug_specification='" + map.get("drug_specification").toString() + "',drug_note="
+                         + map.get("drug_note").toString() + ",medication_remind_num=" + map.get("medication_remind_num").toString() + ","
+                         + "Generic_drug_name='" + map.get("Generic_drug_name") + "',medication_remind_dosage='" + map.get("medication_remind_dosage")
+                         + "'," + "medication_remind_time_one="
+                         + (map.get("medication_remind_time_one") != null ? ("'" + map.get("medication_remind_time_one") + "'") : null)
+                         + ",medication_remind_time_two="
+                         + (map.get("medication_remind_time_two") != null ? ("'" + map.get("medication_remind_time_two") + "'") : null)
+                         + ",medication_remind_time_three="
+                         + (map.get("medication_remind_time_three") != null ? ("'" + map.get("medication_remind_time_three") + "'") : null)
+                         + ",medication_remind_time_four="
+                         + (map.get("medication_remind_time_four") != null ? ("'" + map.get("medication_remind_time_four") + "'") : null)
+                         + " where order_id=" + order_id;
+            return this.dao.execute(sql);
+        } else {
+            String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+            map.put("create_date", date);
+            return this.dao.insert(map, "r_medication_remind");
+        }
+
+    }
+
+    @Override
+    public Object getMedicineList(String user_id) {
+        String sql = "select order_id,chronic_code, findname(a.chronic_code) chronic_name,findname(a.drug_note) drug_note,drug_id,drug_specification,medication_remind_num,"
+                     + "medication_remind_dosage,medication_remind_time_one,medication_remind_time_two,medication_remind_time_three,"
+                     + "medication_remind_time_four,Generic_drug_name from r_medication_remind a where user_id = " + user_id;
+        return this.dao.select(sql);
+    }
+
+    @Override
+    public Object getMedicine(String order_id) {
+        String sql = "select * from r_medication_remind where order_id=" + order_id;
+        return this.dao.select(sql).get(0);
+    }
+
+    @Override
+    public Object getDrugList() {
+        String sql = "select * from k_drug_code limit 20";
+        return this.dao.select(sql);
+    }
+
+    @Override
+    public Object getUnicodeList() {
+        String sql = "select * from k_unicode where unicode_type in ('chronic','drugnote')";
+        return this.dao.select(sql);
+    }
+
+    @Override
+    public Object getHospitalList() {
+        String sql = "select * from k_hosp";
+        return this.dao.select(sql);
+    }
+
+    @Override
+    public Object getDepartList(String hosp_order_id) {
+        String sql = "select * from k_department where hosp_order_id=" + hosp_order_id;
+        return this.dao.select(sql);
+    }
+
+    @Override
+    @Log(name="保存或更新就诊提醒")
+    public Object saveOrUpdateDoctor(Map<String, Object> map) {
+        Object order_id = map.get("order_id");
+        if (null != order_id && StringUtils.isNotBlank(order_id.toString())) {
+            return this.dao.update(map, "r_doctor_remind");
+        } else {
+            String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+            map.put("create_date", date);
+            return this.dao.insert(map, "r_doctor_remind");
+        }
+    }
+
+    @Override
+    public Object getDoctorList(String user_id) {
+        String sql = "select a.order_id,doctor_remind_date,doctor_remind_time,b.hosp_name doctor_remind_hospital,c.department_name doctor_remind_department from r_doctor_remind a "
+                     + "left join k_hosp b on a.hosp_order_id = b.order_id left join k_department c on c.order_id = a.department_id where patient_id="
+                     + user_id;
+        return this.dao.select(sql);
+    }
+
+    @Override
+    public Object getDoctor(String order_id) {
+        String sql = "select * from r_doctor_remind where order_id = " + order_id;
+        return this.dao.select(sql).get(0);
+    }
+
+    @Override
+    @Log(name = "删除用药提醒")
+    public Object deleteMedicine(String order_id) {
+        String sql = "delete from r_medication_remind where order_id=" + order_id;
+        return this.dao.execute(sql);
+    }
+
+    @Override
+    @Log(name = "删除就诊提醒")
+    public Object deleteDoctor(String order_id) {
+        String sql = "delete from r_doctor_remind where order_id=" + order_id;
+        return this.dao.execute(sql);
+    }
+
+    @Override
+    @Log(name = "删除测量提醒")
+    public Object deleteMeasure(String order_id) {
+        String sql = "delete from r_measurement_remind where order_id=" + order_id;
+        return this.dao.execute(sql);
+    }
+}

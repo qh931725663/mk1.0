@@ -1,0 +1,226 @@
+package com.haaa.cloudmedical.platform.plan.service.impl;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.ChronicPlanDao;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.plan.model.PlanVo;
+import com.haaa.cloudmedical.platform.plan.model.TrackVo;
+import com.haaa.cloudmedical.platform.plan.service.IPlanManagerService;
+
+@Service
+public class PlanManagerServiceImpl implements IPlanManagerService {
+
+    @Autowired
+    private ChronicPlanDao dao;
+
+    @Override
+    public Page getPage(PlanVo model) {
+        String temp = null;
+        List<Object> values = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder("select user_id,user_name,user_card,user_phone,c.doctor_name,getahdi(a.ahdi_value) ahdi_value"
+                                              + ",chronic,findname(a.user_sex) user_sex,user_age,findname(a.user_marriage) user_marriage"
+                                              + ",findname(a.user_work) user_work,date_format(a.update_date,'%Y-%m-%d %H:%i') update_date"
+                                              + " from n_user a left join d_patient b on a.user_id = b.patient_id left join d_doctor c on "
+                                              + "b.doctor_id = c.doctor_id where a.chronic != '0'");
+        // 姓名
+        temp = model.getUser_name();
+        if (temp != null && !"".equals(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_name like ?");
+        }
+        // 身份证号码
+        temp = model.getUser_card();
+        if (temp != null && !"".equals(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_card like ?");
+        }
+        // 性别
+        temp = model.getUser_sex();
+        if (temp != null && !"".equals(temp)) {
+            values.add(temp);
+            sql.append(" and a.user_sex = ?");
+        }
+        // 慢病类型
+        temp = model.getChronic();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            sql.append(" and FIND_IN_SET(?, chronic)");
+        }
+        // 工作强度
+        temp = model.getUser_work();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            sql.append(" and a.user_work = ?");
+        }
+        // 家庭医生
+        temp = model.getDoctor_name();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and c.doctor_name like ?");
+        }
+        // 更新时间
+        if (StringUtil.isBlank(model.getDatemin()) && StringUtil.isNotBlank(model.getDatemax())) {
+            values.add(model.getDatemax());
+            sql.append(" and a.update_date <= ?");
+        } else if (StringUtil.isNotBlank(model.getDatemin()) && StringUtil.isBlank(model.getDatemax())) {
+            values.add(model.getDatemin());
+            sql.append(" and a.update_date >= ?");
+        } else if (StringUtil.isNotBlank(model.getDatemin()) && StringUtil.isNotBlank(model.getDatemax())
+                   && !model.getDatemin().equals(model.getDatemax())) {
+            values.add(model.getDatemin());
+            values.add(model.getDatemax());
+            sql.append(" and a.update_date >= ? and a.update_date <= ?");
+        } else if (StringUtil.isNotBlank(model.getDatemin()) && model.getDatemin().equals(model.getDatemax())) {
+            values.add(model.getDatemin());
+            sql.append(" and date_format(a.update_date,'%Y-%m-%d') = ?");
+        }
+        // 查询分页
+        Page page = dao.pageQuery(sql.toString(), values.toArray(), model.getPageno());
+
+        List<Map<String, Object>> data = (List<Map<String, Object>>) page.getData();
+        if (data != null && data.size() > 0) {
+            data = data.stream().map(x -> {
+                String chronic = x.get("chronic").toString();
+                StringBuffer bf = new StringBuffer("");
+                Arrays.asList(chronic.split(",")).stream().forEach(i -> {
+                    if (!"0".equals(i)) {
+                        String chr_sql = "select survey_question_content from s_survey_question_k where order_id = " + i;
+                        List<Map<String, Object>> list = dao.select(chr_sql);
+                        String name = list.get(0).get("survey_question_content").toString();
+                        bf.append(name).append(",");
+                    }
+                });
+                String chronic_name = bf.substring(0, bf.lastIndexOf(","));
+                x.put("chronic_name", chronic_name);
+                return x;
+            }).collect(Collectors.toList());
+        }
+        return page;
+    }
+
+    @Override
+    public Object getPlanList(Integer user_id) {
+        if (user_id == null) {
+            return new StdDTO(0, "用户ID不能为空");
+        }
+        String sql = "select order_id,user_id,findName(plan_level) plan_level,type,status,date_format(plan_begin,'%Y-%m-%d') plan_begin"
+                     + ",date_format(plan_end,'%Y-%m-%d') plan_end from p_plan where user_id = ?";
+        List<Map<String, Object>> list = dao.select(sql, user_id);
+        System.out.println(list);
+        return new StdDTO(1, list);
+    }
+
+    @Override
+    public Object getPlanItem(Integer order_id) {
+        if (order_id == null) {
+            return new StdDTO(0, "用户ID不能为空");
+        }
+        //查询计划
+        String plan_sql = "select * from p_plan where order_id = ?";
+        Map<String, Object> plan = dao.get(plan_sql, new Object[] { order_id });
+        //计划
+        String title_sql = "SELECT distinct plan_item_type,plan_item_name,level_name FROM p_plan_dict WHERE plan_level = ? AND type = ?";
+        List<Map<String, Object>> list = dao.select(title_sql, plan.get("plan_level"), plan.get("type"));
+        list.stream().forEach(e -> {
+            String item_sql = "select * from p_plan_dict where plan_level = ? and type = ? and plan_item_type = ?";
+            List<Map<String, Object>> itemList = dao.select(item_sql, plan.get("plan_level"), plan.get("type"), e.get("plan_item_type"));
+            //
+            Boolean flag = true;
+            for (Map<String, Object> i : itemList) {
+                Object plan_num = i.get("plan_num");
+                if (plan_num != null) {
+                    String count_sql = "select count(1) num from p_plan_item where plan_order_id = ? and dict_order_id = ?";
+                    Map<String, Object> map = dao.get(count_sql, new Object[] { order_id, i.get("order_id") });
+                    //数量大于或者等于计划数量为已完成
+                    if (Integer.valueOf(map.get("num").toString()) >= Integer.valueOf(i.get("plan_num").toString())) {
+                        i.put("status", "已完成");
+                    } else {
+                        flag = false;
+                        i.put("status", "未完成");
+                    }
+                    //完成次数
+                    i.put("complete_num", map.get("num"));
+                } else {
+                    i.put("status", "");
+                }
+            }
+            //总状态
+            if (flag) {
+                e.put("status", "已完成");
+            } else {
+                e.put("status", "未完成");
+            }
+            e.put("itemList", itemList);
+        });
+        return new StdDTO(1, list);
+    }
+
+    @Override
+    public Object addTrackItem(TrackVo model, HttpServletRequest request) {
+        if (StringUtil.isBlank(model.getPlan_order_id()) || StringUtil.isBlank(model.getDict_order_id())) {
+            return new StdDTO(0, "数据不完整");
+        }
+        //保存追踪Item
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("user_id", model.getUser_id());
+        map.put("plan_order_id", model.getPlan_order_id());
+        map.put("dict_order_id", model.getDict_order_id());
+        //创建人
+        User user = (User) request.getSession().getAttribute("user");
+        String create_person = null;
+        if (user != null) {
+            create_person = user.getUser_id();
+        }
+        map.put("create_person", create_person);
+        map.put("create_date", DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        long item_order_id = dao.insert(map, "p_plan_item");
+        //保存明细
+        List<Map<String, Object>> data = model.getData();
+        for (Map<String, Object> mx : data) {
+            mx.put("item_order_id", item_order_id);
+            mx.put("create_date", DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            dao.insert(mx, "p_plan_item_content");
+        }
+        //存储过程
+        dao.execute("call proc_chronic_plan_sync(" + item_order_id + ")");
+        dao.execute("call proc_chronic_plan_report(" + item_order_id + ")");
+        return new StdDTO(1, "保存成功");
+    }
+
+    @Override
+    public Object trackItemList(String plan_order_id, String dict_order_id) {
+        if (StringUtil.isBlank(plan_order_id) || StringUtil.isBlank(dict_order_id)) {
+            return new StdDTO(0, "数据不完整");
+        }
+        String sql = "select order_id,plan_order_id,dict_order_id,date_format(create_date,'%Y-%m-%d %H:%i') create_date"
+                     + " from p_plan_item where plan_order_id = ? and dict_order_id = ?";
+        List<Map<String, Object>> list = dao.select(sql, plan_order_id, dict_order_id);
+        list.stream().forEach(e -> {
+            String trackSql = "select * from p_plan_item_content where item_order_id = ?";
+            List<Map<String, Object>> trackList = dao.select(trackSql, e.get("order_id"));
+            e.put("data", trackList);
+        });
+        return new StdDTO(1, list);
+    }
+
+}

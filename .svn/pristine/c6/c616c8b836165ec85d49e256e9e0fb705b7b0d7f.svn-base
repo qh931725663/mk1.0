@@ -1,0 +1,84 @@
+package com.haaa.cloudmedical.common.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class ReadFile {
+
+	public static void main(String[] args) throws FileNotFoundException {
+
+		File newfile = new File("D:\\work\\cloudmedical\\source\\web\\mkh1.0\\config\\dbconfig.properties");
+		String[] as = cs(readerFilecs(newfile));
+		System.out.println(as[0]+"  "+as[1]+"  " +as[2]+"  "+ "   "+ as[3]+"  "+as[4]);
+
+	}
+
+	public static String readerFilecs(File file) {
+		StringBuffer sb = new StringBuffer();
+
+		if (file.isFile()) {
+			FileInputStream fileInputStream = null;
+			try {
+				fileInputStream = new FileInputStream(file);
+				// fileInputStream.available()获取文件的字节数
+				byte[] b = new byte[fileInputStream.available()];
+
+				int read = fileInputStream.read(b);
+
+				while (read != -1) {
+					String utfString = new String(b);//
+					// String utfString = new String(b, "UTF-8");
+					sb.append(utfString);
+					read = fileInputStream.read(b);
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					fileInputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return sb.toString();
+		}
+		return null;
+	}
+
+	/*
+	 * 
+	 * 
+	 * 获取文本框的中各分行的内容写入到string 数组中
+	 * 
+	 * 
+	 */
+
+	public static String[] cs(String utfString) throws FileNotFoundException {
+
+		String[] ss = null;
+		String[] sr = { "1", "2", "3", "4", "5"};
+		try {
+
+			ss = utfString.split("\n");
+
+			for (int i=0;i<4;i++)
+			{
+			String bb = ss[i];
+			int tbb = bb.indexOf("=", 1);
+			bb = bb.substring(tbb + 1);
+			bb = bb.trim();
+			sr[i]=bb;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return sr;
+		}
+	}
+
+}

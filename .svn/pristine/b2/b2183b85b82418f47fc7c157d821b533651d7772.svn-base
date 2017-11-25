@@ -1,0 +1,202 @@
+$(function(){
+	vital.init();
+});
+var vital = {
+	init : function(){
+		this.getData();
+		this.getMore();
+	},
+	//请求参数地址
+	getUrlParam : function(name){
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+		return null;
+	},
+	//获取查看月数据
+	getData : function(){
+		var open_id = this.getUrlParam("open_id");
+		$.ajax({
+			url : "../../../../../lung_capacity-wx/months.action",
+			type : "GET",
+			dataType : 'json',
+			data :'',
+			success : function(data){
+				var list = data.data.list;
+				$.each(list, function(i,m) {
+					//console.log(list[i].yearmonth);
+					var html = '';
+					html +=  '<option>'+list[i].yearmonth+'</option>';
+					$("#year").append(html);
+				});
+			}
+		});
+		this.getInfo();
+		this.getDetail();
+	},
+	//获取数据
+	getInfo : function(){
+		//console.log(123);
+		$.ajax({
+			url : "../../../../../lung_capacity-wx/page.action",
+			type :"GET",
+			dataType : 'json',
+			data :{"pageno":1},
+			success : function(arr){
+				console.log(arr);
+				if(arr.status==0){
+					var monthlist = arr.data.monthlist;
+					var pageno = arr.data.pageno;
+					console.log(pageno);
+					$.each(monthlist, function(i,m) {
+						var yearmonth = monthlist[i].yearmonth;
+						var datalist = monthlist[i].datalist;
+						var html = "";
+						html += '<dl class="monthBox"><dt class="sel_month">'+yearmonth+'</dt>';
+						$.each(datalist, function(j,n) {
+							var sun;
+							if(datalist[j].period==-1){
+								sun = 'morning_01.png';
+							}else if(datalist[j].period==0){
+								sun = 'afternoon_01.png';
+							}else{
+								sun = 'nigth_01.png';
+							}
+							html += '<dd><ul>';
+							html += '<li class="line-align-left clearfix">';
+                    		html += '<img src="../../common/image/myhealth/'+sun+'" alt="" style="width: 10%;"/>';
+                    		html += '<span class="datetime">'+datalist[j].datetime.substr(5)+'</span>';
+                    		html += '<ul class="content">';
+                    		html += '<li>';
+                    		html += '<span>FVC</span>';
+                    		html += '<span style="padding:0 10px 0 15px;">'+datalist[j].fvc+'</span>';
+                    		html += '<span>'+datalist[j].fvc_rate+'<span style="font-size:14px">%</span></span>';
+                    		html += '</li>';
+                    		html += '<li>';
+                    		html += '<span>FEV1</span>';
+                    		html += '<span style="padding:0 10px 0 7px;">'+datalist[j].fev1+'</span>';
+                    		html += '<span>'+datalist[j].fev1_rate+'<span style="font-size:14px">%</span></span>';
+                    		html += '</li>';
+                    		html += '<li>';
+                    		html += '<span>PEF</span>';
+                    		html += '<span style="padding:0 10px 0 18px;">'+datalist[j].pef+'</span>';
+                    		html += '<span>'+datalist[j].pef_rate+'<span style="font-size:14px">%</span></span>';
+                    		html += '</li>';
+                    		html += '</ul>';
+                    		html += '</li>';
+                    		html += '</ul></dd>';
+						});
+						html += '</dl>';
+						$(".blood-data-show").append(html);
+					});
+				}
+			}
+		});
+	},
+	//切换月份
+	getDetail : function(){
+		$(".sel_year").on('change',function(){
+			var content = $(this).val();
+			//console.log(content);
+			$(".sel_month").each(function(){
+				var html = $(this).html();
+				if(html==content){
+					$(this).parent().siblings().css('display','none');
+					$(this).parent().css('display','block');
+				}
+			});
+		});
+	},
+	//上拉加载
+	getMore : function(){
+		var more = new iScroll("dataBox",{
+			onScrollMove:function(){
+				if(this.y<(this.ScrollY)){
+					$('.pull_icon').addClass('flip');
+					$('.pull_icon').removeClass('loading');
+					$('.more span').text('释放加载...');
+				}else{
+					$('.pull_icon').removeClass('flip loading');
+					$('.more span').text('上拉加载...')
+				}
+			},
+			onScrollEnd:function(){
+				if ($('.pull_icon').hasClass('flip')) {
+					$('.pull_icon').addClass('loading');
+					$('.more span').text('加载中...');
+					pullUpAction();
+				}
+				
+			},
+			onRefresh:function(){
+				$('.more').removeClass('flip');
+				$('.more span').text('上拉加载...');
+			}
+		});
+		this.geixinxi();
+	},
+	//加载信息
+	geixinxi : function(){
+		setTimeout(function(){
+			$.ajax({
+				url : "../../../../../lung_capacity-wx/page.action",
+				type :"GET",
+				dataType : 'json',
+				data :"",
+				success : function(arr){
+					console.log(arr);
+					if(arr.status==0){
+						var monthlist = arr.data.monthlist;
+						var pageno = arr.data.pageno;
+						console.log(pageno);
+						$.each(monthlist, function(i,m) {
+							var yearmonth = monthlist[i].yearmonth;
+							var datalist = monthlist[i].datalist;
+							var html = "";
+							html += '<dl class="monthBox"><dt class="sel_month">'+yearmonth+'</dt>';
+							$.each(datalist, function(j,n) {
+								var sun;
+								if(datalist[j].period==-1){
+									sun = 'morning_01.png';
+								}else if(datalist[j].period==0){
+									sun = 'afternoon_01.png';
+								}else{
+									sun = 'nigth_01.png';
+								}
+								html += '<dd><ul>';
+								html += '<li class="line-align-left clearfix">';
+	                    		html += '<img src="../../common/image/myhealth/'+sun+'" alt="" style="width: 10%;"/>';
+	                    		html += '<span class="datetime">'+datalist[j].datetime.substr(5)+'</span>';
+	                    		html += '<ul class="content">';
+	                    		html += '<li>';
+	                    		html += '<span>FVC</span>';
+	                    		html += '<span style="padding:0 10px 0 15px;">'+datalist[j].fvc+'</span>';
+	                    		html += '<span>'+datalist[j].fvc_rate+'<span style="font-size:14px">%</span></span>';
+	                    		html += '</li>';
+	                    		html += '<li>';
+	                    		html += '<span>FEV1</span>';
+	                    		html += '<span style="padding:0 10px 0 7px;">'+datalist[j].fev1+'</span>';
+	                    		html += '<span>'+datalist[j].fev1_rate+'<span style="font-size:14px">%</span></span>';
+	                    		html += '</li>';
+	                    		html += '<li>';
+	                    		html += '<span>PEF</span>';
+	                    		html += '<span style="padding:0 10px 0 18px;">'+datalist[j].pef+'</span>';
+	                    		html += '<span>'+datalist[j].pef_rate+'<span style="font-size:14px">%</span></span>';
+	                    		html += '</li>';
+	                    		html += '</ul>';
+	                    		html += '</li>';
+	                    		html += '</ul></dd>';
+							});
+							html += '</dl>';
+							$(".blood-data-show").append(html);
+						});
+						for (var i = 0;i <pageno.length;i++) {
+							$(".blood-data-show").append(html);
+						}
+						more.refresh();
+					}
+				}
+			});
+		},1000)
+	}
+}

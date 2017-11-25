@@ -1,0 +1,412 @@
+package com.haaa.cloudmedical.common.service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.dao.FileFlushDao;
+import com.haaa.cloudmedical.common.entity.Attachment;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+
+@Service
+public class FileUploadService {
+
+	@Autowired
+	private FileFlushDao dao;
+
+	/*@SuppressWarnings("unchecked")
+	public void write(Map<String, Object> map) {
+		String user_id = map.get("user_id")==null?"":map.get("user_id").toString();
+		String order_id = map.get("order_id")==null?user_id:map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		Object report_type = map.get("report_type");
+		String table = null;
+		Object[] args = null;
+		StringBuilder sql = new StringBuilder();
+		if (report_type.equals(Constant.PIC_TYPE_CHECK))
+			table = "p_check_report";
+		else if (report_type.equals(Constant.PIC_TYPE_CLINIC))
+			table = "p_clinic_report";
+		else if (report_type.equals(Constant.PIC_TYPE_HOSPITAL))
+			table = "p_hospital_report";
+		else if (report_type.equals(Constant.PIC_TYPE_INSURANCE))
+			table = "p_medical_insurance_report";
+		else if (report_type.equals(Constant.PIC_TYPE_CHRONIC))
+			table = "m_track_plan";
+		else if (report_type.equals(Constant.PIC_TYPE_NEWS))
+			table = "b_banner_news";
+		else if (report_type.equals(Constant.PIC_TYPE_HOSP_ICON))
+			table = "k_hosp";
+		else if (report_type.equals(Constant.PIC_TYPE_HEAD) || report_type.equals(Constant.PIC_TYPE_CARD)) {
+			Object user_type = map.get("user_type");
+			if(user_type!=null&&!"".equals(user_type.toString())){
+				if(user_type.toString().equals("1"))
+					table = "n_manager";
+				else if(user_type.toString().equals("2"))
+					table = "n_user";
+			}
+		}
+		List<Attachment> list = (List<Attachment>) map.get("file");
+		if(table!=null){
+			if (table.equals("n_user") || table.equals("n_manager")) {
+				if (report_type.equals(Constant.PIC_TYPE_CARD)) {
+					sql.append("update " + table
+							+ " set user_card_front_upload_index = ?,user_card_back_upload_index = ? where user_id = ? ");
+					args = new Object[] { uploadDir + list.get(0).getFile_name(), uploadDir + list.get(1).getFile_name(),
+							user_id };
+				} else if (report_type.equals(Constant.PIC_TYPE_HEAD)) {
+					sql.append("update " + table + " set user_head_pic_upload_index = ? where user_id = ? ");
+					args = new Object[] { uploadDir + list.get(0).getFile_name(), user_id };
+				}
+			} else if (table.equals("m_track_plan")) {
+				sql.append("update " + table + " set check_pic_index = ? where order_id = ? ");
+				order_id = map.get("order_id").toString();
+				args = new Object[] { uploadDir, order_id };
+			}else if (table.equals("b_banner_news")) {
+				sql.append("update " + table + " set pic_index = ? where order_id = ? ");
+				order_id = map.get("order_id").toString();
+				args = new Object[] { uploadDir + list.get(0).getFile_name(), order_id };
+			}else if (table.equals("k_hosp")) {
+				sql.append("update " + table + " set hosp_icon = ? where order_id = ? ");
+				order_id = map.get("order_id").toString();
+				args = new Object[] { uploadDir + list.get(0).getFile_name(), order_id };
+			} else {
+				sql.append("update " + table + " set report_upload_index = ? where order_id = ? ");
+				order_id = map.get("order_id").toString();
+				args = new Object[] { uploadDir, order_id };
+			}
+			dao.execute(sql.toString(), args);
+		}
+		sql.setLength(0);
+		sql.append(
+				"insert into p_picture(parent_id,pic_type,pic_num,medical_picture_upload,create_date) values(?,?,?,?,now())");
+		for (int i = 0; i < list.size(); i++) {
+			Attachment attachment = list.get(i);
+			args = new Object[] { order_id, report_type, attachment.getPic_num(),
+					uploadDir + attachment.getFile_name() };
+			dao.execute(sql.toString(), args);
+		}
+	}*/
+	
+	public void write(Map<String, Object> map) {
+
+		String report_type = map.get("report_type").toString();
+
+		// 头像
+		if (report_type.equals(Constant.PIC_TYPE_HEAD)) {
+			saveHeadPic(map);
+		}
+
+		// 身份证
+		else if (report_type.equals(Constant.PIC_TYPE_CARD)) {
+			saveCardPic(map);
+		}
+
+		// 体检
+		else if (report_type.equals(Constant.PIC_TYPE_CHECK)) {
+			map.put("table", "p_check_report");
+			saveHealthReportPic(map);
+		}
+
+		// 门诊
+		else if (report_type.equals(Constant.PIC_TYPE_CLINIC)) {
+			map.put("table", "p_clinic_report");
+			saveHealthReportPic(map);
+		}
+
+		// 住院
+		else if (report_type.equals(Constant.PIC_TYPE_HOSPITAL)) {
+			map.put("table", "p_hospital_report");
+			saveHealthReportPic(map);
+		}
+
+		// 医保
+		else if (report_type.equals(Constant.PIC_TYPE_INSURANCE)) {
+			map.put("table", "p_medical_insurance_report");
+			saveHealthReportPic(map);
+		}
+
+		// 慢病管理计划追踪
+		else if (report_type.equals(Constant.PIC_TYPE_CHRONIC)) {
+			saveChronicTrackPic(map);
+		}
+
+		// 新闻
+		else if (report_type.equals(Constant.PIC_TYPE_NEWS)) {
+			saveNewsPic(map);
+		}
+
+		// 医院logo
+		else if (report_type.equals(Constant.PIC_TYPE_HOSP_ICON)) {
+			saveHospLogoPic(map);
+		}
+	}
+
+	/**
+	 * 保存头像
+	 * 
+	 * @param map
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveHeadPic(Map<String, Object> map) {
+		String user_id = map.get("user_id") == null ? "" : map.get("user_id").toString();
+		String order_id = map.get("order_id") == null ? user_id : map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		String report_type = map.get("report_type").toString();
+		Object user_type = map.get("user_type");
+		if (user_type != null) {
+			List<Attachment> list = (List<Attachment>) map.get("file");
+			Object[] args = new Object[] { uploadDir + list.get(0).getFile_name(), user_id };
+			if (user_type.toString().equals("1")) {
+				String sql = "update n_manager set user_head_pic_upload_index = ? where user_id = ? ";
+				dao.execute(sql, args);
+			}
+			if (user_type.toString().equals("2")) {
+				String sql = "update n_user set user_head_pic_upload_index = ? where user_id = ? ";
+				dao.execute(sql, args);
+			}
+			savePic(list, order_id, report_type, uploadDir);
+		}
+	}
+
+	/**
+	 * 保存身份证
+	 * 
+	 * @param map
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveCardPic(Map<String, Object> map) {
+		String user_id = map.get("user_id") == null ? "" : map.get("user_id").toString();
+		String order_id = map.get("order_id") == null ? user_id : map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		Object user_type = map.get("user_type");
+		String report_type = map.get("report_type").toString();
+		if (user_type != null) {
+			List<Attachment> list = (List<Attachment>) map.get("file");
+			Object[] args = new Object[] { uploadDir + list.get(0).getFile_name(),
+					uploadDir + list.get(1).getFile_name(), user_id };
+			if (user_type.toString().equals("1")) {
+				String sql = "update n_manager set user_card_front_upload_index = ?,user_card_back_upload_index = ? where user_id = ? ";
+				dao.execute(sql, args);
+			}
+			if (user_type.toString().equals("2")) {
+				String sql = "update n_user set user_card_front_upload_index = ?,user_card_back_upload_index = ? where user_id = ? ";
+				dao.execute(sql, args);
+			}
+			savePic(list, order_id, report_type, uploadDir);
+		}
+	}
+
+	/**
+	 * 慢病管理计划追踪
+	 * 
+	 * @param map
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveChronicTrackPic(Map<String, Object> map) {
+		String user_id = map.get("user_id") == null ? "" : map.get("user_id").toString();
+		String order_id = map.get("order_id") == null ? user_id : map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		String report_type = map.get("report_type").toString();
+		List<Attachment> list = (List<Attachment>) map.get("file");
+		dao.execute("update m_track_plan set check_pic_index = ? where order_id = ? ", uploadDir, order_id);
+		savePic(list, order_id, report_type, uploadDir);
+	}
+
+	/**
+	 * 新闻图片
+	 * 
+	 * @param map
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveNewsPic(Map<String, Object> map) {
+		String user_id = map.get("user_id") == null ? "" : map.get("user_id").toString();
+		String order_id = map.get("order_id") == null ? user_id : map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		String report_type = map.get("report_type").toString();
+		List<Attachment> list = (List<Attachment>) map.get("file");
+		dao.execute("update b_banner_news set pic_index = ? where order_id = ? ",
+				uploadDir + list.get(0).getFile_name(), order_id);
+		savePic(list, order_id, report_type, uploadDir);
+	}
+
+	/**
+	 * 医院标志
+	 * 
+	 * @param map
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveHospLogoPic(Map<String, Object> map) {
+		String user_id = map.get("user_id") == null ? "" : map.get("user_id").toString();
+		String order_id = map.get("order_id") == null ? user_id : map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		String report_type = map.get("report_type").toString();
+		List<Attachment> list = (List<Attachment>) map.get("file");
+		dao.execute("update k_hosp set hosp_icon = ? where order_id = ?  ", uploadDir + list.get(0).getFile_name(),
+				order_id);
+		savePic(list, order_id, report_type, uploadDir);
+	}
+
+	/**
+	 * 健康档案
+	 * 
+	 * @param map
+	 */
+	@SuppressWarnings("unchecked")
+	public void saveHealthReportPic(Map<String, Object> map) {
+		String user_id = map.get("user_id") == null ? "" : map.get("user_id").toString();
+		String order_id = map.get("order_id") == null ? user_id : map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		String report_type = map.get("report_type").toString();
+		Object table = map.get("table");
+		List<Attachment> list = (List<Attachment>) map.get("file");
+		dao.execute("update " + table + " set report_upload_index = ? where order_id = ? ", uploadDir, order_id);
+		savePic(list, order_id, report_type, uploadDir);
+	}
+
+	/**
+	 * 图片
+	 * 
+	 * @param map
+	 */
+	public void savePic(List<Attachment> list, String order_id, String report_type, String uploadDir) {
+		String sql = "insert into p_picture(parent_id,pic_type,pic_num,medical_picture_upload,create_date) values(?,?,?,?,now())";
+		for (int i = 0; i < list.size(); i++) {
+			Attachment attachment = list.get(i);
+			Object[] args = new Object[] { order_id, report_type, attachment.getPic_num(),
+					uploadDir + attachment.getFile_name() };
+			dao.execute(sql, args);
+		}
+	}
+
+	public ResponseDTO read(File file, String sheet_name, int readRows, String[] params, String data_type) {
+		ResponseDTO dto = new ResponseDTO();
+		String message = "";
+		int readCells = params.length;
+		Cell cell = null;
+		Row row = null;
+		Sheet sheet = null;
+		Workbook book = null;
+		Map<String, Object> map = null;
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		try {
+			try {
+				book = new XSSFWorkbook(file);
+			} catch (Exception e) {
+				book = new HSSFWorkbook(new FileInputStream(file));
+			}
+			try {
+				sheet = book.getSheet(sheet_name);
+			} catch (Exception e) {
+				sheet = book.getSheetAt(book.getActiveSheetIndex());
+			}
+			int totalRows = sheet.getLastRowNum() - 1;
+			int readTimes = totalRows % readRows == 0 ? totalRows / readRows : totalRows / readRows + 1;
+			readTimes=readTimes==0?1:readTimes;
+			for (int i = 1; i <= readTimes; i++) {
+				a: for (int j = readRows * (i - 1) + 1; j <= readRows * i; j++) {
+					if(j==1){
+						j+=1;
+					}
+					row = sheet.getRow(j);
+					if (row == null)
+						break a;
+					cell = row.getCell(0);
+					if (cell == null || cell.getStringCellValue().equals(""))
+						break a;
+					else {
+						map = new HashMap<String, Object>();
+						for (int k = 0; k < readCells; k++) {
+							cell = row.getCell(k);
+							if(cell==null||"".equals(cell.toString()))
+								continue;
+							Object value = null;
+							try{
+								value = cell.getStringCellValue();
+							}catch(Exception e){
+								value = cell.getNumericCellValue();
+							}
+							//System.out.println(value);
+							map.put(params[k], value);
+						}
+						list.add(map);
+					}
+				}
+				if (data_type.equals("1")||data_type.equals("3")||data_type.equals("4")) {
+					write(list, params,data_type);
+				} else if (data_type.equals("2")) {
+					writeAIO(list, params);
+				}
+				list.clear();
+			}
+			if (data_type.equals("1")) {
+				message = dao.call();
+			} else if (data_type.equals("2")) {
+				message = dao.callAIO();
+			}
+			dto.setData(message);
+			dto.setFlag(true);
+			try {
+				book.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			dto.setData("文件读取失败");
+			e.printStackTrace();
+		}
+		return dto;
+	}
+
+	public void write(List<Map<String, Object>> list, String[] params,String data_type) {
+		String table = "";
+		if(data_type.equals("1")){
+			table="temp_user";
+		}else if(data_type.equals("3")){
+			table="temp_doctor";
+		}if(data_type.equals("4")){
+			table="temp_manager";
+		}
+		String sql = "insert into "+table+"(" + StringUtils.join(params, ",") + ") values("
+				+ StringUtils.repeat("?", ",", params.length) + ")";
+		List<Object[]> values = new ArrayList<Object[]>();
+		for (Map<String, Object> map : list) {
+			Object[] value = new Object[params.length];
+			for (int i = 0; i < params.length; i++) {
+				value[i] = map.get(params[i]);
+			}
+			values.add(value);
+		}
+		dao.write(sql, values);
+	}
+
+	public void writeAIO(List<Map<String, Object>> list, String[] params) {
+		String sql = "insert into temp_self(" + StringUtils.join(params, ",") + ") values("
+				+ StringUtils.repeat("?", ",", params.length) + ")";
+		List<Object[]> values = new ArrayList<Object[]>();
+		for (Map<String, Object> map : list) {
+			Object[] value = new Object[params.length];
+			for (int i = 0; i < params.length; i++) {
+				value[i] = map.get(params[i]);
+			}
+			values.add(value);
+		}
+		dao.write(sql, values);
+	}
+
+}

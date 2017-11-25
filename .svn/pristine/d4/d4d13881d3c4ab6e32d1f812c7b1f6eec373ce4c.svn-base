@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>基础信息</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<div class="header">
+		<div class="circle">
+			<div class="dotBox"></div>
+			<p><span class="dot on"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+		</div>
+		<div class="txtBox">
+			<p><span class="txt onFont">基础信息</span></p>
+			<p><span class="txt">生活方式</span></p>
+			<p><span class="txt">既往史</span></p>
+			<p><span class="txt">查体</span></p>
+		</div>
+	</div>
+	<form class="main">
+		<ul class="basicInfo">
+			<li>
+				<div class="info_left">性别</div>
+				<div class="info_rgt">女</div>
+			</li>
+			<li>
+				<div class="info_left">出生日期</div>
+				<div class="info_rgt"><span>19940213</span></div>
+			</li>
+			<li>
+				<div class="info_left">年龄</div>
+				<div class="info_rgt"><span>23</span></div>
+			</li>
+			<li>
+				<div class="info_left">身份证号</div>
+				<div class="info_rgt"><span>522425199402134665</span></div>
+			</li>
+			<li>
+				<div class="info_left">联系方式</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+			</li>
+			<li>
+				<div class="info_left">身高</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">&nbsp;cm</span></div>
+			</li>
+			<li>
+				<div class="info_left">体重</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;Kg</span></div>
+			</li>
+			<li>
+				<div class="info_left">腰围</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">&nbsp;cm</span></div>
+			</li>
+			<li>
+				<div class="info_left">BMI</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">Kg/m2</span></div>
+			</li>
+			<li>
+				<div class="info_left">脉搏</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left">呼吸</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left">血压</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/> <span class="mond">mmHg</span></div>
+				<div class="hide_cont">
+					<span class="sel_op">1级</span>
+					<span class="sel_op">2级</span>
+					<span class="sel_op">3级</span>
+				</div>
+			</li>
+			<span class="next">下一步</span>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p>1、体育锻炼</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">锻炼频率</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<span class="sel_op">每天</span>
+							<span class="sel_op">每周一次以上</span>
+							<span class="sel_op">偶尔</span>
+							<span class="sel_op">从不锻炼</span>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">每次锻炼时间</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请输入时间"/> <span class="mond">分钟</span></div>
+					</li>
+					<li>
+						<div class="info_left">锻炼方式</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请输入锻炼方式"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p>2、饮食习惯</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">荤素比例</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<span class="sel_op">荤素均衡</span>
+							<span class="sel_op">荤食为主</span>
+							<span class="sel_op">素食为主</span>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">偏好</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" type="checkbox" id="salt">
+				                <label class="lab" for="salt">嗜盐</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" type="checkbox" id="oil">
+				                <label class="lab" for="oil">嗜油</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" type="checkbox" id="candy">
+				                <label class="lab" for="candy">嗜糖</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p>3、睡眠时间</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left rad_left">您平均每晚的睡眠时间能达到7个小时吗？</div>
+						<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="sleep" type="radio" id="yes">
+				                <label class="lab" for="yes">有</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="sleep" type="radio" id="no">
+				                <label class="lab" for="no">没有</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p>4、吸烟情况</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">吸烟状况</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+				            <div class="opt">
+				                <input class="magic" name="smoke" type="radio" id="never">
+				                <label class="lab" for="never">从不吸烟</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="smoke" type="radio" id="sometime">
+				                <label class="lab" for="sometime">已戒烟</label>
+				            </div>
+							<div class="opt">
+				                <input class="magic" name="smoke" type="radio" id="do">
+				                <label class="lab" for="do">吸烟</label>
+				            </div>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">日吸烟量</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填入"/> <span class="mond">支</span></div>
+					</li>
+					<li>
+						<div class="info_left">烟龄</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+					<li>
+						<div class="info_left">戒烟年龄</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p>5、饮酒情况</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">饮酒频率</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+				            <div class="opt">
+				                <input class="magic" name="wine" type="radio" id="wnever">
+				                <label class="lab" for="wnever">从不</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="wine" type="radio" id="wsometime">
+				                <label class="lab" for="wsometime">偶尔</label>
+				            </div>
+							<div class="opt">
+				                <input class="magic" name="wine" type="radio" id="wdo">
+				                <label class="lab" for="wdo">经常</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="wine" type="radio" id="everyday">
+				                <label class="lab" for="everyday">每天</label>
+				            </div>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">日均饮酒量</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填入"/> <span class="mond">两</span></div>
+					</li>
+					<li>
+						<div class="info_left">酒龄</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+					<li>
+						<div class="info_left">近期是否饮酒</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+				            <div class="opt">
+				                <input class="magic" name="drink" type="radio" id="wyes">
+				                <label class="lab" for="wyes">是</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="drink" type="radio" id="wno">
+				                <label class="lab" for="wno">否</label>
+				            </div>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">饮酒种类</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" type="checkbox" id="white">
+				                <label class="lab" for="white">白酒</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" type="checkbox" id="beer">
+				                <label class="lab" for="beer">啤酒</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" type="checkbox" id="red">
+				                <label class="lab" for="red">红酒</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" type="checkbox" id="yellow">
+				                <label class="lab" for="yellow">黄酒</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" type="checkbox" id="other">
+				                <label class="lab" for="other">其他</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p>6、心里状态</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left rad_left">您与家人和朋友的关系好吗？</div>
+						<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="family" type="radio" id="bad">
+				                <label class="lab" for="bad">不好</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="family" type="radio" id="general">
+				                <label class="lab" for="general">一般</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="family" type="radio" id="nice">
+				                <label class="lab" for="nice">好</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="family" type="radio" id="well">
+				                <label class="lab" for="well">很好</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="family" type="radio" id="best">
+				                <label class="lab" for="best">特别好</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<span class="next">下一步</span>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/highBloodPressure.js?v=666" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

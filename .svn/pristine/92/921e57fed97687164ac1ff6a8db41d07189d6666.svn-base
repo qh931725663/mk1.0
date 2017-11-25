@@ -1,0 +1,207 @@
+package com.haaa.cloudmedical.app.smoking.service;
+
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.dao.SmokingDao;
+import com.haaa.cloudmedical.entity.SmokingBaseInfo;
+import com.haaa.cloudmedical.entity.SmokingPlan;
+import com.haaa.cloudmedical.entity.UpdatePlan;
+
+
+
+
+@Service
+public class SmokingService {
+
+	
+	@Autowired
+	private SmokingDao dao;
+	// 创建戒烟计划
+	public Long createSmokingPlan(SmokingPlan smoking) throws SQLException, Exception {
+		Date date=new Date();
+		SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		smoking.setCreate_date(s.format(date.getTime()));
+		Map<String,Object> map = new HashMap<String,Object>();
+		Map<String,Object> mapPlan = new HashMap<String,Object>();
+		mapPlan=this.findUserBaseInfo(smoking.getUser_id());
+		if( mapPlan==null) return (long) -1; 
+		long rows=0;
+		BeanPropertyUtil.toMapFromObject(map, smoking);
+        map.put("quit_smoking_plan_day", 0);
+        map.put("quit_smoking_plan_end", 102);
+		rows=dao.insert(map, "q_quit_smoking_plan");
+		//update基本信息，使no_smoke_plan为101
+		if(rows>0) dao.updateNoSmokingPlan(smoking.getUser_id()) ;
+		return rows;
+		
+	}
+	//查询用户的性别和年龄
+
+	public Map<String,Object> findUserAgeSex(Long user_id) throws SQLException, Exception{
+			Map<String,Object> map=dao.findUserAgeSex(user_id);
+
+			return map;
+		}
+    //查询所有戒烟计划
+    public	List<Map<String,Object>> selectAllPlan(Long user_id) throws SQLException, Exception{
+    	List<Map<String,Object>> list=dao.selectAllPlan(user_id);
+		return list;
+    
+    }
+	// 保存烟史
+
+	public long saveUserBaseInfo(SmokingBaseInfo smoking) throws SQLException, Exception {
+		Object i,j;
+		long rows=0;
+		Integer age1;
+		Integer age2;
+		Integer sex1;
+		Integer sex2;
+		Map<String,Object> map1 = new HashMap<String,Object>();
+		Map<String,Object> map2 = new HashMap<String,Object>();
+		Date date=new Date();
+		SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		smoking.setCreate_date(s.format(date.getTime()));
+		smoking.setNo_smoke_plan(102);
+		BeanPropertyUtil.toMapFromObject(map1, smoking);
+		map2=dao.findUserAgeSex((Long) map1.get("user_id"));
+		age1=(Integer) map1.get("user_age");
+		if(age1==null)age2=0;
+		age2=(Integer) map2.get("user_age");
+		if(age2==null)age2=0;
+		sex1=(Integer) map1.get("user_sex");
+		if(sex1==null)sex2=0;
+		sex2=(Integer) map2.get("user_sex");
+		if(sex2==null)sex2=0;
+		if(age1==0 && age2>0 ){
+			map1.put("user_age", age2);
+		}
+			              			
+		if(age2==0 && age1>0 ){
+			map2.put("user_age", age1);
+			dao.update(map2, "n_user");
+		}
+			
+		if(sex1==0 && sex2>0 ) {
+			map1.put("user_sex", sex2); 
+		}
+			             			
+		if(sex2==0 && sex1>0 ){
+			map2.put("user_sex", sex1);
+		    dao.update(map2, "n_user");	
+		}
+          
+		   i=dao.findIsBase(smoking.getUser_id());
+		   if (i.toString().equals("0"))
+			      {
+			       dao.insert(map1, "q_quit_smoking_base_info");
+			       rows=(Long) map1.get("user_id");
+			      j=dao.findIsBase(rows);
+			      if (j.toString().equals("0"))
+			    	  rows=0;
+			      }
+		   else
+			   rows=-1;
+			   
+	
+		
+		
+		return rows;
+	}
+   //查询烟史
+	public Map<String,Object> findUserBaseInfo(Long user_id) throws SQLException, Exception {
+		Integer age1;
+		Integer age2;
+		Integer sex1;
+		Integer sex2;
+		Map<String,Object> map1 = new HashMap<String,Object>();
+		Map<String,Object> map2 = new HashMap<String,Object>();
+
+		map1=dao.findUserBaseInfo(user_id);
+		if(map1==null) return null;
+
+		map2=dao.findUserAgeSex(user_id);
+		if(map2==null) return null;
+		age1=(Integer) map1.get("user_age");
+		if(age1==null)age1=0;
+		age2=(Integer) map2.get("user_age");
+		if(age2==null)age2=0;
+		sex1=(Integer) map1.get("user_sex");
+		if(sex1==null)sex1=0;
+		sex2=(Integer) map2.get("user_sex");
+		if(sex2==null)sex2=0;
+		if(age1==0 && age2>-1 ){
+			map1.put("user_age", age2);
+			dao.update(map1, "q_quit_smoking_base_info");
+		}
+			              			
+		if(age2==0 && age1>-1 ){
+			map2.put("user_age", age1);
+			dao.update(map2, "n_user");
+		}
+			
+		if(sex1==0 && sex2>-1 ) {
+			map1.put("user_sex", sex2); 
+			dao.update(map1, "q_quit_smoking_base_info");
+		}
+			             			
+		if(sex2==0 && sex1>-1 ){
+			map2.put("user_sex", sex1);
+		    dao.update(map2, "n_user");	
+		}
+
+		return map1;
+	}
+    
+
+	// 戒烟签到
+	public int signate(Long user_id) throws SQLException, Exception{
+
+	return dao.signate(user_id);
+	}
+	//查询是否已签到
+		public  int isSignate(Long user_id) {
+			int i=dao.isSignate(user_id);
+			return i;
+			
+		}
+
+	// 更改戒烟计划
+	public Integer updatePlan(UpdatePlan plan) throws SQLException, Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("smoking_plan_order_id", plan.getSmoking_plan_order_id());
+		Date date=new Date();
+		SimpleDateFormat s=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		map.put("create_date", s.format(date.getTime()));
+		map.put("update_reason", plan.getUpdate_reason());
+		map.put("update_reason_text", plan.getUpdate_reason_text());
+		//插入新的更新原因
+	    dao.insert(map, "q_quit_smoking_update_reason");
+		//更新目标根数
+		Integer row=dao.updatePlan(plan.getSmoking_plan_order_id(), plan.getQuit_smoking_plan_number());
+
+		return row;
+		
+	}
+	 //取得当前戒烟计划
+	public Map<String,Object> getQuitSmokingPlan(Long user_id) throws SQLException, Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		System.out.println(selectAllPlan(user_id).get(0));
+		map=selectAllPlan(user_id).get(0);
+		if(map==null) return null;
+        if(map.get("quit_smoking_plan_end").toString().equals("102"))
+				return map;
+		return null;
+
+		
+	}
+
+
+}

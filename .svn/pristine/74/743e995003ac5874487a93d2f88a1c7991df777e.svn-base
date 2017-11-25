@@ -1,0 +1,84 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.hwpf.model.ListLevel;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.Electrocardiograph;
+
+@Repository
+public class ElectrocardiographDao extends EquipmentDao {
+
+	public long add(Electrocardiograph electrocardiograph) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, electrocardiograph);
+		return insert(map, "c_electrocardiograph");
+	}
+
+	/**
+	 * 查询最近数据 AND A.create_date<NOW()
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecent(long user_id, int recent) {
+		String sql = "SELECT A.order_id,DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.HeartRate,B.result "
+				+ " FROM c_equipment_use A,c_electrocardiograph B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date  ORDER BY A.create_date DESC";
+		return jdbcTemplate.queryForList(sql, new Object[] { user_id, recent });
+	}
+
+	public List<Map<String, Object>> queryByMonth(Long user_id, String year_month, int pageno, int pagesize) {
+		String sql = "SELECT A.order_id,A.create_date datetime,B.HeartRate,B.result "
+				+ " FROM c_equipment_use A,c_electrocardiograph B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_FORMAT(A.create_date,'%Y-%m')=?  ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, year_month, start, pagesize);
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT B.equipment_use_order_id,A.order_id,A.create_date datetime,B.HeartRate,findName(B.result) result "
+				+ " FROM c_equipment_use A,c_electrocardiograph B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+	/*
+	 * 查询一个年内有数据的月份
+	 */
+	public List<Map<String, Object>> queryMonth(long user_id) {
+		String sql = "SELECT DISTINCT(DATE_FORMAT(A.create_date,'%Y-%m')) yearmonth "
+				+ " FROM c_equipment_use A,c_electrocardiograph B WHERE "
+				+ " A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL 1 YEAR) <A.create_date ORDER BY A.create_date DESC ";
+		return jdbcTemplate.queryForList(sql, user_id);
+	}
+
+	/**
+	 * 
+	 * @Title: getEcgById @Description: 根据use_id查询心电图数据 @param
+	 *         order_id @return @throws
+	 */
+	public Map<String, Object> getEcgById(String user_id, String use_id) {
+		String sql = "";
+		List<Map<String, Object>> list = null;
+		if (use_id == null || use_id.equals("")) {
+			sql = "SELECT DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.HeartRate,findName(B.result) result,B.ecg1,B.ecg2,B.ecg3,B.ecg4,B.ecg5 FROM c_equipment_use A LEFT JOIN c_electrocardiograph B ON A.order_id=B.equipment_use_order_id WHERE A.user_id = ? AND B.ecg1 IS NOT NULL ORDER BY A.create_date DESC LIMIT 1";
+			list =  jdbcTemplate.queryForList(sql, user_id);
+		}
+		sql = "SELECT DATE_FORMAT(create_date,'%Y-%m-%d %H:%i') datetime,HeartRate,findName(result) result,ecg1,ecg2,ecg3,ecg4,ecg5 FROM c_electrocardiograph WHERE equipment_use_order_id = ? ";
+	    list = jdbcTemplate.queryForList(sql, use_id);
+		if (list==null||list.size()==0) {
+			return null;
+		}
+		return list.get(0);
+	}
+
+}

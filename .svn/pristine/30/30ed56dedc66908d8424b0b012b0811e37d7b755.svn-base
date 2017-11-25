@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>电子尿液分析仪</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <script type="text/javascript">
+        require = {
+            baseUrl: './js',
+            paths: {
+                'jquery': 'http://cdn.bootcss.com/jquery/3.2.1/jquery.min',
+                'h5': 'h5.js?modify=2170607#'
+            }
+        }
+    </script>
+    <!-- 此requirejs是被我修改过，方便整合defined出来的变量，不了解的切勿投入生产环境 -->
+    <script data-main="h5" src="./js/require.min.js"></script>
+    <style>
+        .container .content{min-height:500px}
+        /***下拉刷新样式***/
+        .x-pullfresh-wrapper{position:fixed;left:0;top:-42px;width:100%;height:42px;margin:0 auto;z-index:10;opacity:0}
+        .x-pullfresh-wrapper .x-pullfresh-loading{position:relative;width:40px;height:40px;overflow:hidden;background-color:rgba(255,255,255,0.9);border:1px solid rgba(230,230,230,0.5);border-radius:36px;margin:0 auto;text-align: center;line-height: 40px;-webkit-transition: all 1s;-moz-transition:all 1s;-o-transition:all 1s;}
+        .x-pullfresh-wrapper .x-pullfresh-canvas{margin:4px 4px}
+        .x-pullfresh-wrapper .x-pullfresh-svg.x-on,.x-pullfresh-wrapper .x-pullfresh-canvas.x-on{-webkit-animation:loading 1s linear infinite;-webkit-transform:rotate(0);animation:loading 1s linear infinite;transform:rotate(0)}
+        .x-pullfresh-wrapper .x-pullfresh-svg{width:100%;height:100%}
+        .x-pullfresh-wrapper .x-pullfresh-path{stroke-linecap: round;stroke: rgb(52, 190, 51);fill: none;stroke-width: 1px;}
+        .x-pullfresh-wrapper #x-pullfresh-arrow path{fill: rgb(52, 190, 51);}
+        /***更多数据样式***/
+        .pullfresh-up{line-height:30px;overflow:hidden;text-align:center;transition-duration:600ms;margin-bottom:20px}
+        .pullfresh-up .loader{font-size:0px;padding:0px;display:none}
+        .pullfresh-up .loader span{vertical-align:middle;border-radius:100%;display:inline-block;width:10px;height:10px;margin:0 2px;-webkit-animation:pfloader 0.8s linear infinite alternate;animation:pfloader 0.8s linear infinite alternate}
+        .pullfresh-loading .loader{display:block}
+        .pullfresh-up .pullfresh-label{font-size:12px;color:#999;display:none}
+        .pullfresh-up.no-more .pullfresh-label{display:block}
+        .no-more .pullfresh-label{display:block}
+        .pullfresh-up .loader span:nth-child(1){-webkit-animation-delay:-1s;animation-delay:-1s;background:rgba(245,103,115,0.6)}
+        .pullfresh-up .loader span:nth-child(2){-webkit-animation-delay:-0.8s;animation-delay:-0.8s;background:rgba(245,103,115,0.8)}
+        .pullfresh-up .loader span:nth-child(3){-webkit-animation-delay:-0.26666s;animation-delay:-0.26666s;background:rgba(245,103,115,1)}
+        .pullfresh-up .loader span:nth-child(4){-webkit-animation-delay:-0.8s;animation-delay:-0.8s;background:rgba(245,103,115,0.8)}
+        .pullfresh-up .loader span:nth-child(5){-webkit-animation-delay:-1s;animation-delay:-1s;background:rgba(245,103,115,0.4)}
+        @keyframes pfloader{from{transform:scale(0,0)}
+            to{transform:scale(1,1)}
+        }@-webkit-keyframes pfloader{from{-webkit-transform:scale(0,0)}
+             to{-webkit-transform:scale(1,1)}
+         }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content" style="margin-top: 40px;">
+        <div class="blood-data-show" id="demo">
+            <div style="text-align:center">正在加载中...</div>
+            <div class="pressure-result-box" style="background: white;">
+                <div class="line-align date-show">
+                    <img src="../../common/image/myhealth/test-date-1.png" style="width: 21px;margin-right: 10px;"/>
+                    <span style="font-size: 15px;line-height: 30px;">2017-04-24 13:20</span>
+                </div>
+                <p style="font-size: 15px;color: #3D3D3D;text-align: center;">尿液测量数据</p>
+                <div class="dotted-line" style="margin: 10px 15px;"></div>
+                <ul class="urine-list">
+                    <li><span class="fl">URO/尿胆原</span><span class="fr">-</span></li>
+                    <li><span class="fl">BLD/潜血</span><span class="fr">+</span></li>
+                    <li><span class="fl">BlL/胆红素</span><span class="fr">++++</span></li>
+                    <li><span class="fl">KET/酮体</span><span class="fr">-</span></li>
+                    <li><span class="fl">GLH/葡萄糖</span><span class="fr">+</span></li>
+                    <li><span class="fl">PRO/蛋白质</span><span class="fr">++++</span></li>
+                    <li><span class="fl">PH/酸碱度</span><span class="fr">5.0</span></li>
+                    <li><span class="fl">NlT/亚硝酸亚</span><span class="fr">+</span></li>
+                    <li><span class="fl">LEU/白细胞</span><span class="fr">+++</span></li>
+                    <li><span class="fl">SG/比重</span><span class="fr">1.000</span></li>
+                    <li><span class="fl">VC/抗坏血酸</span><span class="fr">+</span></li>
+                </ul>
+            </div>
+         </div>
+        <div class="x-pullfresh-more">加载更多中样式</div>
+    </div>
+</div>
+<script src="../../common/js/jquery-1.11.3.js"></script>
+<script>
+    require(['h5/pullrefresh'], function(pullrefresh){
+        pullrefresh.doRefresh({
+            debug: true,		 // 模拟真实请求数据，否则会出现ajax跨域，正式使用中请去h5.js中删除debug代码
+            url: './list.json',  // 必填，ajax加载数据请求的地址
+            data: {size: 20},   // 非必填，ajax请求数据的参数，如果启用了缓存，将影响浏览器的缓存数据
+            dataType: "json",   // 非必填，ajax请求返回的数据类型
+            container: '#demo', // 非必填，用于计算document.body.scrollTop等于多少时自动加载更多数据，如果填写尽量请使用数据盛放容器
+            cache: 'test',	    // 非必填，如果不想让浏览器缓存请写false，否则请写唯一的标记，具体请观察sessionStorage
+            success: function(list, page, size){ // ajax请求成功后服务端返回来的数据
+                // 处理服务器返回的数据，绑定到页面
+                var html = '';
+                for(var i=1; i<50; i++){
+                    html += "<p>新加载数据新加载数据新加载数据新加载数据新加载数据新加载数据新加载数据</p>";
+                }
+                var $demo = $('#demo');
+                if(page == 1){
+                    $demo.append(html);
+                }else{
+                    $demo.append(html);
+                }
+
+                return $demo.children().length < 100;// 是否有更多数据。我通常都这么写return list.length >= size
+            }
+        });
+    });
+</script>
+</body>
+</html>

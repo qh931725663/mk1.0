@@ -1,0 +1,20 @@
+@charset "utf-8";
+/* 你自己的样式 */
+.input-width{width:150px;}
+/*采集数据*/
+.collection-baseinfo .baseinfo-list{margin:5px 20px;overflow: hidden;}
+.collection-baseinfo .baseinfo-list li{
+    margin:10px 20px;
+}
+.navbar-collection{
+    background: #ddd;height:30px;line-height: 30px;padding-left:5px;"
+}
+.navbar-list{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;margin:25px 40px;}
+.navbar-list .navbar-input{
+    margin-right:45px;
+}
+.navbar-lb{margin:10px 0;}
+.navbar-lb label{display: inline-block;width:124px;text-align:right;}
+.upload-excel{display:inline-block;width:74px;height:51px;background: url("../images/user_upload_01.png") no-repeat;background-size: 60px;}
+.dowload-excel{padding-right:5px;display:inline-block;width:19px;height:19px;background: url("../images/user_upload_02.png") no-repeat;background-size: 20px;}
+.member-list-input .member-input-1{margin-bottom:10px;}

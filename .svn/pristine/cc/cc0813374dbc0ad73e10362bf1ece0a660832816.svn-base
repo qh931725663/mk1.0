@@ -1,0 +1,180 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+	<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+	<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+	<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+	<title>戒烟详情</title>
+</head>
+<body>
+<article class="page-container">
+	<form id="form-datacollection">
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">基本信息</div>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label><span id="user_name"></span></li>
+				<li class="f-l" style="width:20%"><label>身份证号：</label><span id="user_card"></span></li>
+				<li class="f-l" style="width:20%"><label>手&nbsp;&nbsp;机&nbsp;&nbsp;号：</label><span id="user_phone"></span></li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：</label><span id="user_sex"></span></li>
+				<li class="f-l" style="width:20%"><label>身&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;高：</label><span id="user_height"></span></li>
+				<li class="f-l" style="width:20%"><label>年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄：</label><span id="user_age"></span></li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>体&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;重：</label><span id="user_weight"></span></li>
+				<li class="f-l" style="width:20%"><label>血&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型：</label><span id="user_blood"></span></li>
+				<li class="f-l" style="width:20%"><label>婚姻状况：</label><span id="user_marriage"></span></li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>医保卡号：</label><span id="user_medicare_card"></span></li>
+				<li class="f-l" style="width:20%"><label>会员等级：</label><span id="user_is_vip"></span></li>
+				<li class="f-l" style="width:20%"><label>费用类型：</label><span id="user_medical_burden"></span></li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>工作强度：</label><span id="user_work"></span></li>
+				<li class="f-l" style="width:20%"><label>家庭医生：</label><span id="doctor_name"></span></li>
+				<li class="f-l" style="width:20%"><label>烟&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄：</label><span id="smoked_year"></span></li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>每日烟量：</label><span id="cigarettes_per_day">暂无</span></li>
+				<li class="f-l" style="width:20%"><label>审核日期：</label><span id="">暂无</span></li>
+				<li class="f-l" style="width:20%"><label>创建日期：</label><span id="user_create"></span></li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l">
+				<li class="f-l" style="width:20%"><label>审&nbsp;&nbsp;核&nbsp;&nbsp;人：</label><span>暂无</span></li>
+			</ul>
+		</div>
+
+		<div class="blood-data">
+			<div class="navbar-collection" >戒烟计划</div>
+			<div class="navbar-list">
+				<table class="table table-border table-bordered table-striped table-bg table-hover quitting-tablelist">
+					<thead>
+					<tr class="text-c">
+						<th>创建日期</th>
+						<th>戒烟计划天数</th>
+						<th>戒烟计划每日抽烟量</th>
+						<th>戒烟计划是否完成</th>
+					</tr>
+					</thead>
+					<tbody class="quitting-tbody">
+					</tbody>
+				</table>
+			</div>
+			<div id="Pagination" class="pagination" style="padding:0px;"></div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-5 col-sm-offset-5">
+				<button class="btn btn-danger radius" type="button" onclick="layer_close()">关闭</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/jquery.validation/js/jquery.validate.js"></script>
+<script type="text/javascript" src="../lib/jquery.validation/js/validate-methods.js"></script>
+<script type="text/javascript">
+$(function(){
+	//获取路径后面的参数
+	function getUrlParam(name){
+		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r!=null)return  unescape(r[2]); return null;
+	}
+	var userId=getUrlParam("id");
+	$.ajax({
+		url:"../../../smoking/selectUserInfo.action",
+		type:"post",
+		dataType:'json',
+		data:{user_id:userId},
+		success:function(p) {
+			$("#user_name").html(p.user_name);
+			$("#user_card").html(p.user_card);
+			$("#user_phone").html(p.user_phone);
+
+			$("#user_sex").html(p.user_sex);
+			$("#user_height").html(p.user_height?p.user_height+'cm':"");
+			$("#user_age").html(p.user_age?p.user_age+'岁':"");
+
+			$("#user_weight").html(p.user_weight?p.user_weight+'kg':"");
+			$("#user_blood").html(p.user_blood?p.user_blood+'型':"");
+			$("#user_marriage").html(p.user_marriage);
+
+			$("#user_medicare_card").html(p.user_medicare_card);
+			$("#user_is_vip").html(p.user_is_vip);
+			$("#user_medical_burden").html(p.user_medical_burden);
+
+			$("#user_work").html(p.user_work);
+			$("#doctor_name").html(p.doctor_name);
+			$("#smoked_year").html(p.smoked_year?p.smoked_year+'年':"");
+			$("#cigarettes_per_day").html(p.cigarettes_per_day?p.cigarettes_per_day+'支':"");
+			$("#user_create").html(p.user_create);
+		}
+	});
+
+	//戒烟计划列表初始化加载
+	getDataList(0,null);
+	//显示戒烟计划
+	var initFlag = true;
+	function getDataList(currPage, jg) {
+		var page=currPage+1;
+		$.ajax({
+			url: "../../../smoking/selectAllPlanP.action",
+			type: "post",
+			dataType: 'json',
+			data: {user_id: userId, pageno:page},
+			success: function (p) {
+				var page_count=p.recordCount;
+				if (initFlag) {
+					$("#Pagination").pagination(page_count,{
+						callback : getDataList//回调函数
+					});
+					initFlag = false;
+				}
+				var html="";
+				$.each(p.data, function (i, p) {
+					html +="<tr class='text-c'>"+
+					"<td>"+p.create_date+"</td>"+
+					"<td>"+p.quit_smoking_plan_day+"天</td>"+
+					"<td>"+p.quit_smoking_plan_target+"支</td>"+
+					"<td>"+p.quit_smoking_plan_end+"</td>"+
+					"</tr>";
+				});
+				$(".quitting-tablelist .quitting-tbody").html(html);
+				$(".page-count").html(p.pageCount);
+			}
+		});
+	}
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

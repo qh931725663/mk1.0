@@ -1,0 +1,51 @@
+package com.haaa.cloudmedical.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.entity.SelfServiceCheck;
+
+@Repository
+public class AIODao extends BaseTemplateDao {
+
+	
+	public long saveData(Map<String, Object> map) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		String[] params = paramArray(map);	
+		final String sql = "insert into self_service_check (" + params[0] + ") values(" + params[1] + ")";
+		System.out.println(sql);
+		this.jdbcTemplate.update(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql, 1);
+				Object[] objects = AIODao.this.valueArray(map);
+				for (int i = 0; i < objects.length; i++) {
+					ps.setObject(i + 1, objects[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
+
+		Long generatedId = keyHolder.getKey().longValue();
+		return generatedId;
+	}
+
+	public List<Map<String, Object>> getTimeList(long user_id, String upTime, String downTime) {
+		String sql = "select order_id,create_date datetime from self_service_check where user_id=? AND create_date BETWEEN ? AND ? ORDER BY create_date DESC";
+		return jdbcTemplate.queryForList(sql, user_id, upTime, downTime);
+	}
+
+	public SelfServiceCheck getDetail(long user_id, long order_id) {
+		String sql = "select * from self_service_check where user_id=? AND order_id=?";
+		return jdbcTemplate.queryForObject(sql, new Object[] { user_id, order_id }, SelfServiceCheck.class);
+	}
+
+}

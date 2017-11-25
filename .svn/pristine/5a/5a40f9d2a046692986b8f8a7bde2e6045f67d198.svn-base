@@ -1,0 +1,106 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+public class EquipmentUse {
+	
+	private Long order_id;
+
+	private Integer equipment_property_order_id;
+	
+	private Long user_id;
+	
+	private String user_card;
+	
+	private String equipment_use_time;
+	
+	private String equipment_name;
+
+	private Date create_date;
+
+	private Date update_date;
+
+	private Integer check_data_source;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Integer getEquipment_property_order_id() {
+		return equipment_property_order_id;
+	}
+
+	public void setEquipment_property_order_id(Integer equipment_property_order_id) {
+		this.equipment_property_order_id = equipment_property_order_id;
+	}
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getUser_card() {
+		return user_card;
+	}
+
+	public void setUser_card(String user_card) {
+		this.user_card = user_card;
+	}
+
+	public String getEquipment_use_time() {
+		return equipment_use_time;
+	}
+
+	public void setEquipment_use_time(String equipment_use_time) {
+		this.equipment_use_time = equipment_use_time;
+	}
+
+	public String getEquipment_name() {
+		return equipment_name;
+	}
+
+	public void setEquipment_name(String equipment_name) {
+		this.equipment_name = equipment_name;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	public Integer getCheck_data_source() {
+		return check_data_source;
+	}
+
+	public void setCheck_data_source(Integer check_data_source) {
+		this.check_data_source = check_data_source;
+	}
+
+	@Override
+	public String toString() {
+		return "EquipmentUse [order_id=" + order_id + ", equipment_property_order_id=" + equipment_property_order_id
+				+ ", user_id=" + user_id + ", user_card=" + user_card + ", equipment_use_time=" + equipment_use_time
+				+ ", equipment_name=" + equipment_name + ", create_date=" + create_date + ", update_date=" + update_date
+				+ ", check_data_source=" + check_data_source + "]";
+	}
+	
+	
+}

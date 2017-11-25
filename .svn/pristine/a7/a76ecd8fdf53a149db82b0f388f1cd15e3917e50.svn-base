@@ -1,0 +1,107 @@
+package com.haaa.cloudmedical.app.user.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.user.service.DoctorAppService;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.User;
+
+@Controller
+@RequestMapping("/doctor-app")
+public class DoctorAppController {
+	
+	@Autowired
+	private DoctorAppService service;
+	
+	/**
+	 * 登录
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public Object login(String user_phone,String user_pwd){
+		ResponseDTO dto = service.login(user_phone,MD5Util.encode(user_pwd));
+		return dto;
+	}
+	
+	/**
+	 * 修改医生信息
+	 * @param user
+	 * @param doctor
+	 * @return
+	 */
+	@RequestMapping("/update.action")
+	@ResponseBody
+	public ResponseDTO update(User user,Doctor doctor){
+		ResponseDTO dto = service.update(user, doctor);
+		return dto;
+	}
+	
+	/**
+	 * 获取医生信息
+	 * @param doctor_id
+	 * @return
+	 */
+	@RequestMapping("/getDoctorInfo.action")
+	@ResponseBody
+	public Object getDoctorInfo(String doctor_id){
+		Object doctor = service.getInfoById(doctor_id);
+		return doctor;
+	}
+	
+	/**
+	 * 获取患者列表
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/getPatientList.action")
+	@ResponseBody
+	public Object getPatientList(String user_id){
+		ResponseDTO dto  = service.getPatientList(user_id);
+		return dto;
+		
+	}
+	
+	/**
+	 * 添加患者
+	 * @param doctor_id
+	 * @param user_name
+	 * @param user_phone
+	 * @param user_card
+	 * @return
+	 */
+	@RequestMapping("/addPatient.action")
+	@ResponseBody
+	public Object addPatient(String doctor_id,String user_name,String user_phone,String user_card){
+		ResponseDTO dto = service.addPatient(doctor_id, user_name, user_phone, user_card);
+		return dto;
+	}
+	
+	/**
+	 * 获取患者信息
+	 */
+	@RequestMapping("/getPatientInfo.action")
+	@ResponseBody
+	public Object getPatientInfo(String patient_id){
+		ResponseDTO dto = service.getPatientInfo(patient_id);
+		return dto;
+		
+	}
+	
+	/**
+	 * 完善患者信息
+	 */
+	@RequestMapping("/updatePatient.action")
+	@ResponseBody
+	public Object updatePatient(User user){
+		ResponseDTO dto = service.updatePatientInfo(user);
+		return dto;
+	}
+}

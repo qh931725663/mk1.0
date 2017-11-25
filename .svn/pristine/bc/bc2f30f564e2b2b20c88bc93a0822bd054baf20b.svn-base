@@ -1,0 +1,78 @@
+@charset "utf-8";
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+		"Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun,
+		sans-serif;
+	height: 100%;
+}
+
+.title img{
+	width: 100%;
+	height: 4.5rem;
+}
+
+.main .con-title{
+	height: 1.3rem;
+	background-color: #F0F0F0;
+	padding-left: 0.4rem;
+	font-size: 0.5rem;
+	line-height: 1.3rem;
+	font-weight: bold;
+}
+
+.main .address p{
+	margin: 0.1rem 0;
+}
+
+.main .address ul{
+	margin-top: 0.4rem;
+	margin-bottom: 0.4rem;
+}
+
+.main .address ul:nth-of-type(1){
+	border-bottom: 0.05rem solid #F0F0F0;
+	padding-bottom: 0.3rem;
+}
+
+.main .address .add-titile{
+	padding-left: 0.4rem;
+	font-weight: bold;
+	font-size: 0.4rem;
+}
+
+.main .address .add-titile span{
+	color: #535353;
+	font-weight:normal;
+}
+
+.main .address .add{
+	padding-left: 0.4rem;
+	color: #535353;
+	font-size: 0.4rem;
+	padding-right: 0.4rem;
+}
+
+.main .address .zipcode{
+	padding-left: 0.4rem;
+	color: #535353;
+	font-size: 0.4rem;
+}
+.main .contactWay{
+	margin-bottom: 1rem;
+}
+
+.main .contactWay p{
+	padding-left: 0.4rem;
+	margin: 0.1rem;
+	font-size: 0.4rem;
+}
+
+.main .contactWay p .cont{
+	color: #535353;
+}
+
+.main .contactWay p:nth-of-type(1){
+	margin-top: 0.5rem;
+}
+

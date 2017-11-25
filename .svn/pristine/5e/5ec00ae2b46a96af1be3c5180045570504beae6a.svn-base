@@ -1,0 +1,17 @@
+$(function(){
+	$(".sel_op").on('click',function(){
+		$(this).toggleClass('change');
+	})
+	var flag = 0;
+	$('.arrow').on('click',function(){
+		if(flag == 0){
+			$(this).attr('src','image/under.png');
+			flag = 1;
+		}else{
+			$(this).attr('src','image/rgt.png');
+			flag = 0;
+		}
+//		var flag = (myimg.attr('src','2') == "image/rgt.png");
+//		myimg.src = flag?"image/under.png":"image/rgt.png";
+	});
+});

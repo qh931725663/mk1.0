@@ -1,0 +1,23 @@
+driverClassName=com.mysql.jdbc.Driver
+url=jdbc:mysql://192.168.1.52:3306/mkh_dev?characterEncoding=utf8&useSSL=true&noAccessToProcedureBodies=true
+username=dev_usr
+password=123456
+filters=stat
+maxActive=20
+initialSize=1
+maxWait=60000
+minIdle=10
+maxIdle=15
+timeBetweenEvictionRunsMillis=60000
+minEvictableIdleTimeMillis=300000
+validationQuery=SELECT 'x'
+testWhileIdle=true
+testOnBorrow=false
+testOnReturn=false
+maxOpenPreparedStatements=20
+removeAbandoned=true
+removeAbandonedTimeout=1800
+logAbandoned=true
+pictureuploadhttp=http://192.168.1.50:8080/mkh1.0/
+
+initPassword=123456

@@ -1,0 +1,123 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.common.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.HttpClientUtils;
+import com.haaa.cloudmedical.dao.SurveyDao;
+import com.haaa.cloudmedical.dao.equipment.BloodOxygenDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+
+import net.sf.json.JSONObject;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class AhdiService {
+
+	@Resource
+	private SurveyDao surveyDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private BloodOxygenDao bloodOxygenDao;
+
+	@SuppressWarnings("serial")
+	public int getAhdi(long order_id) throws Exception {
+		Map<String, Object> basicMap = surveyDao.getAhdiBasicInfo(String.valueOf(order_id));
+		List<Map<String, Object>> list = surveyDao.getDetail(String.valueOf(order_id));
+		long user_id = (long) basicMap.get("user_id");
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		retMap.put("Idcard", basicMap.get("user_card"));
+		retMap.put("Birthdate", DateUtil.dateFormat((Date)basicMap.get("user_birthday"), "yyyy-MM-dd"));
+		retMap.put("sex", basicMap.get("user_sex"));
+		Map<String, Object> indexData = list.stream()
+				.collect(Collectors.toMap(s -> String.valueOf(s.get("question_k_order_id")),
+						s -> String.valueOf(s.get("survey_option_order_id"))));
+
+		indexData.put("1600", basicMap.get("fbg")); // 空腹血糖
+		indexData.put("1700", basicMap.get("total_chol")); // 胆固醇
+		indexData.put("1710", basicMap.get("hdl_chol")); // HDL胆固醇
+
+		indexData.put("2000", basicMap.get("steps")); // 步数
+		indexData.put("2100", basicMap.get("sys_pressure")); // 收缩压
+		indexData.put("2110", basicMap.get("dia_pressure")); // 舒张压
+
+		indexData.put("2200", basicMap.get("user_height")); // 身高
+		indexData.put("2300", basicMap.get("user_weight")); // 体重
+		indexData.put("2400", basicMap.get("user_waist")); // 腰围
+
+		List<Map<String, Object>> electroList = electrocardiographDao.queryRecent(user_id, Constant.RECENT);// 最近三十天心率数据
+		List<Map<String, Object>> bloodOxgyenList = bloodOxygenDao.queryRecent(user_id, Constant.RECENT);// 最近30天血氧数据
+		if (electroList.size() > 0) {
+			double average = electroList.stream().mapToDouble(map -> (int) map.get("HeartRate"))
+					.reduce((a, b) -> a + b).orElseGet(() -> 0) / electroList.size();
+			double sqrSum = electroList.stream().mapToDouble(map -> (int) map.get("HeartRate"))
+					.reduce((a, b) -> a + Math.pow(b - average, 2)).orElseGet(() -> 0);
+			indexData.put("1800", Math.sqrt(sqrSum / electroList.size())); // 心率标准差
+		} else {
+			indexData.put("1800", 0);
+		}
+		if (bloodOxgyenList.size() > 0) {
+			int qualified = bloodOxgyenList.stream().filter(s -> ((float) s.get("Oxygen")) < 90).mapToInt(s -> 1)
+					.sum();
+			indexData.put("1900", (float) qualified / bloodOxgyenList.size()); // 血氧<90%百分比
+		} else {
+			indexData.put("1900", 0); // 腰围
+		}
+		retMap.put("IndexData", indexData);
+		String url = BeanUtil.getProperty("dbconfig").getString("ahdi.site");
+		JSONObject response = HttpClientUtils.doPost(url, retMap.toString(), false);
+		if (String.valueOf(response.get("ResultCode")).equalsIgnoreCase("ok")) {
+			double ahdi_value = (double) response.get("HealthIndex");
+			double mrs_value = (double) response.get("Mrs");
+			surveyDao.update(new HashMap<String, Object>() {
+				{
+					put("user_id", user_id);
+					put("ahdi_value", ahdi_value);
+					put("mrs_value", mrs_value);
+					if (ahdi_value >= 8) {
+						put("ahdi_level", 1);
+					} else if (ahdi_value >= 6) {
+						put("ahdi_level", 2);
+					} else if (ahdi_value >= 4) {
+						put("ahdi_level", 3);
+					} else if (ahdi_value >= 2) {
+						put("ahdi_level", 4);
+					} else {
+						put("ahdi_level", 5);
+					}
+					if (mrs_value >= 22.66) {
+						put("mrs_level", 4);
+					} else if (mrs_value >= 15.96) {
+						put("mrs_level", 3);
+					} else if (mrs_value >= 5.76) {
+						put("mrs_level", 2);
+					} else {
+						put("mrs_level", 1);
+					}
+				}
+			}, "n_user");
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+}

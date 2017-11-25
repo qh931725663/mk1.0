@@ -1,0 +1,51 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class UserPlatformDao extends BaseTemplateDao {
+	public List<Map<String,Object>> selectByAccount(String user_phone, String user_pwd) {
+		List<Map<String,Object>> all_father_menus = this.selectALlFmenu();
+		String sql = "select c.c_menu_code,c.c_menu_name,c.c_action_path,c.c_menu_father from n_manager a,n_role_menu b,n_menu c where a.role_code=b.role_code and b.menu_code = c.c_menu_code and a.user_phone = ? and a.user_pwd = ? ";
+		List<Map<String,Object>> all_son_menu = this.jdbcTemplate.queryForList(sql,user_phone,user_pwd);
+		List<Map<String, Object>> menu = menu(all_father_menus, all_son_menu);
+		return menu;
+	}
+	
+	public List<Map<String,Object>> selectALlFmenu(){
+		String sql = "select distinct a.c_menu_name,a.c_menu_code from n_menu a,n_menu b where a.c_menu_code=b.c_menu_father";
+		List<Map<String,Object>> one_menu = this.jdbcTemplate.queryForList(sql);
+		return one_menu;
+	}
+	public List<Map<String,Object>> menu(List<Map<String,Object>> all_father_menus,List<Map<String,Object>> all_son_menu){
+		List<Map<String,Object>> menu = new ArrayList<Map<String,Object>>();
+		List<Map<String,Object>> menu_list =null;
+		for (Map<String, Object> father_map : all_father_menus) {
+			menu_list = new ArrayList<Map<String,Object>>();			
+			String c_menu_code = father_map.get("c_menu_code").toString();
+			for (Map<String, Object> son_map : all_son_menu) {
+				if(son_map.get("c_menu_father").toString().equals(c_menu_code)){
+					menu_list.add(son_map);
+				}				
+			}
+			if(menu_list.size()>0){
+				father_map.put("menu_list", menu_list);
+				menu.add(father_map);
+			}
+		}
+		return menu;
+	}
+	
+	public Map<String,Object> query(String sql,String arg){
+		Map<String,Object> map = this.jdbcTemplate.queryForMap(sql,arg);
+		return map;
+	}
+	
+
+}

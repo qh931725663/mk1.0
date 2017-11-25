@@ -1,0 +1,444 @@
+package com.haaa.cloudmedical.platform.allinone.service;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.dao.AIODao;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.dao.equipment.BloodOxygenDao;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.dao.equipment.EquipmentDao;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.dao.equipment.UrineTestDao;
+import com.haaa.cloudmedical.entity.AIO6500;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.BloodPressure;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.platform.user.controller.UserPlatFormController;
+
+/**
+ * 6500一体机
+ * 
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class AIO6500Service {
+
+	@Resource
+	private UserAppDao userAppDao;
+
+	@Resource
+	private AIODao aioDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	@Resource
+	private EquipmentDao equipmentDao;
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	@Resource
+	private BloodOxygenDao bloodoxygenDao;
+
+	@Resource
+	private UrineTestDao urineTestDao;
+
+	@Resource
+	private UserPlatFormController userPlatFormController;
+
+	private final String uploadPath = "upload/aio6500";
+
+	private final String separator = "/";
+
+	private String baseDir = "";
+
+
+	/**
+	 * 
+	 * @Title: login @Description: 登录接口 @param request @return @throws
+	 */
+	public String login(HttpServletRequest request) {
+		String responseStr = null;
+		String contentType = request.getContentType();
+		if (contentType != null && contentType.indexOf("multipart/form-data") != -1) {
+			System.out.println("--------始验证用");
+			FileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			Iterator items;
+			String username = "";
+			String passwd = "";
+			try {
+				items = upload.parseRequest(request).iterator();
+				while (items.hasNext()) {
+					FileItem item = (FileItem) items.next();
+					if (item.isFormField()) {
+						if (0 == item.getFieldName().compareTo("username")) {
+							username = item.getString().trim();
+						} else if (0 == item.getFieldName().compareTo("password")) {
+							passwd = item.getString().trim();
+						}
+					}
+				}
+				passwd = MD5Util.encode(passwd);
+				Map<String, Object> user;
+				if (username.length() == 18 || username.length() == 15) {
+					user = userAppDao.selectByIdCard6500(username);
+					if (user != null) {
+						if (user.get("user_pwd").equals(passwd)) {
+							responseStr = getPaitInfo(user, request);
+						} else {
+							responseStr = "ERR_INVALID_LOGIN_PWD:";
+						}
+					} else {
+						responseStr = "ERR_INVALID_LOGIN_ID:";
+					}
+
+				} else {
+					user = userAppDao.selectByAccount(username);
+					if (user != null) {
+						if (user.get("user_pwd").equals(passwd)) {
+							responseStr = getPaitInfo(user, request);
+						} else {
+							responseStr = "ERR_INVALID_LOGIN_PWD:";
+						}
+					} else {
+						responseStr = "ERR_INVALID_LOGIN_ID:";
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			// 可以做出错处理也可不处理
+		}
+		return responseStr;
+	}
+
+	/**
+	 * 
+	 * @Title: saveData @Description: 保存信息 @param aio @return @throws
+	 */
+	public String saveData(AIO6500 aio) {
+		if (aio.getBloodsuger() != null || aio.getDia() != null || aio.getHeartrate() != null || aio.getMean() != null
+				|| aio.getPr() != null || aio.getSpo2() != null || aio.getStature() != null || aio.getSys() != null
+				|| aio.getTemp() != null || aio.getWeight() != null) {
+			Map<String, Object> user;
+			if (aio.getUser().length() == 15 || aio.getUser().length() == 18) {
+				user = userAppDao.selectByIdCard(aio.getUser());
+			} else {// 帐号登录
+				user = userAppDao.selectByAccount(aio.getUser());
+			}
+			EquipmentUse equipmentUse = new EquipmentUse(null, Constant.SELFSERVIC_6500,
+					String.valueOf(user.get("user_id")), null, "selfservice6500", aio.getId(), null, new Date(), null,
+					Constant.BLUETOOTHUPLOAD);
+			long use_id = equipmentDao.add(equipmentUse);
+
+			if ((aio.getSys() != null && !aio.getSys().equals("error"))
+					|| (aio.getDia() != null && !aio.getDia().equals("error"))
+					|| (aio.getMean() != null && !aio.getMean().equals("error"))) {
+				BloodPressure bloodPressure = new BloodPressure(null, String.valueOf(use_id),
+						aio.getSys() == null || aio.getSys().equals("error") ? null : aio.getSys(),
+						aio.getDia() == null || aio.getDia().equals("error") ? null : aio.getDia(),
+						aio.getMean() == null || aio.getMean().equals("error") ? null : aio.getMean(),
+						aio.getHeartrate() == null || aio.getHeartrate().equals("error") ? null : aio.getHeartrate(),
+						aio.getDate(), null);
+				bloodPressureDao.add(bloodPressure);
+			}
+			if (aio.getSpo2() != null && !aio.getSpo2().equals("error")) {
+				BloodOxygen bloodOxygen = new BloodOxygen(null, String.valueOf(use_id),
+						aio.getSpo2() == null || aio.getSpo2().equals("error") ? null : aio.getSpo2(),
+						aio.getHeartrate() == null || aio.getHeartrate().equals("error") ? null : aio.getHeartrate(),
+						aio.getDate(), null);
+				bloodoxygenDao.add(bloodOxygen);
+			}
+			if (aio.getTemp() != null && !aio.getTemp().equals("error")) {
+				EarThermometer earThermometer = new EarThermometer(null, String.valueOf(use_id), aio.getTemp(), null,
+						aio.getDate(), null);
+				earThermometerDao.add(earThermometer);
+			}
+			if (aio.getBloodsuger() != null && !aio.getBloodsuger().equals("error")) {
+				BloodSugar bloodSugar = new BloodSugar(null, String.valueOf(use_id),
+						String.valueOf(Constant.EMPTY_STOMACH), aio.getBloodsuger(), aio.getDate(), null);
+				bloodSugarDao.add(bloodSugar);
+			}
+			if (aio.getStature() != null && !aio.getStature().equals("error")
+					|| aio.getWeight() != null && !aio.getWeight().equals("error")) {
+				Map<String, Object> common = new HashMap<String, Object>();
+				common.put("user_height",
+						aio.getStature() == null || aio.getStature().equals("error") ? null : aio.getStature());
+				common.put("user_weight",
+						aio.getWeight() == null || aio.getWeight().equals("error") ? null : aio.getWeight());
+				common.put("equipment_use_order_id", use_id);
+				common.put("create_date", new Date());
+				aioDao.addCommon(common);
+			}
+			/*
+			 * map.put("HeartRate", aio.getHeartrate() != null &&
+			 * !aio.getHeartrate().equals("error") ? aio.getHeartrate() : null);
+			 */ if (use_id > 0) {
+				return "HTTP_SUCCESS:loginok";
+			} else {
+				return "ERR_DB_UPLOAD_TREND:";
+			}
+		} else {
+			return "ERR_DB_UPLOAD_TREND:";
+		}
+
+	}
+
+	/**
+	 * 
+	 * @throws Exception
+	 * @Title: getPaitInfo @Description: 编辑登录返回信息 @param map @param
+	 *         request @return @throws
+	 */
+	private String getPaitInfo(Map<String, Object> map, HttpServletRequest request) throws Exception {
+		String headString = "<?xml version=\"1.0\" encoding=\"GBK\"?>\n";
+		StringBuffer sbs = new StringBuffer(headString);
+		sbs.append("<downinfo>\n");
+		sbs.append("<id>" + map.get("user_id") + "</id>\n");
+		sbs.append("<startdate></startdate>\n");
+		sbs.append("<enddate></enddate>\n");
+		sbs.append("<diskspace></diskspace>\n");
+		sbs.append("<used>0</used>\n");
+		sbs.append("<total>500</total>\n");
+		sbs.append("<username>" + map.get("user_name") + "</username>\n");
+		sbs.append("<cardtype></cardtype>\n"); // 卡类�?
+		if (map.get("user_card") != null) {
+			IdcardInfoExtractor idcardInfo = new IdcardInfoExtractor((String) map.get("user_card"));
+			sbs.append("<personid>" + map.get("user_card") + "</personid>\n");
+			if (idcardInfo.getGender().equals("男")) {
+				sbs.append("<sex>" + 0 + "</sex>\n");
+			} else {
+				sbs.append("<sex>" + 1 + "</sex>\n");
+			}
+			sbs.append("<birthday>" + DateUtil.dateFormat(idcardInfo.getBirthday(), "yyyy-MM-dd") + "</birthday>\n");
+			sbs.append("<age>" + DateUtil.getAge(idcardInfo.getBirthday()) + "</age>\n");
+		}
+
+		if (map.get("user_phone") != null) {
+			sbs.append("<phone>" + map.get("user_phone") + "</phone>\n");
+		}
+		sbs.append("<hospitalid></hospitalid>\n");
+		if (map.get("user_height") != null) {
+			sbs.append("<height>" + (int) ((float) map.get("user_height") * 10) + "</height>\n");
+		}
+		if (map.get("user_weight") != null) {
+			sbs.append("<weight>" + (int) ((float) map.get("user_weight") * 10) + "</weight>\n");
+		}
+		sbs.append("</downinfo>\n");
+		String returnValue = "HTTP_SUCCESS:PHPSESSID=" + request.getSession().getId() + sbs.toString();
+		request.getSession().setAttribute("user", map.get("user_id"));
+		return returnValue;
+	}
+
+	public String personalInfo(HttpServletRequest request) throws FileUploadException, IOException {
+		String responseStr = "";
+		baseDir = BeanUtil.getProperty("dbconfig").getString("pictureuploaddir");
+
+		FileItemFactory factory = new DiskFileItemFactory();
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		Iterator items;
+		items = upload.parseRequest(request).iterator();
+		while (items.hasNext()) {
+			FileItem item = (FileItem) items.next();
+			if (!item.isFormField()) {
+				/*
+				 * 提取个人信息
+				 */
+				String info = IOUtils.toString(item.getInputStream(), "GB2312");
+				String[] infos = info.split(";");
+				String idcard = "";
+				for (int i = 0; i < infos.length; i++) {
+					if (infos[i].contains("personid=")) {
+						idcard = (infos[i].split("="))[1];
+						break;
+					}
+				}
+				Map<String, Object> user = userAppDao.selectByIdCard(idcard);
+				EquipmentUse equipmentUse = new EquipmentUse(null, Constant.SELFSERVIC_6500,
+						String.valueOf(user.get("user_id")), null, "selfservice6500", null, null, new Date(), null,
+						Constant.BLUETOOTHUPLOAD);
+				long id = equipmentDao.add(equipmentUse);
+				Map<String, Object> common = new HashMap<String, Object>();
+				common.put("equipment_use_order_id", id);
+				common.put("create_date", new Date());
+				long report_id = aioDao.addCommon(common);
+				responseStr = "HTTP_SUCCESS:uniquecode=" + report_id;
+			} else {
+
+			}
+		}
+		return responseStr;
+	}
+
+	public String originalData(HttpServletRequest request) {
+		String responseStr = "";
+		FileItemFactory factory = new DiskFileItemFactory();
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		Iterator items;
+		try {
+			items = upload.parseRequest(request).iterator();
+			while (items.hasNext()) {
+				FileItem item = (FileItem) items.next();
+				if (!item.isFormField()) {
+					String name = item.getName();
+					String report_id = name.substring(name.lastIndexOf(".") + 1, name.length()); // 使用id相当于病例号
+					int nIndex = name.lastIndexOf('/');
+					if (-1 == nIndex) {
+						nIndex = name.lastIndexOf('\\');
+					}
+					String date = DateFormatUtils.format(new Date(), "yyyy" + separator + "MM" + separator + "dd");
+
+					String dir = baseDir + separator + uploadPath + separator + date;
+					File dirFile = new File(dir);
+					if (!dirFile.exists()) {
+						dirFile.mkdirs();
+					}
+					String path = dir + separator + report_id + ".DATBAS";
+					File uploaderFile = new File(path);
+					uploaderFile.createNewFile();
+					item.write(uploaderFile);
+
+					String relativePath = uploadPath + separator + date + separator + report_id + ".DATBAS";
+					Map<String, Object> common = new HashMap<String, Object>();
+					common.put("order_id", report_id);
+					common.put("s6500_datafile_index", relativePath);
+					equipmentDao.updateCommon(common);
+					responseStr = "HTTP_SUCCESS:";
+
+				} else {
+				}
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return responseStr;
+	}
+
+	public String report(HttpServletRequest request) {
+		String responseStr = "";
+		baseDir = BeanUtil.getProperty("dbconfig").getString("pictureuploaddir");
+		FileItemFactory factory = new DiskFileItemFactory();
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		Iterator items;
+		try {
+			items = upload.parseRequest(request).iterator();
+			while (items.hasNext()) {
+				FileItem item = (FileItem) items.next();
+				if (!item.isFormField()) {
+					String name = item.getName();
+					String report_id = name.substring(name.lastIndexOf(".") + 1, name.length()); // 使用id相当于病例号
+					int nIndex = name.lastIndexOf('/');
+					if (-1 == nIndex) {
+						nIndex = name.lastIndexOf('\\');
+					}
+					String date = DateFormatUtils.format(new Date(), "yyyy" + separator + "MM" + separator + "dd");
+
+					String dir = baseDir + separator + uploadPath + separator + date;
+					File dirFile = new File(dir);
+					if (!dirFile.exists()) {
+						dirFile.mkdirs();
+					}
+					String path = dir + separator + report_id + ".png";
+					File uploaderFile = new File(path);
+					uploaderFile.createNewFile();
+					item.write(uploaderFile);
+					String relativePath = uploadPath + separator + date + separator + report_id + ".png";
+					Map<String, Object> common = new HashMap<String, Object>();
+					common.put("order_id", report_id);
+					common.put("s6500_pic_index", relativePath);
+					equipmentDao.updateCommon(common);
+
+					Map<String, Object> picture = new HashMap<String, Object>();
+					picture.put("parent_id", report_id);
+					picture.put("pic_num", 1);
+					picture.put("pic_type", Constant.PIC_TYPE_AIO6500REPORT);
+					picture.put("medical_picture_upload", relativePath);
+					picture.put("create_date", new Date());
+					aioDao.addAioReportPic(picture);
+					responseStr = "HTTP_SUCCESS:";
+
+				} else {
+				}
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+		return responseStr;
+	}
+
+	public String controlInfo(HttpServletRequest request) {
+		String responseStr = "";
+		// 处理控制命令
+		String name = request.getParameter("name");
+		if (name != null) {
+			String cmd = name.substring(0, name.indexOf("."));
+			if (0 == cmd.compareTo("data")) {
+				// 处理病历上传控制命令
+				responseStr = "HTTP_SUCCESS:filename=;";
+				System.out.println("data:HTTP_SUCCESS:filename=;");
+			} else if (0 == cmd.compareTo("datareport")) {
+				// 处理报告上传控制命令
+				responseStr = "HTTP_SUCCESS:filename=;";
+				System.out.println("datareport:HTTP_SUCCESS:filename;");
+			} else {
+				// 不支持的命令
+				responseStr = "bad command!";
+				System.out.println("bad command!" + cmd);
+			}
+		} else {
+			responseStr = "loginok";
+			System.out.println("loginok");
+		}
+		return responseStr;
+
+	}
+
+}

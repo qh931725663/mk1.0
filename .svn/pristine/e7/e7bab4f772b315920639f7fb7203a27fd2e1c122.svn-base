@@ -1,0 +1,915 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css" href="../static/view-image/css/lightbox.css">
+<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>数据采集七件套数据</title>
+<style type="text/css">
+	.f-l span {margin-left: 15px;}
+	.check_img img {margin-left: 15px;}
+	.check-box input {display: block;width: 140%;height: 140%;margin: 0;padding: 0;border: 0;opacity: 0;background: rgb(255, 255, 255);}
+	.li-rel .check-box {position: absolute;left: 240px;}
+</style>
+</head>
+<body>
+	<div class="page-container">
+		<div id="tab-system" class="HuiTab">
+			<div class="tabBar cl">
+				<span>血压</span> <span>血糖</span> <span>血氧</span> <span>耳温</span> <span>肺活量
+				</span><span>心电图</span><span>尿检</span>
+			</div>
+
+			<!-- 血压 -->
+			<div class="tabCon" id="blood_pressure">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal" id="form-horizontal-1">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate" style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							name="datemax" class="input-text Wdate" style="width:182px;">
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_blood_pressure">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+				</div>
+				<div id="c_blood_pressure"
+					style="height: 400px;width: 750px;float: left;"></div>
+				<div id="blood_pressure_list"
+					style="float: left;margin-top: 55px;margin-left: 155px;">
+					<table
+						class="table table-border table-bordered table-striped table-bg table-hover health-data-tablelist-1">
+						<thead>
+							<tr class="text-c">
+								<th>时间</th>
+								<th>血压值</th>
+								<th>心率值</th>
+							</tr>
+						</thead>
+						<tbody class="health-data-tbody-1">
+						</tbody>
+					</table>
+					<div id="Pagination-1" class="pagination"></div>
+				</div>
+			</div>
+
+			<!-- 血糖 -->
+			<div class="tabCon" id="blood_sugar">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal" id="form-horizontal-2">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate" style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							name="datemax" class="input-text Wdate" style="width:182px;">&nbsp;&nbsp;&nbsp;
+						<select class="radius" id="period" name="period"
+							style="height:30px;width:100px;">
+							<option value="800001">空腹</option>
+							<option value="800003">餐前</option>
+							<option value="800002">餐后</option>
+						</select>
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_blood_sugar">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+				</div>
+				<div id="c_blood_sugar"
+					style="height: 400px;width: 750px;float: left;"></div>
+				<div id="blood_sugar_list"
+					style="float: left;margin-top:55px;margin-left: 155px;">
+					<table
+						class="table table-border table-bordered table-striped table-bg table-hover health-data-tablelist-2">
+						<thead>
+							<tr class="text-c">
+								<th>时间</th>
+								<th>测量时段</th>
+								<th>血糖值</th>
+							</tr>
+						</thead>
+						<tbody class="health-data-tbody-2">
+						</tbody>
+					</table>
+					<div id="Pagination-2" class="pagination"></div>
+				</div>
+			</div>
+
+			<!-- 血氧 -->
+			<div class="tabCon" id="blood_oxygen">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal" id="form-horizontal-3">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate" style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							name="datemax" class="input-text Wdate" style="width:182px;">
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_blood_oxygen">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+				</div>
+				<div id="c_blood_oxygen"
+					style="height: 400px;width: 750px;float: left;"></div>
+				<div id="blood_oxygen_list"
+					style="float: left;margin-top:55px;margin-left: 155px;">
+					<table
+						class="table table-border table-bordered table-striped table-bg table-hover health-data-tablelist-3">
+						<thead>
+							<tr class="text-c">
+								<th>时间</th>
+								<th>血氧</th>
+							</tr>
+						</thead>
+						<tbody class="health-data-tbody-3">
+						</tbody>
+					</table>
+					<div id="Pagination-3" class="pagination"></div>
+				</div>
+			</div>
+
+			<!-- 耳温 -->
+			<div class="tabCon" id="ear_thermometer">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal" id="form-horizontal-4">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate" style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							name="datemax" class="input-text Wdate" style="width:182px;">
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_ear_thermometer">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+				</div>
+
+				<div id="c_ear_thermometer"
+					style="height: 400px;width: 750px;float: left;"></div>
+				<div id="ear_thermometer_list"
+					style="float: left;margin-top:55px;margin-left: 155px;">
+					<table
+						class="table table-border table-bordered table-striped table-bg table-hover health-data-tablelist-4">
+						<thead>
+							<tr class="text-c">
+								<th>时间</th>
+								<th>耳温值</th>
+							</tr>
+						</thead>
+						<tbody class="health-data-tbody-4">
+						</tbody>
+					</table>
+					<div id="Pagination-4" class="pagination"></div>
+				</div>
+			</div>
+			<!-- 肺活量 -->
+			<div class="tabCon" id="lung_capacity">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal" id="form-horizontal-5">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate" style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							name="datemax" class="input-text Wdate" style="width:182px;">
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_lung_capacity">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+				</div>
+				<div id="c_lung_capacity"
+					style="height: 400px;width: 750px;float: left;"></div>
+				<div id="lung_capacity_list"
+					style="float: left;margin-top:55px;margin-left: 155px;">
+					<table
+						class="table table-border table-bordered table-striped table-bg table-hover health-data-tablelist-5">
+						<thead>
+							<tr class="text-c">
+								<th>时间</th>
+								<th>FVC</th>
+								<th>FEV1</th>
+								<th>PEF</th>
+							</tr>
+						</thead>
+						<tbody class="health-data-tbody-5">
+						</tbody>
+					</table>
+					<div id="Pagination-5" class="pagination"></div>
+				</div>
+			</div>
+			<!-- 心电 -->
+			<div class="tabCon" id="electrocardiograph">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate" style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							name="datemax" class="input-text Wdate" style="width:182px;">
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_electrocardiograph">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+
+					<div style="float:right;">
+						<span
+							style="display:inline-block;width:100px;margin-top:2px;color:#000">心电记录：</span>
+						<select class="radius" id="electrocardiograph_list"
+							style="height:30px;width:150px;"></select>
+					</div>
+				</div>
+				<div id="c_electrocardiograph"
+					style="height: 400px;width: 750px;float: left;"></div>
+			</div>
+
+			<!-- 尿检 -->
+			<div class="tabCon" id="urine_test">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<form class="form form-horizontal" id="form_chart">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success radius"
+							style="margin-left:15px;" name="s_urine_test">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger radius">清空</button>
+					</form>
+				</div>
+				<table
+					class="table table-border table-bordered table-striped table-bg table-hover health-data-tablelist-7">
+					<thead>
+						<tr class="text-c" style="width: 99px;">
+							<th style="padding:0;width:99px;"><img
+								src="../images/table-title.png" /></th>
+							<th>PH</th>
+							<th>GLH（葡萄糖）</th>
+							<th>PRO（蛋白质）</th>
+							<th>BLO（潜血）</th>
+							<th>URO（尿胆原）</th>
+							<th>KET（酮体）</th>
+							<th>BIL（胆红素）</th>
+							<th>NIT（亚硝酸盐）</th>
+							<th>SG（比重）</th>
+							<th>LEU（白细胞）</th>
+							<th>VC（抗坏血酸）</th>
+						</tr>
+					</thead>
+					<tbody class="health-data-tbody-6">
+					</tbody>
+				</table>
+				<div id="Pagination-6" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="../static/view-image/js/lightbox-plus-jquery.min.js"></script>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="js/echarts.min.js"></script>
+	<script type="text/javascript">
+		var c_blood_pressure;
+		var c_blood_sugar;
+		var c_blood_oxygen;
+		var c_ear_thermometer;
+		var c_lung_capacity;
+		var c_electrocardiograph;
+	
+		var toolbox = {
+			show : true,
+			feature : {
+				mark : {
+					show : true
+				},
+				dataView : {
+					show : true,
+					readOnly : false
+				},
+				restore : {
+					show : true
+				},
+				saveAsImage : {
+					show : true
+				}
+			}
+		}
+	
+		var pointFormat = function(params) {
+			return 'Y:' + params.value[1] + '<br/>X:'
+				+ params.value[0];
+		}
+		//请求地址参数
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		//清除方法
+		var clear = function() {
+			$('.btn-danger').on('click', function() {
+				$(this).parent().find('input').val("");
+				$(this).parent().find('.btn-success').click();
+			});
+		}();
+	
+		//tab点击事件
+		var initFlag2 = "";
+		var initFlag2a_1 = "";
+		var initFlag3a_1 = "";
+		var initFlag4a_1 = "";
+		var initFlag5a_1 = "";
+		var initFlag6a_1 = "";
+		var tabsClick = function() {
+		
+			$('.tabBar').find('span').on('click', function() {
+				var index = $(this).index();
+	
+				if (index === 0) {
+					$(".btn-success[name='s_blood_pressure']").click();
+					initFlag2 = true;
+					load_show_press(0);
+				} else if (index === 1) {
+					$(".btn-success[name='s_blood_sugar']").click();
+					initFlag2a_1 = true;
+					load_show_blood_sugar(0);
+				} else if (index === 2) {
+					$(".btn-success[name='s_blood_oxygen']").click();
+					initFlag3a_1 = true;
+					load_show_blood_oxygen(0);
+				} else if (index === 3) {
+					$(".btn-success[name='s_ear_thermometer']").click();
+					initFlag4a_1 = true;
+					load_show_ear(0);
+				} else if (index === 4) {
+					$(".btn-success[name='s_lung_capacity']").click();
+					initFlag5a_1 = true;
+					load_show_lung(0);
+				} else if (index === 5) {
+					$(".btn-success[name='s_electrocardiograph']").click();
+				} else if (index === 6) {
+					$(".btn-success[name='s_urine_test']").click();
+					initFlag5a_1 = true;
+					load_show_ouroscopy(0);
+	
+				}
+			});
+		}();
+	
+		//查询方法
+		var search = function() {
+			$('.btn-success').on('click', function() {
+				/*初始化加载七件套表格数据*/
+				//首次加载血压数据
+				initFlag2 = true;
+				load_show_press(0);
+
+				var name = this.name;
+				var url = "";
+				if (name == "s_blood_pressure") {
+					url = "../../../equipment/bloodPressureChart.action";
+				} else if (name == "s_blood_sugar") {
+					url = "../../../equipment/bloodSugarChart.action";
+					initFlag2a_1 = true;
+					load_show_blood_sugar(0);
+				} else if (name == "s_blood_oxygen") {
+					url = "../../../equipment/bloodOxygenChart.action";
+					initFlag3a_1 = true;
+					load_show_blood_oxygen(0);
+				} else if (name == "s_ear_thermometer") {
+					url = "../../../equipment/earThermometerChart.action";
+					initFlag4a_1 = true;
+					load_show_ear(0);
+				} else if (name == "s_lung_capacity") {
+					url = "../../../equipment/lungCapacityChart.action";
+					initFlag5a_1 = true;
+					load_show_lung(0);
+				} else if (name == "s_electrocardiograph") {
+					url = "../../../equipment/electrocardiographList.action";
+				}else if(name=="s_urine_test"){
+					initFlag6a_1 = true;
+					load_show_ouroscopy(0);
+				}
+				loadData(url, name, this);
+			});
+		}();
+	
+		//图标数据
+		var loadData = function(url, type, element) {
+			var user_id = getUrlParam("id");
+			var jsonData = $(element).parent().serialize();
+			jsonData = jsonData + '&user_id=' + user_id;
+			$.ajax({
+				url : url,
+				type : "post",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					switch (type) {
+					case 's_blood_pressure':
+						c_blood_pressure.setOption(chartOption(result.data));
+						break;
+					case 's_blood_sugar':
+						c_blood_sugar.setOption(chartOption(result.data));
+						break;
+					case 's_blood_oxygen':
+						c_blood_oxygen.setOption(chartOption(result.data));
+						break;
+					case 's_ear_thermometer':
+						c_ear_thermometer.setOption(chartOption(result.data));
+						break;
+					case 's_lung_capacity':
+						c_lung_capacity.setOption(chartOption(result.data));
+						break;
+					case 's_electrocardiograph':
+						loadElectrocardiographList(result.data);
+						break;
+					default:
+					}
+				}
+			});
+		};
+	
+		/*七件套表格数据显示*/
+		// 血压
+		var initFlag = true;
+		var initFlag2 = '';
+		var load_show_press = function(currPage) {
+			var page = currPage + 1;
+			var user_id = getUrlParam("id");
+			//var jsonData = $(element).parent().serialize();
+			var jsonData = $("#form-horizontal-1").serialize();
+			jsonData = jsonData + '&user_id=' + user_id + '&pageno=' + page;
+			$.ajax({
+				url : "../../../equipment/bloodPressurePage.action",
+				type : "GET",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					var page_count = result.data.recordCount;
+					if (initFlag) {
+						$("#Pagination-1").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_press //回调函数
+						});
+						initFlag = false;
+					}
+					if (initFlag2) {
+						$("#Pagination-1").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_press //回调函数
+						});
+						initFlag2 = false;
+					}
+					var html = "";
+					$.each(result.data.data, function(i, p) {
+						html += "<tr class='text-c'>" +
+							"<td>" + p.datetime + "</td>" +
+							"<td>" + (p.HighPressure + "/" + p.LowPressure) + "mmHg</td>" +
+							"<td>" + p.PulseRate + "次/分钟</td>" +
+							"</tr>";
+					});
+					$(".health-data-tbody-1").html(html);
+					$("#Pagination-1 .page-count").html(result.data.pageCount);
+				}
+			});
+		};
+		//血糖
+		var initFlag_2a = true;
+		var initFlag2a_1 = '';
+		var load_show_blood_sugar = function(currPage) {
+			var page = currPage + 1;
+			var user_id = getUrlParam("id");
+			//var jsonData = $(element).parent().serialize();
+			var jsonData = $("#form-horizontal-2").serialize();
+			jsonData = jsonData + '&user_id=' + user_id + '&pageno=' + page;
+			$.ajax({
+				url : "../../../equipment/bloodSugarPage.action",
+				type : "GET",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					var page_count = result.data.recordCount;
+					if (initFlag_2a) {
+						$("#Pagination-2").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_blood_sugar //回调函数
+						});
+						initFlag_2a = false;
+					}
+					if (initFlag2a_1) {
+						$("#Pagination-2").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_blood_sugar //回调函数
+						});
+						initFlag2a_1 = false;
+					}
+					var html = "";
+					$.each(result.data.data, function(i, p) {
+						html += "<tr class='text-c'>" +
+							"<td>" + p.datetime + "</td>" +
+							"<td>" + p.period + "</td>" +
+							"<td>" + p.BloodSugar + "mmol/L</td>" +
+							"</tr>";
+					});
+					$(".health-data-tbody-2").html(html);
+					$("#Pagination-2 .page-count").html(result.data.pageCount);
+				}
+			});
+		};
+		//血氧
+		var initFlag_3a = "";
+		var initFlag3a_1 = "";
+		var load_show_blood_oxygen = function(currPage) {
+			var page = currPage + 1;
+			var user_id = getUrlParam("id");
+			var jsonData = $("#form-horizontal-3").serialize();
+			jsonData = jsonData + '&user_id=' + user_id + '&pageno=' + page;
+			$.ajax({
+				url : "../../../equipment/bloodOxygenPage.action",
+				type : "GET",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					var page_count = result.data.recordCount;
+					if (initFlag_3a) {
+						$("#Pagination-3").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_blood_oxygen //回调函数
+						});
+						initFlag_3a = false;
+					}
+					if (initFlag3a_1) {
+						$("#Pagination-3").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_blood_oxygen //回调函数
+						});
+						initFlag3a_1 = false;
+					}
+					var html = "";
+					$.each(result.data.data, function(i, p) {
+						html += "<tr class='text-c'>" +
+							"<td>" + p.datetime + "</td>" +
+							"<td>" + p.Oxygen + "%</td>" +
+							"</tr>";
+					});
+					$(".health-data-tbody-3").html(html);
+					$("#Pagination-3 .page-count").html(result.data.pageCount);
+				}
+			});
+		};
+		//耳温
+		var initFlag_4a = "";
+		var initFlag4a_1 = "";
+		var load_show_ear = function(currPage) {
+			var page = currPage + 1;
+			var user_id = getUrlParam("id");
+			var jsonData = $("#form-horizontal-4").serialize();
+			jsonData = jsonData + '&user_id=' + user_id + '&pageno=' + page;
+			$.ajax({
+				url : "../../../equipment/earThermometerPage.action",
+				type : "GET",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					var page_count = result.data.recordCount;
+					if (initFlag_4a) {
+						$("#Pagination-4").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_ear //回调函数
+						});
+						initFlag_4a = false;
+					}
+					if (initFlag4a_1) {
+						$("#Pagination-4").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_ear //回调函数
+						});
+						initFlag4a_1 = false;
+					}
+					var html = "";
+					$.each(result.data.data, function(i, p) {
+						html += "<tr class='text-c'>" +
+							"<td>" + p.datetime + "</td>" +
+							"<td>" + p.temperature + "℃</td>" +
+							"</tr>";
+					});
+					$(".health-data-tbody-4").html(html);
+					$("#Pagination-4 .page-count").html(result.data.pageCount);
+				}
+			});
+		};
+		//肺活量
+		var initFlag_5a = "";
+		var initFlag5a_1 = "";
+		var load_show_lung = function(currPage) {
+			var page = currPage + 1;
+			var user_id = getUrlParam("id");
+			var jsonData = $("#form-horizontal-5").serialize();
+			jsonData = jsonData + '&user_id=' + user_id + '&pageno=' + page;
+			$.ajax({
+				url : "../../../equipment/lungCapacityPage.action",
+				type : "GET",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					var page_count = result.data.recordCount;
+					if (initFlag_5a) {
+						$("#Pagination-5").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_lung //回调函数
+						});
+						initFlag_5a = false;
+					}
+					if (initFlag5a_1) {
+						$("#Pagination-5").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_lung //回调函数
+						});
+						initFlag5a_1 = false;
+					}
+					var html = "";
+					$.each(result.data.data, function(i, p) {
+						html += "<tr class='text-c'>" +
+							"<td>" + p.datetime + "</td>" +
+							"<td>" + p.fvc + "</td>" +
+							"<td>" + p.fev1 + "</td>" +
+							"<td>" + p.pef + "</td>" +
+							"</tr>";
+					});
+					$(".health-data-tbody-5").html(html);
+					$("#Pagination-5 .page-count").html(result.data.pageCount);
+				}
+			});
+		};
+		//尿检
+		var initFlag_6a = "";
+		var initFlag6a_1 = "";
+		var load_show_ouroscopy = function(currPage) {
+			var page = currPage + 1;
+			var user_id = getUrlParam("id");
+			var jsonData = $("#form_chart").serialize();
+			jsonData = jsonData + '&user_id=' + user_id + '&pageno=' + page;
+			$.ajax({
+				url : "../../../equipment/urineTestPage.action",
+				type : "GET",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					var page_count = result.data.recordCount;
+					if (initFlag_6a) {
+						$("#Pagination-6").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_ouroscopy //回调函数
+						});
+						initFlag_6a = false;
+					}
+					if (initFlag6a_1) {
+						$("#Pagination-6").pagination(page_count, {
+							items_per_page : 15,
+							callback : load_show_ouroscopy //回调函数
+						});
+						initFlag6a_1 = false;
+					}
+					var html = "";
+					$.each(result.data.data, function(i, p) {
+						html += "<tr class='text-c'>" +
+							"<td>" + p.datetime + "</td>" +
+							"<td>" + p.PH + "</td>" +
+							"<td class='rd'>" + p.GLU + "</td>" +
+							"<td class='rd'>" + p.PRO + "</td>" +
+							"<td class='rd'>" + p.BLD + "</td>" +
+							"<td class='rd'>" + p.URO + "</td>" +
+							"<td class='rd'>" + p.KET + "</td>" +
+							"<td class='rd'>" + p.BIL + "</td>" +
+							"<td class='rd'>" + p.NIT + "</td>" +
+							"<td>" + p.SG + "</td>" +
+							"<td class='rd'>" + p.LEU + "</td>" +
+							"<td class='rd'>" + p.VC + "</td>" +
+							"</tr>";
+					});
+					$(".health-data-tbody-6").html(html);
+					$("#Pagination-6 .page-count").html(result.data.pageCount);
+				}
+			}).done(function() {
+				$(".health-data-tbody-6 tr td.rd").each(function() {
+					var ny = $(this).html();
+					_stmysf = $(this);
+					if (ny != "-") {
+						_stmysf.css("color", "#da281f");
+					} else {
+						_stmysf.css("color", "#333");
+					}
+				});
+			});
+		};
+		var chartOption = function(data) {
+			var newSet = defaultChartSet();
+			newSet.title.text = data.title;
+			newSet.yAxis[0].name = data.unit;
+			newSet.yAxis[0].max = data.max;
+			newSet.yAxis[0].min = data.min;
+			for (a in data.list) {
+				var seriesSet = defaultSeriesSet();
+				seriesSet.data = data.list[a].data;
+				seriesSet.name = data.list[a].name;
+				newSet.series.push(seriesSet);
+				newSet.legend.data.push(data.list[a].name);
+			}
+	
+			return newSet;
+		}
+	
+		//初始化
+		$(function() {
+			$.Huitab("#tab-system .tabBar span", "#tab-system .tabCon", "current", "click", "0");
+			c_blood_pressure = echarts.init(document.getElementById('c_blood_pressure'));
+			c_blood_sugar = echarts.init(document.getElementById('c_blood_sugar'));
+			c_blood_oxygen = echarts.init(document.getElementById('c_blood_oxygen'));
+			c_ear_thermometer = echarts.init(document.getElementById('c_ear_thermometer'));
+			c_lung_capacity = echarts.init(document.getElementById('c_lung_capacity'));
+			c_electrocardiograph = echarts.init(document.getElementById('c_electrocardiograph'));
+	
+			c_blood_pressure.setOption(defaultChartSet('血压'));
+			c_blood_sugar.setOption(defaultChartSet('血糖'));
+			c_blood_oxygen.setOption(defaultChartSet('血氧'));
+			c_ear_thermometer.setOption(defaultChartSet('耳温'));
+			c_lung_capacity.setOption(defaultChartSet('肺活量'));
+			c_electrocardiograph.setOption(defaultChartSet('心电图'));
+	
+			$(".btn-success[name='s_blood_pressure']").click();
+	
+		});
+	
+	
+	    //加载心电图
+		function loadElectrocardiographChart(data) {
+			var newSet = defaultChartSet();
+			newSet.title.text = data.title;
+			newSet.tooltip.formatter = pointFormat;
+			newSet.xAxis[0].type = 'value';
+			newSet.yAxis[0].name = data.unit;
+			newSet.yAxis[0].max = data.max;
+			newSet.yAxis[0].min = data.min;
+			for (a in data.list) {
+				var seriesSet = defaultSeriesSet();
+				seriesSet.data = data.list[a].data;
+				seriesSet.name = data.list[a].name;
+				seriesSet.symbol = 'none';
+				newSet.series.push(seriesSet);
+				newSet.legend.data.push(data.list[a].name);
+			}
+			c_electrocardiograph.setOption(newSet);
+		}
+	
+	
+	
+		//加载心电列表
+		function loadElectrocardiographList(data) {
+			$('#electrocardiograph_list').empty();
+			for (a in data) {
+				var content = '<option value="' + data[a].order_id + '">' + data[a].datetime + '</option>';
+				$('#electrocardiograph_list').append(content);
+			}
+			$.ajax({
+				url : "../../../equipment/electrocardiographChart.action",
+				type : "post",
+				dataType : 'json',
+				data : {
+					'order_id' :data[0].order_id
+				},
+				success : function(result) {
+					var data = result.data;
+					loadElectrocardiographChart(data);
+				}
+			});
+	
+	
+			//console.log($("#electrocardiograph_list"));
+			$("#electrocardiograph_list").on("change", function() {
+				var $select = $(this).find("option:selected");
+				//console.log($select.val());
+				$.ajax({
+					url : "../../../equipment/electrocardiographChart.action",
+					type : "post",
+					dataType : 'json',
+					data : {
+						'order_id' : $select.val()
+					},
+					success : function(result) {
+						var data = result.data;
+						loadElectrocardiographChart(data);
+					}
+				});
+			});
+		}
+	
+		var defaultChartSet = function(title) {
+			var newSet = {
+				title : {
+					text : '',
+					x : 'center'
+				},
+				tooltip : {
+					trigger : 'item',
+					formatter : function(params) {
+						var date = new Date(params.value[0]);
+						data = date.getFullYear() + '-'
+						+ (date.getMonth() + 1) + '-'
+						+ date.getDate() + ' '
+						+ date.getHours() + ':'
+						+ date.getMinutes();
+						return 'Y:' + data + '<br/>X:'
+							+ params.value[1];
+					}
+				},
+				toolbox : toolbox,
+				dataZoom : {
+					show : true,
+					start : 70
+				},
+				grid : {
+					y2 : 80
+				},
+				calculable : true,
+				legend : {
+					data : [],
+					x : 'left'
+				},
+				xAxis : [
+					{
+						type : 'time'
+					}
+				],
+				yAxis : [
+					{
+						name : '',
+						type : 'value'
+					}
+				],
+				series : []
+			};
+			newSet.title.text = title;
+			return newSet;
+		}
+		var defaultSeriesSet = function() {
+			return {
+				name : '',
+				type : 'line',
+				data : []
+			};
+		}
+	</script>
+</body>
+</html>

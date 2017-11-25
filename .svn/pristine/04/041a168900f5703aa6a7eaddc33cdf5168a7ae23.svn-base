@@ -1,0 +1,125 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class DoctorDao extends BaseTemplateDao{
+	
+	@SuppressWarnings("rawtypes")
+	@Autowired
+	private RedisTemplate redisTemplate;
+
+	// 基本类型
+	@SuppressWarnings("unchecked")
+	public <T> void setObject(String key,T value) {
+		BoundValueOperations<String,T> operation = redisTemplate.boundValueOps("o" + key);
+		operation.set(value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T getObject(String key) {
+		BoundValueOperations<String, T> operation = redisTemplate.boundValueOps("o" + key);
+		return operation.get();
+	}
+
+	// 列表
+	@SuppressWarnings("unchecked")
+	public <T> void setList(String key, List<T> list, int flag) {
+		BoundListOperations<String, T> operation = redisTemplate.boundListOps("l" + key);
+
+		if (list != null) {
+			if (flag == 2) {
+				Long size = operation.size();
+				for (int i = 0; i < size; i++) {
+					operation.leftPop();
+				}
+			}
+			for (T e : list) {
+				operation.rightPush(e);
+			}
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getList(String key) {
+		BoundListOperations<String, T> operation = redisTemplate.boundListOps("l" + key);
+		return operation.range(0, -1);
+	}
+
+	// 集合
+	@SuppressWarnings("unchecked")
+	public <T> void setSet(String key, Set<T> set, int flag) {
+		BoundSetOperations<String, T> operation = redisTemplate.boundSetOps("s" + key);
+		if (set != null) {
+			if (flag == 2) {
+				Long size = operation.size();
+				for (int i = 0; i < size; i++) {
+					operation.pop();
+				}
+			}
+			for (T e : set) {
+				operation.add(e);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Set<T> getSet(String key) {
+		BoundSetOperations<String, T> operation = redisTemplate.boundSetOps("s" + key);
+		return operation.members();
+	}
+
+	// 映射
+	@SuppressWarnings("unchecked")
+	public <T> void setMap(String key, Map<String, T> map, int flag) {
+		BoundHashOperations<String, String, T> operation = redisTemplate.boundHashOps("m" + key);
+		if (map.size() > 0) {
+			if (flag == 2) {
+				for (Map.Entry<String, T> entry : map.entrySet()) {
+					operation.delete(entry.getKey());
+				}
+			}
+			for (Map.Entry<String, T> entry : map.entrySet()) {
+				operation.put(entry.getKey(), entry.getValue());
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Map<String, T> getMap(String key) {
+		BoundHashOperations<String, String, T> operation = redisTemplate.boundHashOps("m" + key);
+		return operation.entries();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void expire(String key,long time){
+		redisTemplate.expire(key, time, TimeUnit.SECONDS);
+	}
+	
+	public Map<String,Object> selectOne(String sql,Object...args){
+		Map<String,Object> result = null;
+		try{
+			result = this.jdbcTemplate.queryForMap(sql, args);
+		}catch(Exception e){
+			result = new HashMap<String, Object>();
+		}
+		return result;
+	}
+	
+
+}

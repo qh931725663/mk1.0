@@ -1,0 +1,55 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+@Repository
+public class UrineTestDao extends EquipmentDao {
+
+	public long add(UrineTest urineTest) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, urineTest);
+		return insert(map, "c_urine_test");
+	}
+
+	/*
+	 * AND A.create_date<NOW()
+	 */
+
+	public List<Map<String, Object>> queryRecent(long user_id, String type, int recent) {
+		String sql = "select DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime ";
+		if (type.equalsIgnoreCase("ph") || type.equalsIgnoreCase("sg")) {
+			sql = sql + ",concat(B." + type + ") param";
+		} else {
+			sql = sql + ",findName(B." + type + ") param ";
+		}
+		sql = sql
+				+ " from c_equipment_use A,c_urine_test B where A.order_id=B.equipment_use_order_id and A.user_id = ? and"
+				+ " DATE_SUB(NOW(),INTERVAL ? DAY) <A.create_date  ORDER BY A.create_date DESC";
+		return jdbcTemplate.queryForList(sql, new Object[] { user_id, recent });
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime ";
+		for (int i = 0; i < Constant.URINEPARAMS.length; i++) {
+			if (Constant.URINEPARAMS[i].equalsIgnoreCase("ph") || Constant.URINEPARAMS[i].equalsIgnoreCase("sg")) {
+				sql = sql + ",concat(B." + Constant.URINEPARAMS[i] + ") " + Constant.URINEPARAMS[i];
+			} else {
+				sql = sql + ",findName(B." + Constant.URINEPARAMS[i] + ") " + Constant.URINEPARAMS[i];
+			}
+		}
+		sql = sql + " FROM c_equipment_use A,c_urine_test B ";
+		sql = sql
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+}

@@ -1,0 +1,52 @@
+package com.haaa.cloudmedical.common.entity;
+
+import java.io.Serializable;
+
+public class ResponseDTO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8243886278727699108L;
+	private Object data;
+	private String loginToken;
+	private String errmsg;
+	private boolean flag = false;
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public String getLoginToken() {
+		return loginToken;
+	}
+
+	public void setLoginToken(String loginToken) {
+		this.loginToken = loginToken;
+	}
+
+	public String getErrmsg() {
+		return errmsg;
+	}
+
+	public void setErrmsg(String errmsg) {
+		this.errmsg = errmsg;
+	}
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
+	}
+
+	@Override
+	public String toString() {
+		return "ResponseDTO [data=" + data + ", loginToken=" + loginToken + ", errmsg=" + errmsg + ", flag=" + flag
+				+ "]";
+	}
+}

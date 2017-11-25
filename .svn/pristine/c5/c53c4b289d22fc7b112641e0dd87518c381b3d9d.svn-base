@@ -1,0 +1,110 @@
+package com.haaa.cloudmedical.platform.equipment.service;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.dao.equipment.BloodoxygenDao;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.dao.equipment.EquipmentDao;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.BloodPressure;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.Electrocardiograph;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.LungCapacity;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class EquipmentService {
+	@Resource
+	private EquipmentDao equipmentDao;
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	@Resource
+	private BloodoxygenDao bloodoxygenDao;
+
+	private Logger logger = Logger.getLogger(EquipmentService.class);
+
+
+	@Transactional
+	public InfoJson addAll(EquipmentUse equipmentUse, BloodOxygen bloodOxygen, BloodPressure bloodPressure, BloodSugar bloodSugar,
+			EarThermometer earThermometer, Electrocardiograph electrocardiograph, LungCapacity lungCapacity,
+			UrineTest urineTest) {
+		InfoJson infoJson = new InfoJson();		
+		try {
+			DataTransfromUtil.urineTestTrans(urineTest, equipmentUse.getCheck_data_source());
+			DataTransfromUtil.electroTrans(electrocardiograph);
+			String time = DateUtil.getTime();
+			if (bloodOxygen != null) {
+				dataSave(equipmentUse.getUser_id(), 1, "blood_pressure", time, bloodPressure);
+			}
+			if (bloodSugar != null) {
+				dataSave(equipmentUse.getUser_id(), 5, "blood_sugar", time, bloodSugar);
+			}
+			if (earThermometer != null) {
+				dataSave(equipmentUse.getUser_id(), 9, "ear_thermometer", time, earThermometer);
+			}
+			if (electrocardiograph != null) {
+				dataSave(equipmentUse.getUser_id(), 13, "electrocardiograph", time, electrocardiograph);
+			}
+			if (lungCapacity != null) {
+				dataSave(equipmentUse.getUser_id(), 17, "lung_capacity", time, lungCapacity);
+			}
+			if (bloodOxygen != null) {
+				dataSave(equipmentUse.getUser_id(), 21, "pulse_bloodoxygen", time, bloodOxygen);
+			}
+			if (urineTest != null) {
+				dataSave(equipmentUse.getUser_id(), 25, "urine_test", time, urineTest);
+			}
+			infoJson.setStatus(1);
+
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+
+		return infoJson;
+	}
+
+	private void dataSave(long user_id, int equip_id, String equip_name, String time, Object object) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("user_id", user_id);
+		map.put("equipment_property_order_id", equip_id);
+		map.put("equipment_name", equip_name);
+		Map<String, Object> equipMap = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(equipMap, object);
+		equipMap.put("create_date", time);
+		Number use_id = equipmentDao.insertAndGetKey(map, "c_equipment_use");
+		equipMap.put("equipment_use_order_id", use_id);
+		equipmentDao.insert(equipMap, "c_" + equip_name);
+	}
+
+}

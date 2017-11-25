@@ -1,0 +1,31 @@
+/*添加设备*/
+.container{width:100%;}
+.harm-smok{margin:10px 0 0 20px;font-size:1rem;}
+.harm-smok-list ul{padding:5px 20px 10px 20px;}
+.harm-smok-list ul li.smok-li{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center; }
+.harm-smok-list ul li.smok-li span:nth-child(2) { width:80%; font-size: 0.5rem; }
+.smok-img{display:inline-block;width:20%;margin-right: 10px;margin-left:11px;}
+li.smok-li span img{width:100%;}
+
+.symptom-list{display: -webkit-flex;display:flex;align-items:center;flex-wrap:nowrap;padding:5px 20px 10px 20px; }
+.symptom-fx{margin:10px 0 10px 20px;font-size:1rem;}
+.symptom-list a { display: inline-block; width:25%;}
+.symptom-list a img{width:100%;}
+.symptom span.symptom-img{display:block;width:50px;margin: 0 auto;}
+.symptom span.symptom-text{display: block; text-align: center;}
+
+.use-explain{padding-left: 20px; padding-right:20px; margin-top:20px;}
+.use-explain .use-explain-list li{ width: 100%; display: -webkit-flex; display: flex; align-items: center; -webkit-align-items: center;  margin-bottom:10px; }
+.use-font,.matter-font{font-size: 1rem; margin:10px 0; display: -webkit-flex; display: flex; align-items: center; -webkit-align-items: center; color:#2e2e2e; }
+.use-explain .use-explain-list li .use-img{ width:50%;}
+.use-explain .use-explain-list li p { width:80%; margin-left:10px; color:rgb(102,102,102); font-size: 16px; }
+/*呼叫中心*/
+.call-explain{padding:50px 30px 30px 30px;}
+.call-explain p{ width:100%; text-align: center; font-size:14px; margin-top:10px;color:rgb(46,46,46); }
+.square-red{display: inline-block;width:6px;height:15px;background:#da291f;margin-right:5px; }
+.call-img{position:relative;overflow: hidden;}
+.call-img .call-show-img{width:100%;background: url("../images/img/call_2.png") no-repeat center center;  overflow: hidden;  min-height: 250px; -webkit-background-size: cover; background-size: cover; }
+.call-touch{margin:0 30px;background-color: rgb(218,40,31);border-radius: 5px;}
+.call-touch a{display: inline-block;width:100%;text-align: center;height:50px;line-height: 50px;color:rgb(255,255,255);font-size: 18px;}
+.server-agreement{padding:0 10px;}
+.server-agreement .server-title{font-weight: 600;text-align: center;}

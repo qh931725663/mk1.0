@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh" style="font-size: 62.5%;">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<link rel="stylesheet" type="text/css" href="common/css/reset.css"/>
+	<link rel="stylesheet" type="text/css" href="common/css/login.css"/>
+	<title>账号登录</title>
+</head>
+<body>
+	<div class="container">
+		<form action="" method="post" class="basicInfo">
+			<div class="infoBox">
+				<img class="login_imgone" src="common/image/phone.png"/>
+				<input type="text" name="phone" class="user_phone" placeholder="请输入手机号" />
+				<span class="error"></span>
+			</div>
+			<div class="infoBox">
+				<img class="login_imgtwo" src="common/image/psd.png"/>
+				<input type="password" name="password" class="user_psd" placeholder="请输入您的密码" />
+			</div>
+			<!-- <input type="button" value="登录" class="btn"/> -->
+			<div class="login-btn">登录</div>
+			<div class="other">
+				<a href="#">注册</a>
+				<a href="forgivepsd.html">忘记密码 ?</a>
+				<div class="clearfix"></div>
+			</div>
+		</form>
+	</div>
+	<script src="common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="common/js/layer-mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="common/js/login.js?v=2" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

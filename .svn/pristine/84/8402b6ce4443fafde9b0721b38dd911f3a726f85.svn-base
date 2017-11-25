@@ -1,0 +1,130 @@
+package com.haaa.cloudmedical.platform.smoking.service;
+
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.haaa.cloudmedical.entity.SmokingPlatformView;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.dao.SmokingDao;
+
+@Service
+public class SmokingPlatformService {
+	@Autowired
+	private SmokingDao dao;
+   //用户查询接口where
+	public Page findSmokingUser (SmokingPlatformView view,Integer pageno )throws SQLException, Exception{
+		Map<String, Object> mapW = new HashMap<String, Object>();
+		mapW.put("user_name", view.getUser_name());
+		mapW.put("user_card", view.getUser_card());
+		mapW.put("user_phone", view.getUser_phone());
+		mapW.put("doctor_name", view.getDoctor_name());
+		mapW.put("quit_smoking_plan_end", view.getQuit_smoking_plan_end());
+		mapW.put("dateAfter", view.getDateAfter());
+		mapW.put("dateBefore", view.getDateBefore());
+		mapW.put("user_is_vip", view.getUser_is_vip());
+		mapW.put("dateAfter", view.getDateAfter());
+		mapW.put("dateBefore", view.getDateBefore());
+		
+		
+		return queryWhere(mapW,pageno);
+	
+	}
+	//后台戒烟模块查询用户信息where
+
+	public Page queryWhere(Map<String,Object> mapW ,Integer pageno) {
+		Object[] params=new Object[]{};
+		Object[] values=new Object[]{};
+		String sql;
+		Map<String, Object[]> map=getWhere(mapW);
+		Page list =new Page();
+
+		if(map!=null){
+		params = map.get("params");
+		values  =map.get("values");
+		
+		sql ="select * from q_smoking_platform_view where "+StringUtils.join(params, "= ? and ") +" = ? ";
+		sql=sql+"and q_plan_create > ? and q_plan_create < ? ";
+		System.out.println(sql);
+		System.out.println(values.length);
+		try {
+			list=dao.pageQuery(sql, values, pageno, 15);
+		} catch (Exception e) {
+			return null;
+		}
+		}else
+		{
+			sql="select * from q_smoking_platform_view where q_plan_create > ? and q_plan_create < ? ";
+			try {
+				list=dao.pageQuery(sql, new Object[]{"2000-12-12","2999-12-12" }, pageno, 15);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
+
+		return list;
+	}
+	//后台戒烟模块查询where拼接
+	protected Map<String, Object[]> getWhere(Map<String,Object> map) {
+		Object dateAfter = null;
+		Object dateBefore = null;
+		System.out.println(map.get("dateAfter"));
+		System.out.println(map.get("dateBefore"));
+		Map<String, Object[]> property = null;
+		List<String> params = new ArrayList<String>();
+		List<Object> values = new ArrayList<Object>();
+		Set<String> keys = map.keySet();
+		for (String key : keys) {
+			Object value = map.get(key);
+			if(key.equals("dateAfter")) dateAfter=value;
+			  else
+				if(key.equals("dateBefore")) dateBefore=value;
+				 else
+			if(value!=null&&!"".equals(value.toString())){
+				params.add(key);
+				values.add(value);
+			}			
+		}
+		if (dateAfter==null||"".equals(dateAfter.toString())) dateAfter="2000-12-12";
+		if (dateBefore==null||"".equals(dateBefore.toString())) dateBefore="2999-12-12";
+		values.add(dateAfter);
+		values.add(dateBefore);
+		if (params.size() > 0 && values.size() > 0) {
+			property = new HashMap<String, Object[]>();
+			property.put("params", params.toArray());
+			property.put("values", values.toArray());
+		}
+		return property;
+	}
+	
+	
+	//用户查询接口
+	
+	//后台戒烟模块查询用户信息view
+	public 	Page selectUserInfo(Long user_id,Integer pageno){
+	   	String sql="select * from q_smoking_platform_view where user_id=?";
+	   	//Object[] values =
+	   	
+	   	Page map =  dao.pageQuery(sql, new Object[]{user_id}, pageno, 15);
+		return map;
+	}
+	//删除用户
+	public  Integer deleteUser (Long user_id )throws SQLException, Exception{
+           
+		
+		
+		
+		return null;
+	
+	}
+	
+
+}

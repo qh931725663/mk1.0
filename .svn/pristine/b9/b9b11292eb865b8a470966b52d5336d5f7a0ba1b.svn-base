@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>个人资料</title>
+	<script src="../common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="../common/css/personalInfo-modify.css"/>
+</head>
+<body>
+	<form class="info">
+		<ul>
+			<li>
+				<div class="info-left">
+					<img src="../common/image/myhealth/myhealth_01.png"/>
+				</div>
+				<div class="info-rgt">默认头像</div>
+			</li>
+			<li>
+				<div class="info-left">姓名</div>
+				<div class="info-rgt">王小二</div>
+			</li>
+			<li>
+				<div class="info-left">身份证</div>
+				<div class="info-rgt">455213199402134885</div>
+			</li>
+			<li>
+				<div class="info-left">性别</div>
+				<div class="info-rgt">男</div>
+			</li>
+			<li>
+				<div class="info-left">年龄</div>
+				<div class="info-rgt">30</div>
+			</li>
+			<li>
+				<div class="info-left">身高</div>
+				<div class="info-rgt"><input type="number" value="160" placeholder="点击填写"/> <span class="mond">cm</span></div>
+			</li>
+			<li>
+				<div class="info-left">体重</div>
+				<div class="info-rgt"><input type="number" value="" placeholder="点击填写"/> <span class="mond">kg</span></div>
+			</li>
+			<li>
+				<div class="info-left">血型</div>
+				<div class="info-rgt">
+					<select class="rgt-sel">
+						<option>请选择</option>
+						<option value="A型">A型</option>
+						<option value="B型">B型</option>
+						<option value="O型">O型</option>
+						<option value="其他">其他</option>
+					</select>
+					<img src="../common/image/myhealth/next.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info-left">婚姻状况</div>
+				<div class="info-rgt">
+					<select class="rgt-sel">
+						<option>请选择</option>
+						<option value="未婚">未婚</option>
+						<option value="已婚">已婚</option>
+						<option value="离异">离异</option>
+						<option value="丧偶">丧偶</option>
+					</select>
+					<img src="../common/image/myhealth/next.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info-left">家庭医生</div>
+				<div class="info-rgt">
+					<select class="rgt-sel">
+						<option>请选择</option>
+						<option value="李医生">李医生</option>
+						<option value="张医生">张医生</option>
+						<option value="刘医生">刘医生</option>
+						<option value="诸葛医生">诸葛医生</option>
+					</select>
+					<img src="../common/image/myhealth/next.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info-left">医保卡</div>
+				<div class="info-rgt">
+					<input type="number" value="00000000" placeholder="点击填写"/>
+				</div>
+			</li>
+			<li>
+				<div class="info-left">工作强度</div>
+				<div class="info-rgt">
+					<select class="rgt-sel">
+						<option>请选择</option>
+						<option value="强">强</option>
+						<option value="超负荷">超负荷</option>
+						<option value="轻松">轻松</option>
+						<option value="一般">一般</option>
+					</select>
+					<img src="../common/image/myhealth/next.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info-left">费用类型</div>
+				<div class="info-rgt">
+					<select class="rgt-sel">
+						<option>请选择</option>
+						<option value="商业医保">商业医保</option>
+						<option value="居民社保">居民社保</option>
+					</select>
+					<img src="../common/image/myhealth/next.png"/>
+				</div>
+			</li>
+		</ul>
+		<input type="submit" id="btn" value="保存"/>
+	</form>
+</body>
+</html>

@@ -1,0 +1,37 @@
+package com.haaa.cloudmedical.common.util;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
+import net.sf.json.JSONObject;
+
+public class TokenUtil {
+
+	// 解析token
+	public static Map<String, String> parseToken(String token) {
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			String jsonText = new String(Base64.decode(token));
+			String user_id = JSONObject.fromObject(jsonText).getString("user_id");
+			String user_phone = JSONObject.fromObject(jsonText).getString("user_phone");
+			map.put("user_id", user_id);
+			map.put("user_phone", user_phone);
+		} catch (Base64DecodingException e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
+
+	// 解析token
+	public static String generateToken(String user_id, String user_phone) {
+		String uuid = UUID.randomUUID().toString();
+		String jsonText = "{user_id:'" + user_id + "',user_phone:'" + user_phone + "',uuid:'" + uuid + "'}";
+		String token = Base64.encode(jsonText.getBytes());
+		return token;
+	}
+
+}

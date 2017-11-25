@@ -1,0 +1,97 @@
+package com.haaa.cloudmedical.app.healthRecords.controller;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.healthRecords.service.HealthRecordsAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+
+
+@Controller
+@RequestMapping("/health-app")
+public class HealthRecordsAppController {
+
+
+	@Autowired
+	private HealthRecordsAppService service;
+	
+	@Autowired
+	private CommonUserService common;
+	
+	@RequestMapping("/all.action")
+	@ResponseBody
+	public ResponseDTO getAllReports() {
+		ResponseDTO dto = null;
+		Map<String,Object> user = common.getUserMap();
+		if(user!=null){
+			String user_id = user.get("user_id").toString();
+			dto = service.selectAllReprot(user_id);
+		}
+		return dto;
+	}
+	
+	@RequestMapping("/getReport.action")
+	@ResponseBody
+	public ResponseDTO getReport(String order_id,String report_type) {
+		ResponseDTO dto = service.getReport(order_id,report_type);
+		return dto;
+	}
+
+	/**
+	 * 体检报告
+	 * @param report
+	 * @return
+	 */
+	@RequestMapping("/check.action")
+	@ResponseBody
+	public long uploadCheckReport(CheckReport report) {
+		long order_id = service.uploadHealthReport(BeanUtil.toMapFromObject(report),"p_check_report");
+		return order_id;
+	}
+	
+	/**
+	 * 门诊报告
+	 * @param report
+	 * @return
+	 */
+	@RequestMapping("/clinic.action")
+	@ResponseBody
+	public long uploadClinicReport(ClinicReport report) {
+		long order_id = service.uploadHealthReport(BeanUtil.toMapFromObject(report),"p_clinic_report");
+		return order_id;
+	}
+
+	/**
+	 * 住院报告
+	 * @param report
+	 * @return
+	 */
+	@RequestMapping("/hospital.action")
+	@ResponseBody
+	public long uploadHospitalReport(HospitalReport report) {
+		long order_id = service.uploadHealthReport(BeanUtil.toMapFromObject(report),"p_hospital_report");
+		return order_id;
+	}
+
+	/**
+	 * 医保记录
+	 * @param report
+	 * @return
+	 */
+	@RequestMapping("/insurance.action")
+	@ResponseBody
+	public long uploadInsuranceReport(InsuranceReport report) {
+		long order_id = service.uploadHealthReport(BeanUtil.toMapFromObject(report),"p_medical_insurance_report");
+		return order_id;
+	}	
+}

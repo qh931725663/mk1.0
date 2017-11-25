@@ -1,0 +1,50 @@
+package com.haaa.cloudmedical.app.user.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.dao.DoctorDao;
+
+@Service
+public class DoctorAppService {
+	
+	@Autowired
+	private DoctorDao dao;
+	
+	public ResponseDTO login(String user_phone,String user_pwd){
+		ResponseDTO dto = new ResponseDTO();
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		StringBuilder sql = new StringBuilder("select * from n_user a where a.user_type = ? and a.user_phone = ?");
+		List<Map<String,Object>> list = dao.select(sql.toString(),Constant.USER_TYPE_DOCTOR,user_phone);
+		if(list.size()<=0){
+			dto.setErrmsg("手机号码不存在！");
+		}else{
+			sql.setLength(0);
+			sql.append("select * from n_user a where a.user_type = ? and a.user_phone = ? and a.user_pwd = ?");
+			list = dao.select(sql.toString(), Constant.USER_TYPE_DOCTOR,user_phone,user_pwd);
+			if(list.size()<=0){
+				dto.setErrmsg("密码错误！");
+			}else{
+				sql.setLength(0);
+				sql.append("select a.user_id,a.user_name,a.user_card,findname(a.user_sex) user_sex,a.user_age,c.hosp_order_id,d.hosp_name,"
+						+ "b.department_order_id,c.department_name,findname(b.doctor_title) doctor_title,b.doctor_introduce,"
+						+ "concat('"+url+"',user_head_pic_upload_index) user_head_pic_upload_index from n_user a,d_doctor b,"
+						+ "k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id = c.order_id "
+						+ "and c.hosp_order_id = d.order_id and a.user_type= ? and a.user_phone = ? and a.user_pwd = ? ");
+				list = dao.select(sql.toString(), Constant.USER_TYPE_DOCTOR,user_phone,user_pwd);
+				if(list.size()>0){
+					dto.setData(list.get(0));
+					dto.setFlag(true);
+				}
+			}
+		}
+		return dto;
+	}
+
+}

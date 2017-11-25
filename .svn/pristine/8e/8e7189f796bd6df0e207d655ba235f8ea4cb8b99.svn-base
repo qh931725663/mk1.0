@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<title>计划管理</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<div class="page-container">
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">*</span> <span
+				style="display:inline-block;width:80px;">慢病类型：</span> <input
+				type="hidden" id="chronic_name" name="chronic_name"> <select
+				class="radius" style="height:30px;width:150px;" id="chronic_code"
+				data-type="chronic" name="chronic_code">
+				<option value="">全部</option>
+			</select>
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">&nbsp;</span> <span
+				style="display:inline-block;width:80px;">管理内容：</span> <input
+				class="input-text radius" type="text" style="width:369px;"
+				id="manage_text" name="manage_text">
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">*</span> <span
+				style="display:inline-block;width:80px;">管理次数：</span> <input
+				class="input-text radius" type="text" style="width:369px;"
+				id="check_target" name="check_target">
+		</div>
+
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="ml-10"
+				style="display:inline-block;width:80px;position: relative;top: -50px;">备注：</span>
+			<textarea class="comments radius" rows="6" cols="50" id="remarks"
+				name="remarks" id="clinic_report_disease" style="width:367px;"> </textarea>
+		</div>
+
+		<div style="margin-left:144px;margin-top: 40px;">
+			<button class="btn btn-success radius btn-user-edit" type="button"
+				onclick="do_save();">保存</button>
+			<button class="btn btn-danger radius" type="button"
+				onclick="do_colse()">取消</button>
+		</div>
+	</div>
+
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../health/js/jquery.tips.js"></script>
+	<script type="text/javascript" src="../health/js/mkh.common.js"></script>
+	<script type="text/javascript">
+		//初始化字典
+		var init_unicode = function() {
+			$('select', '.page-container').each(function() {
+				var type = $(this).attr('data-type');
+				var self = this;
+				if (type) {
+					$.ajax({
+						url : "../../../unicode/type.action",
+						type : "get",
+						dataType : 'json',
+						data : {
+							type : type
+						},
+						success : function(data) {
+							if (data.status === 1) {
+								var items = data.data;
+								var html = "<option value=''>全部</option>";
+								$.each(items, function(i, item) {
+									html += "<option value='" + item.order_id + "'>" + item.unicode_name + "</option>";
+								});
+								$(self).empty();
+								$(self).append(html);
+							}
+						}
+					});
+				}
+			});
+		}();
+	
+		//添加
+		$(function() {
+			$('.radius').on('change', function() {
+				var name = $(this).find('option:selected').text();
+				$('#chronic_name').val(name);
+			});
+		});
+		var do_save = function() {
+			debugger;
+			//验证
+			var flag = true;
+			var code = $('#chronic_code').val();
+			if (code == '') {
+				mkh.errTips("#chronic_code", "不能为空！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#chronic_code");
+			}
+			var check_target = $('#check_target').val();
+			check_target = $.trim(check_target);
+			if (check_target == '') {
+				mkh.errTips("#check_target", "不能为空！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#check_target");
+				var check_target = $('#check_target').val();
+				if (!isNumber(check_target)) {
+					mkh.errTips("#check_target", "必须为数字！");
+					flag = false;
+				} else {
+					mkh.errTipsRemove("#check_target");
+				}
+			}
+	
+			if (!flag) {
+				return;
+			}
+			//
+			var param = {};
+			var user_id = mkh.getUrlParam('id');
+			param.user_id = user_id;
+			$(':input', '.page-container').each(function() {
+				var name = this.name;
+				var value = $(this).val();
+				if (name && value) {
+					param[name] = value;
+				}
+			});
+			//
+			param.is_end = 102;
+			//保存
+			$.ajax({
+				url : "../../../chronicManage/addUserPlan.action",
+				type : "post",
+				dataType : 'json',
+				data : param,
+				success : function(data) {
+					console.log(data)
+					//
+					if (data) {
+						layer.alert('保存成功', function() {
+							//关闭
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index);
+						});
+					}
+				}
+			});
+		};
+		//判断是否是数字
+		function isNumber(value) {
+			if (isNaN(value)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	
+		function do_colse() {
+			//
+			parent.plan_detail.reload();
+	
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+		}
+	</script>
+</body>
+</html>

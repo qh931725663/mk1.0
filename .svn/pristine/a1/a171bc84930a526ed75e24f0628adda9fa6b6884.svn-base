@@ -1,0 +1,89 @@
+package com.haaa.cloudmedical.common.util;
+
+import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+public class BeanUtil {
+	public static ResourceBundle getProperty(String name){
+		ResourceBundle rb = ResourceBundle.getBundle(name);
+		return rb;
+	}
+	
+	public static <T> Map<String,Object> toMapFromObject(T from){
+		Map<String,Object> to = new HashMap<String, Object>();
+		Field[] fields = from.getClass().getDeclaredFields();
+		Field.setAccessible(fields, true);
+		for (Field field : fields) {
+			try {
+				Object value = field.get(from);
+				if(value!=null&&!"".equals(value.toString())){
+					to.put(field.getName(), value);
+				}
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		if(to.size()==0)
+			to=null;
+		return to;
+	}
+	
+	public static <T> List<Map<String,Object>> toMapFromObject(List<T> from){
+		List<Map<String,Object>> list = null;
+		if(from.size()>0){
+			list = new ArrayList<Map<String,Object>>();
+			for (T t : from) {
+				Map<String,Object> map = toMapFromObject(t);
+				list.add(map);
+			}
+		}
+		if(list.size()==0)
+			list=null;
+		return list;
+	}
+	
+	public static <T> T toObjectFromMap(Map<String,Object> from,Class<T> to){
+		Field[] fields = to.getDeclaredFields();
+		Field.setAccessible(fields, true);
+		T obj = null;
+		try {
+			obj = to.newInstance();
+			for (Field field : fields) {
+				for(Map.Entry<String,Object> entry:from.entrySet()){
+					if(entry.getKey().equals(field.getName())){
+						Object value = entry.getValue();
+						if(value!=null&&!"".equals(value.toString())){
+							if(value.getClass()==Date.class){
+								value=DateFormat.getDateTimeInstance().format(value);
+							}
+							field.set(obj, value.toString());
+							break;
+						}
+					}
+				}
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	
+	public static <T> List<T> toObjectFromMap(List<Map<String,Object>> from,Class<T> to){
+		List<T> list = new ArrayList<T>();
+		for (Map<String, Object> map : from) {
+			T obj =toObjectFromMap(map, to);
+			list.add(obj);
+		}
+		return list;
+	}
+	public static void main(String[] args) {
+		String url = BeanUtil.getProperty("dbconfig").getString("initPassword");
+		System.out.println(url);
+	}
+}

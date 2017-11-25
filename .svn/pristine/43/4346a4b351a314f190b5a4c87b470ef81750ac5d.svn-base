@@ -1,0 +1,27 @@
+$(function(){
+	vital.init();
+});
+var vital = {
+	init : function(){
+		this.getData();
+	},
+	//请求参数地址
+	getUrlParam : function(name){
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+		return null;
+	},
+	//获取数据
+	getData : function(){
+		var open_id = this.getUrlParam("open_id");
+		$.ajax({
+			url : "../../../lung_capacity-wx /months.action",
+			type : "GET",
+			dataType : 'json',
+			success : function(data){
+				console.log(data);
+			}
+		})
+	}
+}

@@ -1,0 +1,418 @@
+package com.haaa.cloudmedical.platform.user.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.service.PositionService;
+import com.haaa.cloudmedical.dao.UserPlatformDao;
+import com.haaa.cloudmedical.entity.Department;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.Hospital;
+import com.haaa.cloudmedical.entity.Manager;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+public class UserPlatformService {
+
+	@Autowired
+	private UserPlatformDao dao;
+
+	@Autowired
+	private PositionService positionService;
+
+	private Logger logger = Logger.getLogger(UserPlatformService.class);
+
+	/**
+	 * 检验手机号码是否已注册
+	 * 
+	 * @param user_phone
+	 * @param flag
+	 * @return
+	 */
+	public boolean contain(String user_phone, String type) {
+		String sql = "";
+		boolean flag = false;
+		if (type.equals("1")) {
+			sql = " select * from n_manager where user_phone = ? ";
+		} else {
+			sql = " select * from n_user where user_phone = ? ";
+		}
+		List<Map<String, Object>> list = dao.select(sql, user_phone);
+		if (list.size() > 0)
+			flag = true;
+		return flag;
+	}
+
+	/**
+	 * 检验身份证是否已注册
+	 * 
+	 * @param user_phone
+	 * @param flag
+	 * @return
+	 */
+	public boolean containUserCard(String user_card, String type) {
+		String sql = "";
+		boolean flag = false;
+		if (type.equals("1")) {
+			sql = " select * from n_manager where user_card = ? ";
+		} else if (type.equals("2")) {
+			sql = " select * from n_user where user_card = ? ";
+		}
+		List<Map<String, Object>> list = dao.select(sql, user_card);
+		if (list.size() > 0)
+			flag = true;
+		return flag;
+	}
+
+	// 登录
+	public ResponseDTO login(String user_phone, String user_pwd) {
+		ResponseDTO dto = new ResponseDTO();
+		List<Map<String, Object>> list = dao.selectByAccount(user_phone, user_pwd);
+		if (list.size() > 0) {
+			dto.setData(list);
+			dto.setFlag(true);
+		} else {
+			dto.setErrmsg("账号或密码错误!");
+			logger.error("账号或密码错误!");
+		}
+		return dto;
+	}
+
+	// 查询
+	public Map<String, Object> query(String user_id, String user_type) {
+		Map<String, Object> map = null;
+		String sql = "";
+		if (user_type.equals(Constant.USER_TYPE_OPERATER))
+			sql = "select a.user_id,a.user_name,a.role_code,a.user_head_pic_upload_index,a.user_card_front_upload_index,a.user_card_back_upload_index from n_manager a where 1=1 ";
+		else if (user_type.equals(Constant.USER_TYPE_PATIENT))
+			sql = "select a.user_id,a.user_name,a.user_sex,a.user_card,a.user_age,b.doctor_id,a.user_height,a.user_weight,a.user_phone,a.user_blood,a.user_medicare_card,a.user_marriage,a.user_work,a.user_medical_burden,a.user_head_pic_upload_index,a.user_card_front_upload_index,a.user_card_back_upload_index from n_user a,d_patient b where a.user_id = b.patient_id ";
+		else if (user_type.equals(Constant.USER_TYPE_DOCTOR))
+			sql = "select a.user_id,a.user_name,findname(a.user_sex) user_sex,a.user_card,a.user_age,a.user_id,a.user_phone,c.hosp_order_id,b.department_order_id,c.department_name,c.order_id,"
+					+ "b.doctor_title,b.doctor_introduce,a.user_head_pic_upload_index,a.user_card_front_upload_index,a.user_card_back_upload_index "
+					+ "from	n_user a,d_doctor b,k_department c where a.user_id = b.doctor_id and b.department_order_id = c.order_id";
+		else {
+			String errmsg = "人员编码不正确！";
+			logger.error(user_type + ":" + errmsg);
+			return map;
+		}
+		sql += " and a.user_id = ? ";
+		map = dao.query(sql, user_id);
+		return map;
+	}
+
+
+	// 修改密码
+	public boolean password(String user_phone, String user_pwd) {
+		boolean flag = false;
+		String sql = "update n_manager set user_pwd = ? where user_phone = ? ";
+		int rows = dao.execute(sql, user_pwd, user_phone);
+		if (rows == 1)
+			flag = true;
+		return flag;
+	}
+
+	// 编辑用户信息
+	public boolean update(Manager manager) {
+		boolean flag = false;
+		int rows = dao.update(manager, "n_manager");
+		if (rows == 1)
+			flag = true;
+		return flag;
+	}
+
+	public boolean update(User user, Patient patient) {
+		boolean flag = false;
+		int rows = dao.update(user, "n_user");
+		if (rows == 1) {
+			patient.setPatient_id(user.getUser_id());
+			rows = dao.update(patient, "d_patient");
+		}
+		if (rows == 1)
+			flag = true;
+		return flag;
+	}
+
+	public boolean update(User user, Doctor doctor) {
+		boolean flag = false;
+		int rows = dao.update(user, "n_user");
+		if (rows == 1) {
+			doctor.setDoctor_id(user.getUser_id());
+			rows = dao.update(doctor, "d_doctor");
+		}
+		if (rows == 1)
+			flag = true;
+		return flag;
+	}
+
+	// 数据初始化加载
+	public Page query(String c_menu_code, int pageno) {
+		String sql = null;
+		if (c_menu_code.equals(Constant.MENU_CODE_ACCOUNT)) {
+			sql = "select a.user_name, a.role_code, date_format(a.update_date,'%Y-%d-%d %H:%i') update_date, date_format(a.create_date,'%Y-%m-%d %H:%i') ceate_date from n_user a  ";
+		} else if (c_menu_code.equals(Constant.MENU_CODE_ROLE)) {
+			sql = "select a.role_name,date_format(a.create_date,'%Y-%d-%d %H:%i') ceate_date from n_role a ";
+		} else if (c_menu_code.equals(Constant.MENU_CODE_MEMBER)) {
+			sql = "select a.user_name,a.user_card,a.user_phone,a.user_is_vip,a.user_sex,c.doctor_name,a.user_age,a.user_marriage,date_format(a.create_date,'%Y-%m-%d %H:%i') ceate_date from n_user a,d_patient b,d_doctor c where a.user_id = b.patient_id and b.doctor_id = c.doctor_id ";
+		} else if (c_menu_code.equals(Constant.MENU_CODE_DOCTOR)) {
+			sql = "select a.user_name,a.user_id,a.user_card,a.user_phone,a.user_age,a.user_sex,b.doctor_title,d.hosp_name,c.department_name,date_format(a.create_date,'%Y-%m-%d %H:%i') ceate_date from n_user a ,d_doctor b,k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id=c.order_id and c.hosp_order_id=d.order_id";
+		}
+		Page page = dao.pageQuery(sql, pageno);
+		return page;
+	}
+
+	// 用户管理
+	public Page query(Manager manager, int pageno) {
+		StringBuilder sql = new StringBuilder(
+				"select a.user_id,a.user_name,a.user_phone, findname(a.role_code) role_name,findname(a.user_flag) user_flag, date_format(a.update_date,'%Y-%m-%d %H:%i') update_date, date_format(a.create_date,'%Y-%d-%d %H:%i') ceate_date from n_manager a where 1=1");
+		List<Object> values = new ArrayList<Object>();
+		// 姓名
+		if (manager.getUser_name() != null && !"".equals(manager.getUser_name())) {
+			values.add("%" + manager.getUser_name() + "%");
+			sql.append(" and a.user_name like ? ");
+		}
+
+		// 角色
+		if (manager.getRole_code() != null && !"".equals(manager.getRole_code())) {
+			values.add(manager.getRole_code());
+			sql.append(" and a.role_code = ? ");
+		}
+
+		// 状态
+		if (manager.getUser_flag() != null && !"".equals(manager.getUser_flag())) {
+			values.add(manager.getUser_flag());
+			sql.append(" and a.user_flag= ? ");
+		}
+
+		sql.append(" order by a.create_date desc");
+
+		Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+		return page;
+	}
+
+	// 会员管理
+	public Page query(User user, Doctor doctor, String startDate, String endDate, int pageno) {
+		StringBuilder sql = new StringBuilder(
+				"select a.user_id, a.user_name,a.user_card,a.user_phone,findname (a.user_is_vip) user_is_vip,e.hosp_name,d.department_name,c.doctor_name,findname (a.user_sex) user_sex,"
+						+ "a.user_age,findname (a.user_marriage) user_marriage,date_format(a.create_date,'%Y-%m-%d %H:%i') ceate_date from n_user a LEFT JOIN d_patient b on a.user_id = b.patient_id"
+						+ " LEFT JOIN d_doctor c on b.doctor_id = c.doctor_id LEFT JOIN k_department d on c.department_order_id = d.order_id LEFT JOIN k_hosp e on d.hosp_order_id = e.order_id where 1=1 ");
+		List<Object> values = new ArrayList<Object>();
+		// 姓名
+		if (user.getUser_name() != null && !"".equals(user.getUser_name())) {
+			values.add("%" + user.getUser_name() + "%");
+			sql.append(" and a.user_name like ? ");
+		}
+
+		// 身份证
+		if (user.getUser_card() != null && !"".equals(user.getUser_card())) {
+			values.add("%" + user.getUser_card() + "%");
+			sql.append(" and a.user_card like ? ");
+		}
+
+		// 手机号
+		if (user.getUser_phone() != null && !"".equals(user.getUser_phone())) {
+			values.add("%" + user.getUser_phone() + "%");
+			sql.append(" and a.user_phone like ? ");
+		}
+
+		// 会员等级
+		if (user.getUser_is_vip() != null && !"".equals(user.getUser_is_vip())) {
+			values.add(user.getUser_is_vip());
+			sql.append(" and a.user_is_vip= ? ");
+		}
+
+		// 性别
+		if (user.getUser_sex() != null && !"".equals(user.getUser_sex())) {
+			values.add(user.getUser_sex());
+			sql.append(" and a.user_sex = ? ");
+		}
+
+		// 家庭医生
+		if (doctor.getDoctor_name() != null && !"".equals(doctor.getDoctor_name())) {
+			values.add("%" + doctor.getDoctor_name() + "%");
+			sql.append(" and c.doctor_name like ? ");
+		}
+
+		// 创建日期
+		if ((startDate != null && !"".equals(startDate)) && (endDate == null || "".equals(endDate))) {
+			values.add(startDate);
+			sql.append(" and a.create_date >= ? and a.create_date<= now()");
+		}
+		if ((startDate == null || "".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+			values.add(endDate);
+			sql.append(" and a.create_date>= now()" + " and a.create_date <= ? ");
+		}
+		if ((startDate != null && !"".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+			values.add(startDate);
+			values.add(endDate);
+			sql.append(" and a.create_date >= ? and a.create_date <= ? ");
+		}
+		sql.append(" and a.user_type= ? ");
+		values.add(Constant.USER_TYPE_PATIENT);
+		sql.append(" order by a.create_date desc");
+		System.out.println(sql.toString());
+		Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+		return page;
+	}
+
+	// 医生管理
+	public Page query(User user, Doctor doctor, Department department, String startDate,
+			String endDate, int pageno) {
+		StringBuilder sql = new StringBuilder(
+				"select	a.user_id,a.user_name,a.user_card,a.user_phone,a.user_age,findname(a.user_sex) user_sex,findname(b.doctor_title) doctor_title,d.hosp_name,c.department_name,"
+						+ "date_format(a.create_date,'%Y-%m-%d %H:%i') ceate_date from n_user a left join d_doctor b on a.user_id = b.doctor_id LEFT JOIN k_department c on b.department_order_id = c.order_id"
+						+ " LEFT JOIN k_hosp d on c.hosp_order_id = d.order_id where 1=1");
+		List<Object> values = new ArrayList<Object>();
+		// 姓名
+		if (user.getUser_name() != null && !"".equals(user.getUser_name())) {
+			values.add("%" + user.getUser_name() + "%");
+			sql.append(" and a.user_name like ? ");
+		}
+		// 身份证
+		if (user.getUser_card() != null && !"".equals(user.getUser_card())) {
+			values.add("%" + user.getUser_card() + "%");
+			sql.append(" and a.user_card like ? ");
+		}
+		// 手机号
+		if (user.getUser_phone() != null && !"".equals(user.getUser_phone())) {
+			values.add("%" + user.getUser_phone() + "%");
+			sql.append(" and a.user_phone like ? ");
+		}
+		// 职称
+		if (doctor.getDoctor_title() != null && !"".equals(doctor.getDoctor_title())) {
+			values.add(doctor.getDoctor_title());
+			sql.append(" and b.doctor_title = ? ");
+		}
+		// 医院
+		if (department.getHosp_order_id()!= null && !"".equals(department.getHosp_order_id())) {
+			values.add(department.getHosp_order_id());
+			sql.append(" and c.hosp_order_id= ? ");
+		}
+		// 科室
+		if (doctor.getDepartment_order_id() != null && !"".equals(doctor.getDepartment_order_id())) {
+			values.add(doctor.getDepartment_order_id());
+			sql.append(" and b.department_order_id= ? ");
+		}
+		// 状态
+		if (user.getUser_flag() != null && !"".equals(user.getUser_flag())) {
+			values.add(user.getUser_flag());
+			sql.append(" and a.user_flag= ? ");
+		}
+		// 创建日期
+		if ((startDate != null && !"".equals(startDate)) && (endDate == null || "".equals(endDate))) {
+			values.add(startDate);
+			sql.append(" and a.create_date >= ? and a.create_date<= now()");
+		}
+		if ((startDate == null || "".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+			values.add(endDate);
+			sql.append(" and a.create_date>= now()" + " and a.create_date <= ? ");
+		}
+		if ((startDate != null && !"".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+			values.add(startDate);
+			values.add(endDate);
+			sql.append(" and a.create_date >= ? and a.create_date <= ? ");
+		}
+		sql.append(" and a.user_type = ? ");
+		values.add(Constant.USER_TYPE_DOCTOR);
+		sql.append(" order by a.create_date desc");
+		Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+		return page;
+	}
+
+	public ResponseDTO addUser(Manager manager) {
+		ResponseDTO dto = new ResponseDTO();
+		manager.setUser_flag("2000001");
+		try {
+			long user_id = dao.insert(manager, "n_manager");
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("user_id", user_id);
+			dto.setFlag(true);
+			dto.setData(map);
+		} catch (Exception e) {
+			dto.setErrmsg("新增失败");
+			logger.error("新增失败：" + e.getMessage());
+		}
+
+		return dto;
+	}
+
+	public ResponseDTO addUser(User user, Patient patient) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			long user_id = dao.insert(user, "n_user");
+			patient.setPatient_id(String.valueOf(user_id));
+			patient.setPatient_name(user.getUser_name());
+			patient.setCreate_date(user.getCreate_date());
+			try {
+				dao.insert(patient, "d_patient");
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("user_id", user_id);
+				dto.setData(map);
+				dto.setFlag(true);
+			} catch (Exception e) {
+				logger.error("写入d_patient表失败：" + e.getMessage());
+				user.setUser_id(String.valueOf(user_id));
+				dao.delete(user, "n_user");
+			}
+		} catch (Exception e) {
+			logger.error("写入n_user表失败：" + e.getMessage());
+		}
+		return dto;
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public ResponseDTO addUser(User user, Doctor doctor) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			long user_id = dao.insert(user, "n_user");
+			doctor.setDoctor_id(String.valueOf(user_id));
+			doctor.setDoctor_name(user.getUser_name());
+			doctor.setCreate_date(user.getCreate_date());
+			try {
+				dao.insert(doctor, "d_doctor");
+				// 写入到缓存
+				List<Map<String, Object>> list = (List<Map<String, Object>>) positionService
+						.getPositionList("department_doctor", doctor.getDepartment_order_id()).getData();
+				if (list != null && list.size() > 0) {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("doctor_id", user_id);
+					map.put("doctor_name", doctor.getDoctor_name());
+					map.put("doctor_title", doctor.getDoctor_title());
+					list.add(map);
+					positionService.setPositionList("department_doctor", doctor.getDepartment_order_id(), list);
+				}
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("user_id", user_id);
+				dto.setFlag(true);
+				dto.setData(map);
+			} catch (Exception e) {
+				logger.error("写入d_doctor表失败:", e);
+				user.setUser_id(String.valueOf(user_id));
+				dao.delete(user, "n_user");
+			}
+		} catch (Exception e) {
+			logger.error("写入n_user表失败:", e);
+		}
+		return dto;
+	}
+
+	// 修改用户状态
+	public boolean modify(String user_id, String user_flag) {
+		boolean flag = false;
+		String sql = "update n_manager set user_flag = ? where user_id = ?";
+		int rows = dao.execute(sql, user_flag, user_id);
+		if (rows == 1)
+			flag = true;
+		return flag;
+	}
+}

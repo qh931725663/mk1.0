@@ -1,0 +1,74 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.wechat.web;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.wechat.service.IWeixinLungCapacityService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/lung_capacity-wx")
+public class WeixinLungCapacityController {
+	
+	@Resource
+	private IWeixinLungCapacityService service;
+	
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@RequestMapping("/graph.action")
+	public StdDTO getGraph(String open_id,String type, Integer days) {
+		StdDTO stdDTO = new StdDTO();
+		try {
+			if (days==null) {
+				days = Constant.RECENT;
+			}
+			if (type==null) {
+				type="all";
+			}
+			stdDTO = service.getGraph(open_id,type, days);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return stdDTO;
+	};
+
+	@RequestMapping("/page.action")
+	public StdDTO getPage(String open_id, String year_month, Integer pageno, Integer pagesize) {
+		StdDTO stdDTO = new StdDTO();
+		try {
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+				stdDTO = service.getPage(open_id, year_month, pageno, pagesize);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}		
+		return stdDTO;
+	};
+
+
+	@RequestMapping("/months.action")
+	public StdDTO getMonths(String open_id) {
+		StdDTO stdDTO = new StdDTO();
+		try {
+			stdDTO = service.getMonths(open_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return stdDTO;
+	};
+
+
+}

@@ -1,0 +1,516 @@
+package com.haaa.cloudmedical.platform.equipment.service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.dao.equipment.BloodOxygenDao;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.dao.equipment.UrineTestDao;
+import com.haaa.cloudmedical.dao.equipment.EquipmentDao;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.BloodPressure;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.Electrocardiograph;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.LungCapacity;
+import com.haaa.cloudmedical.entity.UrineTest;
+import com.haaa.cloudmedical.platform.news.controller.NewsManageController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+
+import org.springframework.format.datetime.DateFormatter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class EquipmentService {
+	@Resource
+	private EquipmentDao equipmentDao;
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	@Resource
+	private BloodOxygenDao bloodoxygenDao;
+	
+	@Resource
+	private UrineTestDao urineTestDao;
+
+	/**
+	 * 
+	 * @Title: addAll 
+	 * @Description: 后台添加7件套数据 
+	 * @param equipmentUse
+	 * @param bloodOxygen
+	 * @param bloodPressure
+	 * @param bloodSugar
+	 * @param earThermometer
+	 * @param electrocardiograph
+	 * @param lungCapacity
+	 * @param urineTest
+	 * @return
+	 * @throws Exception
+	 * @throws
+	 */
+	@Transactional
+	public InfoJson addAll(EquipmentUse equipmentUse, BloodOxygen bloodOxygen, BloodPressure bloodPressure,
+			BloodSugar bloodSugar, EarThermometer earThermometer, Electrocardiograph electrocardiograph,
+			LungCapacity lungCapacity, UrineTest urineTest) throws Exception {
+		InfoJson infoJson = new InfoJson();
+		Date time = new Date();
+		int flag = 0;
+		if (bloodPressure.getHighPressure() != null && !bloodPressure.getHighPressure().equals("")
+				&& bloodPressure.getLowPressure() != null && !bloodPressure.getLowPressure().equals("")
+				&& bloodPressure.getPulseRate() != null && !bloodPressure.getPulseRate().equals("")) {
+			dataSave(equipmentUse, Constant.BLOOD_PRESSURE_ID, "blood_pressure", time, bloodPressure);
+			flag = 1;
+		}
+		if (bloodSugar.getBloodSugar() != null && !bloodSugar.getBloodSugar().equals("")
+				&& bloodSugar.getMeasurement_period() != null && !bloodSugar.getMeasurement_period().equals("")) {
+			dataSave(equipmentUse, Constant.BLOOD_SUGAR_ID, "blood_sugar", time, bloodSugar);
+			flag = 1;
+		}
+		if (earThermometer.getTemperature() != null && !earThermometer.getTemperature().equals("")) {
+			dataSave(equipmentUse, Constant.EAR_THERMOMETER_ID, "ear_thermometer", time, earThermometer);
+			flag = 1;
+		}
+		if (electrocardiograph.getHeartRate() != null && !electrocardiograph.getHeartRate().equals("")
+				&& electrocardiograph.getResult() != null && !electrocardiograph.getResult().equals("")) {
+			dataSave(equipmentUse, Constant.ELECTROCARDIOGRAPH_ID, "electrocardiograph", time, electrocardiograph);
+			flag = 1;
+		}
+		if (lungCapacity.getFev1() != null && !lungCapacity.getFev1().equals("") && lungCapacity.getFev1_rate() != null
+				&& !lungCapacity.getFev1_rate().equals("") && lungCapacity.getFvc() != null
+				&& !lungCapacity.getFvc().equals("") && lungCapacity.getFvc_rate() != null
+				&& !lungCapacity.getFvc_rate().equals("") && lungCapacity.getPef() != null
+				&& !lungCapacity.getPef().equals("")) {
+			dataSave(equipmentUse, Constant.LUNG_CAPACITY_ID, "lung_capacity", time, lungCapacity);
+			flag = 1;
+		}
+		if (bloodOxygen.getOxygen() != null && !bloodOxygen.getOxygen().equals("") && bloodOxygen.getPulseRate() != null
+				&& !bloodOxygen.getPulseRate().equals("")) {
+			dataSave(equipmentUse, Constant.BLOOD_OXYGEN_ID, "pulse_bloodoxygen", time, bloodOxygen);
+			flag = 1;
+		}
+		if (urineTest.getBil() != null && !urineTest.getBil().equals("") && urineTest.getBld() != null
+				&& !urineTest.getBil().equals("") && urineTest.getGlu() != null && !urineTest.getGlu().equals("")
+				&& urineTest.getKet() != null && !urineTest.getKet().equals("") && urineTest.getLeu() != null
+				&& !urineTest.getLeu().equals("") && urineTest.getNit() != null && !urineTest.getNit().equals("")
+				&& urineTest.getPh() != null && !urineTest.getPh().equals("") && urineTest.getSg() != null
+				&& !urineTest.getSg().equals("") && urineTest.getUro() != null && !urineTest.getUro().equals("")
+				&& urineTest.getVc() != null && !urineTest.getVc().equals("")) {
+			dataSave(equipmentUse, Constant.URINE_TEST_ID, "urine_test", time, urineTest);
+			flag = 1;
+		}
+		if (flag == 1) {
+			infoJson.setStatus(1);
+		} else {
+			infoJson.setInfo("请填写至少一件套的完整信息！！！");
+		}
+
+		return infoJson;
+	}
+
+	
+	@Transactional
+	private void dataSave(EquipmentUse equipmentUse, String equip_id, String equip_name, Date time, Object object) {
+		equipmentUse.setCreate_date(time);
+		equipmentUse.setEquipment_property_order_id(equip_id);
+		equipmentUse.setEquipment_name(equip_name);
+		equipmentUse.setCheck_data_source(Constant.MANUALUPLOAD);    //后台添加数据为手动上传
+		Map<String, Object> equipMap = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(equipMap, object);
+		equipMap.put("create_date", time);
+		Number use_id = equipmentDao.insertAndGetKey(equipmentUse, "c_equipment_use");
+		equipMap.put("equipment_use_order_id", use_id);
+		equipmentDao.insert(equipMap, "c_" + equip_name);
+	}
+
+	/**
+	 * 
+	 * @Title: getBloodPressureChart @Description: 血压曲线图查询 @param user_id @param
+	 *         downTime @param upTime @return @throws
+	 */
+	public InfoJson getBloodPressureChart(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("title", "血压");
+		dataMap.put("unit", "mmHg");
+		dataMap.put("max", 250);
+		dataMap.put("min", 0);
+		Map<String, Object> highPressureMap = new HashMap<String, Object>();
+		Map<String, Object> lowPressureMap = new HashMap<String, Object>();
+		List<List<Object>> highPressureDataList = new ArrayList<List<Object>>();
+		List<List<Object>> lowPressureDataList = new ArrayList<List<Object>>();
+		highPressureMap.put("name", "高压");
+		highPressureMap.put("data", highPressureDataList);
+		lowPressureMap.put("name", "低压");
+		lowPressureMap.put("data", lowPressureDataList);
+		List<Map<String, Object>> list = bloodPressureDao.getDataByTime(user_id, datemin, datemax);
+		for (Map<String, Object> map : list) {
+			List<Object> hList = new ArrayList<Object>();
+			List<Object> lList = new ArrayList<Object>();
+			hList.add(map.get("create_date"));
+			hList.add(map.get("HighPressure"));
+			lList.add(map.get("create_date"));
+			lList.add(map.get("LowPressure"));
+			highPressureDataList.add(hList);
+			lowPressureDataList.add(lList);
+		}
+		List<Object> dataList = new ArrayList<Object>();
+		dataList.add(highPressureMap);
+		dataList.add(lowPressureMap);
+		dataMap.put("list", dataList);
+		infoJson.setData(dataMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getBloodSugarChart 
+	 * @Description: 后台血糖曲线图 ,前端echart
+	 * @param user_id
+	 * @param period
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBloodSugarChart(String user_id, int period, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("title", "血糖");
+		dataMap.put("unit", "mmol/L");
+		dataMap.put("min", 0);
+		Map<String, Object> bloodSugarMap = new HashMap<String, Object>();
+		List<Object> bloodSugarList = new ArrayList<Object>();
+		if (period == Constant.EMPTY_STOMACH) {
+			bloodSugarMap.put("name", "空腹");
+		} else if (period == Constant.AFTER_BREAKFAST || period == Constant.AFTER_DINNER
+				|| period == Constant.AFTER_LUNCH) {
+			bloodSugarMap.put("name", "餐后");
+		} else {
+			bloodSugarMap.put("name", "餐前");
+		}
+		bloodSugarMap.put("data", bloodSugarList);
+		List<Map<String, Object>> list = bloodSugarDao.getDataByTime(user_id, period, datemin, datemax);
+		for (Map<String, Object> map : list) {
+			List<Object> sList = new ArrayList<Object>();
+			sList.add(map.get("create_date"));
+			sList.add(map.get("BloodSugar"));
+			bloodSugarList.add(sList);
+		}
+		List<Object> dataList = new ArrayList<Object>();
+		dataList.add(bloodSugarMap);
+		dataMap.put("list", dataList);
+		infoJson.setData(dataMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	
+	/**
+	 * 
+	 * @Title: getBloodOxygenChart 
+	 * @Description: 后台血氧曲线图
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBloodOxygenChart(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("title", "血氧饱和度");
+		dataMap.put("unit", "百分比/(%)");
+		dataMap.put("max", 100);
+		dataMap.put("min", 0);
+		Map<String, Object> bloodOxygenMap = new HashMap<String, Object>();
+		List<Object> bloodOxygenList = new ArrayList<Object>();
+		bloodOxygenMap.put("name", "血氧");
+		bloodOxygenMap.put("data", bloodOxygenList);
+		List<Map<String, Object>> list = bloodoxygenDao.getDataByTime(user_id, datemin, datemax);
+		for (Map<String, Object> map : list) {
+			List<Object> sList = new ArrayList<Object>();
+			sList.add(map.get("create_date"));
+			sList.add(map.get("Oxygen"));
+			bloodOxygenList.add(sList);
+		}
+		List<Object> dataList = new ArrayList<Object>();
+		dataList.add(bloodOxygenMap);
+		dataMap.put("list", dataList);
+		infoJson.setData(dataMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	
+	/**
+	 * 
+	 * @Title: getEarThermometerChart 
+	 * @Description: 后台耳温曲线图
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getEarThermometerChart(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("title", "耳温");
+		dataMap.put("unit", "°C");
+		dataMap.put("max", 50);
+		dataMap.put("min", 0);
+		Map<String, Object> earThermometerMap = new HashMap<String, Object>();
+		List<Object> earThermometerList = new ArrayList<Object>();
+		earThermometerMap.put("name", "耳温");
+		earThermometerMap.put("data", earThermometerList);
+		List<Map<String, Object>> list = earThermometerDao.getDataByTime(user_id, datemin, datemax);
+		for (Map<String, Object> map : list) {
+			List<Object> sList = new ArrayList<Object>();
+			sList.add(map.get("create_date"));
+			sList.add(map.get("temperature"));
+			earThermometerList.add(sList);
+		}
+		List<Object> dataList = new ArrayList<Object>();
+		dataList.add(earThermometerMap);
+		dataMap.put("list", dataList);
+		infoJson.setData(dataMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getElectrocardiographList 
+	 * @Description: 后台查询心电图时间列表 
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getElectrocardiographList(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		infoJson.setData(electrocardiographDao.getListByTime(user_id, datemin, datemax));
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getElectrocardiographChart 
+	 * @Description: 后台心电图曲线 
+	 * @param order_id
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getElectrocardiographChart(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> map = electrocardiographDao.getEcgById(null, order_id);
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("title", map.get("result"));
+		dataMap.put("unit", "");
+		dataMap.put("max", 0);
+		dataMap.put("min", 0);
+		String ecg = map.get("ecg1") + "," + map.get("ecg2") + "," + map.get("ecg3") + "," + map.get("ecg4") + ","
+				+ map.get("ecg5");
+		String ecgList[] = ecg.split(",");
+		Map<String, Object> ecgMap = new HashMap<String, Object>();
+		List<Object> ecgdata = new ArrayList<Object>();
+		ecgMap.put("data", ecgdata);
+		for (int i = 0; i < ecgList.length; i++) {
+			List<Object> sList = new ArrayList<Object>();
+			sList.add(i);
+			sList.add(ecgList[i]);
+			if (Math.abs(Integer.parseInt(ecgList[i])) + 200 > Integer.parseInt(dataMap.get("max") + "")) {
+				dataMap.put("max", Math.abs(Integer.parseInt(ecgList[i])) + 200);
+				dataMap.put("min", -Math.abs(Integer.parseInt(ecgList[i])) - 200);
+			}
+			ecgdata.add(sList);
+		}
+		List<Object> dataList = new ArrayList<Object>();
+		dataList.add(ecgMap);
+		dataMap.put("list", dataList);
+		infoJson.setData(dataMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getLungCapacityChart 
+	 * @Description: 后台肺活量曲线 
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getLungCapacityChart(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("title", "肺活量");
+		dataMap.put("unit", "L");
+		dataMap.put("max", 10);
+		dataMap.put("min", 0);
+		Map<String, Object> fvcMap = new HashMap<String, Object>();
+		Map<String, Object> fev1Map = new HashMap<String, Object>();
+		Map<String, Object> pefMap = new HashMap<String, Object>();
+		List<Object> fvcDataList = new ArrayList<Object>();
+		List<Object> fev1DataList = new ArrayList<Object>();
+		List<Object> pefDataList = new ArrayList<Object>();
+		fvcMap.put("name", "fvc");
+		fvcMap.put("data", fvcDataList);
+		fev1Map.put("name", "fev1");
+		fev1Map.put("data", fev1DataList);
+		pefMap.put("name", "pef");
+		pefMap.put("data", pefDataList);
+		List<Map<String, Object>> list = lungCapacityDao.getDataByTime(user_id, datemin, datemax);
+		for (Map<String, Object> map : list) {
+			List<Object> fvcList = new ArrayList<Object>();
+			List<Object> fev1List = new ArrayList<Object>();
+			List<Object> pefList = new ArrayList<Object>();
+			fvcList.add(map.get("create_date"));
+			fvcList.add(map.get("fvc"));
+			fev1List.add(map.get("create_date"));
+			fev1List.add(map.get("fev1"));
+			pefList.add(map.get("create_date"));
+			pefList.add(map.get("pef"));
+			fvcDataList.add(fvcList);
+			fev1DataList.add(fev1List);
+			pefDataList.add(pefList);
+		}
+		List<Object> dataList = new ArrayList<Object>();
+		dataList.add(fvcMap);
+		dataList.add(fev1Map);
+		dataList.add(pefMap);
+		dataMap.put("list", dataList);
+		infoJson.setData(dataMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getBloodOxygenPage 
+	 * @Description: 后台血氧按时分页
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBloodOxygenPage(String user_id, String datemin, String datemax, int pageno, int pagesize) {
+		return InfoJson.setSucc(bloodoxygenDao.pageQueryByTime(user_id, datemin, datemax, pageno, pagesize));
+	}
+
+	/**
+	 * 
+	 * @Title: getBloodPressurePage 
+	 * @Description: 后台血压按时分呀页
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBloodPressurePage(String user_id, String datemin, String datemax, int pageno, int pagesize){
+	    return InfoJson.setSucc(bloodPressureDao.pageQueryByTime(user_id, datemin, datemax, pageno, pagesize));
+	}
+	
+	/**
+	 * 
+	 * @Title: getBloodSugarPage 
+	 * @Description: 后台血糖按时分页 
+	 * @param user_id
+	 * @param period
+	 * @param datemin
+	 * @param datemax
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getBloodSugarPage(String user_id,int period, String datemin, String datemax, int pageno, int pagesize){
+		return InfoJson.setSucc(bloodSugarDao.pageQueryByTime(user_id, period, datemin, datemax, pageno, pagesize));
+	}
+	
+	/**
+	 * 
+	 * @Title: getEarThermometerPage 
+	 * @Description: 后台耳温按时分页
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getEarThermometerPage(String user_id, String datemin, String datemax, int pageno, int pagesize){
+		return InfoJson.setSucc(earThermometerDao.pageQueryByTime(user_id, datemin, datemax, pageno, pagesize));
+	}
+	
+	/**
+	 * 
+	 * @Title: getLungCapacityPage 
+	 * @Description: 后台肺活量按时分页 
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getLungCapacityPage(String user_id, String datemin, String datemax, int pageno, int pagesize){
+		return InfoJson.setSucc(lungCapacityDao.pageQueryByTime(user_id, datemin, datemax, pageno, pagesize));
+	}
+	
+	/**
+	 * 
+	 * @Title: getUrineTestPage 
+	 * @Description: 后台尿检按时分页
+	 * @param user_id
+	 * @param datemin
+	 * @param datemax
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public InfoJson getUrineTestPage(String user_id, String datemin, String datemax, int pageno, int pagesize){
+		return InfoJson.setSucc(urineTestDao.queryPageByTime(user_id, datemin, datemax, pageno, pagesize));
+	}
+}

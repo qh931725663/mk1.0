@@ -1,0 +1,297 @@
+package com.haaa.cloudmedical.app.user.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gexin.rp.sdk.http.IGtPush;
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.TokenUtil;
+import com.haaa.cloudmedical.common.util.redis.RedisCacheUtil;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+@Log(name = "患者端APP")
+public class UserAppService {
+
+	@Autowired
+	private UserAppDao dao;
+
+	@Autowired
+	public RedisCacheUtil<Object> redis;
+
+	private Logger logger = Logger.getLogger(UserAppService.class);
+
+	/**
+	 * 患者注册
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @param mainland
+	 * @param user_type
+	 * @return
+	 */
+	@Log(name = "新用户注册")
+	@Transactional
+	public ResponseDTO register(String user_phone, String user_pwd, String mainland) {
+
+		// 获取当前系统时间
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+
+		User user = new User();
+		Patient patient = new Patient();
+		ResponseDTO dto = new ResponseDTO();
+
+		user.setCreate_date(date);
+		patient.setCreate_date(date);
+		user.setUser_phone(user_phone);
+		user.setUser_pwd(user_pwd);
+		user.setMainland(mainland);
+		user.setUser_type(Constant.USER_TYPE_PATIENT);
+		user.setUser_flag(Constant.USER_FLAG_START);
+		user.setUser_source(Constant.USER_SOURCE_REGIEST);
+
+		// 写入到数据库
+		dao.save(user, patient);
+		dto.setData(user.getUser_id());
+		dto.setFlag(true);
+
+		return dto;
+	}
+
+	/**
+	 * 患者登录
+	 * 
+	 * @param account
+	 * @param user_pwd
+	 * @param os_type
+	 * @return
+	 */
+	@Log(name = "患者登录")
+	public ResponseDTO login(String account, String user_pwd, String os_type) {
+
+		ResponseDTO dto = new ResponseDTO();
+
+		// 检验账号
+		int count = dao.countByAccount(account);
+		if (count > 0) {
+
+			// 校验密码
+			count = dao.countByAccount(account, user_pwd);
+			if (count > 0) {
+
+				// 获取患者的ID
+				String patient_id = dao.getPatientId(account);
+
+				// 生成Token
+				String token = TokenUtil.generateToken(patient_id, account);
+
+				// 获取患者信息
+				Map<String, Object> patientInfo = dao.getPatientInfoById(patient_id);
+
+				// 写入到缓存
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("user", patientInfo);
+				redis.setCacheMap(token, map);
+
+				dto.setLoginToken(token);
+				dto.setData(patientInfo);
+				dto.setFlag(true);
+
+				// 个推解绑别名
+				IGtPush push = new IGtPush(Constant.URL, Constant.AppKey, Constant.MasterSecret);
+				push.unBindAliasAll(Constant.AppId, patient_id);
+			} else {
+				dto.setErrmsg("密码错误");
+			}
+		} else {
+			dto.setErrmsg("账号错误");
+		}
+		return dto;
+	}
+
+	/**
+	 * 更新或完善信息 身份证或护照 身份证和护照只能有一个
+	 * 
+	 * @param user
+	 * @param patient
+	 */
+	@Log(name = "更新或完善患者信息")
+	@Transactional
+	public ResponseDTO updatePatientInfo(User user, Patient patient) {
+
+		ResponseDTO dto = new ResponseDTO();
+		String user_card = user.getUser_card();
+		String passport = user.getPassport();
+
+		// 身份证
+		if (user_card != null && user_card.length() > 0) {
+			int size = dao.countByAccount(user_card);
+			if (size == 0) {
+				dao.update(user, patient);
+			}
+			if (size == 1) {
+				String toId = dao.getPatientId(user_card);
+				User toUser = dao.getUserById(toId);
+				if (toUser.getUser_phone() == null) {
+					String fromId = dao.getPatientId(user.getUser_phone());
+					this.merge(fromId, toId);
+				} else {
+					if (toUser.getUser_id().equals(user.getUser_id())) {
+						dao.update(user, patient);
+					} else {
+						dto.setErrmsg("该身份证已绑定其他手机号");
+					}
+				}
+			}
+		}
+
+		// 护照
+		else if (passport != null && passport.length() > 0) {
+			int size = dao.countByAccount(passport);
+			if (size == 0) {
+				dao.update(user, patient);
+			}
+			if (size == 1) {
+				String fromId = dao.getPatientId(passport);
+				if (fromId.equals(user.getUser_id())) {
+					dao.update(user, patient);
+				} else {
+					dto.setErrmsg("该护照已绑定其他手机号");
+				}
+			}
+		}
+
+		// 返回更新后的患者信息
+		dto.setData(dao.getPatientInfoById(user.getUser_id()));
+		dto.setFlag(true);
+		return dto;
+	}
+
+	/**
+	 * 绑定手机号到该身份证
+	 * 
+	 * @param user_phone
+	 * @param user_card
+	 * @return
+	 */
+	@Log(name = "绑定手机到身份证")
+	@Transactional
+	public ResponseDTO bind(String user_phone, String user_card) {
+		ResponseDTO dto = new ResponseDTO();
+		String toId = dao.getPatientId(user_card);
+		int count = dao.countByAccount(user_phone);
+		if (count == 1) {
+			String fromId = dao.getPatientId(user_phone);
+			User user = dao.getUserById(fromId);
+			if (user.getUser_card() == null) {
+				this.merge(fromId, toId);
+			} else {
+				dto.setErrmsg("手机号已被绑定");
+				logger.debug("手机号已被绑定");
+			}
+		}
+		if (count == 0) {
+			dao.execute("update n_user set user_phone = ? where user_card = ? ", user_phone, user_card);
+		}
+		Map<String, Object> patientInfo = dao.getPatientInfoById(toId);
+		dto.setData(patientInfo);
+		dto.setFlag(true);
+		return dto;
+	}
+
+	// 获取患者信息
+	public Map<String, Object> getPatientInfo(String patient_id) {
+		Map<String, Object> user = dao.getPatientInfoById(patient_id);
+		return user;
+	}
+
+	// 修改密码
+	@Log(name = "修改密码")
+	@Transactional
+	public void password(String user_phone, String user_pwd) {
+		dao.changePassword(user_phone, user_pwd);
+	}
+
+	// 检查该手机号码的个数
+	public int countByPhone(String user_phone) {
+		int size = dao.countByAccount(user_phone);
+		return size;
+	}
+
+	// 检查该身份证的个数
+	public int countByCard(String user_card) {
+		int size = dao.countByAccount(user_card);
+		return size;
+	}
+
+	/**
+	 * 获取Ahdi值
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	public double getAhdiValue(String patient_id) {
+		String sql = "select ahdi_value from n_user where user_id = ?";
+		double ahdi = dao.getValue(sql, new Object[] { patient_id }, Double.class);
+		return ahdi;
+	}
+
+	/**
+	 * 合并
+	 * 
+	 * @param fromId
+	 * @param toId
+	 */
+	@Log(name = "合并两条记录")
+	@Transactional
+	public void merge(String fromId, String toId) {
+
+		User fromUser = dao.getUserById(fromId);
+		User toUser = dao.getUserById(toId);
+		Patient fromPatient = dao.getPatientById(fromId);
+		Patient toPatient = dao.getPatientById(fromId);
+
+		BeanUtil.copy(fromUser, toUser);
+		BeanUtil.copy(fromPatient, toPatient);
+
+		dao.delete(fromUser, fromPatient);
+		dao.update(toUser, toPatient);
+
+	}
+
+	// 获取当前系统时间
+	public String getCurrentYear() {
+		String year = DateUtil.DateFormat(new Date(), "yyyy");
+		return year;
+	}
+
+	public double getAhdi(String user_phone, String user_card) {
+		List<String> params = new ArrayList<>();
+		StringBuilder sql = new StringBuilder("select ahdi_value from n_user where 1=1");
+		if(user_phone!=null&&user_phone.length()>0){
+			sql.append(" and user_phone = ? ");
+			params.add(user_phone);
+		}
+		if(user_card!=null&&user_card.length()>0){
+			sql.append(" and user_card = ? ");
+			params.add(user_card);
+		}
+		double ahdi = dao.getValue(sql.toString(), params.toArray(), Double.class);
+		return ahdi;
+	}
+
+}

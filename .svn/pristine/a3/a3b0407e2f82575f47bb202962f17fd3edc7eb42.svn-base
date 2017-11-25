@@ -1,0 +1,59 @@
+package com.haaa.cloudmedical.entity;
+
+public class Doctor {
+	private String doctor_id;
+	private String doctor_name;
+	private String department_order_id;
+	private String doctor_title;
+	private String qr_code;
+	private String create_date;
+	private String update_date;
+	public String getDoctor_id() {
+		return doctor_id;
+	}
+	public void setDoctor_id(String doctor_id) {
+		this.doctor_id = doctor_id;
+	}
+	public String getDoctor_name() {
+		return doctor_name;
+	}
+	public void setDoctor_name(String doctor_name) {
+		this.doctor_name = doctor_name;
+	}
+	public String getDepartment_order_id() {
+		return department_order_id;
+	}
+	public void setDepartment_order_id(String department_order_id) {
+		this.department_order_id = department_order_id;
+	}
+	public String getDoctor_title() {
+		return doctor_title;
+	}
+	public void setDoctor_title(String doctor_title) {
+		this.doctor_title = doctor_title;
+	}
+	public String getQr_code() {
+		return qr_code;
+	}
+	public void setQr_code(String qr_code) {
+		this.qr_code = qr_code;
+	}
+	public String getCreate_date() {
+		return create_date;
+	}
+	public void setCreate_date(String create_date) {
+		this.create_date = create_date;
+	}
+	public String getUpdate_date() {
+		return update_date;
+	}
+	public void setUpdate_date(String update_date) {
+		this.update_date = update_date;
+	}
+	@Override
+	public String toString() {
+		return "Doctor [doctor_id=" + doctor_id + ", doctor_name=" + doctor_name + ", department_order_id="
+				+ department_order_id + ", doctor_title=" + doctor_title + ", qr_code=" + qr_code + ", create_date="
+				+ create_date + ", update_date=" + update_date + "]";
+	}
+}

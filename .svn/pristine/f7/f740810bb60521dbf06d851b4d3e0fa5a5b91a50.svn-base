@@ -1,0 +1,104 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+/**
+ * 
+ * @author haaa
+ *
+ */
+public class BloodPressure {
+	
+	private Long order_id;
+	
+	private Long equipment_use_order_id;
+	
+	private Integer highPressure;
+	
+	private Integer lowPressure;
+	
+	private Integer meanPressure;
+	
+	private Integer pulseRate;
+	
+	private Date create_date;
+	
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+
+
+	public Integer getHighPressure() {
+		return highPressure;
+	}
+
+	public void setHighPressure(Integer highPressure) {
+		this.highPressure = highPressure;
+	}
+
+	public Integer getLowPressure() {
+		return lowPressure;
+	}
+
+	public void setLowPressure(Integer lowPressure) {
+		this.lowPressure = lowPressure;
+	}
+
+	public Integer getMeanPressure() {
+		return meanPressure;
+	}
+
+	public void setMeanPressure(Integer meanPressure) {
+		this.meanPressure = meanPressure;
+	}
+
+	public Integer getPulseRate() {
+		return pulseRate;
+	}
+
+	public void setPulseRate(Integer pulseRate) {
+		this.pulseRate = pulseRate;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	@Override
+	public String toString() {
+		return "BloodPressure [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id
+				+ ", highPressure=" + highPressure + ", lowPressure=" + lowPressure + ", meanPressure=" + meanPressure
+				+ ", pulseRate=" + pulseRate + ", create_date=" + create_date + ", update_date=" + update_date + "]";
+	}
+
+	
+	
+
+}

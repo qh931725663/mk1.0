@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>辅助检查</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css?v=p8"/>
+	<style type="text/css">
+		.circle>p{
+			width: 47.8%;
+		}
+		.txtBox>p{
+			width: 49%;
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<div class="circle">
+			<div class="dotBox"></div>
+			<p><span class="dot on"></span></p>
+			<p><span class="dot"></span></p>
+		</div>
+		<div class="txtBox">
+			<p><span class="txt onFont">辅助检查</span></p>
+			<p><span class="txt">药物治疗</span></p>
+		</div>
+	</div>
+	<form class="main" id="checkForm">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<div class="info_left"><span class="must">*</span>1、空腹血糖</div>
+				<div class="info_rgt">
+					<input type="text" name="070101" class="bitian mol" placeholder="点击填写"/>
+					<input type="hidden" name="070102" class="bitian mg" placeholder="点击填写"/>
+					<select class="mond_op">
+						<option value="1">mmol/L</option>
+						<option value="2">mg/dL</option>
+					</select>
+				</div>
+			</li>
+			<li>
+				<p>2、血常规</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">血红蛋白</div>
+						<div class="info_rgt"><input type="text" name="070201" placeholder="点击输入"/> <span class="mond">g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">白细胞</div>
+						<div class="info_rgt"><input type="text" name="070202" placeholder="点击输入"/> <span class="mond">g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血小板</div>
+						<div class="info_rgt"><input type="text" name="070203" placeholder="点击输入"/> <span class="mond">g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">其他</div>
+						<div class="info_rgt"><input type="text" name="070204"  placeholder="点击输入"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>3、尿常规</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">尿蛋白</div>
+						<div class="info_rgt"><input type="text" name="070301" class="bitian" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">尿糖</div>
+						<div class="info_rgt"><input type="text" name="070302" class="bitian" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">尿酮体</div>
+						<div class="info_rgt"><input type="text" name="070303" class="bitian" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">尿潜血</div>
+						<div class="info_rgt"><input type="text" name="070304" class="bitian" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">其他</div>
+						<div class="info_rgt"><input type="text" name="070305" class="bitian" placeholder="点击输入"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left" style="width: 26%;"><span class="must">*</span>4、糖化血红蛋白</div>
+				<div class="info_rgt" style="width: 72%;"><input type="text" name="070901" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/dL</span></div>
+			</li>
+			<li>
+				<div class="info_left">5、大便潜血</div>
+				<div class="info_rgt">
+					<select name="070501" class="neednot">
+						<option value="">请选择</option>
+						<option value="1">阴性</option>
+						<option value="2">阳性</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<p>6、肝功能</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left" style="width:24%">血清谷丙转氨酶</div>
+						<div class="info_rgt" style="width:74%"><input name="070601" type="text" placeholder="点击输入"/> <span class="mond">U/L</span></div>
+					</li>
+					<li>
+						<div class="info_left" style="width:24%">血清谷草转氨酶</div>
+						<div class="info_rgt" style="width:74%"><input name="070602" type="text" placeholder="点击输入"/> <span class="mond">U/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">白蛋白</div>
+						<div class="info_rgt"><input name="070603" placeholder="点击输入"/> <span class="mond">&nbsp;g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">总胆红素</div>
+						<div class="info_rgt"><input name="070604" type="text"  placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">结合胆红素</div>
+						<div class="info_rgt"><input name="070605" type="text" placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>7、肾功能</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">血清肌酐</div>
+						<div class="info_rgt"><input name="070701" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血尿素氮</div>
+						<div class="info_rgt"><input name="070702" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血钾浓度</div>
+						<div class="info_rgt"><input name="070703" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血钠浓度</div>
+						<div class="info_rgt"><input name="070704" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>8、血脂</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">总胆固醇</div>
+						<div class="info_rgt"><input name="070801" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">甘油三酯</div>
+						<div class="info_rgt"><input name="070802" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left" style="width:36%">血清低密度脂蛋白胆固醇</div>
+						<div class="info_rgt" style="width:62%"><input name="070803" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left" style="width:36%">血清高密度脂蛋白胆固醇</div>
+						<div class="info_rgt" style="width:62%"><input name="070804" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left" style="width: 26%;"><span class="must">*</span>9、尿微量白蛋白</div>
+				<div class="info_rgt" style="width: 72%;"><input type="text" name="070401" class="bitian" placeholder="点击输入"/> <span class="mond">%</span></div>
+			</li>
+			<li>
+				<div class="info_left" style="width: 36%;"><span class="must">*</span>10、血清同型半胱氨酸</div>
+				<div class="info_rgt" style="width: 62%;"><input name="071001" type="text" class="bitian" placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>11、眼底镜</div>
+				<div class="info_rgt">
+					<select name="071101" class="noboeder">
+						<option value="">请选择</option>
+						<option value="1">正常</option>
+						<option value="0">异常</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>12、心电图</div>
+				<div class="info_rgt">
+					<select name="071201" class="noboeder">
+						<option value="">请选择</option>
+						<option value="1">正常</option>
+						<option value="0">异常</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray">13、胸部X线片</div>
+				<div class="info_rgt ray_rgt">
+					<select name="071301" class="neednot">
+						<option value="">请选择</option>
+						<option value="1">正常</option>
+						<option value="0">异常</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray"><span class="must">*</span>14、心脏超声</div>
+				<div class="info_rgt ray_rgt">
+					<select name="071401" class="noboeder">
+						<option value="">请选择</option>
+						<option value="1">正常</option>
+						<option value="0">异常</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray">15、颈动脉超声</div>
+				<div class="info_rgt ray_rgt">
+					<select name="071501" class="neednot">
+						<option value="">请选择</option>
+						<option value="1">正常</option>
+						<option value="0">异常</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray">16、下肢血管超声</div>
+				<div class="info_rgt ray_rgt">
+					<select name="071601" class="neednot">
+						<option value="">请选择</option>
+						<option value="1">正常</option>
+						<option value="0">异常</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+			</li>
+			<li>
+				<span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>1、是否服用降压药</div>
+				<div class="info_rgt rad_rgt">
+					<select name="080101" class="noboeder yaoping">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<ul class="checkBox yaohide">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input name="080105" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input name="080106" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input name="080107" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input name="080108" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080109" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">规律</option>
+								<option value="2">间断</option>
+								<option value="3">不服药</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left rad_left">是否有药物不良反应</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080110" class="noboeder yaoping">
+								<option value="">请选择</option>
+								<option value="0">没有</option>
+								<option value="1">有</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>2、是否服用降糖药</div>
+				<div class="info_rgt rad_rgt">
+					<select name="080102" class="noboeder yaoping">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<ul class="checkBox yaohide">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input name="080105" data-name="080105" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input name="080106" data-name="080106" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input name="080107" data-name="080107" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input name="080108" data-name="080108" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080109" data-name="080109" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">规律</option>
+								<option value="2">间断</option>
+								<option value="3">不服药</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left rad_left">是否有药物不良反应</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080110" data-name="080110" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">没有</option>
+								<option value="1">有</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>3、是否服用降脂药</div>
+				<div class="info_rgt rad_rgt">
+					<select name="080103" class="noboeder yaoping">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<ul class="checkBox yaohide">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input name="080105" data-name="080105" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input name="080106" data-name="080106" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input name="080107" data-name="080107" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input name="080108" data-name="080108" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080109" data-name="080109" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">规律</option>
+								<option value="2">间断</option>
+								<option value="3">不服药</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left rad_left">是否有药物不良反应</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080110" data-name="080110" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">没有</option>
+								<option value="1">有</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>4、是否服用其它药物</div>
+				<div class="info_rgt rad_rgt">
+					<select name="080104" class="noboeder yaoping">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<img class="arrow" src="image/rgt.png"/>
+				</div>
+				<ul class="checkBox yaohide">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input name="080105" data-name="080105" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input name="080106" data-name="080106" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input name="080107" data-name="080107" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input name="080108" data-name="080108" type="text" class="bitian" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080109" data-name="080109" class="noboeder">
+								<option value="">请选择</option>
+								<option value="1">规律</option>
+								<option value="2">间断</option>
+								<option value="3">不服药</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+					<li>
+						<div class="info_left rad_left">是否有药物不良反应</div>
+						<div class="info_rgt rad_rgt">
+							<select name="080110" data-name="080110" class="noboeder">
+								<option value="">请选择</option>
+								<option value="0">没有</option>
+								<option value="1">有</option>
+							</select>
+							<img class="arrow" src="image/rgt.png"/>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/layer-mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/auxiliaryCheck.js?v=2a" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

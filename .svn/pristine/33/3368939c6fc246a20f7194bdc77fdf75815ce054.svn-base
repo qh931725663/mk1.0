@@ -1,0 +1,258 @@
+package com.haaa.cloudmedical.platform.survey.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.dao.MedicalSurveyDao;
+
+/**
+ * 
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class MedicalSurveyService {
+
+	@Resource
+	private MedicalSurveyDao medicalSurveyDao;
+
+	/**
+	 * 
+	 * @Title: getPersonalInfo @Description: 后台健康调查填写页面查询用户信息 @param
+	 *         user_id @return @throws
+	 */
+	public InfoJson getPersonalInfo(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> userMap = medicalSurveyDao.getPersonalInfo(user_id);
+		String idcard = (String) userMap.get("user_card");
+		IdcardInfoExtractor idcardInfo = new IdcardInfoExtractor(idcard);
+		userMap.put("user_birthday", DateUtil.dateFormat(idcardInfo.getBirthday(), "yyyy-MM-dd"));
+		userMap.put("user_sex", idcardInfo.getGender());
+		infoJson.setData(userMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * @throws Exception
+	 * 
+	 * @Title: saveHealthSurvey @Description: 保存用户调查填写信息 @param
+	 *         data @return @throws
+	 */
+	@Transactional
+	public InfoJson saveHealthSurvey(Map<String, Object> data) {
+		System.out.println(data);
+		InfoJson infoJson = new InfoJson();
+		Date date = new Date();
+		long order_id = saveHealthSurveyHistory(data, date);
+		Set<String> questionSet = data.keySet();
+		for (String question_id : questionSet) {
+			Object answer = data.get(question_id);
+			if (answer != null && answer != "") {
+				String question_index = "0";
+				String questionarr[] = question_id.split("-"); // “—”数目不同用以区分复选框还是有多道题目
+				if (questionarr.length == 3) {
+					question_id = questionarr[0];
+					question_index = questionarr[2];
+				}
+				Map<String, Object> questionMap = medicalSurveyDao.getQuestionById(question_id);
+				questionMap.put("medical_history_order_id", order_id);
+				questionMap.put("question_index", question_index);
+				questionMap.put("create_date", date);
+				questionMap.put("question_k_order_id", question_id);
+				long question_order_id = medicalSurveyDao.addQuestion(questionMap);
+				if (answer instanceof List) {
+					List<Object> answerList = (List<Object>) answer;
+					for (Object object : answerList) {
+						Map<String, Object> answerMap = new HashMap<String, Object>();
+						answerMap.put("medical_history_order_id", order_id);
+						answerMap.put("question_order_id", question_order_id);
+						answerMap.put("survey_answer", object);
+						answerMap.put("create_date", date);
+						medicalSurveyDao.addAnswer(answerMap);
+					}
+				} else {
+					Map<String, Object> answerMap = new HashMap<String, Object>();
+					answerMap.put("medical_history_order_id", order_id);
+					answerMap.put("question_order_id", question_order_id);
+					answerMap.put("survey_answer", answer);
+					medicalSurveyDao.addAnswer(answerMap);
+				}
+			}
+		}
+		infoJson.setData(order_id);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: saveHealthSurveyHistory @Description: 提取用户信息保存健康调查历史记录 @param
+	 *         data @param date @return @throws
+	 */
+	private long saveHealthSurveyHistory(Map<String, Object> data, Date date) {
+		Map<String, Object> survey_history = new HashMap<String, Object>();
+		survey_history.put("user_id", data.remove("user_id"));
+		survey_history.put("user_name", data.remove("user_name"));
+		survey_history.put("fixed_telephone", data.remove("fixed_telephone"));
+		survey_history.put("user_phone", data.remove("user_phone"));
+		survey_history.put("user_birthday", data.remove("user_birthday"));
+		survey_history.put("user_marriage", data.remove("user_marriage"));
+		survey_history.put("user_sex", data.remove("user_sex"));
+		survey_history.put("user_address", data.remove("user_address"));
+		survey_history.put("email", data.remove("email"));
+		survey_history.put("language", data.remove("language"));
+		survey_history.put("employment_status", data.remove("employment_status"));
+		survey_history.put("user_height", data.remove("user_height"));
+		survey_history.put("user_weight", data.remove("user_weight"));
+		survey_history.put("HighPressure", data.remove("HighPressure"));
+		survey_history.put("LowPressure", data.remove("LowPressure"));
+		survey_history.put("PulseRate", data.remove("PulseRate"));
+		survey_history.put("medical_insurance", data.remove("medical_insurance"));
+		survey_history.put("medical_insurance_code", data.remove("medical_insurance_code"));
+		survey_history.put("emergency_contact", data.remove("emergency_contact"));
+		survey_history.put("emergency_contact_phone", data.remove("emergency_contact_phone"));
+		survey_history.put("last_check", data.remove("last_check"));
+		survey_history.put("create_date", date);
+		return medicalSurveyDao.saveHealthHistory(survey_history);
+	}
+
+	/**
+	 * 
+	 * @Title: getHealthSurveyHistory @Description: TODO(这里用一句话描述这个方法的作用) @param
+	 *         user_id @param downTime @param upTime @return @throws
+	 */
+	public InfoJson getHealthSurveyHistory(String user_id, String downTime, String upTime) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> list = medicalSurveyDao.getSurveyHistory(user_id, downTime, upTime);
+		List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
+		for (Map<String, Object> map : list) {
+			String order_id = String.valueOf(map.get("order_id"));
+			List<Map<String, Object>> answerList = medicalSurveyDao.getAnswersBySurvey(order_id);
+			Map<String, String> allAnswerMap = new HashMap<String, String>();
+			for (Map<String, Object> answerMap : answerList) {
+				if (answerMap.get("question_index").equals("0")) {
+					if (allAnswerMap.containsKey(String.valueOf(answerMap.get("question_k_order_id")))) {
+						allAnswerMap.put(String.valueOf(answerMap.get("question_k_order_id")),
+								allAnswerMap.get(String.valueOf(answerMap.get("question_k_order_id"))) + ","
+										+ answerMap.get("survey_answer"));
+					} else {
+						allAnswerMap.put(String.valueOf(answerMap.get("question_k_order_id")),
+								String.valueOf(answerMap.get("survey_answer")));
+					}
+				} else {
+					String parent_id = String.valueOf(
+							medicalSurveyDao.getQuestionById(answerMap.get("question_k_order_id") + "").get("parent_id"));
+					if (!map.containsKey(parent_id)) {
+						map.put(parent_id + "", new ArrayList<Map<String, Object>>());
+						Map<String, Object> tableMap = new HashMap<String, Object>();
+						tableMap.put("question_index", answerMap.get("question_index") + "");
+						tableMap.put(answerMap.get("question_k_order_id") + "", answerMap.get("survey_answer"));
+						((List) map.get(parent_id + "")).add(tableMap);
+					} else if (((List) map.get(parent_id)).size() < Integer
+							.valueOf(answerMap.get("question_index").toString())) {
+						Map<String, Object> tableMap = new HashMap<String, Object>();
+						tableMap.put("question_index", answerMap.get("question_index") + "");
+						tableMap.put(answerMap.get("question_k_order_id") + "", answerMap.get("survey_answer"));
+						((List) map.get(parent_id + "")).add(tableMap);
+					} else {
+						Map<String, Object> tableMap = (Map<String, Object>) ((List) map.get(parent_id))
+								.get(Integer.valueOf(answerMap.get("question_index").toString()) - 1);
+						tableMap.put("question_index", answerMap.get("question_index") + "");
+						tableMap.put(answerMap.get("question_k_order_id") + "", answerMap.get("survey_answer"));
+					}
+				}
+			}
+			answerList = new ArrayList<Map<String, Object>>();
+			for (Entry<String, String> entry : allAnswerMap.entrySet()) {
+				Map<String, Object> map2 = new HashMap<String, Object>();
+				map2.put("name", entry.getKey());
+				map2.put("value", entry.getValue());
+				answerList.add(map2);
+			}
+			map.put("answers", answerList);
+			returnList.add(map);
+		}
+		infoJson.setData(returnList);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getTimeList @Description: 根据时间查询列表 @param user_id @param
+	 *         downTime @param upTime @return @throws
+	 */
+	public InfoJson getTimeList(String user_id, String downTime, String upTime) {
+		InfoJson infoJson = new InfoJson();
+		infoJson.setData(medicalSurveyDao.getTimeList(user_id, downTime, upTime));
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getHealthSurveyById @Description: 根据 健康调查id查询健康调查的具体数据 @param
+	 *         order_id @return @throws
+	 */
+	public InfoJson getHealthSurveyById(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> map = medicalSurveyDao.getSurveyHistoryById(order_id);
+		List<Map<String, Object>> answerList = medicalSurveyDao.getAnswersBySurvey(order_id);
+		Map<String, String> allAnswerMap = new HashMap<String, String>();
+		for (Map<String, Object> answerMap : answerList) {
+			if (answerMap.get("question_index").equals("0")) {
+				if (allAnswerMap.containsKey(String.valueOf(answerMap.get("question_k_order_id")))) {
+					allAnswerMap.put(String.valueOf(answerMap.get("question_k_order_id")),
+							allAnswerMap.get(String.valueOf(answerMap.get("question_k_order_id"))) + ","
+									+ answerMap.get("survey_answer"));
+				} else {
+					allAnswerMap.put(String.valueOf(answerMap.get("question_k_order_id")),
+							String.valueOf(answerMap.get("survey_answer")));
+				}
+			} else {
+				String parent_id = String.valueOf(
+						medicalSurveyDao.getQuestionById(answerMap.get("question_k_order_id") + "").get("parent_id"));
+				if (!map.containsKey(parent_id)) {
+					map.put(parent_id + "", new ArrayList<Map<String, Object>>());
+					Map<String, Object> tableMap = new HashMap<String, Object>();
+					tableMap.put("question_index", answerMap.get("question_index") + "");
+					tableMap.put(answerMap.get("question_k_order_id") + "", answerMap.get("survey_answer"));
+					((List) map.get(parent_id + "")).add(tableMap);
+				} else if (((List) map.get(parent_id)).size() < Integer
+						.valueOf(answerMap.get("question_index").toString())) {
+					Map<String, Object> tableMap = new HashMap<String, Object>();
+					tableMap.put("question_index", answerMap.get("question_index") + "");
+					tableMap.put(answerMap.get("question_k_order_id") + "", answerMap.get("survey_answer"));
+					((List) map.get(parent_id + "")).add(tableMap);
+				} else {
+					Map<String, Object> tableMap = (Map<String, Object>) ((List) map.get(parent_id))
+							.get(Integer.valueOf(answerMap.get("question_index").toString()) - 1);
+					tableMap.put("question_index", answerMap.get("question_index") + "");
+					tableMap.put(answerMap.get("question_k_order_id") + "", answerMap.get("survey_answer"));
+				}
+			}
+		}
+		answerList = new ArrayList<Map<String, Object>>();
+		for (Entry<String, String> entry : allAnswerMap.entrySet()) {
+			Map<String, Object> map2 = new HashMap<String, Object>();
+			map2.put("name", entry.getKey());
+			map2.put("value", entry.getValue());
+			answerList.add(map2);
+		}
+		map.put("answers", answerList);
+		infoJson.setData(map);
+		return infoJson;
+	}
+}

@@ -1,0 +1,117 @@
+package com.haaa.cloudmedical.platform.survey.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.SurveyDao;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.user.service.UserPlatformService;
+
+@Service
+public class SurveyService {
+
+    @Autowired
+    private SurveyDao dao;
+
+    // 获取人员信息
+    public Map<String, Object> getUserInfo(String user_id) {
+        Map<String, Object> user = null;
+        String sql = "select a.user_name,a.user_card,a.user_birthday,findname(a.user_sex) user_sex,a.user_phone,a.email,a.user_address from	n_user a where a.user_id = ?";
+        List<Map<String, Object>> list = dao.select(sql, user_id);
+        if (list.size() > 0) {
+            user = list.get(0);
+        }
+        return user;
+    }
+
+    //更新人员信息
+    public void updateUserInfo(User user) {
+        dao.update(user, "n_user");
+    }
+
+    // 新建一份健康调查
+    public long addSurvey(Map<String, Object> survey) {
+        long order_id = 0;
+        try {
+            order_id = dao.insert(survey, "s_survey");
+            initSurvey(order_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order_id;
+    }
+
+    // 初始化调查问题
+    public void initSurvey(long order_id) {
+        String sql = "insert into s_survey_question(survey_order_id,question_k_order_id,survey_question_content,survey_question_type,create_date) select ?,order_id,survey_question_content,survey_question_type,now() from s_survey_question_k";
+        try {
+            dao.execute(sql, order_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 保存答案
+    public void saveAnswer(List<Map<String, Object>> answer_list) {
+        List<Long> values = new ArrayList<Long>();
+        for (Map<String, Object> map : answer_list) {
+            try {
+                long order_id = dao.insert(map, "s_survey_answer");
+                values.add(order_id);
+            } catch (Exception e) {
+                e.printStackTrace();
+                String sql = "delete from s_survey_question where order_id in (" + StringUtils.repeat("?", ",", values.size()) + ")";
+                dao.execute(sql, values.toArray());
+            }
+
+        }
+
+    }
+
+    // 获取问题健康评估问题列表
+    public List<Map<String, Object>> getSurveyQuestionList(long survey_order_id) {
+        String sql = "select * from s_survey_question where survey_order_id = ?";
+        List<Map<String, Object>> question_list = dao.select(sql, survey_order_id);
+        return question_list;
+    }
+
+    public String getSurveyAnswerContent(long survey_option_order_id) {
+        String sql = "select survey_option_content from s_survey_option where order_id = ?";
+        String survey_option_content = dao.select(sql, new Object[] { survey_option_order_id }, String.class);
+        return survey_option_content;
+    }
+
+    public List<Map<String, Object>> querySurvey(String user_id, String start, String end) {
+        //查询调查
+        String sql = "select a.*, date_format(a.create_date,'%Y-%m-%d') date from s_survey a where user_id = ?";
+        List<Map<String, Object>> list = null;
+        //时间
+        if (StringUtil.isBlank(start) && StringUtil.isNotBlank(end)) {
+            sql += " and create_date <= ?";
+            list = dao.select(sql, user_id, end);
+        } else if (StringUtil.isNotBlank(start) && StringUtil.isBlank(end)) {
+            sql += " and create_date >= ?";
+            list = dao.select(sql, user_id, start);
+        } else if (StringUtil.isNotBlank(start) && StringUtil.isNotBlank(end)) {
+            sql += " and create_date >= ? and create_date <= ?";
+            list = dao.select(sql, user_id, start, end);
+        } else {
+            list = dao.select(sql, user_id);
+        }
+        //
+        for (Map<String, Object> map : list) {
+            String order_id = map.get("order_id").toString();
+            sql = "select a.*, b.question_k_order_id from s_survey_answer a, s_survey_question b where b.order_id = a.survey_question_order_id and a.survey_order_id = " + order_id;
+            List<Map<String, Object>> answers = dao.select(sql);
+            map.put("answers", answers);
+        }
+        return list;
+    }
+}

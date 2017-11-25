@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+    <style>
+        *{font-family: "Microsoft Yahei";}
+        div{margin:5px 0;}
+        h2{font-weight:bold;font-size:25px;text-align: center;margin: 10px 0; }
+        h3{font-weight: bold;margin:8px 0;font-size: 18px; }
+        p{margin:3px 0;font-size: 16px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="company" style="padding: 0 20px;">
+        <h2 >症状性高血压，常见原因有哪些？</h2>
+        <span style="margin-left: 75px;margin-right: 8px;color:#666666;">2017-04-25 17:40</span><span>作者：周之钊</span>
+
+        <p style="margin-top:5px;">
+            <img src="../../images/img/health-exposition/heal_04.png" style="width: 95%;margin: 5px 2px;"/>
+        </p>
+        <h3>一、肾脏疾病</h3>
+        <p style="margin-bottom: 10px;color:#666666;">
+            1、肾实质病变，以急性或慢性肾小球肾炎、肾盂肾炎为最常见，其次为先天性肾脏疾病，如多囊肾、马蹄肾、肾发育不全等。代谢性疾病所致的肾脏病变，如糖尿病性肾病、肾淀粉样变、痛风性肾病以及肾结石、肾结核、肾外伤等也常引起血压升高。<br>
+            2、肾血管疾病，各种原因引起的肾动脉或其分支狭窄，如肾动脉粥样硬化、肌纤维增生，缩窄性大动脉炎，肾静脉血栓及肾动脉瘤等。<br>
+            3、尿路梗阻性疾病如尿路结石、肾脏肿瘤及各种原因导致的尿路受压。<br>
+        </p>
+        <h3>二、内分泌疾病</h3>
+        <p style="color:#666666;">
+            常见的有嗜铬细胞瘤，原发性醛固酮增多症，皮质醇增多症，垂体前叶功能亢进及某些类型的肾上腺变态综合征。
+        </p>
+        <h3>三、血管病变</h3>
+        <p style="margin:10px 0;color:#666666;">
+            如先天性主动脉缩窄和多发性大动脉炎。
+        </p>
+        <h3>四、颅脑病变</h3>
+        <p style="margin:10px 0;color:#666666;">
+            如脑部创伤、脑肿瘤、脑干感染等。
+        </p>
+        <h3>五、妊娠高血压综合征</h3>
+        <p style="margin:10px 0;color:#666666;">
+            高血压是妊娠高血压综合征的主要表现之一，多在妊娠晚期出现血压升高。
+        </p>
+        <h3>六、药源性高血压</h3>
+        <p style="margin:10px 0;color:#666666;">
+            如女性口服避孕药，长期应用肾上腺皮质激素等，常可发生高血压。
+        </p>
+        <h3>七、其他</h3>
+        <p style="margin:10px 0;color:#666666;">
+            如结缔组织病，高原心血管病及女性绝经期前后，常有血压升高表现。肢端肥大症及高血钙症可伴有高血压。
+        </p>
+    </div>
+</div>
+</body>
+</html>

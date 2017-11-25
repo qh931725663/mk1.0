@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="./css/zTreeStyle.css">
+<title>角色添加</title>
+<style type="text/css">
+.lable_style {
+	display: inline-block;
+	width: 80px;
+	text-align: right;
+}
+
+.li_style {
+	width: 600px;
+	height: 50px;
+	margin-bottom: 10px;
+	clear: both;
+	margin-bottom: 10px;
+}
+
+.tree_style {
+	border: solid 1px #ddd;
+	float: left;
+	margin-left: 12px;
+	width: 80%;
+}
+</style>
+</head>
+<body>
+	<div class="page-container">
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">*</span> <span
+				style="display:inline-block;width:80px;">角色名称：</span> <input
+				type="text" style="width:300px;" class="input-text radius"
+				name="role_name" id="role_name" />
+		</div>
+		<div style="margin-bottom:30px;margin-left:50px;">
+			<span class="c-red">&nbsp;</span> <span
+				style="display:inline-block;width:80px;">角色描述：</span> <input
+				type="text" style="width:300px;" class="input-text radius"
+				name="role_note" id="role_note" />
+		</div>
+		<div
+			style="margin-bottom:30px;margin-left:50px;overflow-y:scroll;height:280px;">
+			<span
+				style="display:inline-block;width:80px;float:left;text-align:right;">基础权限：</span>
+			<ul id="treeDemo" class="ztree tree_style"></ul>
+		</div>
+
+		<div style="text-align:center;">
+			<button class="btn btn-success radius btn-user-edit" type="button"
+				id="do_save">保存</button>
+			<button class="btn btn-danger radius" type="button"
+				onclick="layer_close()">取消</button>
+		</div>
+	</div>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<script type="text/javascript" src="./js/jquery.ztree.all-3.5.min.js"></script>
+	<script type="text/javascript">
+		var setting = {
+			check : {
+				enable : true
+			},
+			async : {
+				enable : true,
+				url : "../../../role/getMenuList.action",
+			},
+			data : {
+				simpleData : {
+					enable : true,
+					idKey : 'c_menu_code',
+					pIdKey : 'c_menu_father',
+				},
+				key : {
+					name : 'c_menu_name',
+				}
+			},
+			callback : {
+				onAsyncSuccess : function(event, treeId, treeNode, msg) {
+					//展开
+					var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+					treeObj.expandAll(true);
+					//初始化数据
+					initData().done(function(data) {
+						var role = data.role;
+						$('#role_name').val(role.role_name);
+						$('#role_note').val(role.role_note);
+						//显示菜单
+						var menu = data.menu;
+						var nodes = treeObj.transformToArray(treeObj.getNodes());
+						$.each(menu, function(i, item) {
+							/* treeObj.expandNode(node, true, false, true); */
+							$.each(nodes, function(j, node) {
+								if (item.menu_code == node.c_menu_code) {
+									treeObj.checkNode(node, true, true);
+								}
+							});
+						});
+	
+					});
+				}
+			}
+		};
+		//加载数据
+		function initData() {
+			var order_id = mkh.getUrlParam("id");
+			return $.ajax({
+				url : "../../../role/getRoleMenuList.action",
+				type : "post",
+				dataType : 'json',
+				data : {
+					order_id : order_id
+				},
+				success : function(data) {
+					/* var order_id = data.data; */
+				}
+			});
+		}
+		//
+		$(document).ready(function() {
+			var ztree = $.fn.zTree.init($("#treeDemo"), setting, null);
+			
+			//保存
+			$('#do_save').on('click', function() {
+				var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+				var nodes = treeObj.getCheckedNodes();
+				nodes = $.map(nodes, function(node, i) {
+					if (node.c_menu_father) {
+						return node;
+					}
+				});
+				//提交后台
+				var role_name = $('#role_name').val();
+				role_name = $.trim(role_name);
+				//描述
+				var role_note = $('#role_note').val();
+				role_note = $.trim(role_note);
+				//
+				$.ajax({
+					url : "../../../role/updateRole.action",
+					type : "post",
+					dataType : 'json',
+					data : {
+						order_id : mkh.getUrlParam("id"),
+						role_name : role_name,
+						role_note : role_note,
+						list : nodes
+					},
+					success : function(data) {
+						if(data){
+							layer.alert("保存成功");
+						}
+					}
+				});
+			})
+		});
+		
+	</script>
+</body>
+</html>

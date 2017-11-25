@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control"  content="no-siteapp" />
+<!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" href="themes/default/default.css" />
+<link rel="stylesheet" href="plugins/code/prettify.css" />
+
+<!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+<title>Banner添加</title>
+</head>
+<body>
+	<nav class="breadcrumb">编辑新闻</nav>
+	<article class="page-container">
+		<input type="hidden" id="order_id">
+		<form class="form form-horizontal" id="form-news-edit" enctype="multipart/form-data">
+			<div class="row cl member-list-input">
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>发布平台</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<select class="select-box" id="is_push_to_patient" name="is_push_to_patient" style="width: 240px;background: #ddd" disabled="disabled">
+							<option value="1" selected>患者端APP</option>
+							<option value="2">医生端APP</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>所属板块</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<select class="select-box" id="news_panelname" name="section" style="width: 240px;background: #ddd" disabled="disabled">
+						</select>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>文章标题</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<input id="title" name="title" class="input-text"  maxlength='20' placeholder="必填项，字数10-20字" style="width:240px;">
+						<span class="c-red" id="title_mes"></span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>显示图片</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<img src="../images/photo_01.png" class='bor' id="show_pic" style="width:120px;height:120px;cursor: pointer;" onclick="javascript:$('#pic-1').click()">
+						<input class="file" id="pic-1" name="pic" type="file" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+							<span class="btn-upload form-group">
+							<input type="file" multiple name="image1" class="input-file" disabled="disabled">
+
+							<span style="color:rgb(180,180,180);">上传图片大小 200*150</span>
+						</span>
+						<input type="hidden" id="pic"/>
+						<span class="c-red" id="pic_mes"></span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1" id="contain2" style="">
+					<label class='form-label col-xs-2 col-sm-2'>显示内容</label>
+					<div class='formControls col-xs-3 col-sm-3 radio-show'>
+						<input type='radio' id='news-1' class="radio" name='news_type' value='1' checked/><label for="news-1">文章形式</label>
+						<input type='radio' id='news-2' class="ml-10 radio"  name='news_type' value='2'/><label for="news-2">链接形式</label>
+						<input type='radio' id='news-3' class="ml-10 radio"  name='news_type' value='3'/><label for="news-3">无内容</label>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1 link-2 nocontent-hide" style="display: none;">
+					<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>链接形式</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<input id="url_index" name="url_index" class="input-text" style="width:240px;">
+						<span class="c-red" id="url_index_mes"></span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1 article-1 nocontent-hide">
+					<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>简短导读</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<input id="short_introduction" name="short_introduction" class="input-text"  maxlength='20' placeholder="必填项，字数10-20字" style="width:240px;">
+						<span class="c-red" id="short_introduction_mes"></span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1 article-1 nocontent-hide">
+					<label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>正文内容</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<textarea id="editor_id" name="the_text" cols="100" rows="8" style="width:100%;height:450px;visibility:hidden;"></textarea>
+						<span class="c-red" id="the_text_mes"></span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1 send-index" style="display: none;">
+					<label class='form-label col-xs-2 col-sm-2'>发布首页</label>
+					<div class='formControls col-xs-3 col-sm-3'>
+						<input type='radio' class="sent-index" id='is_send_index' name='is_push_to_frontpage' value='1'/><label for="is_send_index">是</label>
+						<input type='radio' class="ml-10 sent-index" id='no_send_index' name='is_push_to_frontpage' value='0'/><label for="no_send_index">否</label>
+					</div>
+				</div>
+				<div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-2">
+					<button class="btn btn-danger radius" type="button" onclick="news_edit()">保存</button>
+					<button class="btn btn-danger radius" type="button" onclick="javascript:window.location.href = 'news-list.html';">取消</button>
+				</div>
+			</div>
+		</form>
+	</article>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+	<script charset="utf-8" src="kindeditor.js?v=2"></script>
+	<script charset="utf-8" src="plugins/code/prettify.js"></script>
+	<script charset="utf-8" src="lang/zh_CN.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="../static/h-admin/js/verification-check.js"></script>
+	<script type="text/javascript" src="../lib/jquery.validation/js/jquery.validate.js"></script>
+	<script type="text/javascript">
+		var order_id = "";
+		var ulist = "";
+		//所属模块下拉列表显示
+		var menulist = [
+			[
+				{ "MID": "1", "MName": "首页轮播图","dataid":"huan-0"},
+			 	{ "MID": "2", "MName": "健康科普","dataid":"huan-1"}
+			],
+			[
+				{ "MID": "3", "MName": "首页轮播图","dataid":"doct-0"},
+				{ "MID": "4", "MName": "云课堂","dataid":"doct-1"},
+				{ "MID": "5", "MName": "管理计划-糖尿病","dataid":"doct-2"},
+				{ "MID": "6", "MName": "管理计划-高血压","dataid":"doct-3"}
+			]
+		];
+		//展示所属板块公共方法
+		function show_news_list(typevalue){
+			var html="";
+			var selist=menulist[typevalue-1];
+			$.each(selist,function(i,p){
+				html+="<option id='"+p.dataid+"' value='"+ p.MID+"'>"+ p.MName+"</option>";
+			});
+			$("#news_panelname").html(html);
+			$("#news_panelname option:eq(0)").change();//触发改变事件
+		}
+		$(function(){
+			//获取地址栏的参数
+			var a = window.location.href;
+			var s = a.indexOf("?");
+			var t = a.substring(s + 1);
+			ulist = t.split("&");
+			order_id = ulist[1];
+			$("#order_id").val(order_id);//把order_id保存到隐藏文本域中
+
+			//初始化加载所属板块列表数据
+			var typevalue=1;
+			show_news_list(typevalue);
+
+			//发布平台 首页轮播图切换下拉框
+			$("#is_push_to_patient").change(function(){
+				var typevalue=$(this).val();
+				show_news_list(typevalue);
+			});
+			//控制显示内容 显示隐藏
+			function show_hide_content(obj,lish,link){
+				$(obj).click(function(){
+					$(lish).each(function(){
+						if(obj=="#news-1"){
+							$(this).show();
+							$(link).hide();
+						}else if(obj=="#news-2"){
+							$(this).show();
+							$(link).hide();
+						}else if(obj=="#news-3"){
+							$(this).hide();
+							$(link).hide();
+						}
+					});
+				});
+			}
+			//患者端app(首页轮播图 健康科普)
+			show_hide_content("#news-1","div.article-1","div.link-2");
+			show_hide_content("#news-2","div.link-2","div.article-1");
+			show_hide_content("#news-3","div.article-1","div.link-2");
+
+			//加载页面初始化编辑数据
+			$.ajax({
+				url : "../../../news/getNewsById.action",
+				type : "post",
+				dataType : 'json',
+				data :{order_id : order_id},
+				success : function(p) {
+					var p1= p.data;
+					//console.log(p1);
+					$("#is_push_to_patient  option[value='"+p1.is_push_to_patient+"']").attr("selected",true).change();
+					$("#news_panelname option[value='"+p1.section+"']").attr("selected",true).change();
+					$("#title").val(p1.title);
+					$("#show_pic").attr("src", p1.pic_index);$("#pic").val(p1.pic_index);
+					$("input.radio").each(function(){
+						var index=p1.news_type;
+						if(this.value==index){
+							$("input.radio[value='"+this.value+"']").attr("checked","true").click();
+						}
+					});
+					$("#short_introduction").val(p1.short_introduction);
+					$("#url_index").val(p1.url_index);
+					$(".ke-content").html(p.the_text);
+					$("input.sent-index").each(function(){
+						var index=p1.is_push_to_frontpage;
+						if(this.value==index){
+							$("input.sent-index[value='"+this.value+"']").attr("checked","true");
+						}
+					});
+				}
+			});
+		});
+
+		//改变所属板块触发事件
+		$("#news_panelname").change(function(){
+			$("#news_panelname option").each(function(index){
+				var id=this.id;
+				if(this.selected==true){
+					if(id=="huan-0" || id=="doct-0"){
+						$("input.radio").show().next("label").show();
+						$(".send-index").hide();//隐藏首页
+					}else if(id=="huan-1"||id=="doct-1"||id=="doct-2"||id=="doct-3" ){
+						$("input.radio").hide().next("label").hide();//隐藏链接 无内容
+						$("input.radio:eq(0)").show().next("label").show();//显示文章形式
+						$("input.radio:eq(0)").click();
+						$(".send-index").show();//显示首页
+					}
+
+				}
+			});
+		});
+
+		//编辑方法
+		KindEditor.ready(function(K) {
+			var user_id =window.localStorage.getItem("userId");
+			editor1 = K.create('#editor_id', {
+				cssPath : './plugins/code/prettify.css',
+				uploadJson : '../../../news/upload.action?user_id='+user_id+'&report_type=500009'+'&order_id=10000',
+				allowFileManager : true,
+				afterBlur: function(){this.sync();}
+			});
+			$.post("../../../news/getNewsById.action",{order_id:$("#order_id").val()},function(p){
+				editor1.html(p.data.the_text);
+				$("#editor_id").val(p.data.the_text);
+				//alert(p.data.the_text);
+			});
+		});
+
+		//点击修改
+		function news_edit() {
+			var user_id =window.localStorage.getItem("userId");
+			var order_id=$("#order_id").val();
+			var data= $.param({order_id : order_id}) + '&' + $('#form-news-edit').serialize();
+			var result=new_add_edit_check();
+			if(result) {
+				$.ajax({
+					url: "../../../news/update.action",
+					type: "post",
+					dataType: 'json',
+					data: data,
+					success: function (flag) {
+						if (flag == true) {
+							upload_image(user_id, order_id);
+							layer.msg('修改成功!');
+							setTimeout(function () {
+								window.location.href = 'news-list.html';
+							}, 1000);
+						} else {
+							layer.msg("修改失败！");
+						}
+					}
+				});
+			}
+		}
+
+		//保存上传图片
+		function upload_image(user_id, order_id) {
+			var data = new FormData($("#form-news-edit")[0]);
+			$.ajax({
+				type : "post",
+				url : "../../../upload/file.action",
+				headers : {user_id : user_id,order_id : order_id,report_type : '500009'},
+				data : data,
+				dataType : "json",
+				processData : false,
+				contentType : false,
+				success : function(data) {
+				}
+			});
+		}
+		
+		//显示图片预览
+		function upload_img(up_img, show_img) {
+			$(up_img).change(function() {
+				var file = this.files[0];
+				var r = new FileReader();
+				r.readAsDataURL(file);
+				$(r).load(function() {
+					$(show_img).attr({
+						src : this.result,
+						class : 'no-bor'
+					});
+				})
+			})
+		}
+		upload_img("#pic-1", "#show_pic");
+	</script>
+	<!--请在上方写此页面业务相关的脚本-->
+</body>
+</html>

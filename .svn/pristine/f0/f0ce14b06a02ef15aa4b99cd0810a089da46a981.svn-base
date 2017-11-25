@@ -1,0 +1,142 @@
+package com.haaa.cloudmedical.common.util;
+
+import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class BeanUtil {
+	public static ResourceBundle getProperty(String name){
+		ResourceBundle rb = ResourceBundle.getBundle(name);
+		return rb;
+	}
+	public static void remove(Map<String,Object> map){
+		Set<String> keys = map.keySet();
+		List<String> nullKeys = new ArrayList<String>();
+		for (String key : keys) {
+			if(map.get(key)==null||map.get(key).equals("")||map.get(key).equals("null")){
+				nullKeys.add(key);
+			}
+		}
+		for (String key : nullKeys) {
+			map.remove(key);
+		}
+	}
+	public static <T> Map<String,Object> toMapFromObject(T from){
+		Map<String,Object> to = new HashMap<String, Object>();
+		Field[] fields = from.getClass().getDeclaredFields();
+		Field.setAccessible(fields, true);
+		for (Field field : fields) {
+			try {
+				Object value = field.get(from);
+				if(value!=null&&!"".equals(value.toString())){
+					to.put(field.getName(), value);
+				}
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+		if(to.size()==0)
+			to=null;
+		return to;
+	}
+	
+	public static <T> List<Map<String,Object>> toMapFromObject(List<T> from){
+		List<Map<String,Object>> list = null;
+		if(from.size()>0){
+			list = new ArrayList<Map<String,Object>>();
+			for (T t : from) {
+				Map<String,Object> map = toMapFromObject(t);
+				list.add(map);
+			}
+		}
+		if(list.size()==0)
+			list=null;
+		return list;
+	}
+	
+	public static <T> T toObjectFromMap(Map<String,Object> from,Class<T> to){
+		Field[] fields = to.getDeclaredFields();
+		Field.setAccessible(fields, true);
+		T obj = null;
+		try {
+			obj = to.newInstance();
+			for (Field field : fields) {
+				for(Map.Entry<String,Object> entry:from.entrySet()){
+					if(entry.getKey().equals(field.getName())){
+						Object value = entry.getValue();
+						if(value!=null&&!"".equals(value.toString())){
+							if(value.getClass()==Date.class){
+								value=DateFormat.getDateTimeInstance().format(value);
+							}
+							field.set(obj, value.toString());
+							break;
+						}
+					}
+				}
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	
+	public static <T> List<T> toObjectFromMap(List<Map<String,Object>> from,Class<T> to){
+		List<T> list = new ArrayList<T>();
+		for (Map<String, Object> map : from) {
+			T obj =toObjectFromMap(map, to);
+			list.add(obj);
+		}
+		return list;
+	}
+	
+	public static Map<String,Object> getCardInfo(String user_card){
+		Map<String,Object> cardInfo = new HashMap<String, Object>();
+		if(user_card!=null){
+			if(user_card.matches("\\d{18}")){
+				Pattern pattern = Pattern.compile("\\d{6}(\\d{8})\\d{2}(\\d{1})\\d{1}");
+				Matcher matcher = pattern.matcher(user_card);
+				if(matcher.find()){
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					String birthday = matcher.group(1).substring(0,4)+"-"+matcher.group(1).substring(4,6)+"-"+matcher.group(1).substring(6,8);
+					String sex = Integer.parseInt(matcher.group(2))%2==1?"200001":"200002";
+					int age = (int)LocalDate.parse(birthday, formatter).until(LocalDate.now(), ChronoUnit.YEARS);
+					cardInfo.put("user_card", user_card);
+					cardInfo.put("user_birthday", birthday);
+					cardInfo.put("user_sex", sex);
+					cardInfo.put("user_age", age);
+				}
+			}
+			if(user_card.matches("\\d{15}")){
+				Pattern pattern = Pattern.compile("\\d{6}(\\d{6})\\d{2}(\\d{1})");
+				Matcher matcher = pattern.matcher(user_card);
+				if(matcher.find()){
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					String birthday = "19"+matcher.group(1).substring(0,2)+"-"+matcher.group(1).substring(2,4)+"-"+matcher.group(1).substring(4,6);;
+					String sex = Integer.parseInt(matcher.group(2))%2==1?"200001":"200002";
+					int age = (int)LocalDate.parse(birthday, formatter).until(LocalDate.now(), ChronoUnit.YEARS);
+					cardInfo.put("user_card", user_card);
+					cardInfo.put("user_birthday", birthday);
+					cardInfo.put("user_sex", sex);
+					cardInfo.put("user_age", age);
+				}
+			}
+		}
+		return cardInfo;
+	}
+	
+	public static void main(String[] args) {
+		String url = BeanUtil.getProperty("dbconfig").getString("initPassword");
+		System.out.println(url);
+	}
+}

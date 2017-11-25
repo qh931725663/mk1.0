@@ -1,0 +1,261 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>新增医生 </title>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-doctor-add">
+        <div class="row cl">
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <input type="text" class="input-text" id="user_name" name="user_name" placeholder="请输入真实姓名" style="width:240px;">
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">身份证号</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <input id="user_card" name="user_card" class="input-text" placeholder="请输入手机号" style="width:240px;">
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <input type="text" class="input-text" placeholder="" id="adminName" name="adminName" style="width:240px;">
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>手机号码:</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <input type="text" id="user_phone" name="user_phone" class="input-text" placeholder="请输入手机号" style="width:240px;">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 mb-10">
+                    <label class="form-label col-xs-2 col-sm-2">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <span class="select-box" style="width:240px;">
+                        <select id="user_sex" class="select" name="user_sex" size="1">
+                            <option id="sex-search" value="" selected>请选择</option>
+                            <option id="sex-man" value="200001">男</option>
+                            <option id="sex-wen" value="200002">女</option>
+                        </select>
+                    </span>
+                </div>
+            </div> 
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;龄</label>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <input id="user_age" class="input-text" name="user_age" style="width:113%;">
+                </div>
+                <span class="from-label" style="display: inline-block;height:31px;line-height:31px;margin-left: 1%;">岁</span>
+            </div>
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">职&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <span class="select-box" style="width:240px;">
+                        <select class="select" id="doctor_title" name="doctor_title" size="1">
+                            <option value="" selected>请选择</option>
+                            <option value="1700002">主任医师</option>
+                            <option value="1700001">副主任医师</option>
+                            <option value="1700003">主治医师</option>
+                            <option value="1700004">住院医师</option>                       
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">医&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;院</label>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <input type="text" class="input-text" value="" style="width:240px;">
+                </div>
+                <div class="formControls col-xs-3 col-sm-3" style="margin-left: 5%;">
+                    <span class="btn btn-danger select-administrative" >选择</span>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">科&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;室</label>
+                <div class="formControls col-xs-3 col-sm-3">
+                    <span class="select-box" style="width:240px;">
+                        <select id="department_order_id"  class="select" name="department_order_id" size="1">
+                            <option value="1" selected>内科</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 mb-10">
+                <label class="form-label col-xs-2 col-sm-2">简&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;介</label>
+                <div class="formControls col-xs-2 col-sm-2">
+                    <textarea class="comments" id="doctor_introduce" name="doctor_introduce" rows="5" cols="37"> </textarea>
+                </div>
+            </div>
+
+            <div class="col-xs-8 col-sm-9 col-xs-offset-2 col-sm-offset-2">
+                <button class="btn btn-success radius" type="button" onclick="doctor_add();">保存</button>
+                <button class="btn btn-danger radius" type="button" onclick="layer_close()">取消</button>
+            </div>
+        </div>
+    </form>
+</article>
+<div id="index-layer-administrative" style="width:23%;padding:6px 6px;display:none;position:relative; top:-228px; left:44%;background: #ddd;">
+        <select id="province" class="select" name="province"  style="width: 80px;">
+            <option value="-1" selected>选择省</option>
+        </select>
+        <select id="city" class="select" name="city" style="width: 80px;">
+            <option value="-1" selected>选择市</option>
+        </select>
+        <select id="hosp" class="select" name="hosp" style="width: 80px;">
+            <option id="hosp-select" value="-1" selected>选择医院</option>
+        </select>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/jquery.validation/js/jquery.validate.js"></script>
+<script type="text/javascript" src="../lib/jquery.validation/js/validate-methods.js"></script>
+<script type="text/javascript" src="../lib/jquery.validation/js/messages_zh.js"></script>
+<script type="text/javascript">
+$(function(){
+    var flag=-1;
+    $(".select-administrative").click(function(){
+        var obj=$(this);
+        if(flag==-1){
+            obj.html("取消");
+            $("#index-layer-administrative").show();
+            flag=1;
+        }else{
+            obj.html("选择");
+            $("#index-layer-administrative").hide();
+            flag=-1;
+        }
+    });
+});
+//新增医生用户
+function doctor_add(){
+    debugger;
+    var data=$('#form-doctor-add').serialize();
+    $.ajax({
+        url: "../../../user-platform/addDoctor.action",
+        type: "post",
+        dataType: 'json',
+        data:data,
+        success: function (response) {
+            console.log(response);
+            layer.msg('成功添加!');
+            setTimeout(function () {
+                parent.location.reload(); // 父页面刷新
+                parent.layer.close(index1);
+            }, 1000);
+        }
+    });
+    var index1 = parent.layer.getFrameIndex(window.name);
+}
+
+    //选择医院
+    var provinceList = [
+        '浙江省',
+        '上海市'
+    ];
+    var cityList = [
+        ['杭州市','宁波市'],
+        ['浦东区','闵行区']
+    ]
+    var hospList=[
+        ['a医院1','a医院2','a医院3'],
+        ['b医院1','b医院3','b医院3'],
+        ['c医院1','c医院3','c医院3'],
+        ['c医院1','c医院3','c医院3']
+
+    ];
+    var adminRoleList=[
+        ['a科室1','a科室2','a科室3'],
+        ['b科室1','b科室2','b科室3']
+    ];
+    //填充省份列表    for  for..in  forEach
+    var str = '';
+    $.each(provinceList, function(i,v){
+        //console.log('处理数组中的一个元素');
+        //console.log(i+'-'+v);
+        str += `<option value="${i}">${v}</option>`;
+    })
+    $('#province').append(str);  //防止文档抖动
+
+    //当用户选择某个省份时，填充对应的城市列表
+    $('#province').change(function(){
+        //console.log(this.value);
+        $('#city').html('<option value="-1">选择市</option>');
+        if(this.value==='-1'){
+            return;
+        }
+
+        var cities = cityList[this.value];
+        var str = '';
+        $.each(cities, function(i,c){
+            str += `<option value="${i}">${c}</option>`;
+        })
+        $('#city').append(str);
+    });
+    //当用户选择某个城市时，填充对应的城市列表
+    $('#city').change(function(){
+        //console.log(this.value);
+        $('#hosp').html('<option value="-1">选择医院</option>');
+        if(this.value==='-1'){
+            return;
+        }
+
+        var hosp= hospList[this.value];
+        var str = '';
+        $.each(hosp, function(i,c){
+            str += `<option value="${i}">${c}</option>`;
+        })
+        $('#hosp').append(str);
+    });
+    //当用户选择某个医院时，填充对应的科室列表
+    $('#hosp').change(function(){
+        //console.log(this.value);
+        $('#adminRole').html('<option value="-1">选择科室</option>');
+        if(this.value==='-1'){
+            return;
+        }
+        var adminRole= adminRoleList[this.value];
+        var str = '';
+        $.each(adminRole, function(i,c){
+            str += `<option value="${i}">${c}</option>`;
+        })
+        $('#adminRole').append(str);
+    });
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

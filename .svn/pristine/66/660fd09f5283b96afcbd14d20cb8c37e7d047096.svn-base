@@ -1,0 +1,350 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css?v=1" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css"
+	href="../static/view-image/css/lightbox.css">
+<title>消息提醒</title>
+<style type="text/css">
+.content {
+	height: 50px;
+	font-size: 15px;
+}
+
+.add-span, .medicine-span, .doctor-span {
+	float: right;
+	margin-right: 20px;
+	cursor: pointer;
+	margin-top: 2px;
+}
+
+.edit-span {
+	float: right;
+	margin-right: 20px;
+	cursor: pointer;
+	margin-top: 14px;
+}
+
+.delete-span {
+	float: right;
+	margin-right: 20px;
+	cursor: pointer;
+	margin-top: 14px;
+}
+
+.lable-input {
+	width: 150px;
+}
+
+.div-btn {
+	padding-left: 165px;
+}
+
+.select-style {
+	height: 31px;
+	width: 332px;
+}
+
+.select-style2 {
+	height: 31px;
+	width: 80px;
+}
+
+.show_data {
+	display: inline-block;
+	margin-top: 10px;
+}
+
+.medicine-content {
+	height: 200px;
+	overflow-y: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+
+.doctor-content {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		提醒管理<span class="c-gray en">&gt;</span>详情 <a
+			class="btn btn-success radius r"
+			style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<div id="tab-system" class="HuiTab">
+			<div class="tabBar cl">
+				<span>测量提醒</span> <span>用药提醒</span> <span>就诊提醒</span>
+			</div>
+			<!-- 测量提醒 -->
+			<div class="tabCon">
+				<div class="cl pd-5 bg-1 bk-gray mt-20"
+					style="height:30px;background:#858383">
+					<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">测量提醒</span>
+					<span class="add-span btn btn-primary size-S radius">添加</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 血压测量
+				</div>
+				<div class="content" id="blood_pressure" data-type="1400004">
+					<span class="show_data"></span><span
+						class="delete-span btn btn-primary size-MINI radius">删除</span> <span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 血糖测量
+				</div>
+				<div class="content" id="blood_sugar" data-type="1400005">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 体重测量
+				</div>
+				<div class="content" id="weight" data-type="1400006">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 血氧测量
+				</div>
+				<div class="content" id="oxygen" data-type="1400007">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 心率测量
+				</div>
+				<div class="content" id="heart_rate" data-type="1400008">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 肺活量测量
+				</div>
+				<div class="content" id="vital_capacity" data-type="1400009">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 体温测量
+				</div>
+				<div class="content" id="temperature" data-type="1400010">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 尿液分析测量
+				</div>
+				<div class="content" id="urine" data-type="1400011">
+					<span class="show_data"></span> <span
+						class="delete-span btn btn-primary size-MINI radius">删除</span><span
+						class="edit-span btn btn-primary size-MINI radius">修改</span>
+				</div>
+			</div>
+			<!-- 用药提醒-->
+			<div class="tabCon">
+				<!-- 高血压 -->
+				<div class="cl pd-5 bg-1 bk-gray mt-20"
+					style="height:30px;background:#858383">
+					<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">用药提醒</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 高血压 <span
+						class="medicine-span btn btn-primary size-S radius"
+						style="margin-top:4px;">添加</span>
+				</div>
+				<div class="medicine-content" id="highBlood">
+					<table
+						class="table table-border table-bordered table-striped table-bg radius">
+						<thead class="text-c">
+							<tr>
+								<th>慢病类型</th>
+								<th>药品名</th>
+								<th>规格</th>
+								<th>用法</th>
+								<th>用量</th>
+								<th>单位</th>
+								<th>用药时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 糖尿病 <span
+						class="medicine-span btn btn-primary size-S radius"
+						style="margin-top:4px;">添加</span>
+				</div>
+				<div class="medicine-content" id="diabetes">
+					<table
+						class="table table-border table-bordered table-striped table-bg radius">
+						<thead class="text-c">
+							<tr>
+								<th>慢病类型</th>
+								<th>药品名</th>
+								<th>规格</th>
+								<th>用法</th>
+								<th>用量</th>
+								<th>单位</th>
+								<th>用药时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 高脂血症 <span
+						class="medicine-span btn btn-primary size-S radius"
+						style="margin-top:4px;">添加</span>
+				</div>
+				<div class="medicine-content" id="hyperlipidemia">
+					<table
+						class="table table-border table-bordered table-striped table-bg radius">
+						<thead class="text-c">
+							<tr>
+								<th>慢病类型</th>
+								<th>药品名</th>
+								<th>规格</th>
+								<th>用法</th>
+								<th>用量</th>
+								<th>单位</th>
+								<th>用药时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 慢性阻塞性肺病 <span
+						class="medicine-span btn btn-primary size-S radius"
+						style="margin-top:4px;">添加</span>
+				</div>
+				<div class="medicine-content" id="lungDisease">
+					<table
+						class="table table-border table-bordered table-striped table-bg radius">
+						<thead class="text-c">
+							<tr>
+								<th>慢病类型</th>
+								<th>药品名</th>
+								<th>规格</th>
+								<th>用法</th>
+								<th>用量</th>
+								<th>单位</th>
+								<th>用药时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- 就诊提醒 -->
+			<div class="tabCon">
+				<!-- 高血压 -->
+				<div class="cl pd-5 bg-1 bk-gray mt-20"
+					style="height:30px;background:#858383">
+					<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">就诊提醒</span>
+				</div>
+				<div class="navbar-collection" style="height:35px;">
+					<span style="margin-right:6px;">|</span> 就诊提醒 <span
+						class="doctor-span btn btn-primary size-S radius"
+						style="margin-top:4px;">添加</span>
+				</div>
+				<div class="doctor-content" id="highBlood">
+					<table
+						class="table table-border table-bordered table-striped table-bg radius"
+						style="width:60%">
+						<thead class="text-c">
+							<tr>
+								<th>就诊日期</th>
+								<th>就诊时间</th>
+								<th>就诊医院</th>
+								<th>就诊科室</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="../static/view-image/js/lightbox-plus-jquery.min.js"></script>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<script type="text/javascript" src="js/remind-detail.js"></script>
+	<script type="text/javascript" src="js/medicine-detail.js"></script>
+	<script type="text/javascript" src="js/doctor-detail.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$.Huitab("#tab-system .tabBar span", "#tab-system .tabCon", "current", "click", "0");
+		});
+		//初始化
+		$(function() {
+			//
+			remind.init();
+	
+			remind.medicine('initItem');
+			//
+			remind.doctor('initItem');
+		});
+	</script>
+</body>
+</html>

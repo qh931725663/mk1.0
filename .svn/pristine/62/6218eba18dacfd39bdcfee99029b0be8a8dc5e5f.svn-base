@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>便携式心电仪</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="use-explain">
+        <ul class="use-explain-list">
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/portable-img/equipment_1.png" alt="" style="width:100%;"/>
+                </div>
+                <p>1、长按电源键开机；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/portable-img/equipment_2.png" alt="" style="width:100%;"/>
+                </div>
+                <p>2、受测者保持自然坐姿，按下列任一图示操作，轻微触碰电极，待波形稳定好自动开始测量，波形变绿；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/portable-img/equipment_3.png" alt="" style="width:100%;"/>
+                </div>
+                <P>3、10秒钟测量完成后，进入报告界面，显示心率和诊断报告，单击按键可翻看历史病例；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/portable-img/equipment_4.png" alt="" style="width:100%;"/>
+                </div>
+                <P>4、在报告界面下，受测者重复步骤2，仪器自动进入下一次测量；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/portable-img/equipment_5.png" alt="" style="width:100%;"/>
+                </div>
+                <P>5、便携式心电计可以存储多组数据；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/portable-img/equipment_6.png" alt="" style="width:100%;"/>
+                </div>
+                <P>6、便携式心电计在无任何操作的情况下一分钟自动关机。</P>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,409 @@
+package com.haaa.cloudmedical.entity;
+
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
+/*
+ * һ�������ʵ����
+ */
+public class SelfServiceCheck{
+	
+	private Long order_id;
+	
+	private Integer hosp_id;
+	
+	private String hosp_name;
+	
+	private String user_name;
+	
+	private Long user_id;
+	
+	private String user_card;
+	
+	private String user_phone;
+	
+	private Float user_height;
+	
+	private Float user_weight;
+	
+	private Float bmi;
+	
+	private Integer highPrssure;
+	
+	private Integer lowPressure;
+	
+	private Integer pulseRate;
+	
+	private Float bloodSugar;
+	
+	private Float temperature;
+	
+	private Integer heartRate;
+	
+	private Integer result;
+	
+	private Float fvc;
+	
+	private Float fev1;
+	
+	private Float pef;
+	
+	private Float fef25;
+	
+	private Float fef75;
+	
+	private Float fef2575;
+	
+	private Float oxygen;
+	
+	private Integer uro;
+	
+	private Integer bld;
+	
+	private Integer bli;
+	
+	private Integer ket;
+	
+	private Integer glu;
+	
+	private Integer pro;
+	
+	private Integer ph;
+	
+	private Integer nit;
+	
+	private Integer leu;
+	
+	private Float sg;
+	
+	private Integer vc;
+	
+	private Integer mal;
+	
+	private Date create_date;
+	
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Integer getHosp_id() {
+		return hosp_id;
+	}
+
+	public void setHosp_id(Integer hosp_id) {
+		this.hosp_id = hosp_id;
+	}
+
+	public String getHosp_name() {
+		return hosp_name;
+	}
+
+	public void setHosp_name(String hosp_name) {
+		this.hosp_name = hosp_name;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getUser_card() {
+		return user_card;
+	}
+
+	public void setUser_card(String user_card) {
+		this.user_card = user_card;
+	}
+
+	public String getUser_phone() {
+		return user_phone;
+	}
+
+	public void setUser_phone(String user_phone) {
+		this.user_phone = user_phone;
+	}
+
+	public Float getUser_height() {
+		return user_height;
+	}
+
+	public void setUser_height(Float user_height) {
+		this.user_height = user_height;
+	}
+
+	public Float getUser_weight() {
+		return user_weight;
+	}
+
+	public void setUser_weight(Float user_weight) {
+		this.user_weight = user_weight;
+	}
+
+	public Float getBmi() {
+		return bmi;
+	}
+
+	public void setBmi(Float bmi) {
+		this.bmi = bmi;
+	}
+
+	public Integer getHighPrssure() {
+		return highPrssure;
+	}
+
+	public void setHighPrssure(Integer highPrssure) {
+		this.highPrssure = highPrssure;
+	}
+
+	public Integer getLowPressure() {
+		return lowPressure;
+	}
+
+	public void setLowPressure(Integer lowPressure) {
+		this.lowPressure = lowPressure;
+	}
+
+	public Integer getPulseRate() {
+		return pulseRate;
+	}
+
+	public void setPulseRate(Integer pulseRate) {
+		this.pulseRate = pulseRate;
+	}
+
+	public Float getBloodSugar() {
+		return bloodSugar;
+	}
+
+	public void setBloodSugar(Float bloodSugar) {
+		this.bloodSugar = bloodSugar;
+	}
+
+	public Float getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(Float temperature) {
+		this.temperature = temperature;
+	}
+
+	public Integer getHeartRate() {
+		return heartRate;
+	}
+
+	public void setHeartRate(Integer heartRate) {
+		this.heartRate = heartRate;
+	}
+
+	public Integer getResult() {
+		return result;
+	}
+
+	public void setResult(Integer result) {
+		this.result = result;
+	}
+
+	public Float getFvc() {
+		return fvc;
+	}
+
+	public void setFvc(Float fvc) {
+		this.fvc = fvc;
+	}
+
+	public Float getFev1() {
+		return fev1;
+	}
+
+	public void setFev1(Float fev1) {
+		this.fev1 = fev1;
+	}
+
+	public Float getPef() {
+		return pef;
+	}
+
+	public void setPef(Float pef) {
+		this.pef = pef;
+	}
+
+	public Float getFef25() {
+		return fef25;
+	}
+
+	public void setFef25(Float fef25) {
+		this.fef25 = fef25;
+	}
+
+	public Float getFef75() {
+		return fef75;
+	}
+
+	public void setFef75(Float fef75) {
+		this.fef75 = fef75;
+	}
+
+	public Float getFef2575() {
+		return fef2575;
+	}
+
+	public void setFef2575(Float fef2575) {
+		this.fef2575 = fef2575;
+	}
+
+	public Float getOxygen() {
+		return oxygen;
+	}
+
+	public void setOxygen(Float oxygen) {
+		this.oxygen = oxygen;
+	}
+
+	public Integer getUro() {
+		return uro;
+	}
+
+	public void setUro(Integer uro) {
+		this.uro = uro;
+	}
+
+	public Integer getBld() {
+		return bld;
+	}
+
+	public void setBld(Integer bld) {
+		this.bld = bld;
+	}
+
+	public Integer getBli() {
+		return bli;
+	}
+
+	public void setBli(Integer bli) {
+		this.bli = bli;
+	}
+
+	public Integer getKet() {
+		return ket;
+	}
+
+	public void setKet(Integer ket) {
+		this.ket = ket;
+	}
+
+	public Integer getGlu() {
+		return glu;
+	}
+
+	public void setGlu(Integer glu) {
+		this.glu = glu;
+	}
+
+	public Integer getPro() {
+		return pro;
+	}
+
+	public void setPro(Integer pro) {
+		this.pro = pro;
+	}
+
+	public Integer getPh() {
+		return ph;
+	}
+
+	public void setPh(Integer ph) {
+		this.ph = ph;
+	}
+
+	public Integer getNit() {
+		return nit;
+	}
+
+	public void setNit(Integer nit) {
+		this.nit = nit;
+	}
+
+	public Integer getLeu() {
+		return leu;
+	}
+
+	public void setLeu(Integer leu) {
+		this.leu = leu;
+	}
+
+	public Float getSg() {
+		return sg;
+	}
+
+	public void setSg(Float sg) {
+		this.sg = sg;
+	}
+
+	public Integer getVc() {
+		return vc;
+	}
+
+	public void setVc(Integer vc) {
+		this.vc = vc;
+	}
+
+	public Integer getMal() {
+		return mal;
+	}
+
+	public void setMal(Integer mal) {
+		this.mal = mal;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	@Override
+	public String toString() {
+		return "SelfServiceCheck [order_id=" + order_id + ", hosp_id=" + hosp_id + ", hosp_name=" + hosp_name
+				+ ", user_name=" + user_name + ", user_id=" + user_id + ", user_card=" + user_card + ", user_phone="
+				+ user_phone + ", user_height=" + user_height + ", user_weight=" + user_weight + ", bmi=" + bmi
+				+ ", highPrssure=" + highPrssure + ", lowPressure=" + lowPressure + ", pulseRate=" + pulseRate
+				+ ", bloodSugar=" + bloodSugar + ", temperature=" + temperature + ", heartRate=" + heartRate
+				+ ", result=" + result + ", fvc=" + fvc + ", fev1=" + fev1 + ", pef=" + pef + ", fef25=" + fef25
+				+ ", fef75=" + fef75 + ", fef2575=" + fef2575 + ", oxygen=" + oxygen + ", uro=" + uro + ", bld=" + bld
+				+ ", bli=" + bli + ", ket=" + ket + ", glu=" + glu + ", pro=" + pro + ", ph=" + ph + ", nit=" + nit
+				+ ", leu=" + leu + ", sg=" + sg + ", vc=" + vc + ", mal=" + mal + ", create_date=" + create_date
+				+ ", update_date=" + update_date + "]";
+	}
+
+	
+}

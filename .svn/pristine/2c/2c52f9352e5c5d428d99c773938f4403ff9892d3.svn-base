@@ -1,0 +1,313 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.allinone.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.dao.AIODao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class AIOAppService {
+
+	@Resource
+	private AIODao aioDao;
+
+	private static String httpURL = "";
+
+
+	static {
+		httpURL = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+	}
+
+	public InfoJson getTimeList(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> list = aioDao.getTimeList(user_id);
+		infoJson.setData(list);
+		infoJson.setCount(list.size());
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	public InfoJson getDetail(String user_id, String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> map;
+		if (order_id == null || order_id.equals("")) {
+			map = aioDao.getAppLatestDetail(user_id);
+		} else {
+			map = aioDao.getAppDetailById(order_id);
+		}
+		if (map != null) {
+			map.forEach((k, v) -> {
+				if (v == null) {
+					map.put(k, "");
+				}
+			});
+
+			if (String.valueOf(map.get("equipment_property_order_id")).equals(Constant.SELFSERVICE_6500)) {
+				infoJson.setInfo("6500");
+			} else {
+				infoJson.setInfo("9900");
+			}
+
+			map.put("s6500_pic_index",
+					map.get("s6500_pic_index").equals("") ? "" : httpURL + map.get("s6500_pic_index"));
+			map.put("ecg1", map.get("ecg1").equals("") ? "" : httpURL + map.get("ecg1"));
+			map.put("ecg2", map.get("ecg2").equals("") ? "" : httpURL + map.get("ecg2"));
+			map.put("ecg3", map.get("ecg3").equals("") ? "" : httpURL + map.get("ecg3"));
+			map.put("ecg4", map.get("ecg4").equals("") ? "" : httpURL + map.get("ecg4"));
+			map.put("ecg5", map.get("ecg5").equals("") ? "" : httpURL + map.get("ecg5"));
+			map.put("ecg6", map.get("ecg6").equals("") ? "" : httpURL + map.get("ecg6"));
+			map.put("ecg7", map.get("ecg7").equals("") ? "" : httpURL + map.get("ecg7"));
+			infoJson.setData(map);
+			infoJson.setCount(1);
+		} else {
+		}
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	@SuppressWarnings("serial")
+	public InfoJson getIOSDetail(String user_id, String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> map;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (order_id == null || order_id.equals("")) {
+			map = aioDao.getAppLatestDetail(user_id);
+		} else {
+			map = aioDao.getAppDetailById(order_id);
+		}
+
+		if (map != null) {
+			map.forEach((k, v) -> {
+				if (v == null) {
+					map.put(k, "");
+				}
+			});
+			if (String.valueOf(map.get("equipment_property_order_id")).equals(Constant.SELFSERVICE_6500)) {
+				infoJson.setInfo("6500");
+			} else {
+				infoJson.setInfo("9900");
+			}
+
+			resultMap.put("date", map.get("date"));
+			resultMap.put("report_6500", map.put("s6500_pic_index",
+					map.get("s6500_pic_index").equals("") ? "" : httpURL + map.get("s6500_pic_index")));
+			resultMap.put("date", map.get("date"));
+			resultMap.put("report_6500", map.put("s6500_pic_index",
+					map.get("s6500_pic_index").equals("") ? "" : httpURL + map.get("s6500_pic_index")));
+			List<Object> list = new ArrayList<Object>();
+			resultMap.put("list", list);
+			Map<String, Object> generalMap = new HashMap<String, Object>();
+			generalMap.put("title", "一般检查");
+			List<Object> generalList = new ArrayList<Object>();
+			generalMap.put("datalist", generalList);
+			Map<String, Object> lungMap = new HashMap<String, Object>();
+			lungMap.put("title", "肺功能检查");
+			List<Object> lungList = new ArrayList<Object>();
+			lungMap.put("datalist", lungList);
+			Map<String, Object> urineMap = new HashMap<String, Object>();
+			urineMap.put("title", "尿常规检查");
+			List<Object> urineList = new ArrayList<Object>();
+			urineMap.put("datalist", urineList);
+
+			Map<String, Object> ecgMap = new HashMap<String, Object>();
+			ecgMap.put("title", "心电图");
+			List<Object> ecgList = new ArrayList<Object>();
+			ecgMap.put("datalist", ecgList);
+
+			list.add(generalMap);
+			list.add(lungMap);
+			list.add(urineMap);
+			list.add(ecgMap);
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "心率");
+					put("value", map.get("HeartRate") + "bpm");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血氧");
+					put("value", map.get("Oxygen") + "/" + map.get("PulseRate") + "bpm");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血压");
+					put("value", map.get("HighPressure") + "/" + map.get("LowPressure") + "mmHg");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血糖");
+					put("value", map.get("BloodSugar") + "mmol/L");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "身高");
+					put("value", map.get("user_height") + "cm");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "体重");
+					put("value", map.get("user_weight") + "Kg");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "BMI");
+					put("value", map.get("BMI") + "指数");
+				}
+			});
+			generalList.add(new HashMap<String, Object>() {
+				{
+					put("name", "体温");
+					put("value", map.get("temperature") + "℃");
+				}
+			});
+			lungList.add(new HashMap<String, Object>() {
+				{
+					put("name", "FVC");
+					put("value", map.get("fvc") + "L");
+				}
+			});
+			lungList.add(new HashMap<String, Object>() {
+				{
+					put("name", "PEF");
+					put("value", map.get("pef") + "L/S");
+				}
+			});
+			lungList.add(new HashMap<String, Object>() {
+				{
+					put("name", "FEV1");
+					put("value", map.get("fev1") + "L");
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "PH");
+					put("value", map.get("PH"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "SG（比重）");
+					put("value", map.get("SG"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "BLD（潜血）");
+					put("value", map.get("BLD"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "KET（酮体）");
+					put("value", map.get("KET"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "BIL（胆红素）");
+					put("value", map.get("BIL"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "PRO（蛋白质）");
+					put("value", map.get("PRO"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "URO（尿胆原）");
+					put("value", map.get("URO"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "LEU（白细胞）");
+					put("value", map.get("LEU"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "VC（抗坏血酸）");
+					put("value", map.get("VC"));
+				}
+			});
+			urineList.add(new HashMap<String, Object>() {
+				{
+					put("name", "NIT（亚硝酸盐）");
+					put("value", map.get("NIT"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg1");
+					put("image",  map.get("ecg1").equals("") ? "" : httpURL + map.get("ecg1"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg2");
+					put("image",  map.get("ecg2").equals("") ? "" : httpURL + map.get("ecg2"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg3");
+					put("image",  map.get("ecg3").equals("") ? "" : httpURL + map.get("ecg3"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg4");
+					put("image", map.get("ecg4").equals("") ? "" : httpURL + map.get("ecg4"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg5");
+					put("image",  map.get("ecg5").equals("") ? "" : httpURL + map.get("ecg5"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg6");
+					put("image",  map.get("ecg6").equals("") ? "" : httpURL + map.get("ecg6"));
+				}
+			});
+			ecgList.add(new HashMap<String, Object>() {
+				{
+					put("name", "ecg7");
+					put("image", map.get("ecg7").equals("") ? "" : httpURL + map.get("ecg7"));
+				}
+			});
+
+			infoJson.setCount(1);
+			infoJson.setData(resultMap);
+		} else {
+		}
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+}

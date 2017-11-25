@@ -1,0 +1,138 @@
+package com.haaa.cloudmedical.common.entity;
+
+public class Constant {
+
+
+	public static final String[] URINEPARAMS = { "URO", "BLD", "BIL", "KET", "GLU", "PRO", "PH", "NIT", "LEU", "SG",
+			"VC" };
+
+	public static final String[] LUNGCAPACITYPARAMS = { "fvc", "fev1", "pef" };
+
+	public static final String MENU_CODE_ACCOUNT = String.valueOf(1010);
+	public static final String MENU_CODE_ROLE = String.valueOf(1020);
+	public static final String MENU_CODE_MEMBER = String.valueOf(2010);
+	public static final String MENU_CODE_DOCTOR = String.valueOf(2020);
+	public static final String MENU_CODE_DATA = String.valueOf(3010);
+
+	public static final String USER_TYPE_PATIENT = "1500001";  //类型-患者
+	public static final String USER_TYPE_DOCTOR = "1500002";   //类型-医生
+	public static final String USER_TYPE_OPERATER = "1500003"; //类型-运营
+
+	public static final String ROLE_CODE_PATIENT = "1500001";  //角色-患者
+	public static final String ROLE_CODE_DOCTOR = "1500002";   //角色-医生
+	public static final String ROLE_CODE_OPERATER = "1500003"; //角色-运营
+	public static final String ROLE_CODE_MANAGER = "1500004";  //角色-管理
+
+	public static final String MESSAGE_SIGN_NAME = "美康云 ";
+	public static final String MESSAGE_URL = "https://eco.taobao.com/router/rest";
+	public static final String MESSAGE_APPKEY = "23549835";
+	public static final String MESSAGE_SECRET = "c1945cd6764a265a8df527e930f419cd";
+	public static final String MESSAGE_TEMPLATE_CODE = "SMS_63145021";
+
+	public static final String PIC_TYPE_CHECK = String.valueOf(500001);			//体检报告照片
+	public static final String PIC_TYPE_CLINIC = String.valueOf(500002);		//门诊报告照片
+	public static final String PIC_TYPE_HOSPITAL = String.valueOf(500003);		//住院报告照片
+	public static final String PIC_TYPE_INSURANCE = String.valueOf(500004);		//医保报告照片
+	public static final String PIC_TYPE_CARD = String.valueOf(500005);			//身份证照片
+	public static final String PIC_TYPE_HEAD = String.valueOf(500006);			//头像照片
+	public static final String PIC_TYPE_CHRONIC = String.valueOf(500007);		//慢病追踪照片
+	
+	public static final String CHECK_REPORT = String.valueOf(500001);			//体检报告
+	public static final String CLINIC_REPORT = String.valueOf(500002);			//门诊报告
+	public static final String HOSPITAL_REPORT = String.valueOf(500003);		//住院报告
+	public static final String INSURANCE_REPORT = String.valueOf(500004);		//医保报告
+	public static final String MECHINE_REPORT = String.valueOf(500005);			//一体机
+	
+	public static final String USER_SOURCE_REGIEST = String.valueOf(1900001);  //用户来源-注册
+	public static final String USER_SOURCE_BATCH = String.valueOf(1900002);	   //用户来源-批量导入
+
+	public static final String USER_FLAG_START = String.valueOf(2000001);  //用户状态-有效
+	public static final String USER_FLAG_STOP = String.valueOf(2000002);   //用户状态-无效
+	
+	public static final String COMMON_FLAG_YES = String.valueOf(101);
+	public static final String COMMON_FLAG_NO = String.valueOf(102);
+	
+	public static final Integer HIGH_PRESSURE = 140;
+
+	public static final Integer LOW_PRESSURE = 60;
+
+	public static final Float LOW_TEMPERATURE = 35.7F;
+
+	public static final Float HIGH_TEMPERATURE = 37.5F;
+
+	public static final Float lOW_FBG = 3.9F; // 最低空腹血糖
+
+	public static final Float lOW_PRE_BG = 3.9F; // 最低餐前血糖
+
+	public static final Float lOW_POST_BG = 3.9F; // 最低餐后血糖
+
+	public static final Float HIGH_FBG = 6.9F; // 最高空腹血糖
+
+	public static final Float HIGH_PRE_BG = 7.2F; // 最高餐前血糖
+
+	public static final Float HIGH_POST_BG = 7.8F; // 最高餐后血糖
+
+	public static final Integer DEFAULT_PAGESIZE = 15;
+
+	public static String[] IMPORT_MEMBER_PARAMS = { "user_name", "user_card", "user_phone", "doctor_phone",
+			"doctor_card", "user_nation", "user_address", "user_marriage", "user_work", "user_medicare_card",
+			"user_medical_burden", "user_blood" };
+	public static String[] IMPORT_CHECK_PARAMS = { "user_name", "user_card", "user_phone", "user_height", "user_weight",
+			"BMI", "temperature", "Oxygen", "BloodSugar", "HighPressure", "LowPressure", "PulseRate", "PH", "SG", "BLD",
+			"KET", "BIL", "GLU", "PRO", "URO", "LEU", "VC", "NIT", "fvc", "fev1", "pef", "fef25", "fef75", "fef2575",
+			"create_date" };
+	public static String[] IMPORT_DOCTOR_PARAMS = {"doctor_name","user_sex","doctor_card","doctor_phone","hospital","department","doctor_title","doctor_introduce"};
+	public static String[] IMPORT_OPERATER_PARAMS = {"user_name","user_sex","user_card","user_phone"};
+
+	public static final String IMPORT_MEMBER_SHEETNAME = "基本信息";
+	public static final String IMPORT_CHECK_SHEETNAME = "体检一体机数据";
+	public static final String IMPORT_DOCTOR_SHEETNAME = "用户管理";
+	public static final String IMPORT_OPERATER_SHEETNAME = "用户管理";
+
+	public static final int READ_EXCEL_ROWS = 50;
+
+	public static final int RECENT = 90;
+	
+	public static final int URINEMINUS=700001;
+	
+	public static final int URINEPLUSMINUS=700002;
+	
+	public static final int URINEPLUS=700003;
+	
+	public static final int URINETWOPLUS=700004;
+
+	public static final int URINETHREEPLUS=700005;
+	
+	public static final int URINEFOURPLUS=700006;
+
+	public static final float[] URINESG = {1.005F,1.010F,1.015F,1.020F,1.025F,1.030F};
+
+	public static final int[]  HEARTRESULT={600000,600001,600002,600003,600004,600005,600006,600007,600008,600009,600010,600011,600012,600013};
+	
+    public static final int MORNING_END = 12;
+
+    public static final int NIGHT_BEGIN = 18;
+    
+    public static final int BLUETOOTHUPLOAD = 1800001;
+    
+    public static final int MANUALUPLOAD = 1800002;
+    
+    public static final float BMI1 = 18.5f;
+    
+    public static final float BMI2 = 24f;
+    
+    public static final float BMI3 = 28f;
+    
+    public static final float BMI4 = 32f;
+    
+    public static final float URINEPH1 = 4.6f;
+    
+    public static final float URINEPH2 = 8.0f;
+    
+    public static final float URINESG1= 1.015f;
+    
+    public static final float URINESG2 = 1.025f;
+    
+    
+    
+}

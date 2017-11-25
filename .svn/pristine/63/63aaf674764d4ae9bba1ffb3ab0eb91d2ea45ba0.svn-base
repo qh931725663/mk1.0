@@ -1,0 +1,42 @@
+package com.haaa.cloudmedical.app.chronicplan.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+/**
+ * 
+ * @author Owen
+ *
+ */
+public interface ChronicPlanService {
+
+
+	/**
+	* @description 用于计划跟踪列表展示
+	* @param plan_id
+	* @param dic_order_id
+	* @return
+	*/
+	 List<Map<String,Object>> getPlanTrackItems(String plan_id, String dic_order_id);
+
+	
+	/**
+	 *  @description 添加跟踪测量记录
+	 * @param 
+	 * @return
+	 */
+	void addPlanItems(List<Map>  parseArray);
+
+	/**
+	 * @description 删除某次跟踪测量记录
+	 * @param item_order_id
+	 */
+	void deletePlanItems(String item_order_id);
+
+
+	
+	
+}

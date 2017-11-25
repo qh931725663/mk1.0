@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>电子肺活量计</title>
+	<script src="../../common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="../../common/css/Oximeter.css"/>
+	<style type="text/css">
+		 p { max-height: 100%; } 
+	</style>
+</head>
+<body>
+	<div class="header">
+		<p class="header_time">
+			<img src="../../common/image/myhealth/test-date-1.png"/>
+			<span class="day">2017-04-24</span><span class="hourtime">13:20</span>
+		</p>
+		<div class="header_result">
+			<h4 class="mid">肺活量测试数据</h4>
+			<ul>
+				<li>
+					<span>FVC</span>
+					<span style="padding-left: 0.33rem;">2.98</span>
+					<span>96%</span>
+				</li>
+				<li>
+					<span>FEV1</span>
+					<span style="padding-left: 0.13rem;">2.98</span>
+					<span>96%</span>
+				</li>
+				<li>
+					<span>PEF</span>
+					<span style="padding-left: 0.4rem;">2.98</span>
+					<span>96%</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="chart_section">
+		<div class="blood-title-box">
+	        <p><span style="font-size: 0.5rem;color: #3D3D3D;">肺活量数据走势 </span>&nbsp;(%)</p>
+	        <select name="" id="" style="border-radius: 5px;margin-left: 10px;padding:0 10px;">
+	            <option value="7">7 天</option>
+	            <option value="30" selected>30 天</option>
+	            <option value="90">90 天</option>
+	        </select>
+	    </div>
+	    <ul style="margin-top: 0.31rem;margin-bottom:0.51rem;margin-left: 0.27rem;">
+	        <li class="line-align-left" style="margin-bottom: 20px;">
+		        <span style="margin-right:8px;background: #F85E34;display: inline-block;width: 0.26rem;height: 2px;vertical-align: middle;"></span>
+		        <span style="margin-right: 20px;">FVC</span>
+		        <span style="margin-right:8px;background: #57C3EE;display: inline-block;width: 0.26rem;height: 2px;vertical-align: middle;"></span>
+		        <span style="margin-right: 20px;">FEV1</span>
+		        <span style="margin-right:8px;background: #4AB560;display: inline-block;width: 0.26rem;height: 2px;vertical-align: middle;"></span>
+		        <span>PEF</span>
+	        </li>
+	        <li>
+	        	<span style="background: #C6E3FF;display: inline-block;width: 0.26rem;height: 0.26rem;margin-right: 8px;vertical-align: middle;"></span>
+		        <span style="margin-right: 20px;">FVC/FEV1正常区间</span>
+		        <span style="background: #FCB6A3;display: inline-block;width: 0.26rem;height: 0.26rem;margin-right: 8px;vertical-align: middle;"></span>
+		        <span>PEF正常区间</span>
+	        </li>
+	    </ul>
+		<div class="canvasBox" style="position: relative;height: 258px;overflow: auto">
+		    <canvas id="axes" width="41" height="240" style="position: absolute; top: 5px; left: 0; z-index: 3"></canvas>
+		    <div class="cvsBox" style="overflow: auto; position: absolute; left: 41px">
+		        <canvas id="cvs" width="1000" height="250" ></canvas>
+		    </div>
+		</div>
+		<div class="view-button">
+            <a href="vitalCapacity-detail.html"><button>查看结果说明</button></a>
+        </div>
+	</div>
+	<script src="../../common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.common.core.js"></script>
+	<script src="js/RGraph.common.dynamic.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.common.tooltips.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.drawing.yaxis.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/RGraph.line.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vitalCapacity.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

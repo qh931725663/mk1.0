@@ -1,0 +1,82 @@
+package com.haaa.cloudmedical.app.equipment.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.dao.equipment.UrineTestDao;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+@Service
+public class UrineTestService {
+
+	@Resource
+	private UrineTestDao urineTestDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	private Logger logger = Logger.getLogger(UrineTestService.class);
+
+	@Transactional
+	public InfoJson add(EquipmentUse equipmentUse, UrineTest urineTest) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			DataTransfromUtil.urineTestTrans(urineTest, equipmentUse.getCheck_data_source());
+			Date date = new Date();
+			equipmentUse.setCreate_date(date);
+			equipmentUse.setEquipment_name("urine_test");
+			equipmentUse.setEquipment_property_order_id(25);
+			Long id = (Long) urineTestDao.insertAndGetKey(equipmentUse,"c_equipment_use");
+			urineTest.setCreate_date(date);
+			urineTest.setEquipment_use_order_id(id);
+			long result = (Long) urineTestDao.insertAndGetKey(urineTest, "c_urine_test");
+			Map<String, Object> map = urineTestDao.queryDetailById(result, "c_urine_test");
+			if (map != null) {
+				infoJson.setData(map);
+				infoJson.setStatus(1);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson queryRecent(Long user_id, String type) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			List<Map<String, Object>> dataList = urineTestDao.queryRecent(user_id, type);
+			System.out.println(dataList);
+			infoJson.setData(dataList);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson pageQuery(Long user_id, int pageno, int pagesize) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			List<Map<String, Object>> datalist = urineTestDao.pageQuery(user_id, pageno, pagesize);
+			System.out.println(datalist);
+			infoJson.setData(datalist);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+}

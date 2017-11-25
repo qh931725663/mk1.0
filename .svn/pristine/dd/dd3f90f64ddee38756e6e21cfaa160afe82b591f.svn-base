@@ -1,0 +1,70 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class EquipmentDao extends BaseTemplateDao {
+	
+	public Number insertAndGetKey(final Object object ,String table) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		final Map<String, Object> data = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(data, object);
+		String[] params = paramArray(data);	
+		final String sql = "insert into "+table+" (" + params[0] + ") values(" + params[1] + ")";
+		System.out.println(sql);
+		this.jdbcTemplate.update(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql, 1);
+				Object[] objects = EquipmentDao.this.valueArray(data);
+				for (int i = 0; i < objects.length; i++) {
+					ps.setObject(i + 1, objects[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
+
+		Number generatedId = keyHolder.getKey();
+		return generatedId;
+	}
+	
+	
+	public long add(EquipmentUse equipmentUse){
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, equipmentUse);
+		return insert(map, "c_equipment_use");
+	}
+	
+	
+	public Map<String, Object>queryDetailById(long id ,String table){
+	    String sql = "select * from "+table+" where order_id=?";
+	    return jdbcTemplate.queryForMap(sql, id);	
+	}
+	
+
+	public String queryNameById(Object id) {
+		String name = "";
+		String sql = "select equipment_name from c_equipment_property where order_id =" + id;
+		name = (String) this.jdbcTemplate.queryForObject(sql, String.class);
+		return name;
+	}
+
+	public List<Map<String, Object>> queryByTime(String table, Object user_id, Object upTime, Object downTime) {
+		String sql = "select DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i:%s'),B.* from c_equipment_use A," + table
+				+ " B where A.order_id=B.equipment_use_order_id and A.user_id = ? and A.create_date between ? and ? order by A.create_date asc";
+		System.out.println(sql);
+		return this.jdbcTemplate.queryForList(sql, new Object[] { user_id, upTime, downTime });
+	}
+}

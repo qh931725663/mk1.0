@@ -1,0 +1,81 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+/**
+ * 
+ * @author haaa
+ *
+ */
+public class BloodSugar {
+	
+	private Long order_id;
+	
+	private Long equipment_use_order_id;
+	
+	private Integer	measurement_period;
+	
+	private Float BloodSugar;
+	
+	private Date create_date;
+	
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	public Integer getMeasurement_period() {
+		return measurement_period;
+	}
+
+	public void setMeasurement_period(Integer measurement_period) {
+		this.measurement_period = measurement_period;
+	}
+
+	public Float getBloodSugar() {
+		return BloodSugar;
+	}
+
+	public void setBloodSugar(Float bloodSugar) {
+		BloodSugar = bloodSugar;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	@Override
+	public String toString() {
+		return "BloodSugar [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id
+				+ ", measurement_period=" + measurement_period + ", BloodSugar=" + BloodSugar + ", create_date="
+				+ create_date + ", update_date=" + update_date + "]";
+	}
+	
+	
+
+}

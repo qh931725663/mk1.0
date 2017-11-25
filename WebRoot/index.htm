@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SWFUpload Demos - Multi-Instance Demo</title>
+<link href="./scripts/swfupload/css/default.css" rel="stylesheet" type="text/css" />
+<script language= "javascript" src="./scripts/json.js"></script>
+<script type="text/javascript" src="./scripts/swfupload/swfupload.js"></script>
+<script type="text/javascript" src="./scripts/swfupload/swfupload.queue.js"></script>
+<script type="text/javascript" src="./scripts/swfupload/fileprogress.js"></script>
+<script type="text/javascript" src="./scripts/swfupload/swfuploadProperties.js"></script>
+<script type="text/javascript" src="./scripts/swfupload/handlers.js"></script>
+<script language= "javascript" src="./js/jquery-1.4.2.min.js"></script>
+
+</head>
+<body>
+<div id="header">
+	<h1 id="logo"><a href="../">SWFUpload</a></h1>
+	<div id="version">v2.5.0</div>
+</div>
+<div id="content">
+	<h2>Multi-Instance Demo</h2>
+	<form id="form1" action="index.htm" method="post" enctype="multipart/form-data">
+		<p>This page demonstrates how multiple instances of SWFUpload can be loaded on the same page.
+			It also demonstrates the use of the graceful degradation plugin and the queue plugin.</p>
+		<table>
+			<tr valign="top">
+				<td>
+					<div>
+						<div class="fieldset flash" id="fsUploadProgress1">
+							<span class="legend">Large File Upload Site</span>
+							<input type="hidden" id="saveDataId1"/>
+						</div>
+						<div style="padding-left: 5px;">
+							<span id="spanButtonPlaceholder1"></span>
+							<input id="btnCancel1" type="button" value="Cancel Uploads" onclick="cancelQueue(upload1);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+							<br />
+						</div>
+					</div>
+				</td>
+				<td>
+					<div>
+						<div class="fieldset flash" id="fsUploadProgress2">
+							<span class="legend">Small File Upload Site</span>
+							<input type="hidden" id="saveDataId2"/>
+						</div>
+						<div style="padding-left: 5px;">
+							<span id="spanButtonPlaceholder2"></span>
+							<input id="btnCancel2" type="button" value="Cancel Uploads" onclick="cancelQueue(upload2);" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+							<br />
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+</body>
+</html>

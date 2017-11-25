@@ -1,0 +1,113 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+/**
+ * 
+ * @author haaa
+ *
+ */
+public class BloodOxygen {
+    
+	private String order_id;
+	
+	private String equipment_use_order_id;
+	
+	private String oxygen;
+	
+	private String pulseRate;
+	
+	private Date create_date;
+	
+	private Date update_date;
+
+	public String getOrder_id() {
+		return order_id;
+	}
+
+	
+	
+	/**
+	 * 
+	 */
+	public BloodOxygen() {
+		super();
+	}
+
+
+
+	/**
+	 * @param order_id
+	 * @param equipment_use_order_id
+	 * @param oxygen
+	 * @param pulseRate
+	 * @param create_date
+	 * @param update_date
+	 */
+	public BloodOxygen(String order_id, String equipment_use_order_id, String oxygen, String pulseRate,
+			Date create_date, Date update_date) {
+		super();
+		this.order_id = order_id;
+		this.equipment_use_order_id = equipment_use_order_id;
+		this.oxygen = oxygen;
+		this.pulseRate = pulseRate;
+		this.create_date = create_date;
+		this.update_date = update_date;
+	}
+
+
+
+	public void setOrder_id(String order_id) {
+		this.order_id = order_id;
+	}
+
+	public String getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(String equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	public String getOxygen() {
+		return oxygen;
+	}
+
+	public void setOxygen(String oxygen) {
+		this.oxygen = oxygen;
+	}
+
+	public String getPulseRate() {
+		return pulseRate;
+	}
+
+	public void setPulseRate(String pulseRate) {
+		this.pulseRate = pulseRate;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	@Override
+	public String toString() {
+		return "BloodOxygen [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id + ", oxygen="
+				+ oxygen + ", pulseRate=" + pulseRate + ", create_date=" + create_date + ", update_date=" + update_date
+				+ "]";
+	}
+
+
+	
+}

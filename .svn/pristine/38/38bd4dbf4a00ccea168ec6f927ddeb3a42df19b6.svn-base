@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>添加高血压档案</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<style type="text/css">
+		.mainBox{margin-top: 3rem;}
+		.sectionBox{width: 85%;margin: auto;color: #fff;font-size: 0.35rem;border-radius: 10px;margin-bottom: 1rem;padding:0 0.2rem;}
+		.box_let,.box_rgt{display: inline-block;}
+		.box_let img{width:50%;vertical-align: middle;}
+		.box_let span{font-size: 0.5rem;}
+		.box_rgt{width: 58%;text-align: right;}
+		.sectionInfo{background: #d28834;}
+		.sectionCheck{background: #528ddd;}
+		.sectionPinggu{background: #34af6d;}
+	</style>
+</head>
+<body>
+	<div class="mainBox">
+		<input type="hidden" id="order_id" value=""/>
+		<div class="sectionBox sectionInfo">
+			<div class="box_let">
+				<img src="image/basinfo_01.png"/>
+				<span>基础信息</span>
+			</div>
+			<div class="box_rgt info"></div>
+		</div>
+		<div class="sectionBox sectionCheck">
+			<div class="box_let">
+				<img src="image/inspect_01.png"/>
+				<span>辅助检查</span>
+			</div>
+			<div class="box_rgt checkk"></div>
+		</div>
+		<div class="sectionBox sectionPinggu">
+			<div class="box_let">
+				<img src="image/disease_01.png"/>
+				<span>风险评估</span>
+			</div>
+			<div class="box_rgt risk"></div>
+		</div>
+	</div>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			//获取地址栏order_id方法
+			function getUrlParam(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null) return unescape(r[2]);
+				return null;
+			}
+			var order_id=getUrlParam("order_id");
+			$("#order_id").val(order_id);
+			console.log(order_id);
+			/* 获取状态 */
+			init();
+			function init(){
+				$.ajax({
+					url: "../../../hypertension-app/getDocInfo.action",
+					type: "GET",
+					dataType: 'json',
+					data: {order_id : order_id},
+					success: function(list){
+						if(list.flag){
+							console.log(list);
+							$(".info").html(list.data.flag1==0?"未完成":"已完成");
+			            	$(".checkk").html(list.data.flag2==0?"未完成":"已完成");
+			            	$(".risk").html(list.data.flag3==0?"未完成":"已完成");
+						}
+					}
+				});
+			}
+			function MoveHtml(clname,url,order_id){
+				$(clname).on('click',function(){
+					window.location.href = url+order_id;
+				});
+			}
+			MoveHtml(".sectionInfo","highBloodPressure.html?order_id=",$("#order_id").val());
+			MoveHtml(".sectionCheck","auxiliaryCheck.html?order_id=",$("#order_id").val());
+			MoveHtml(".sectionPinggu","assessment.html?order_id=",$("#order_id").val());
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+package com.haaa.cloudmedical.common.service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.dao.FileFlushDao;
+import com.haaa.cloudmedical.common.entity.Attachment;
+import com.haaa.cloudmedical.common.entity.Constant;
+
+
+
+@Service
+public class FileUploadService {
+	
+	@Autowired
+	private FileFlushDao dao;
+	
+	@SuppressWarnings("unchecked")
+	public void write(Map<String,Object> map){
+		
+		String user_id = map.get("user_id").toString();
+		String order_id = map.get("order_id").toString();
+		String uploadDir = map.get("uploadDir").toString();
+		Object report_type = map.get("report_type");
+		String table = null;
+		Object[] args = null;
+		StringBuilder sql = new StringBuilder();
+		if(report_type.equals(Constant.PIC_TYPE_CHECK))
+			table="p_check_report";
+		else if(report_type.equals(Constant.PIC_TYPE_CLINIC))
+			table="p_clinic_report";
+		else if(report_type.equals(Constant.PIC_TYPE_HOSPITAL))
+			table="p_hospital_report";
+		else if(report_type.equals(Constant.PIC_TYPE_INSURANCE))
+			table="p_medical_insurance_report";
+		else if(report_type.equals(Constant.PIC_TYPE_HEAD)||report_type.equals(Constant.PIC_TYPE_CARD))
+			table="n_user";	
+		List<Map<String,Object>> count = dao.select("select * from n_user where user_id = ? ", user_id);
+		if(count.size()>0)
+			table="n_user";
+		else
+			table="n_manager";
+		List<Attachment> list = (List<Attachment>)map.get("file");
+		if(table.equals("n_user")||table.equals("n_manager")){
+			if(report_type.equals(Constant.PIC_TYPE_CARD)){
+				sql.append("update "+table+" set user_card_front_upload_index = ?,user_card_back_upload_index = ? where user_id = ? ");
+				args = new Object[]{uploadDir+list.get(0).getFile_name(),uploadDir+list.get(1).getFile_name(),user_id};
+			}else if(report_type.equals(Constant.PIC_TYPE_HEAD)){
+				sql.append("update "+table+" set user_head_pic_upload_index = ? where user_id = ? ");
+				args = new Object[]{uploadDir+list.get(0).getFile_name(),user_id};
+			}
+		}else{
+			sql.append("update "+table+" set report_upload_index = ? where order_id = ? ");
+			order_id = map.get("order_id").toString();
+			args = new Object[]{uploadDir,order_id};
+		}		
+		
+		sql.setLength(0);
+		sql.append("insert into p_picture(parent_id,pic_type,pic_num,medical_picture_upload,create_date) values(?,?,?,?,now())");
+		for(int i=0;i<list.size();i++){
+			Attachment attachment = list.get(i);
+			args=new Object[]{order_id,report_type,attachment.getPic_num(),uploadDir+attachment.getFile_name()};
+			dao.execute(sql.toString(), args);
+		}
+	}
+	
+	
+	public String read(File file, String sheet_name, int readRows, String[] params,String data_type){
+		String message="";
+		int readCells=params.length;
+		Cell cell = null;
+		Row row = null;
+		Sheet sheet = null;
+		Workbook book = null;
+		Map<String, Object> map = null;
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		try {
+			try{
+				book = new XSSFWorkbook(file);
+			}catch(Exception e){
+				book = new HSSFWorkbook(new FileInputStream(file));
+			}			
+			try{
+				sheet = book.getSheet(sheet_name);
+			}catch(Exception e){
+				sheet = book.getSheetAt(book.getActiveSheetIndex());
+			}
+			int totalRows = sheet.getLastRowNum() - 1;
+			int readTimes = totalRows % readRows == 0 ? totalRows / readRows : totalRows / readRows + 1;
+			for (int i = 1; i <= readTimes; i++) {
+				for (int j = 1; j <= readRows; j++) {
+					row = sheet.getRow(j);
+					if (row == null)
+						break;
+					map = new HashMap<String, Object>();
+					for (int k = 0; k < readCells; k++) {
+						cell = row.getCell(k);
+						if (cell == null)
+							continue;
+						String value = cell.getStringCellValue();
+						if (value == null)
+							value = "";
+						map.put(params[k], value);
+					}
+					list.add(map);
+				}
+				if (data_type.equals("1")) {
+					write(list, params);
+				}else if(data_type.equals("2")){
+					writeAIO(list, params);
+				}				
+				list.clear();
+			}
+			book.close();
+		    if (data_type.equals("1")) {
+		    	message=dao.call();
+			}else if(data_type.equals("2")){
+				message = dao.callAIO();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return message;
+	}
+	public void write(List<Map<String,Object>> list,String[] params){
+		String sql = "insert into temp_user("+StringUtils.join(params,",")+") values("+StringUtils.repeat("?", ",", params.length)+")";
+		List<Object[]> values = new ArrayList<Object[]>();
+		for (Map<String,Object> map : list) {
+			Object[] value = new Object[params.length];
+			for(int i=0;i<params.length;i++){
+				value[i]=map.get(params[i]);
+			}
+			values.add(value);
+		}
+		dao.write(sql, values);
+	}
+
+	
+	public void writeAIO(List<Map<String,Object>> list,String[] params){
+		String sql = "insert into temp_self("+StringUtils.join(params,",")+") values("+StringUtils.repeat("?", ",", params.length)+")";
+		List<Object[]> values = new ArrayList<Object[]>();
+		for (Map<String,Object> map : list) {
+			Object[] value = new Object[params.length];
+			for(int i=0;i<params.length;i++){
+				value[i]=map.get(params[i]);
+			}
+			values.add(value);
+		}
+		System.out.println(values);
+		dao.write(sql, values);
+	}
+	
+}

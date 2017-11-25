@@ -1,0 +1,119 @@
+package com.haaa.cloudmedical.platform.news.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.dao.NewsDao;
+import com.haaa.cloudmedical.entity.BannerNews;
+
+@Service
+public class NewsManageService {
+
+	@Resource
+	private NewsDao dao;
+
+	private Logger logger = Logger.getLogger(NewsManageService.class);
+	
+	public boolean update(BannerNews news){
+		boolean flag = false;
+		try{
+			dao.update(news, "b_banner_news");
+			flag=true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+	public Page getNewsByCondition(String the_text,String user_id, String news_type,String startDate, String endDate, Integer pageno) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.order_id,a.title,concat('"+url+"',a.pic_index) pic_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,"
+				+ "a.is_push_to_patient,a.is_push_to_doctor,a.is_push_to_frontpage,a.short_introduction,a.url_index,a.the_text,b.user_name"
+				+ " from b_banner_news a,n_manager b where a.user_id=b.user_id";
+		List<Object> list = new ArrayList<Object>();
+		if (the_text != null && !the_text.equals("")) {
+			sql += " and a.title like ? ";
+			list.add("%"+the_text.trim()+"%");
+		}
+		if (user_id != null && !user_id.equals("")) {
+			sql += " and a.user_id = ? ";
+			list.add(user_id);
+		}
+		if (news_type != null && !news_type.equals("")) {
+			sql += " and a.news_type = ? ";
+			list.add(news_type);
+		}
+		if (startDate != null && !startDate.equals("")) {
+			sql += " and date_format(a.create_date,'%Y-%m-%d') >= ?";
+			list.add(startDate);
+		}
+		if (endDate != null && !endDate.equals("")) {
+			sql += " and date_format(a.create_date,'%Y-%m-%d') <= ?";
+			list.add(endDate);
+		}
+		sql += " order by a.create_date desc";
+		Page page = dao.pageQuery(sql, list.toArray(), pageno);
+		return page;
+	}
+	
+	public ResponseDTO getNewsById(String order_id){
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select order_id,title,is_push_to_patient,is_push_to_doctor,is_push_to_frontpage,concat('"+url+"',pic_index) pic_index,"
+				+ "short_introduction,url_index,the_text,create_date,news_type from b_banner_news where order_id=?";
+		List<Map<String,Object>> list = dao.select(sql, order_id);
+		ResponseDTO dto  =new ResponseDTO();
+		if(list.size()>0){
+			dto.setData(list.get(0));
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+	public String getUserId(String user_phone){
+		String sql = "select user_id from n_manager where user_phone = ? ";
+		String user_id = dao.select(sql, new Object[]{user_phone}, String.class);
+		return user_id;
+	}
+	
+	public long add(BannerNews news){
+		long order_id = 0l;
+		try{
+			order_id = dao.insert(news, "b_banner_news");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return order_id;
+	}
+	
+	public boolean delete(String order_id){
+		boolean flag = false;
+		try{
+			dao.delete("b_banner_news", order_id);
+			flag = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	public ResponseDTO getManagerList(){
+		String sql="select a.user_id,b.user_name from b_banner_news a,n_manager b where a.user_id=b.user_id group by a.user_id";
+		List<Map<String,Object>> list = dao.select(sql);
+		ResponseDTO dto = new ResponseDTO();
+		dto.setData(list);
+		dto.setFlag(true);
+		return dto;
+	}
+
+}

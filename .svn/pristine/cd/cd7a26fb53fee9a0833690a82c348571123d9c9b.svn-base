@@ -1,0 +1,87 @@
+package com.haaa.cloudmedical.common.controller;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.PositionService;
+
+@RestController
+@RequestMapping("/constant")
+public class ConstantController {
+
+	@Resource
+	private PositionService positionService;
+
+	private Logger logger = Logger.getLogger(ConstantController.class);
+
+	public InfoJson positionInit() {
+		try {
+			positionService.positionInfoInit();
+		} catch (Exception e) {
+			return InfoJson.setFaile();
+		}
+		return InfoJson.setSucc(1);
+	}
+
+	@RequestMapping("/position.action")
+	public InfoJson getLocationInto(String type, String parent_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = positionService.getPositionList(type, parent_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/hospitals.action")
+	public InfoJson getHospitals(String condition) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = positionService.getHospitals(condition);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/doctors.action")
+	public InfoJson getDoctors(String condition) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = positionService.getDoctors(condition);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/doctorId.action")
+	public InfoJson getDoctorById(Long doctor_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (doctor_id == null) {
+			} else {
+				infoJson = positionService.getDoctorById(doctor_id);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/hospitalsByArea.action")
+	public InfoJson getHospitalsByArea(String name) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = positionService.getHospitalsByArea(name);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+}

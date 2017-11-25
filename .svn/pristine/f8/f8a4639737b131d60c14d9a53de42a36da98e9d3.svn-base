@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>风险评估</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<form class="main">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>1、年龄</div>
+				<div class="info_rgt fengx_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="age" type="radio" id="age1">
+		                <label class="lab" for="age1">男 > 55岁</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="age" type="radio" id="age3">
+		                <label class="lab" for="age3">男 < 55岁</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="age" type="radio" id="age2">
+		                <label class="lab" for="age2">女 < 65岁</label>
+		            </div>
+		             <div class="opt">
+		                <input class="magic" name="age" type="radio" id="age4">
+		                <label class="lab" for="age4">女 > 65岁</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>2、是否吸烟</div>
+				<div class="info_rgt fengx_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="xiyan" type="radio" id="xiyan1">
+		                <label class="lab" for="xiyan1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="xiyan" type="radio" id="xiyan2">
+		                <label class="lab" for="xiyan2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>3、血脂是否异常</div>
+				<div class="info_rgt fengx_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="xuezhi" type="radio" id="xuezhi1">
+		                <label class="lab" for="xuezhi1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="xuezhi" type="radio" id="xuezhi2">
+		                <label class="lab" for="xuezhi2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left" style="width: 52%;"><span class="must">*</span>4、是否存在早发心血管疾病家族史</div>
+				<div class="info_rgt" style="width: 47%;"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="xinxue" type="radio" id="xinxue1">
+		                <label class="lab" for="xinxue1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="xinxue" type="radio" id="xinxue2">
+		                <label class="lab" for="xinxue2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>5、是否属于肥胖体制</div>
+				<div class="info_rgt fengx_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="feip" type="radio" id="feip1">
+		                <label class="lab" for="feip1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="feip" type="radio" id="feip2">
+		                <label class="lab" for="feip2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>6、是否存在靶器官损害</div>
+				<div class="info_rgt fengx_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="baqi" type="radio" id="baqi1">
+		                <label class="lab" for="baqi1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="baqi" type="radio" id="baqi2">
+		                <label class="lab" for="baqi2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<p><span class="must">*</span>7、是否合并心脏病、脑血管病、肾脏病、周围血管病、视网膜病变</p>
+				<div class="info_left"></div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="hebing" type="radio" id="hebing1">
+		                <label class="lab" for="hebing1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="hebing" type="radio" id="hebing2">
+		                <label class="lab" for="hebing2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left fengx"><span class="must">*</span>8、是否合并糖尿病</div>
+				<div class="info_rgt fengx_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="hetang" type="radio" id="hetang1">
+		                <label class="lab" for="hetang1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="hetang" type="radio" id="hetang2">
+		                <label class="lab" for="hetang2">否</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/assessment.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+package com.haaa.cloudmedical.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class NewsDao extends BaseTemplateDao {
+
+	public List<Map<String, Object>> getNewsByCondition(String condition, String downTime, String upTime, int pageno,
+			int pagesize) {
+		String sql = "select a.order_id,a.title,a.pic_index,DATE_FORMAT(a.create_date,'%Y-%m-%d %H:%i') date,"
+				+ "a.is_push_to_patient,a.is_push_to_doctor,a.is_push_to_frontpage,a.short_introduction,a.url_index,a.the_text,b.user_name"
+				+ " from b_banner_news a,n_user b where a.user_id=b.user_id";
+		List<Object> list = new ArrayList<Object>();
+		if (condition != null && !condition.equals("")) {
+			sql += " AND a.title like ? ";
+			list.add("%"+condition.trim()+"%");
+		}
+		if (downTime != null && !downTime.equals("")) {
+			sql += " AND a.create_date > ?";
+			list.add(downTime);
+		}
+		if (upTime != null && !upTime.equals("")) {
+			sql += " AND a.create_date < ?";
+			list.add(upTime);
+		}
+		int start = (pageno - 1) * pagesize;
+		list.add(start);
+		list.add(pagesize);
+		sql += " ORDER BY a.create_date DESC LIMIT ?,?";
+		return jdbcTemplate.queryForList(sql, list.toArray());
+	}
+
+	public int deleteNewsById(String order_id) {
+		String sql = "delete b_banner_news where order_id = ?";
+		return jdbcTemplate.update(sql, order_id);
+	}
+
+	public long addNews(Map<String, Object> data) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		Map<String, Object[]> property = this.getParamsAndValues(data);
+		Object[] params = property.get("params");
+		Object[] values = property.get("values");
+		final String sql = "insert into b_banner_news (" + StringUtils.join(params, ",") + ") values("
+				+ StringUtils.repeat("?", ",", params.length) + ")";
+		System.out.println(sql);
+		this.jdbcTemplate.update(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql, 1);
+				for (int i = 0; i < values.length; i++) {
+					ps.setObject(i + 1, values[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
+		Long generatedId = keyHolder.getKey().longValue();
+		return generatedId;
+	}
+
+	public long addNewsPic(Map<String, Object> data) {
+		return insert(data, "p_picture");
+	}
+
+	public Map<String, Object> getNewsById(String order_id) {
+		String sql = "select order_id,title,is_push_to_patient,is_push_to_doctor,is_push_to_frontpage,pic_index,short_introduction,url_index,the_text,create_date from b_banner_news"
+				+ " where order_id=?";
+		return jdbcTemplate.queryForMap(sql, order_id);
+	}
+	
+	public int updateNews(Map<String, Object> data){
+		return update(data, "b_banner_news");	
+	}
+
+}
+

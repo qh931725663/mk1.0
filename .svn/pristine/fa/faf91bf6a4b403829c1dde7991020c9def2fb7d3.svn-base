@@ -1,0 +1,1062 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>慢病档案</title>
+<style>
+.lable_style {display: inline-block;width:115px;text-align: left;span-weight: bold;}
+.lable_style_2{display: inline-block;width: 100px;text-align: left;width: 220px;span-weight: bold;}
+.li-base{width: 310px;}
+.check-box input{display: block;width:140%;height:140%;margin: 0px;padding: 0px;border: 0px;opacity: 0;background: rgb(255, 255, 255);}
+.li-rel{position:relative;}
+.li-rel .check-box{position:absolute;left: 240px;}
+.baseinfo-ul li{width: 25%;}
+.baseinfo-ul li label.lable_style{width:155px;}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		健康档案<span class="c-gray en">&gt;</span>&nbsp;&nbsp;慢病档案<span class="c-gray en">&gt;</span>&nbsp;&nbsp;糖尿病填写
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新">
+			<img src="../images/resh.png" style="width: 16px;height:16px;"/>
+		</a>
+	</nav>
+	<div class="page-container">
+		<input type="hidden" id="order_id">
+		<form id="form-baseinfo-write">
+			<!-- 基本信息 -->
+			<div class="collection-baseinfo" id="userMessage">
+				<div class="navbar-collection" id="am1">
+					<span style="margin-right:6px;">|</span>基本信息
+				</div>
+				<div id="baseinfo-message">
+					<ul class="baseinfo-ul baseinfo-list" style="margin-left: 0;">
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>性别：</label><span class="base_val" id="user_sex"></span>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>出生日期：</label><span class="base_val" id="user_birthday"></span>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>年龄(岁)：</label><span class="base_val" id="user_age"></span>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>身份证号：</label>
+							<span class="base_val" id="user_card"></span>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>联系方式：</label>
+							<span class="base_val" id="user_phone"></span>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>身高(cm)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1100"  name="1100" style="width:138px;" placeholder="请输入身高"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style" ><span class="c-red">*</span>体重(kg)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1101" name="1101" style="width:138px;" placeholder="请输入体重"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>体重指数BMI(Kg/m)：</label>
+							<input class="survey_answer" type="text" id="BMI" name="1103" style="border:none;height:30px;width:138px;" readonly="true"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>腰围(cm)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1102" name="1102" style="width:138px;" placeholder="请输入腰围"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>心率(次/分)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1001" name="1001" style="width:138px;" placeholder="请输入心率"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>脉搏(次/分)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1002" name="1002" style="width:138px;" placeholder="请输入脉搏"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>呼吸(次/分)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1003" name="1003" style="width:138px;" placeholder="请输入呼吸"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>高血压（年）：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-2501" name="2501" style="width:138px;" placeholder="请输入多少年"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>糖尿病（年）：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-2502" name="2502" style="width:138px;" placeholder="请输入多少年"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>收缩压（高压）(mmHg)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1004" name="1004" style="width:138px;" placeholder="请输入收缩压"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>舒张压（低压）(mmHg)：</label>
+							<input class="input-text survey_answer chk-input" type="text" id="tnb-1005" name="1005" style="width:138px;" placeholder="请输入舒张压"/>
+						</li>
+						<li class="f-l li-base">
+							<label class="lable_style"><span class="c-red">*</span>分级：</label>
+							<select id="tnb-1006" class="radius check_select chk-input" name="1006" style="height:30px;width:138px;">
+								<option value="">请选择</option>
+								<option value="1000989">1级</option>
+								<option value="1000849">正常</option>
+								<option value="1000993">2级</option>
+								<option value="1000997">3级</option>
+							</select>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!--生活方式-->
+			<div class="collection-baseinfo">
+				<div class="navbar-collection" id="am9">
+					<span style="margin-right:6px;">|</span>生活方式
+				</div>
+				<p class="baseinfo-list" id="ty-message" style="width:6%"><span class="c-red">*</span>1.体育锻炼</p>
+				<ul id="baseif-ty" class="baseinfo-list" style="width:97%;background: #f8f7f7;">
+					<li class="f-l li-base li-rel" style="position:relative;">
+						<label class="lable_style">锻炼频率：</label>
+						<select id="tnb-2101" class="radius check_select" name="2101" style="height:30px;width:100px;">
+							<option value="" selected>请选择</option>
+							<option value="1000009">从不锻炼</option>
+							<option value="1000000">偶尔</option>
+							<option value="1000001">每周一次以上</option>
+							<option value="1000005">每天</option>
+						</select>
+					</li>
+					<li class="f-l li-base li-rel" style="position:relative;">
+						<label class="lable_style" style="width: 160px;">每次锻炼时间（分钟）：</label>
+						<input class="input-text survey_answer" name="2102" placeholder="请输入锻炼时间" style="width: 108px;">
+					</li>
+					<li class="f-l li-base li-rel" style="position:relative;">
+						<label class="lable_style">锻炼方式：</label>
+						<input class="input-text survey_answer"  name="2103" placeholder="请输入锻炼方式" style="width: 182px;">
+					</li>
+				</ul>
+				<p class="baseinfo-list" style="width: 6%;" id="ys-message"><span class="c-red">*</span>2.饮食习惯</p>
+				<ul  class="baseinfo-list" style="width:97%;background: #f8f7f7;">
+					<li class="li-base li-rel" style="position:relative;width: 375px;">
+						<label class="lable_style">荤素比例：</label>
+						<select class="radius check_select" name="2230" style="height:30px;width:100px;">
+							<option value="1000061" selected>荤素均衡</option>
+							<option value="1000065">荤食为主</option>
+							<option value="1000069">素食为主</option>
+						</select>
+					</li>
+					<li id="baseif-ys" class="li-base li-rel" style="position:relative;width: 375px;">
+						<label class="lable_style">偏好：</label>
+						<input class="magic check_checkbox" type="checkbox" name="2250" id="ph-1" value="1000073"/><label for="ph-1">嗜盐</label>
+						<input class="magic check_checkbox" type="checkbox" name="2250" id="ph-2" style="margin-left: 54px;" value="1000077"/><label for="ph-2">嗜油</label>
+						<input class="magic check_checkbox" type="checkbox" name="2250" id="ph-3" style="margin-left: 54px;" value="1000081"/><label for="ph-3">嗜糖</label>
+					</li>
+					<li class="li-base li-rel" style="position:relative;width: 375px;">
+						<label class="lable_style">每日摄盐（克）：</label>
+						<input name="2260" class="input-text survey_answer" placeholder="请输入摄盐量" style="width: 182px;">
+					</li>
+				</ul>
+				<p id="xy-message" class="baseinfo-list" style="width: 30%;"><span class="c-red">*</span>3.吸烟情况
+					<input class="magic bas-close check_radio" name="2300" type="radio" id="xy-1" value="1000097" checked="true" style="margin-left: 52px;" /><label for="xy-1">从不吸烟</label>
+					<input class="magic bas-open check_radio" name="2300" type="radio" id="xy-2" value="1000101" style="margin-left: 25px;" /><label for="xy-2">已戒烟</label>
+					<input class="magic bas-open check_radio" name="2300" type="radio" id="xy-3" value="1000105" style="margin-left: 43px;" /><label for="xy-3">吸烟</label>
+				</p>
+				<ul id="baseif-sm" class="baseinfo-list data-show-or-hide" style="width:97%;background: #f8f7f7;display: none;">
+					<li class="f-l li-base li-rel" style="position:relative;">
+						<label class="lable_style" style="width: 120px;">日吸烟量（支）：</label>
+						<input type="number" id="tnb-2304" class="clear input-text survey_answer"  name="2304" placeholder="请输入日吸烟量" style="width: 100px;">
+					</li>
+					<li class="f-l li-base li-rel" style="position:relative;">
+						<label class="lable_style" style="width: 120px;">烟龄（年）：</label>
+						<input type="number" id="tnb-2305" class="clear input-text survey_answer" name="2305" placeholder="请输入烟龄" style="width: 100px;">
+					</li>
+					<li class="f-l li-base li-rel" style="position:relative;">
+						<label class="lable_style" style="width: 120px;">戒烟年龄（岁）：</label>
+						<input type="number" id="tnb-2306" class="clear input-text survey_answer" name="2306" placeholder="请输入戒烟年龄" style="width: 100px;">
+					</li>
+				</ul>
+				<p id="yj-message" class="baseinfo-list" style="width: 30%;"><span class="c-red">*</span>4.饮酒情况
+					<input class="magic bas-close check_radio" name="2400" type="radio" id="yj-1" value="1000121" checked="true" style="margin-left: 52px;"><label for="yj-1">从不</label>
+					<input class="magic bas-open  check_radio" name="2400" type="radio" id="yj-2" value="1000125" style="margin-left: 25px;"><label for="yj-2">偶尔</label>
+					<input class="magic bas-open  check_radio" name="2400" type="radio" id="yj-3" value="1000129" style="margin-left: 25px;"><label for="yj-3">经常</label>
+					<input class="magic bas-open  check_radio" name="2400" type="radio" id="yj-4" value="1000133" style="margin-left: 25px;"><label for="yj-4">每天</label>
+				</p>
+				<ul  class="baseinfo-list data-show-or-hide" style="width:97%;background: #f8f7f7;display: none;">
+					<div id="basif-yj1">
+						<li class="f-l li-base li-rel" style="position:relative;">
+							<label class="lable_style" style="width: 120px;">日饮酒量（两）：</label>
+							<input type="text" id="tnb-2405" class="clear input-text survey_answer" name="2405" placeholder="请输入日饮酒量" style="width: 100px;">
+						</li>
+						<li class="f-l li-base li-rel" style="position:relative;">
+							<label class="lable_style" style="width: 120px;">酒龄（年）：</label>
+							<input type="text" id="tnb-2406" class="clear input-text survey_answer" name="2406" placeholder="请输入酒龄" style="width: 100px;">
+						</li>
+					</div>
+					<div>
+						<li id="yj-1-message" class="f-l li-base li-rel" style="position:relative;width: 15%">
+							<label class="lable_style" style="width: 120px;">近期是否醉酒：</label>
+							<select id="tnb-2407" class="radius check_select" name="2407" style="height:30px;width:100px;">
+								<option value="">请选择</option>
+								<option value="1000149">是</option>
+								<option value="1000145">否</option>
+							</select>
+						</li>
+					</div>
+					<li id="yj-2-message" class="li-base li-rel" style="position:relative;clear: both;width: 450px;">
+						<label class="lable_style" style="width: 120px;">饮酒种类：</label>
+						<input class="magic check_checkbox" type="checkbox" name="2408" id="yj-type-1" value="1000153" /><label for="yj-type-1">白酒</label>
+						<input class="magic check_checkbox" type="checkbox" name="2408" id="yj-type-2" value="1000157" style="margin-left: 25px;" /><label for="yj-type-2">啤酒</label>
+						<input class="magic check_checkbox" type="checkbox" name="2408" id="yj-type-3" value="1000161" style="margin-left: 25px;"  /><label for="yj-type-3">红酒</label>
+						<input class="magic check_checkbox" type="checkbox" name="2408" id="yj-type-4" value="1000165" style="margin-left: 25px;" /><label for="yj-type-4">黄酒</label>
+						<input class="magic check_checkbox" type="checkbox" name="2408" id="yj-type-5" value="1000169" style="margin-left: 25px;" /><label for="yj-type-5">其它</label>
+					</li>
+				</ul>
+			</div>
+			<!-- 既往史-->
+			<div class="collection-baseinfo">
+				<div class="navbar-collection" id="am4">
+					<span style="margin-right:6px;">|</span> 既往史<span style="color:#c02029;margin-left: 20px;display: none;">如果否，不用填以下问题。</span>
+				</div>
+				<ul class="baseinfo-list" style="margin-left:0;width:100%;">
+					<li class="f-l li-base li-rel" id="jb-message">
+						<label class="lable_style_2" style="width: 135px;"><span class="c-red">*</span>1、疾病史：</label>
+						<input class="magic bas-close check_radio" name="3200" type="radio" id="jbs-1" value="1000221" checked="true"><label for="jbs-1">无</label>
+						<input class="magic bas-open check_radio" name="3200" type="radio" id="jbs-2" value="1000217" style="margin-left: 25px;"><label for="jbs-2">有</label>
+					</li>
+				</ul>
+				<ul id="jb_list" class="baseinfo-list hide_3 data-show-or-hide" style="margin-left:0;width:100%;background: #f8f7f7;display: none;" >
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_1" name="3201-1" type="checkbox"  value="1000229" >
+						<label for="sbs_1" style="margin-right: 70px;">高血压</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-1" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_2" name="3201-2" type="checkbox"  value="1000233" >
+						<label for="sbs_2" style="margin-right: 70px;">糖尿病</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-2" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_3" name="3201-3" type="checkbox"  value="1000237">
+						<label for="sbs_3" style="margin-right: 70px;">冠心病</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-3" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;clear: both;">
+						<input class="magic clear jb_sel" id="sbs_4" name="3201-4" type="checkbox"  value="1000241" >
+						<label for="sbs_4" style="margin-right: 2px;">慢性阻塞性肺疾病</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-4" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_5" name="3201-5" type="checkbox"  value="1000245" >
+						<label for="sbs_5" style="margin-right: 57px;">恶性肿瘤</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-5" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_6" name="3201-6" type="checkbox"  value="1000249" >
+						<label for="sbs_6" style="margin-right: 70px;">脑卒中</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-6" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;clear: both;">
+						<input class="magic clear jb_sel" id="sbs_7" name="3201-7" type="checkbox"  value="1000253" >
+						<label for="sbs_7" style="margin-right: 32px;">重性精神疾病</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-7" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_8" name="3201-8" type="checkbox"  value="1000257" >
+						<label for="sbs_8" style="margin-right: 71px;">结核病</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-8" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_9" name="3201-9" type="checkbox"  value="1000261">
+						<label for="sbs_9" style="margin-right: 85px;">肝炎</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-9" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_10" name="3201-10" type="checkbox"  value="1000265">
+						<label for="sbs_10" style="margin-right: 18px;">其他法定传染病</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-10" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+					<li class="f-l li-base li-rel selected_prt" style="width: 24%;">
+						<input class="magic clear jb_sel" id="sbs_11" name="3201-11" type="checkbox"  value="1000269">
+						<label for="sbs_10" style="margin-right: 89px;">其它</label>
+						确诊时间：<input class="input-text Wdate clear"  placeholder="请选择时间" name="3211-11" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+					</li>
+				</ul>
+				<ul class="baseinfo-list" style="margin-left:0;width:100%;" >
+					<li class="f-l li-base li-rel" id="shs-message">
+						<label class="lable_style_2" style="width: 135px;" ><span class="c-red">*</span>2、是否有手术史：</label>
+						<input class="magic bas-close check_radio" name="3300" type="radio" id="shs-1" value="1000275" checked="true"><label for="shs-1">无</label>
+						<input class="magic bas-open check_radio" name="3300" type="radio" id="shs-2" value="1000274" style="margin-left: 25px;"><label for="shs-2">有</label>
+					</li>
+				</ul>
+				<ul class="baseinfo-list hide_4 data-show-or-hide" style="margin-left:0;width:100%;background: #f8f7f7;display: none;">
+					<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+						<div id="append-shoushu">
+							<div class="yw shu-list">
+								<input type="text" name="3301-1" class="clear input-text" style="width:150px;" placeholder="请输入手术名称"/>
+								<input class="clear input-text Wdate"  placeholder="请选择时间" name="3302-1" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+								<button class="btn btn-success addTexInput" type="button" >添加</button>
+							</div>
+						</div>
+						<button class="btn btn-danger del-1" type="button" style="display: none;">删除</button>
+					</li>
+				</ul>
+				<ul class="baseinfo-list" style="margin-left:0;width:100%;">
+					<li class="f-l li-base li-rel" id="wss-message">
+						<label class="lable_style_2" style="width: 135px;"><span class="c-red">*</span>3、是否有外伤史：</label>
+						<input class="magic bas-close check_radio" name="3400" type="radio" id="wsy-1" value="1000279" checked="true"><label for="wsy-1">无</label>
+						<input class="magic bas-open check_radio" name="3400" type="radio" id="wsy-2" value="1000278" style="margin-left: 25px;"><label for="wsy-2">有</label>
+					</li>
+				</ul>
+				<ul class="baseinfo-list hide_5 data-show-or-hide" style="margin-left:0;width:100%;background: #f8f7f7;display: none;">
+					<li class="f-l li-base li-rel" style="position:relative;width:100%;" id="baseif-wss">
+						<div id="append-wss">
+							<div class="yw wshi-list">
+								<input type="text" name="3401-1" class="clear input-text" style="width:150px;" placeholder="请输入外伤名称"/>
+								<input class="clear input-text Wdate"  placeholder="请选择时间" name="3402-1" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+								<button class="btn btn-success addTexInput2" type="button" >添加</button>
+							</div>
+						</div>
+						<button class="btn btn-danger del-2" type="button" style="display: none;">删除</button>
+					</li>
+				</ul>
+				<ul class="baseinfo-list" style="margin-left:0;width:100%;">
+					<li class="f-l li-base li-rel" id="sxs-message">
+						<label class="lable_style_2" style="width: 135px;"><span class="c-red">*</span>4、是否有输血史：</label>
+						<input class="magic bas-close check_radio" name="3500" type="radio" id="sxs-1" value="1000283" checked="true"><label for="sxs-1">无</label>
+						<input class="magic bas-open check_radio" name="3500" type="radio" id="sxs-2" value="1000282" style="margin-left: 25px;"><label for="sxs-2">有</label>
+					</li>
+				</ul>
+				<ul class="baseinfo-list hide_6 data-show-or-hide" style="margin-left:0;width:100%;background: #f8f7f7;display: none;">
+					<li class="f-l li-base li-rel" style="position:relative;width:100%;" id="baseif-sxs">
+						<div id="append-sxs">
+							<div class="yw sxs-list">
+								<input type="text" name="3501-1" class="clear input-text" style="width:150px;" placeholder="请输入输血原因"/>
+								<input class="clear input-text Wdate"  placeholder="请选择时间" name="3502-1" onfocus="WdatePicker({dateFmt:'yyyy-MM',readOnly:true})" style="width: 110px;"/>
+								<button class="btn btn-success addTexInput3" type="button" >添加</button>
+							</div>
+						</div>
+						<button class="btn btn-danger del-3" type="button" style="display: none;">删除</button>
+					</li>
+				</ul>
+				<ul class="baseinfo-list" style="margin-left:0;width:100%;">
+					<li class="f-l li-base li-rel" id="jzjs-message">
+						<label class="lable_style_2" style="width: 180px;"><span class="c-red">*</span>5、是否有家族成员病史：</label>
+						<input class="magic bas-close check_radio" name="3600" type="radio" id="jzs-1" value="1000287" checked="true"><label for="jzs-1">无</label>
+						<input class="magic bas-open check_radio" name="3600" type="radio" id="jzs-2" value="1000286" style="margin-left: 25px;"><label for="jzs-2">有</label>
+					</li>
+				</ul>
+				<ul class="baseinfo-list hide_7 data-show-or-hide" style="margin-left:0;width:100%;background: #f8f7f7;display: none;">
+					<li class="f-l li-base li-rel" style="position:relative;width:100%;" id="baseif-jzbj">
+						<div id="append-jzs">
+							<div class="yw jzs-chk selet-chk jzhu-list">
+								<select class="clear radius" name="3601-1" style="height:30px;width:130px;">
+									<option value="">请选择</option>
+									<option value="1000289">父亲</option>
+									<option value="1000311">母亲</option>
+									<option value="1000312">哥哥</option>
+									<option value="1000313">弟弟</option>
+									<option value="1000314">姐姐</option>
+									<option value="1000315">妹妹</option>
+									<option value="1000316">儿子</option>
+									<option value="1000317">女儿</option>
+								</select>
+								<button class="btn btn-success addTexInput4" type="button" >添加</button>
+								<ul class="baseinfo-list" style="margin-left:0;width:100%;background: #f8f7f7;display: block">
+									<li class="li-base li-rel  jzs-chk" style="position:relative;clear: both;width: 435px;">
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-1" value="1000321"/><label for="jz-type-1">高血压</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-2" value="1000322" style="margin-left: 10px;"/><label for="jz-type-2">糖尿病</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-3" value="1000323" style="margin-left: 10px;"/><label for="jz-type-3">冠心病</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-4" value="1000324" style="margin-left: 10px;"/><label for="jz-type-4">慢性阻塞性肺疾病</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-5" value="1000325" style="margin-left: 30px;"/><label for="jz-type-5">恶性肿瘤</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-6" value="1000326" /><label for="jz-type-6">脑卒中</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-8" value="1000328" style="margin-left: 10px;"/><label for="jz-type-8">结核病</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-9" value="1000329" style="margin-left: 10px;"/><label for="jz-type-9">肝炎</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-7" value="1000327" style="margin-left: 24px;"/><label for="jz-type-7">重性精神疾病</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-10" value="1000330" style="margin-left: 10px;"/><label for="jz-type-10">先天畸形</label>
+										<input class="magic clear" type="checkbox" name="3602-1" id="jz-type-11" value="1000331" style="margin-left: 10px;"/><label for="jz-type-11">其它</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<button class="btn btn-danger del-4" type="button" style="display: none;">删除</button>
+					</li>
+				</ul>
+			</div>
+			<!--症状回顾-->
+			<div class="collection-baseinfo">
+				<div class="navbar-collection" id="am10">
+					<span style="margin-right:6px;">|</span>问卷调查
+				</div>
+				<p class="baseinfo-list"><span class="c-red">*</span>3、您平均每晚的睡眠时间能达到7个小时吗？
+					<select id="tnb-4600" class="radius check_select chk-input" name="4600" style="height:30px;width:130px;margin-left: 78px;">
+						<option value="" selected>请选择</option>
+						<option value="1000357">有</option>
+						<option value="1000361">没有</option>
+					</select>
+				</p>
+				<p class="baseinfo-list"><span class="c-red">*</span>4、您与家人和朋友的关系好吗？
+					<select id="tnb-4300" class="radius check_select chk-input" name="4300" style="height:30px;width:130px;margin-left: 155px;">
+						<option value="" selected>请选择</option>
+						<option value="1000335">不好</option>
+						<option value="1000336">一般</option>
+						<option value="1000337">好</option>
+						<option value="1000338">很好</option>
+						<option value="1000339">特别好</option>
+					</select>
+				</p>
+				<p class="baseinfo-list"><span class="c-red">*</span>5、您对现在的生活满意？
+					<select id="tnb-4400" class="radius check_select chk-input" name="4400" style="height:30px;width:130px;margin-left: 196px;">
+						<option value="" selected>请选择</option>
+						<option value="1000341">满意</option>
+						<option value="1000345">不满意</option>
+					</select>
+				</p>
+				<p class="baseinfo-list"><span class="c-red">*</span>6、您会经常感觉郁闷焦虑吗？
+					<select id="tnb-4500" class="radius check_select chk-input" name="4500" style="height:30px;width:130px;margin-left: 166px;">
+						<option value="" selected>请选择</option>
+						<option value="1000349">是</option>
+						<option value="1000353">否</option>
+					</select>
+				</p>
+				<!--体格检查-->
+				<div class="collection-baseinfo" id="am11">
+					<div class="navbar-collection">
+						<span style="margin-right:6px;">|</span>体格检查
+					</div>
+					<ul class="baseinfo-list"style="margin-left:0;width:100%;">
+						<li class="f-l li-base li-rel" style="position:relative;">
+							<label class="lable_style"><span class="c-red">*</span>下肢水肿：</label>
+							<select id="tnb-4700" class="radius check_select chk-input" name="5001" style="height:30px;width:100px;">
+								<option value="">请选择</option>
+								<option value="1000365">无</option>
+								<option value="1000369">单侧</option>
+								<option value="1000373">双侧不对称</option>
+								<option value="1000377">双侧对称</option>
+							</select>
+						</li>
+						<li class="f-l li-base li-rel" style="position:relative;">
+							<label class="lable_style"><span class="c-red">*</span>足背动脉搏动：</label>
+							<select id="tnb-4800" class="radius check_select chk-input" name="5003" style="height:30px;width:100px;">
+								<option value="">请选择</option>
+								<option value="1000381">未触及</option>
+								<option value="1000385">触及双侧对称</option>
+								<option value="1000389">触及左侧弱或消失</option>
+								<option value="1000393">触及右侧弱或消失</option>
+							</select>
+						</li>
+						<li class="f-l li-base li-rel" style="position:relative;">
+							<label class="lable_style"><span class="c-red">*</span>神经病变检查：</label>
+							<select id="tnb-4900" class="radius check_select chk-input" name="5002" style="height:30px;width:100px;">
+								<option value="">请选择</option>
+								<option value="1000397">正常</option>
+								<option value="1000401">异常</option>
+							</select>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div style="text-align: center;margin-top: 40px;">
+		<button class="btn btn-danger radius btn-user-edit" id="do_return" style="width: 100px;" type="button">返回</button>
+		<button class="btn btn-success radius btn-user-edit" id="do_save" style="width: 100px;" type="button">保存</button>
+	</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+
+<!--/_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../health/js/jquery.tips.js"></script>
+<script type="text/javascript" src="../health/js/mkh.common.js"></script>
+<script>
+$(function(){
+	//获取地址栏order_id方法
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+			return null;
+	}
+	var order_id=getUrlParam("order_id");
+	$("#order_id").val(order_id);
+
+	//定义既往史全局变量
+	var num= 1,num2= 1,num3= 1,num4=1;
+	//既往史 删除表格行
+    function del(del,pard,yw){
+        $(del).click(function(){
+            $(this).parent("li").find(pard).find(yw).remove();
+            if(del==".del-1"){
+                num--;
+                if(num<2){
+                    $(this).css("display","none");
+                }
+            }
+            if(del==".del-2"){
+                num2--;
+                if(num2<2){
+                    $(this).css("display","none");
+                }
+            }
+            if(del==".del-3"){
+                num3--;
+                if(num3<2){
+                    $(this).css("display","none");
+                }
+            }
+            if(del==".del-4"){
+                num4--;
+                if(num4<2){
+                    $(this).css("display","none");
+                }
+            }
+        });
+    }
+    del(".del-1","#append-shoushu",".yw:last");
+    del(".del-2","#append-wss",".yw:last");
+    del(".del-3","#append-sxs",".yw:last");
+    del(".del-4","#append-jzs",".yw:last");
+	//新增手术史
+	$(".addTexInput").click(function(){
+		num++;
+		var html='<div class="yw shu-list">'+
+				 '<input type="text" name="3301-'+num+'" class="clear input-text" style="width:150px;" placeholder="请输入手术名称"/>'+
+		         '<input class="clear input-text Wdate"  placeholder="请选择时间" name="3302-'+num+'" onfocus="focus_ck()"  style="width: 110px;"/>'+
+		         '</div>';
+		$("#append-shoushu").append(html);
+		$(".del-1").css("display","inline-block");
+	});
+	//新增外伤史
+	$(".addTexInput2").click(function(){
+		num2++;
+		var html='<div class="yw wshi-list">'+
+				'<input type="text" name="3401-'+num2+'" class="clear input-text" style="width:150px;" placeholder="请输入外伤名称"/>'+
+				'<input class="clear input-text Wdate"  placeholder="请选择时间" name="3402-'+num2+'" onfocus="focus_ck()" style="width: 110px;"/>'+
+				'</div>';
+		$("#append-wss").append(html);
+		$(".del-2").css("display","inline-block");
+	});
+	//新增输血史
+	$(".addTexInput3").click(function(){
+		num3++;
+		var html='<div class="yw sxs-list">'+
+				'<input type="text" name="3501-'+num3+'" class="clear input-text" style="width:150px;" placeholder="请输入输血原因"/>'+
+				'<input class="clear input-text Wdate"  placeholder="请选择时间" name="3502-'+num3+'" onfocus="focus_ck()" style="width: 110px;"/>'+
+				'</div>';
+		$("#append-sxs").append(html);
+		$(".del-3").css("display","inline-block");
+	});
+	//新增家族成员病史
+	$(".addTexInput4").click(function(){
+		num4++;
+		var html='<div class="yw jzs-chk selet-chk jzhu-list">'+
+				'<select class="clear radius" name="3601-'+num4+'" style="height:30px;width:130px;">'+
+				'<option value="">请选择</option>'+
+				'<option value="1000289">父亲</option>'+
+				'<option value="1000311">母亲</option>'+
+				'<option value="1000312">哥哥</option>'+
+				'<option value="1000313">弟弟</option>'+
+				'<option value="1000314">姐姐</option>'+
+				'<option value="1000315">妹妹</option>'+
+				'<option value="1000316">儿子</option>'+
+				'<option value="1000317">女儿</option>'+
+				'</select>'+
+				'<ul class="baseinfo-list" style="margin-left:0;width:100%;background: #f8f7f7;display: block">'+
+				'<li class="li-base li-rel  jzs-chk" style="position:relative;clear: both;width: 435px;">'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-1" value="1000321"/><label for="jz-type'+num4+'-1">高血压</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-2" value="1000322" style="margin-left: 10px;"/><label for="jz-type'+num4+'-2">糖尿病</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-3" value="1000323" style="margin-left: 10px;"/><label for="jz-type'+num4+'-3">冠心病</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-4" value="1000324" style="margin-left: 10px;"/><label for="jz-type'+num4+'-4">慢性阻塞性肺疾病</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-5" value="1000325" style="margin-left: 30px;"/><label for="jz-type'+num4+'-5">恶性肿瘤</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-6" value="1000326" /><label for="jz-type'+num4+'-6">脑卒中</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-8" value="1000328" style="margin-left: 10px;"/><label for="jz-type'+num4+'-8">结核病</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-9" value="1000329" style="margin-left: 10px;"/><label for="jz-type'+num4+'-9">肝炎</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-7" value="1000327" style="margin-left: 24px;"/><label for="jz-type'+num4+'-7">重性精神疾病</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-10" value="1000330" style="margin-left: 10px;"/><label for="jz-type'+num4+'-10">先天畸形</label>'+
+				'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-11" value="1000331" style="margin-left: 10px;"/><label for="jz-type'+num4+'-11">其它</label>'+
+				'</li>'+
+				'</ul>'+
+				'</div>';
+		$("#append-jzs").append(html);
+		$(".del-4").css("display","inline-block");
+	});
+
+    $.ajax({ //回显
+        url: "../../../diabetesDoc-app/getAnswers.action",
+        type: "GET",
+        dataType: 'json',
+        data: {order_id:order_id,scope_flag:'1'},
+        success: function (response) {
+        	var p1=response.data.basic;
+			var p2=response.data.answer;
+            if(response.status=='1'){
+				$(".baseinfo-list li span.base_val").each(function(){
+					var name=$(this).attr("id");
+					var _self=this;
+					$.each(p1,function(i,p){
+						if(name==i){
+							$(_self).html(p=='200001'?'男':p=='200002'?'女':p);
+							return false;
+						}else{
+							$(_self).html("");
+						}
+					});
+				});	
+			
+				if(p2.t0!=undefined){
+					//单选按钮赋值
+					$(".page-container .check_radio").each(function(){
+						var va = $(this).val();
+						var name = $(this).attr("name");
+						var _self = this;
+		 					$.each(p2.t0.c0, function(i,m){
+			  					if(va == m.option_order_id && name==m.question_k_order_id){
+								$(_self).attr("checked",true).click();
+								return false;
+							} 
+						});
+					});
+					//文本框赋值
+					$(".page-container input.survey_answer").each(function(){
+						var name = $(this).attr("name");
+						var _self =this;
+	  					$.each(p2.t0.c0, function(i,m){
+		  					if(name == m.question_k_order_id && m.question_type==3){
+								$(_self).val(m.option_content);
+								return false;
+							}else{
+								$(_self).val("");
+							}  
+						});
+					});	
+					//下拉框
+					$(".page-container select.check_select").each(function(){
+						var name = $(this).attr("name");
+						var _self =this;
+	  					$.each(p2.t0.c0, function(i,m){
+		  					if(name == m.question_k_order_id && m.question_type==1){
+		  						$(_self).find("option[value='"+m.option_order_id+"']").attr("selected",true);
+								//$(_self).val(m.option_content);
+								return false;
+							}else{
+								$(_self).val("");
+							}  
+						});
+					});
+					//复选框赋值
+					$(".page-container .check_checkbox").each(function(){
+						var name=$(this).attr("name");
+						var va2 = $(this).val();
+						var _self = this;
+	  					$.each(p2.t0.c0, function(i,m){
+		  					if(name == m.question_k_order_id && va2== m.option_order_id && m.question_type==2){
+								$(_self).attr("selected",true).trigger("click");
+								return false;
+							} 
+						});
+					});					
+	            }
+	            if(p2.t1!=undefined){
+					//疾病史 数据显示
+					$(".jb_sel").each(function(){
+						var va2 = $(this).val();	
+						var _that =this;
+						$.each(p2.t1, function(i,m){
+							$.each(m,function(j,p){
+	  								if(va2 == p.option_order_id){
+	 									$(_that).attr("selected",true).trigger("click");
+	 									//$(_that).parent(".jbs-list").find(".write_date").val(m[1].option_content);
+	 									$(_that).parent().find(".Wdate").val(m[1].option_content);
+	 								}
+								});
+						});
+					});
+				}
+				//手术史
+				if(p2.t2!=undefined){
+		            num++;
+					var html='<div class="yw shu-list">'+
+							 '<input type="text" name="3301-'+num+'" class="clear input-text" style="width:150px;" placeholder="请输入手术名称"/>'+
+					         '<input class="clear input-text Wdate"  placeholder="请选择时间" name="3302-'+num+'" onfocus="focus_ck()"  style="width: 110px;"/>'+
+					         '</div>';          
+					//手术史动态添加数据
+					$.each(p2.t2, function(i,m){
+						$("#append-shoushu").find(".shu-list").last().each(function(){
+							$(this).find(":input").each(function(index){
+								var name = $(this).attr("name");
+								var that = this;
+								if(name!=undefined){
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});								
+								}
+
+							});
+						});
+						//追加
+						$(".del-1").css("display","inline-block");
+						$("#append-shoushu").append(html);
+					});
+					//移出最后一条
+					$("#append-shoushu").find(".shu-list").last().remove();
+				}
+				//外伤史
+				if(p2.t3!=undefined){
+		            num2++;
+					var html='<div class="yw wshi-list">'+
+							'<input type="text" name="3401-'+num2+'" class="clear input-text" style="width:150px;" placeholder="请输入外伤名称"/>'+
+							'<input class="clear input-text Wdate"  placeholder="请选择时间" name="3402-'+num2+'" onfocus="focus_ck()" style="width: 110px;"/>'+
+							'</div>';
+					//外伤史动态添加数据
+					$.each(p2.t3, function(i,m){
+						$("#append-wss").find(".wshi-list").last().each(function(){
+							$(this).find(":input").each(function(index){
+								var name = $(this).attr("name");
+								var that = this;
+								if(name!=undefined){
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});									
+								}
+							});
+						});
+						//追加
+						$(".del-2").css("display","inline-block");
+						$("#append-wss").append(html);
+					});
+					//移出最后一条
+					$("#append-wss").find(".wshi-list").last().remove();
+				}
+				//输血史
+				if(p2.t4!=undefined){
+					num3++;
+					var html='<div class="yw sxs-list">'+
+							'<input type="text" name="3501-'+num3+'" class="clear input-text" style="width:150px;" placeholder="请输入输血原因"/>'+
+							'<input class="clear input-text Wdate"  placeholder="请选择时间" name="3502-'+num3+'" onfocus="focus_ck()" style="width: 110px;"/>'+
+							'</div>';
+					//外伤史动态添加数据
+					$.each(p2.t4, function(i,m){
+						$("#append-sxs").find(".sxs-list").last().each(function(){
+							$(this).find(":input").each(function(index){
+								var name = $(this).attr("name");
+								var that = this;
+								if(name!=undefined){
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+											$(that).val(n.option_content);
+											return false;
+										}
+									});									
+								}
+							});
+						});
+						//追加
+						$(".del-3").css("display","inline-block");
+						$("#append-sxs").append(html);
+					});
+					//移出最后一条
+					$("#append-sxs").find(".sxs-list").last().remove();
+				}
+				
+				//家族史
+				if(p2.t5!=undefined){
+					num4++;
+					var html='<div class="yw jzs-chk selet-chk jzhu-list">'+
+							'<select class="clear radius" name="3601-'+num4+'" style="height:30px;width:130px;">'+
+							'<option value="">请选择</option>'+
+							'<option value="1000289">父亲</option>'+
+							'<option value="1000311">母亲</option>'+
+							'<option value="1000312">哥哥</option>'+
+							'<option value="1000313">弟弟</option>'+
+							'<option value="1000314">姐姐</option>'+
+							'<option value="1000315">妹妹</option>'+
+							'<option value="1000316">儿子</option>'+
+							'<option value="1000317">女儿</option>'+
+							'</select>'+
+							'<ul class="baseinfo-list" style="margin-left:0;width:100%;background: #f8f7f7;display: block">'+
+							'<li class="li-base li-rel  jzs-chk" style="position:relative;clear: both;width: 435px;">'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-1" value="1000321"/><label for="jz-type'+num4+'-1">高血压</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-2" value="1000322" style="margin-left: 10px;"/><label for="jz-type'+num4+'-2">糖尿病</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-3" value="1000323" style="margin-left: 10px;"/><label for="jz-type'+num4+'-3">冠心病</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-4" value="1000324" style="margin-left: 10px;"/><label for="jz-type'+num4+'-4">慢性阻塞性肺疾病</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-5" value="1000325" style="margin-left: 30px;"/><label for="jz-type'+num4+'-5">恶性肿瘤</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-6" value="1000326" /><label for="jz-type'+num4+'-6">脑卒中</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-8" value="1000328" style="margin-left: 10px;"/><label for="jz-type'+num4+'-8">结核病</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-9" value="1000329" style="margin-left: 10px;"/><label for="jz-type'+num4+'-9">肝炎</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-7" value="1000327" style="margin-left: 24px;"/><label for="jz-type'+num4+'-7">重性精神疾病</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-10" value="1000330" style="margin-left: 10px;"/><label for="jz-type'+num4+'-10">先天畸形</label>'+
+							'<input class="magic clear" type="checkbox" name="3602-'+num4+'" id="jz-type'+num4+'-11" value="1000331" style="margin-left: 10px;"/><label for="jz-type'+num4+'-11">其它</label>'+
+							'</li>'+
+							'</ul>'+
+							'</div>';
+
+					//家族史动态添加数据
+					$.each(p2.t5, function(i,m){
+						$("#append-jzs").find(".jzhu-list").last().each(function(){
+							$(this).find("select").each(function(index){
+								var name = $(this).attr("name");
+								var that = this;
+								if(name!=undefined){
+									name = name.substring(0, name.indexOf("-"));
+									$.each(m, function(j, n){
+										if(n.question_k_order_id == name){
+
+											$(that).find("option[value='"+n.option_content+"']").attr("selected",true);
+											return false;
+										}
+									});
+								}
+							});
+						});
+						$("#append-jzs").find(".jzhu-list").last().each(function(){
+							$(this).find("ul.baseinfo-list li.li-base input[type='checkbox']").each(function(){
+								var name = $(this).val();
+								//console.log(name);
+								var that = this;
+								$.each(m, function(j, n){
+									if(n.option_content == name){
+										$(that).attr("selected",true).click();
+										return false;
+									}
+								});
+							});
+						});
+						//追加
+						$("#append-jzs").append(html);
+						$(".del-4").css("display","inline-block");
+					});
+					//移出最后一条
+					$("#append-jzs").find(".jzhu-list").last().remove();
+				}
+				 
+            }
+        }
+    });
+    //保存
+	$("#do_save").click(function(){
+		//校验
+		var flag = true;
+		$(".collection-baseinfo input.chk-input").each(function(){
+			var name=$(this).attr("name");
+			if ($("#tnb-"+name).val() == '') {
+				mkh.errTips("#tnb-"+name, "请填写！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#tnb-"+name);
+			}
+		});
+		$(".collection-baseinfo select.chk-input").each(function(){
+			var name=$(this).attr("name");
+			if ($("#tnb-"+name).val() == '') {
+				mkh.errTips("#tnb-"+name, "请选择！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#tnb-"+name);
+			}
+		});
+		//生活方式-体育锻炼
+		if($("#tnb-2101").val()==''){
+			mkh.errTips("#ty-message", "请填写！");
+			flag = false;
+		}else{
+			mkh.errTipsRemove("#ty-message");
+		}
+
+		//吸烟
+		function check4(){
+			var result4=true;
+		 	$("#baseif-sm :input").each(function(){
+		 		var name=$(this).attr("name");
+		 		if ($("#tnb-"+name).val() =='') {
+		 			result4 = false;
+		 		}
+		 	});
+		 	return result4;
+		}
+		if(!$("#xy-1").is(":checked")){
+		 	var result4=check4();
+		 	if(!result4){
+		 		mkh.errTips("#xy-message", "请填写！");
+		 		flag = false;
+			}else{
+		 		mkh.errTipsRemove("#xy-message");
+		 	}
+		}
+		//饮酒量
+		if(!$("#yj-1").is(":checked")) {
+			if ($("#tnb-2405").val()=='') {
+				mkh.errTips("#tnb-2405", "请填写！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#tnb-2405");
+			}
+			if ($("#tnb-2406").val()=='') {
+				mkh.errTips("#tnb-2406", "请填写！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#tnb-2406");
+			}
+
+			if ($("#tnb-2407").val()=='') {
+				mkh.errTips("#yj-1-message", "请填写！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#yj-1-message");
+			}
+			if (!$("#yj-2-message input[type='checkbox']").is(":checked")) {
+				mkh.errTips("#yj-2-message", "请填写！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#yj-2-message");
+			}
+		}
+
+		//疾病史
+		if(!$("#jbs-1").is(":checked")) {
+			if (!$("#jb_list input[type='checkbox']").is(":checked")) {
+				mkh.errTips("#jb-message", "请填写！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#jb-message");
+			}
+		}
+
+		//公共
+		function check6(ob){
+			var result6=true;
+			$(ob).find("input").each(function(){
+				if($(this).val()==''){
+					result6=false;
+				}
+			});
+			return result6;
+		}
+		//手术史
+		if(!$("#shs-1").is(":checked")) {
+			var result=check6("#append-shoushu");
+			if(!result){
+				mkh.errTips("#shs-message", "请输入名称和时间");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#shs-message");
+			}
+		}
+		if(!$("#wsy-1").is(":checked")) {
+			var result=check6("#append-wss");
+			if(!result){
+				mkh.errTips("#wss-message", "请输入名称和时间");
+				flag = false;
+			}else{
+				mkh.errTipsRemove("#wss-message");
+			}
+		}
+		if(!$("#sxs-1").is(":checked")) {
+			var result=check6("#append-sxs");
+			if(!result){
+				mkh.errTips("#sxs-message", "请输入名称和时间");
+				flag = false;
+			}else{
+				mkh.errTipsRemove("#sxs-message");
+			}
+		}
+		//家族病史
+		function check7(){
+			var result7=true;
+			$("#baseif-jzbj .selet-chk").each(function(){
+				if($(this).find("select").val()==''){
+					result7=false;
+				}
+			});
+
+			$("#baseif-jzbj .jzs-chk").each(function(){
+				if(!$(this).find("input[type='checkbox']").is(":checked")){
+					result7=false;
+				}
+			});
+			return result7;
+		}
+
+		if(!$("#jzs-1").is(":checked")) {
+			var result=check7();
+			if(!result){
+				mkh.errTips("#jzjs-message", "请填写完整！");
+				flag = false;
+			} else {
+				mkh.errTipsRemove("#jzjs-message");
+			}
+		}
+		if (!flag) {
+			return;
+		}
+	     var data=$.param({order_id: order_id,scope_flag:1})+'&'+ $('#form-baseinfo-write').serialize();
+	     $.ajax({
+	         url:"../../../diabetesDoc-app/updateAnswers.action",
+	         type:"post",
+	         dataType:'json',
+	         data:data,
+	         success:function(response){
+	             if(response.status=="1"){
+	             	layer.confirm('添加成功！',{btn: '确定'},
+		              	function(){
+							window.location.href = "chronicDisease-file-index.html?order_id="+$("#order_id").val();							
+						}
+	             	);
+	             }else{
+	                 layer.open({content: '添加失败！',btn: '确定'});
+	             }
+	         }
+	     });
+	});
+    //隐藏显示
+    $(".bas-close").click(function(){
+    	$(this).parents(".baseinfo-list").next(".data-show-or-hide").hide().find("li :input").val("");
+        $(this).parents(".baseinfo-list").next(".data-show-or-hide").find("li input[type='checkbox']").attr("checked",false);
+    });
+    $(".bas-open").click(function(){
+        $(this).parents(".baseinfo-list").next(".data-show-or-hide").show();
+    });	
+});
+
+/*选择时间函数*/
+function focus_ck(){
+	WdatePicker({dateFmt:'yyyy-MM',readOnly:true});
+}
+/*返回上一页*/
+$("#do_return").click(function(){
+	window.location.href = "chronicDisease-file-index.html?order_id="+$("#order_id").val();							
+});
+</script>
+</body>
+</html>

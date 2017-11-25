@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="Bookmark" href="favicon.ico" >
+<link rel="Shortcut Icon" href="favicon.ico" />
+<title>美康惠健康管理系统</title>
+<link href="view/static/h-admin/css/bootstrap.min.css" rel="stylesheet">
+<link href="view/static/h-admin/css/signin.css" rel="stylesheet">
+	<style>
+		.footer{position:absolute;top:88%;left:40%;border-top:1px solid transparent; padding:15px 0;font-family:tahoma,Arial;font-size:12px;color:#e7e7e7;line-height:22px;text-align:center}
+		.footer a,.footer a:hover{color:#e7e7e7;}
+	</style>
+</head>
+<body>
+<!--
+<div style="background:url(view/static/h-admin/images/login_bg_01.png) center 0 no-repeat ;width:100%;height:100%;">
+-->
+<div id="Layer1" style="position:fixed; width:100%; height:100%; z-index:-1">
+	<img src="view/static/h-admin/images/login_bg_01.png" height="100%" width="100%"/>
+	</div>
+	<div class="signin">
+		<div class="signin-head">
+			<img src="view/images/denglu_03.png" alt="" style="margin-left: 55px;"/>
+			<h3 style="font-weight:bold;">美康惠健康管理</h3>
+		</div>
+		<form class="form-signin" id="login_form">
+			<span  id="lay-mesg" style="color:#d22f4c;margin-bottom:5px;display: inline-block;height: 20px;"></span>
+			<input type="text" class="form-control" id="user_phone" name="user_phone" placeholder="请输入用户名"/>
+			<input type="password" class="form-control" id="user_pwd" name="user_pwd" placeholder="请输入密码"/>
+			<span id="close-show" class="close-show" style="display: inline-block;position: relative;top:-43px;left:287px;z-index: 100;width: 32px;height:20px;background-size: 20px;"></span>
+			<button class="btn btn-lg btn-block" id="btn-login" type="button" style="border-radius:5px;color:#fff;background: #da281f;">登录</button>
+		</form>
+	</div>
+</div>
+
+<!-- <footer class="footer">
+	<div class="container-fluid">
+		<p>Copyright(C) 2016 HAAA group. All Rights Reserved. 浙ICP备16044553号-1</p>
+		<p>技术支持:美康惠健康管理（浙江）有限公司&nbsp;&nbsp; 版权所有</p>
+	</div>
+</footer> -->
+<script type="text/javascript" src="view/lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="view/static/h-admin/js/login.js"></script>
+<script>
+$(function(){
+	$("#close-show").click(function(){
+		var type=$("#user_pwd").attr("type");
+		if(type=="password"){
+			$("#user_pwd").attr("type","text");
+			$(this).removeClass("close-show").addClass("show-close");
+		}else if(type=="text"){
+			$("#user_pwd").attr("type","password");
+			$(this).removeClass("show-close").addClass("close-show");
+		}
+	});
+});
+</script>
+</body>
+</html>

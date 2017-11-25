@@ -1,0 +1,90 @@
+package com.haaa.cloudmedical.platform.roleManage.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.dao.RoleDao;
+
+@Service
+public class RoleManageService {
+
+	@Resource
+	private RoleDao roleDao;
+
+	private Logger logger = Logger.getLogger(RoleManageService.class);
+
+	@Transactional
+	public InfoJson addRole(Map<String, Object> data) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			Date date = new Date();
+			Map<String, Object> roleMap = new HashMap<String, Object>();
+			roleMap.put("role_name", data.remove("role_name"));
+			roleMap.put("role_note", data.remove("role_note"));
+			roleMap.put("create_date", date);
+			int role_code = roleDao.addRole(roleMap);
+			
+			Set<String> keySet= data.keySet();
+			List<Object[]> list = new ArrayList<Object[]>(); 
+	        for (String menu_code : keySet) {
+				ArrayList<Object> arrayList = new ArrayList<Object>();
+				arrayList.add(role_code);
+				arrayList.add(menu_code);
+				list.add(arrayList.toArray());
+			}
+			roleDao.batchAddAuthorities(new String[]{"role_code","menu_code"}, list);
+			Map<String, Object> resultMap = roleDao.getRoleById(role_code+"");
+			if (resultMap != null) {
+				infoJson.setData(resultMap);
+				infoJson.setStatus(1);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson deleteRole(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (order_id.equals(Constant.ROLE_CODE_DOCTOR) || order_id.equals(Constant.ROLE_CODE_MANAGER)
+					|| order_id.equals(Constant.ROLE_CODE_OPERATER)) {
+                infoJson.setInfo("默认角色，无法删除");
+			}else{
+				int num1 = roleDao.deleteAuthortiesByRole(order_id);
+				int num2 = roleDao.deleteRoleById(order_id);
+				if (num2 > 0) {
+					infoJson.setStatus(1);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson getRoleByCondition(String roleName, String authority, String downTime, String upTime,
+			Integer pageno, Integer pagesize) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson.setData(roleDao.getRolesByCondition(roleName, authority, downTime, upTime, pageno, pagesize));
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

@@ -1,0 +1,370 @@
+package com.haaa.cloudmedical.app.user.controller;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.remind.service.RemindAppService;
+import com.haaa.cloudmedical.app.user.service.DoctorAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.IdCard;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+import com.haaa.cloudmedical.entity.User;
+
+@Controller
+@RequestMapping("/doctor-app")
+public class DoctorAppController {
+
+	@Autowired
+	private DoctorAppService service;
+
+	@Autowired
+	private CommonUserService common;
+
+	@Autowired
+	private RemindAppService remindAppService;
+
+	/**
+	 * 登录
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public Object login(String user_phone, String user_pwd) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto = service.login(user_phone, MD5Util.encode(user_pwd));
+		} catch (Exception e) {
+			dto.setErrmsg("账号或密码错误");
+		}
+		return dto;
+	}
+
+	/**
+	 * 修改医生信息
+	 * 
+	 * @param user
+	 * @param doctor
+	 * @return
+	 */
+	@RequestMapping("/update.action")
+	@ResponseBody
+	public ResponseDTO update(User user, Doctor doctor) {
+		ResponseDTO dto = new ResponseDTO();
+		String user_card = user.getUser_card();
+		if (user_card != null && user_card.length() > 0) {
+			IdCard card = IdCard.of(user_card);
+			if (card.flag) {
+				user.setUser_sex(card.getSex() == 1 ? "200001" : "200002");
+				user.setUser_age(card.getAge() + "");
+				user.setUser_birthday(card.getBirthday());
+			} else {
+				dto.setErrmsg("非法身份证");
+				return dto;
+			}
+		}
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			user.setUser_id(user_map.get("user_id").toString());
+			dto = service.update(user, doctor);
+		}
+		return dto;
+	}
+
+	/**
+	 * 获取医生信息
+	 * 
+	 * @param doctor_id
+	 * @return
+	 */
+	@RequestMapping("/getDoctorInfo.action")
+	@ResponseBody
+	public Object getDoctorInfo() {
+		Object doctor = null;
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			doctor = service.getDoctorInfo(doctor_id);
+		}
+		return doctor;
+	}
+
+	/**
+	 * 获取患者列表
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/getPatientList.action")
+	@ResponseBody
+	public ResponseDTO getPatientList(String ahdi_level, String chronic) {
+		ResponseDTO dto = null;
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			dto = service.getPatientList(doctor_id, ahdi_level, chronic);
+		}
+		return dto;
+
+	}
+
+	/**
+	 * 获取消息推送列表
+	 * 
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 */
+	@RequestMapping("/getPushMessageList.action")
+	@ResponseBody
+	public Page getMessageList(Integer pageNo, Integer pageSize) {
+		Page page = null;
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			page = service.getPushMessageList(doctor_id, pageNo, pageSize);
+		}
+		return page;
+	}
+
+	/**
+	 * 修改患者是否接受推送消息
+	 * 
+	 * @param patient_id
+	 * @param is_send
+	 */
+	@RequestMapping("/push.action")
+	@ResponseBody
+	public ResponseDTO push(String patient_id, String is_send) {
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = service.setPushStatus(patient_id, is_send);
+		dto.setFlag(flag);
+		return dto;
+	}
+
+	/**
+	 * 添加患者-大陆
+	 * 
+	 * @param doctor_id
+	 * @param user_name
+	 * @param user_phone
+	 * @param user_card
+	 * @return
+	 */
+	@RequestMapping("/addPatient.action")
+	@ResponseBody
+	public Object addPatient(String user_name, String user_phone, String user_card, String user_phs_phone) {
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = user_name != null && user_name.length() > 0 && user_phone != null && user_phone.length() > 0
+				&& user_card != null && user_card.length() > 0;
+		if (flag) {
+			IdCard card = IdCard.of(user_card);
+			if (card.flag) {
+				/*Map<String, Object> user_map = common.getUserMap();
+				if (user_map != null) {
+					String doctor_id = user_map.get("user_id").toString();
+					dto = service.addNewPatient(doctor_id, user_name, user_phone, user_card, user_phs_phone);
+				}*/
+				String doctor_id = "1785";
+				dto = service.addNewPatient(doctor_id, user_name, user_phone, user_card, user_phs_phone);
+			} else {
+				dto.setErrmsg("身份证不合法");
+			}
+		} else {
+			dto.setErrmsg("输入参数为空");
+		}
+		return dto;
+	}
+
+	/**
+	 * 添加患者-非大陆
+	 * 
+	 * @param doctor_id
+	 * @param user_name
+	 * @param user_phone
+	 * @param user_card
+	 * @return
+	 */
+	@RequestMapping("/addPatientOut.action")
+	@ResponseBody
+	public Object addPatient(String user_name, String user_phone, String passport) {
+		ResponseDTO dto = new ResponseDTO();
+		boolean flag = user_name != null && user_name.length() > 0 && user_phone != null && user_phone.length() > 0
+				&& passport != null && passport.length() > 0;
+		if (flag) {
+			Map<String, Object> user_map = common.getUserMap();
+			if (user_map != null) {
+				String doctor_id = user_map.get("user_id").toString();
+				try {
+					dto = service.addNewPatient(doctor_id, user_name, user_phone, passport);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return dto;
+	}
+
+	/**
+	 * 获取患者信息
+	 */
+	@RequestMapping("/getPatientInfo.action")
+	@ResponseBody
+	public Object getPatientInfo(String patient_id) {
+		ResponseDTO dto = service.getPatientInfo(patient_id);
+		return dto;
+
+	}
+
+	/**
+	 * 完善患者信息
+	 */
+	@RequestMapping("/updatePatient.action")
+	@ResponseBody
+	public Object updatePatient(User user) {
+		ResponseDTO dto = new ResponseDTO();
+		String user_card = user.getUser_card();
+		if (user_card != null && user_card.length() > 0) {
+			IdCard card = IdCard.of(user_card);
+			if (card.flag) {
+				user.setUser_age(card.getAge() + "");
+				user.setUser_birthday(card.getBirthday());
+				user.setUser_sex(card.getSex() == 1 ? "200001" : "200002");
+			} else {
+				dto.setErrmsg("非法身份证");
+				return dto;
+			}
+		}
+		service.updatePatientInfo(user);
+		return dto;
+	}
+
+	/**
+	 * 获取新闻
+	 */
+	@RequestMapping("/getNews.action")
+	@ResponseBody
+	public Object getNews(String section, Integer pageno, Integer pagesize) {
+		Page page = service.getNews(section, pageno, pagesize);
+		return page;
+	}
+
+	/**
+	 * 获取患者健康档案
+	 */
+	@RequestMapping("/getHealthReport.action")
+	@ResponseBody
+	public Object getHealthReport(String patient_id) {
+		ResponseDTO dto = service.getHealthReport(patient_id);
+		return dto;
+	}
+
+	/**
+	 * 获取患者健康档案详情
+	 */
+	@RequestMapping("/getHealthReportInfo.action")
+	@ResponseBody
+	public Object getHealthReport(String order_id, String report_type) {
+		ResponseDTO dto = service.getHealthReport(order_id, report_type);
+		return dto;
+	}
+
+	/**
+	 * 上传体检报告
+	 */
+	@RequestMapping("/saveCheckReport.action")
+	@ResponseBody
+	public Object saveCheckReport(CheckReport report) {
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;
+	}
+
+	/**
+	 * 上传门诊报告
+	 */
+	@RequestMapping("/saveClinicReport.action")
+	@ResponseBody
+	public Object saveClinicReport(ClinicReport report) {
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;
+	}
+
+	/**
+	 * 上传住院报告报告
+	 */
+	@RequestMapping("/saveHospitalReport.action")
+	@ResponseBody
+	public Object saveHospitalReport(HospitalReport report) {
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;
+	}
+
+	/**
+	 * 上传医保报告
+	 */
+	@RequestMapping("/saveInsuranceReport.action")
+	@ResponseBody
+	public Object saveInsuranceReport(InsuranceReport report) {
+		LocalDateTime now = LocalDateTime.now();
+		report.setCreate_date(now.toString());
+		Map<String, Object> user_map = common.getUserMap();
+		if (user_map != null) {
+			String doctor_id = user_map.get("user_id").toString();
+			String doctor_name = user_map.get("user_name").toString();
+			report.setDoctor_id(doctor_id);
+			report.setDoctor_name(doctor_name);
+		}
+		ResponseDTO dto = service.saveHealthReport(report);
+		return dto;
+	}
+
+	@RequestMapping("/getRemind.action")
+	@ResponseBody
+	public Object getRemind(String patient_id) {
+		ResponseDTO dto = remindAppService.getRemind(patient_id);
+		return dto;
+	}
+
+}

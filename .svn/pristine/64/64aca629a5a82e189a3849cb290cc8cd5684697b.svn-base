@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <style type="text/css">
+        .div{
+            border-left:#023060 10px solid;
+            border-right:#366AA1 10px solid;
+            border-top:#0F2E4E 10px solid;
+            border-bottom:#548CC7 10px solid;
+            width:120px;
+            margin:0px auto;
+            text-align:center;
+            font-size:12px;
+            line-height:22px;
+            color:#bbdcff;
+            background-color:#194D83;
+        }
+    </style>
+    <title>运用css模拟表格</title>
+</head>
+<body>
+<div class="div">测试内容</div>
+<a href="tel:10086">拨打电话</a>
+</body>
+</html> 

@@ -1,0 +1,208 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.chrondoc.service;
+
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.dao.DiabetesDocDao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class DiabetesDocAppService {
+
+	@Resource
+	private DiabetesDocDao diabetesDocDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	@Transactional
+	public InfoJson addDoc(long user_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		map.put("user_id", user_id);
+		map.put("create_date", new Date());
+		long order_id = diabetesDocDao.addDoc(map);
+		retMap = diabetesDocDao.getDocBasicInfo(order_id);
+		return InfoJson.setSucc(retMap);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public InfoJson addAnswers(Map<String, List<Object>> answers) {
+		Date date = new Date();
+		String order_id = String.valueOf(answers.remove("order_id").get(0));
+		String scope_flag = String.valueOf(answers.remove("scope_flag").get(0)); // 获取当前添加的scope_flag
+		// 选项码表
+		Map<String, Object> k_options = diabetesDocDao.getKOptions(scope_flag).stream()
+				.collect(Collectors.toMap(s -> String.valueOf(s.get("order_id")), s -> {
+					s.remove("order_id");
+					return s;
+				}));
+		// 问题码表
+		Map<String, Map<String, Object>> k_questions = diabetesDocDao.getKQuestions(scope_flag).stream()
+				.collect(Collectors.toMap(s -> String.valueOf(s.get("order_id")), s -> {
+					s.remove("order_id");
+					return s;
+				}));
+
+//		List<Object[]> questionList = new LinkedList<Object[]>();
+		float user_weight = Float.parseFloat(String.valueOf(answers.get("1101").get(0)));
+		float user_height = Float.parseFloat(String.valueOf(answers.get("1100").get(0)));
+		
+		answers.forEach((k, v) -> {
+			v.forEach(s -> {
+				String question_id = (k.split("-"))[0];
+				int question_index = 0;
+				if (k.split("-").length == 2) {
+					question_index = Integer.parseInt((k.split("-"))[1]);
+				}
+				Map<String, Object> questionMap = k_questions.get(question_id);
+				questionMap.remove("parent_id");
+				questionMap.remove("table_id");
+				questionMap.remove("is_require");
+				questionMap.put("dm_order_id", order_id);
+				questionMap.put("question_k_order_id", question_id);
+				questionMap.put("question_index", question_index);
+				questionMap.put("create_time", date);
+
+				// questionList.add(new Object[] { order_id, question_id,
+				// question_index, date });
+
+				long question_order_id = diabetesDocDao.addQuestions(questionMap);
+				Map<String, Object> answerMap = new HashMap<String, Object>();
+				answerMap.put("dm_order_id", order_id);
+				if (!String.valueOf(questionMap.get("question_type")).equals("3")) {
+					answerMap.put("option_order_id", s);
+					answerMap.put("option_content", ((Map) k_options.get(String.valueOf(s))).get("option_content"));
+				} else {
+					answerMap.put("option_content", s);
+				}
+				if (question_id.equals("1103")) {
+					DecimalFormat dformat = new DecimalFormat();
+					dformat.applyPattern("#.00");
+					answerMap.put("option_content", dformat.format(user_weight/(user_height*user_height)*10000));
+				}				
+				answerMap.put("create_time", date);
+				answerMap.put("question_order_id", question_order_id);
+				diabetesDocDao.addAnswers(answerMap);
+
+			});
+
+			// diabetesDocDao.batchAddQuestions(
+			// new String[] { "dm_order_id", "question_k_order_id",
+			// "question_index", "create_time" },
+			// questionList);
+			// System.out.println(order_id);
+			//
+			// List<Map<String, Object>> questionList1 =
+			// diabetesDocDao.getQuestionsByOrderId(Long.valueOf(order_id));
+			// System.out.println(questionList1.size());
+			// System.out.println(questionList1);
+			//
+			// List<Object[]> answerList = new LinkedList<Object[]>();
+			// questionList1.forEach(s -> {
+			// List<Object> answer = new ArrayList<Object>();
+			// if (!String.valueOf(s.get("question_type")).equals("0")) {
+			// answer = answers.get("-" + s.get("question_index"));
+			// } else {
+			// answer = answers.get(s.get("question_k_order_id"));
+			// }
+			// answer.forEach(s1 -> {
+			// if (!String.valueOf(s.get("question_type")).equals("3")) {
+			// answerList.add(new Object[] { order_id, s.get("order_id"), s1,
+			// k_options.get(s1), date });
+			// } else {
+			// answerList.add(new Object[] { order_id, s.get("order_id"), null,
+			// s1, date });
+			// }
+			// });
+			// });
+			// diabetesDocDao.batchAddAnswers(new String[] { "dm_order_id",
+			// "question_order_id", "option_oder_id",
+			// "option_content", "create_time" }, answerList);
+		});
+		Map<String, Object> diabetesDoc = diabetesDocDao.getDocBasicInfo(Long.valueOf(order_id));
+		switch (scope_flag) {
+		case "1":
+			diabetesDoc.put("base_status", 1);
+			break;
+		case "2":
+			diabetesDoc.put("image_status", 1);
+			break;
+		case "3":
+			diabetesDoc.put("station_status", 1);
+			break;
+		default:
+			break;
+		}
+		if (diabetesDoc.get("base_status").equals(1) && diabetesDoc.get("image_status").equals(1)
+				&& diabetesDoc.get("station_stauts").equals(1)) {
+			diabetesDoc.put("status", 1);
+		}
+		int result = diabetesDocDao.updateDoc(diabetesDoc);
+		if (result > 0) {
+			return InfoJson.setSucc(diabetesDoc);
+		}
+		return InfoJson.setFaile();
+	}
+
+	public InfoJson update(Map<String, List<Object>> answers) {
+		String order_id = String.valueOf(answers.get("order_id").get(0));
+		String scope_flag = String.valueOf(answers.get("scope_flag").get(0)); // 获取当前添加的scope_flag
+		/*
+		 * 编辑先将同模块的问题以及答案删除
+		 */
+		diabetesDocDao.deleteAnswers(Long.parseLong(order_id), Integer.parseInt(scope_flag));
+		return addAnswers(answers);
+	}
+
+	public InfoJson getAnswers(long order_id, String scope_flag) {
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		if (scope_flag.equals("1")) {
+			Map<String, Object> basicMap = diabetesDocDao.getBasicInfo(order_id);
+			IdcardInfoExtractor idcardInfo = new IdcardInfoExtractor(String.valueOf(basicMap.get("user_card")));
+			basicMap.put("user_card", basicMap.get("user_card"));
+			basicMap.put("user_phone", basicMap.get("user_phone"));
+			basicMap.put("user_sex", idcardInfo.getGender());
+			basicMap.put("user_birthday", DateUtil.dateFormat(idcardInfo.getBirthday(), "yyyy-MM-dd"));
+			basicMap.put("user_age", idcardInfo.getAge());
+			retMap.put("basic", basicMap);
+		} else {
+			retMap.put("basic", null);
+		}
+		List<Map<String, Object>> answerList = diabetesDocDao.getAnswers(order_id, scope_flag);
+		retMap.put("answer", answerList.stream().collect(Collectors.groupingBy(s -> "t" + s.remove("table_id"),
+				Collectors.groupingBy(m -> "c" + m.remove("question_index")))));
+		return InfoJson.setSucc(retMap);
+	}
+
+	public InfoJson getOption() {
+		List<Map<String, Object>> optionList = diabetesDocDao.getKOptions(null);
+		Map<String, List<Map<String, Object>>> retMap = optionList.stream()
+				.collect(Collectors.groupingBy(s -> String.valueOf(s.remove("question_k_order_id"))));
+		return InfoJson.setSucc(retMap);
+	}
+
+	public InfoJson getBasicDoc(long order_id) {
+		return InfoJson.setSucc(diabetesDocDao.getBasicDoc(order_id));
+	}
+
+}

@@ -1,0 +1,2725 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>档案填写</title>
+<style>
+.lable_style {display: inline-block;width:154px;text-align: left;span-weight: bold;}
+.lable_style_2{display: inline-block;width: 100px;text-align: left;width: 220px;span-weight: bold;}
+.lable-xu{width: 134px;}
+.li-base{width: 340px;}
+.li-xu{width: 400px;}
+.check-box input{display: block;width:140%;height:140%;margin: 0px;padding: 0px;border: 0px;opacity: 0;background: rgb(255, 255, 255);}
+.li-rel{position:relative;}
+.li-rel .check-box{position:absolute;left: 240px;}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconspan">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		健康档案 <span class="c-gray en">&gt;</span>&nbsp;&nbsp;填写 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconspan">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<form id="form-health-reasearch">
+		<!-- 基本信息 -->
+		<div class="collection-baseinfo" id="userMessage">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>基本信息
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">姓名：</label>
+<!--
+					<span id="user_name"></span>
+-->
+					<input type="text" id="user_name" name="user_name" style="border:none;" readonly="true"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">出生日期：</label>
+<!--
+					<span id="user_birthday"></span>
+-->
+					<input type="text" id="user_birthday" name="user_birthday" style="border:none;" readonly="true"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">性别：</label>
+					<select name="user_sex" id="user_sex" style="height:30px;width:180px;">
+						<option value="">选择</option>
+						<option value="200001">男</option>
+						<option value="200002">女</option>
+					</select>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">身高(cm)：</label>
+					<input type="text" class="input-text" id="user_height" name="user_height" style="width:180px;" placeholder="请输入身高"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">体重(kg)：</label>
+					<input type="text" class="input-text" id="user_weight" name="user_weight" style="width:180px;" placeholder="请输入体重"/>
+				</li>
+				<li class="f-l" style="width:500px;">
+					<label class="lable_style">邮箱：</label>
+					<input type="text" class="input-text" id="email" name="email" style="width:180px;" placeholder="请输入邮箱"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">脉搏(次)：</label>
+					<input type="text" class="input-text" id="PulseRate" name="PulseRate" style="width:180px;" placeholder="请输入脉搏"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">手机号码：</label>
+					<input type="text" class="input-text" id="user_phone" name="user_phone" style="width:180px;" placeholder="请输入手机号"/>
+				</li>
+				<li class="f-l" style="width:500px;">
+					<label class="lable_style">血压(mmHg)：</label>
+					<input type="text" class="input-text" name="HighPressure" style="width:90px;" placeholder="输入高压"/>
+					<input type="text" class="input-text" name="LowPressure" style="width:90px;" placeholder="输入低压"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">语言：</label>
+					<select class="radius"  name="language" style="height:30px;width:180px;">
+						<option value="" selected>请选择</option>
+						<option value="普通话">普通话</option>
+						<option value="粤语">粤语</option>
+						<option value="英语">英语</option>
+						<option value="其他">其他</option>
+					</select>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">婚姻状况：</label>
+					<select class="radius" id="user_marriage" name="user_marriage" style="height:30px;width:180px;">
+						<option value="">请选择</option>
+						<option value="300001">已婚</option>
+						<option value="300002">单身</option>
+						<option value="300003">离异</option>
+						<option value="300004">丧偶</option>
+						<option value="300005">性伴侣</option>
+					</select>
+				</li>
+				<li class="f-l" style="width:500px;">
+					<label class="lable_style">固定电话：</label>
+					<input type="text" class="input-text" name="fixed_telephone" style="width:180px;" placeholder="请输入固定电话"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">医疗保险险种：</label>
+					<input type="text" class="input-text" name="medical_insurance" style="width:180px;" placeholder="请输入"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">医疗保险单号：</label>
+					<input type="text" class="input-text" name="medical_insurance_code" style="width:180px;" placeholder="请输入"/>
+				</li>
+				<li class="f-l" style="width:500px;">
+					<label class="lable_style">就业状况：</label>
+					<select class="radius" name="employment_status" style="height:30px;width:180px;">
+						<option value="">请选择</option>
+						<option value="2200001">全职</option>
+						<option value="2200002">兼职</option>
+						<option value="2200003">待业中</option>
+						<option value="2200004">退休</option>
+						<option value="2200005">个体经营者</option>
+						<option value="2200006">服役军人</option>
+						<option value="2200007">全职学生</option>
+						<option value="2200008">兼职学生</option>
+						<option value="57">其它</option>
+					</select>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base">
+					<label class="lable_style">紧急联系人姓名：</label>
+					<input type="text" class="input-text" name="emergency_contact" style="width:180px;" placeholder="请输入"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">紧急联系人电话：</label>
+					<input type="text" class="input-text" name="emergency_contact_phone" style="width:180px;" placeholder="请输入"/>
+				</li>
+				<li class="f-l" style="width:500px;">
+					<label class="lable_style">最后一次体检时间：</label>
+					<input type="text" class="input-text" name="last_check" style="width:180px;" placeholder="请输入"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base" style="width:718px;">
+					<label class="lable_style">家庭住址：</label>
+					<input type="text" class="input-text"  name="user_address" style="width:559px;" placeholder="请输入家庭地址"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">紧急联系人与本人关系：</label>
+					<select class="radius" name="emergency_contact_with" style="height:30px;width:180px;">
+						<option value="" selected>请选择</option>
+						<option value="夫妻">夫妻</option>
+						<option value="父母">父母</option>
+						<option value="子女">子女</option>
+						<option value="兄弟姐妹">兄弟姐妹</option>
+						<option value="亲戚">亲戚</option>
+						<option value="朋友">朋友</option>
+						<option value="其他">其他</option>
+					</select>
+				</li>
+			</ul>
+		</div>
+		<!--目前健康问题-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>目前健康问题
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;" id="userBaseMsg">
+				<li class="f-l li-base">
+					<label class="lable_style">损伤来源：</label>
+					<select class="radius" name="101" style="height:30px;width:180px;">
+						<option value="" selected>请选择</option>
+						<option value="机动车">机动车</option>
+						<option value="工作">工作</option>
+						<option value="其他">其他</option>
+					</select>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">损伤日期</label>
+					<input class="input-text Wdate"  name="102" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">症状出现日期：</label>
+					<input class="input-text Wdate"  name="103" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">你以前有同样的状况吗：</label>
+					<select class="radius"  name="104" style="height:30px;width:180px;">
+						<option value="">请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+				<li class="f-l li-base">
+					<label class="lable_style">如果有什么时候：</label>
+					<input class="input-text Wdate" id="check_time" name="105" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base" style="width:100%;">
+					<label class="lable_style" style="width:12%;">请描述，以前同样的状况：</label>
+					<input class="input-text radius" name="106" placeholder="请输入" style="height:30px;width:62%;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base" style="width:100%;" >
+					<label class="lable_style" style="width:13%;">其他医生对这次损伤的意见：</label>
+					<input class="input-text radius" name="107" placeholder="请输入" style="height:30px;width:61%;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base" style="width:100%;" >
+					<label class="lable_style" style="width:20%;">你曾今有做过正骨治疗吗？如果有，请描述：</label>
+					<input class="input-text radius" name="108" placeholder="请输入" style="height:30px;width:54%;"/>
+				</li>
+			</ul>
+		</div>
+		<!--家族史-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>家族史（请注明您的亲属是否有下列疾病（父母和兄弟姐妹为主））<span style="color:#c02029;">如果是收养的，不填以下问题。</span>
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">是否被收养</label>
+					<input name="201" type="radio" id="jz-1" value="是"><label for="jz-1">是</label>
+					<input name="201" type="radio" id="jz-2" value="否"><label for="jz-2">否</label>
+				</li>
+				<li class="f-l li-xu class="icheckbox-blue">
+					<label class="lable_style lable-xu">家中亲属有哪些</label>
+					<input type="checkbox" name="202-1" id="jz-3" value="父母"/><label for="jz-3">父母</label>
+					<input type="checkbox" name="202-2" id="jz-4" value="兄弟姐妹"/><label for="jz-4">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">没有已知重大疾病史</label>
+					<input name="205" type="radio" id="jz-5" value="是"><label for="jz-5">是</label>
+					<input name="205" type="radio" id="jz-6" value="否"><label for="jz-6">否</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">脂肪肝</label>
+					<input type="checkbox" name="207-1" value="父母" id="jz-7"/><label for="jz-7">父母</label>
+					<input type="checkbox" name="207-2" value="兄弟姐妹" id="jz-8"/><label for="jz-8">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">皮肤癌</label>
+					<input  type="checkbox" name="258-1" value="父母" id="jz-9"/><label for="jz-9">父母</label>
+					<input type="checkbox" name="258-2" value="兄弟姐妹" id="jz-10"/><label for="jz-10">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">牙科病</label>
+					<input  type="checkbox" name="217-1" value="父母" id="jz-11"/><label for="jz-11">父母</label>
+					<input type="checkbox" name="217-2" value="兄弟姐妹" id="jz-12"/><label for="jz-12">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">关节炎</label>
+					<input  type="checkbox" name="215-1" value="父母" id="jz-13"/><label for="jz-13">父母</label>
+					<input type="checkbox" name="215-2" value="兄弟姐妹" id="jz-14"/><label for="jz-14">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">结核病</label>
+					<input  type="checkbox" name="267-1" value="父母" id="jz-15"/><label for="jz-15">父母</label>
+					<input type="checkbox" name="267-2" value="兄弟姐妹" id="jz-16"/><label for="jz-16">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">阿尔茨海默病</label>
+					<input  type="checkbox" name="243-1" value="父母" id="jz-17"/><label for="jz-17">父母</label>
+					<input type="checkbox" name="243-2" value="兄弟姐妹" id="jz-18"/><label for="jz-18">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">结肠息肉</label>
+					<input  type="checkbox" name="223-1" value="父母" id="jz-19"/><label for="jz-19">父母</label>
+					<input type="checkbox" name="223-2" value="兄弟姐妹" id="jz-20"/><label for="jz-20">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">偏头痛</label>
+					<input  type="checkbox" name="249-1" value="父母" id="jz-21"/><label for="jz-21">父母</label>
+					<input type="checkbox" name="249-2" value="兄弟姐妹" id="jz-22"/><label for="jz-22">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">出血或凝血障碍</label>
+					<input  type="checkbox" name="269-1" value="父母" id="jz-23"/><label for="jz-23">父母</label>
+					<input type="checkbox" name="269-2" value="兄弟姐妹" id="jz-24"/><label for="jz-24">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">癫痫症</label>
+					<input  type="checkbox" name="231-1" value="父母" id="jz-25"/><label for="jz-25">父母</label>
+					<input type="checkbox" name="231-2" value="兄弟姐妹" id="jz-26"/><label for="jz-26">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">牛皮癣</label>
+					<input  type="checkbox" name="219-1" value="父母" id="jz-27"/><label for="jz-27">父母</label>
+					<input type="checkbox" name="219-2" value="兄弟姐妹" id="jz-28"/><label for="jz-28">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">自身免疫性疾病</label>
+					<input  type="checkbox" name="260-1" value="父母" id="jz-29"/><label for="jz-29">父母</label>
+					<input type="checkbox" name="260-2" value="兄弟姐妹" id="jz-30"/><label for="jz-30">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">高血压</label>
+					<input type="checkbox" name="239-1" value="父母" id="jz-31"/><label for="jz-31">父母</label>
+					<input type="checkbox" name="239-2" value="兄弟姐妹" id="jz-32"/><label for="jz-32">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">异常出血</label>
+					<input type="checkbox" name="241-1" value="父母" id="jz-33"/><label for="jz-33">父母</label>
+					<input type="checkbox" name="241-2" value="兄弟姐妹" id="jz-34"/><label for="jz-34">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">酒精中毒/滥用毒品</label>
+					<input type="checkbox" name="251-1" value="父母" id="jz-35"/><label for="jz-35">父母</label>
+					<input type="checkbox" name="251-2" value="兄弟姐妹" id="jz-36"/><label for="jz-36">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">肾病</label>
+					<input type="checkbox" name="247-1" value="父母" id="jz-37"/><label for="jz-37">父母</label>
+					<input type="checkbox" name="247-2" value="兄弟姐妹" id="jz-38"/><label for="jz-38">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">骨质疏松</label>
+					<input type="checkbox" name="273-1" value="父母" id="jz-39"/><label for="jz-39">父母</label>
+					<input type="checkbox" name="273-2" value="兄弟姐妹" id="jz-40"/><label for="jz-40">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">肝炎（甲肝、乙肝或丙肝）</label>
+					<input type="checkbox" name="237-1" value="父母" id="jz-41"/><label for="jz-41">父母</label>
+					<input type="checkbox" name="237-2" value="兄弟姐妹" id="jz-42"/><label for="jz-42">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">红斑狼疮</label>
+					<input type="checkbox" name="256-1" value="父母" id="jz-43"/><label for="jz-43">父母</label>
+					<input type="checkbox" name="256-2" value="兄弟姐妹" id="jz-44"/><label for="jz-44">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">高胆固醇</label>
+					<input type="checkbox" name="233-1" value="父母" id="jz-45"/><label for="jz-45">父母</label>
+					<input type="checkbox" name="233-2" value="兄弟姐妹" id="jz-46"/><label for="jz-46">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">肺气肿（慢性阻塞性肺病）</label>
+					<input type="checkbox" name="213-1" value="父母" id="jz-47"/><label for="jz-47">父母</label>
+					<input type="checkbox" name="213-2" value="兄弟姐妹" id="jz-48"/><label for="jz-48">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">精神疾病</label>
+					<input type="checkbox" name="265-1" value="父母" id="jz-49"/><label for="jz-49">父母</label>
+					<input type="checkbox" name="265-2" value="兄弟姐妹" id="jz-50"/><label for="jz-50">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">胃肠道疾病</label>
+					<input type="checkbox" name="211-1" value="父母" id="jz-51"/><label for="jz-51">父母</label>
+					<input type="checkbox" name="211-2" value="兄弟姐妹" id="jz-52"/><label for="jz-52">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">二型糖尿病（成人期发病）</label>
+					<input type="checkbox" name="221-1" value="父母" id="jz-53"/><label for="jz-53">父母</label>
+					<input type="checkbox" name="221-2" value="兄弟姐妹" id="jz-54"/><label for="jz-54">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">中风</label>
+					<input type="checkbox" name="271-1" value="父母" id="jz-55"/><label for="jz-55">父母</label>
+					<input type="checkbox" name="271-2" value="兄弟姐妹" id="jz-56"/><label for="jz-56">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">甲状腺疾病</label>
+					<input type="checkbox" name="227-1" value="父母" id="jz-57"/><label for="jz-57">父母</label>
+					<input type="checkbox" name="227-2" value="兄弟姐妹" id="jz-58"/><label for="jz-58">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">一型糖尿病（儿童期发病）</label>
+					<input type="checkbox" name="229-1" value="父母" id="jz-59"/><label for="jz-59">父母</label>
+					<input type="checkbox" name="229-2" value="兄弟姐妹" id="jz-60"/><label for="jz-60">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">哮喘</label>
+					<input type="checkbox" name="209-1" value="父母" id="jz-61"/><label for="jz-61">父母</label>
+					<input type="checkbox" name="209-2" value="兄弟姐妹" id="jz-62"/><label for="jz-62">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">艾滋病感染</label>
+					<input  type="checkbox" name="235-1" value="父母" id="jz-63"/><label for="jz-63">父母</label>
+					<input type="checkbox" name="235-2" value="兄弟姐妹" id="jz-64"/><label for="jz-64">兄弟姐妹</label>
+				</li>
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">冠状动脉疾病</label>
+					<input  type="checkbox" name="245-1" value="父母" id="jz-65"/><label for="jz-65">父母</label>
+					<input type="checkbox" name="245-2" value="兄弟姐妹" id="jz-66"/><label for="jz-66">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">心脏病</label>
+					<input  type="checkbox" name="225-1" value="父母" id="jz-67"/><label for="jz-67">父母</label>
+					<input type="checkbox" name="225-2" value="兄弟姐妹" id="jz-68"/><label for="jz-68">兄弟姐妹</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">恶性肿瘤</label>
+					<input  type="checkbox" name="275-1" value="父母" id="jz-69"/><label for="jz-69">父母</label>
+					<input type="checkbox" name="275-2" value="兄弟姐妹" id="jz-70"/><label for="jz-70">兄弟姐妹</label>
+					<input type="text" class="input-text" name="276" placeholder="发病年龄" style="width:130px;margin-left:5px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu">抑郁症/自杀/焦虑</label>
+					<input  type="checkbox" name="253-1" value="父母" id="jz-71"/><label for="jz-71">父母</label>
+					<input type="checkbox" name="253-2" value="兄弟姐妹" id="jz-72"/><label for="jz-72">兄弟姐妹</label>
+					<input type="text" class="input-text" name="254" placeholder="发病年龄" style="width:130px;margin-left:5px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0;">
+				<li class="f-l li-xu">
+					<label class="lable_style lable-xu" style="width:142px;">遗传性疾病（请解释）</label>
+					<input  type="checkbox" name="262-1" value="父母" id="jz-73"/><label for="jz-73">父母</label>
+					<input type="checkbox" name="262-2" value="兄弟姐妹" id="jz-74"/><label for="jz-74">兄弟姐妹</label>
+					<input type="text" name="263" class="input-text" placeholder="发病年龄" style="width:130px;margin-left:5px;"/>
+				</li>
+			</ul>
+		</div>
+
+		<!-- 既往史-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span> 既往史<span style="color:#c02029;margin-left: 20px;">如果否，不用填以下问题。</span>
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:1038px;">
+					<label class="lable_style_2" style="width:900px;">请写出其他严重疾病或急慢性损伤情况，包括连续治疗超过2个月的和就诊超过3次以上的疾病或损伤。</label>
+					<textarea name="301" cols="" rows="" class="textarea"  placeholder="请输入..."></textarea>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">痛风：</label>
+					<input  id="m_1" name="302-1" type="checkbox"  value="是" >
+					<label  for="m_1">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">甲减：</label>
+					<input id="m_2" name="304-1" type="checkbox"  value="是" >
+					<label for="m_2">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">乳腺癌：</label>
+					<input id="m_3" name="327-1" type="checkbox"  value="是" >
+					<label for="m_3">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">焦虑 ：</label>
+					<input id="m_4" name="306-1" type="checkbox"  value="是" >
+					<label for="m_4">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肺癌：</label>
+					<input id="m_5" name="335-1" type="checkbox"  value="是" >
+					<label for="m_5">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">静脉曲张：</label>
+					<input id="m_6" name="373-1" type="checkbox"  value="是" >
+					<label for="m_6">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">贫血：</label>
+					<input id="m_7" name="310-1" type="checkbox"  value="是" >
+					<label for="m_7">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肝病：</label>
+					<input id="m_8" name="339-1" type="checkbox"  value="是" >
+					<label for="m_8">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">胆囊疾病：</label>
+					<input id="m_9" name="369-1" type="checkbox"  value="是" >
+					<label for="m_9">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">甲亢：</label>
+					<input id="m_10" name="376-1" type="checkbox"  value="是" >
+					<label for="m_10">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">智力发育迟缓：</label>
+					<input id="m_11" name="332-1" type="checkbox"  value="是" >
+					<label for="m_11">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">一型糖尿病：</label>
+					<input id="m_12" name="364-1" type="checkbox"  value="是" >
+					<label for="m_12">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">哮喘 ：</label>
+					<input id="m_13" name="318-1" type="checkbox"  value="是" >
+					<label for="m_13">是</label>
+				</li>
+				
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">中风：</label>
+					<input id="m_14" name="372-1" type="checkbox"  value="是" >
+					<label for="m_14">是</label>
+				</li><li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">二型糖尿病：</label>
+					<input id="m_15" name="360-1" type="checkbox"  value="是" >
+					<label for="m_15">是</label>
+				</li>
+				
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">性病：</label>
+					<input id="m_16" name="358-1" type="checkbox"  value="是" >
+					<label for="m_16">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">痴呆：</label>
+					<input id="m_17" name="363-1" type="checkbox"  value="是" >
+					<label for="m_17">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">泌尿系感染：</label>
+					<input id="m_18" name="309-1" type="checkbox"  value="是" >
+					<label for="m_18">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">房颤：</label>
+					<input id="m_19" name="326-1" type="checkbox"  value="是" >
+					<label for="m_19">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肺炎：</label>
+					<input id="m_20" name="355-1" type="checkbox"  value="是" >
+					<label for="m_20">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">滥用酒精/毒品：</label>
+					<input id="m_21" name="329-1" type="checkbox"  value="是" >
+					<label for="m_21">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">输血：</label>
+					<input id="m_22" name="377-1" type="checkbox"  value="是" >
+					<label for="m_22">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">抑郁症：</label>
+					<input id="m_23" name="359-1" type="checkbox"  value="是" >
+					<label for="m_23">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">冠心病/心脏病：</label>
+					<input id="m_24" name="352-1" type="checkbox"  value="是" >
+					<label for="m_24">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肾结石：</label>
+					<input id="m_25" name="334-1" type="checkbox"  value="是" >
+					<label for="m_25">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">白内障：</label>
+					<input id="m_26" name="351-1" type="checkbox"  value="是" >
+					<label for="m_26">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">囊性纤维化疾病：</label>
+					<input id="m_27" name="321-1" type="checkbox"  value="是" >
+					<label for="m_27">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">艾滋病：</label>
+					<input id="m_28" name="314-1" type="checkbox"  value="是" >
+					<label for="m_28">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">胃溃疡：</label>
+					<input id="m_29" type="checkbox" name="368-1"  value="是" >
+					<label for="m_29">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肠道易激综合症：</label>
+					<input id="m_30" name="325-1" type="checkbox"  value="是" >
+					<label for="m_30">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">高血压：</label>
+					<input id="m_31" name="322-1" type="checkbox"  value="是" >
+					<label for="m_31">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肝硬化：</label>
+					<input id="m_32" name="343-1" type="checkbox"  value="是" >
+					<label for="m_32">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">类风湿性关节炎：</label>
+					<input id="m_33" name="378-1" type="checkbox"  value="是" >
+					<label for="m_33">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">憩室炎：</label>
+					<input id="m_34" type="checkbox" name="371-1"  value="是" >
+					<label for="m_34">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">结肠癌：</label>
+					<input id="m_35" name="331-1" type="checkbox"  value="是" >
+					<label for="m_35">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">克罗恩式心脏病：</label>
+					<input id="m_36" name="356-1" type="checkbox"  value="是" >
+					<label for="m_36">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">胰腺炎:</label>
+					<input id="m_37" name="350-1" type="checkbox"  value="是" >
+					<label for="m_37">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">青光眼：</label>
+					<input id="m_38" name="308-1" type="checkbox"  value="是" >
+					<label for="m_38">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">自身免疫性疾病：</label>
+					<input id="m_39" name="317-1" type="checkbox"  value="是" >
+					<label for="m_39">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">躁郁症：</label>
+					<input id="m_40" name="303-1" type="checkbox"  value="是" >
+					<label for="m_40">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">炎性肠病：</label>
+					<input id="m_41" name="323-1" type="checkbox"  value="是" >
+					<label for="m_41">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">妇科疾病（肌瘤）：</label>
+					<input id="m_42" name="313-1" type="checkbox"  value="是" >
+					<label for="m_42">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">高胆固醇：</label>
+					<input id="m_43" name="330-1" type="checkbox"  value="是" >
+					<label for="m_43">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">骨量减少：</label>
+					<input id="m_44" name="347-1" type="checkbox"  value="是" >
+					<label for="m_44">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">慢性阻塞性肺疾病：</label>
+					<input id="m_45" name="370-1" type="checkbox"  value="是" >
+					<label for="m_45">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">癫痫发作：</label>
+					<input id="m_46" name="362-1" type="checkbox"  value="是" >
+					<label for="m_46">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">非法用药史：</label>
+					<input id="m_47" name="316-1" type="checkbox"  value="是" >
+					<label for="m_47">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">乳房症状（良性的）：</label>
+					<input id="m_48" name="333-1" type="checkbox"  value="是" >
+					<label for="m_48">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">睡眠困难：</label>
+					<input id="m_49" name="367-1" type="checkbox"  value="是" >
+					<label for="m_49">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">血色沉着：</label>
+					<input id="m_50" name="320-1" type="checkbox"  value="是" >
+					<label for="m_50">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">关节炎（骨关节炎）：</label>
+					<input id="m_51" name="345-1" type="checkbox"  value="是" >
+					<label for="m_51">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">前列腺癌：</label>
+					<input id="m_52" name="338-1" type="checkbox"  value="是" >
+					<label for="m_52">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">骨质疏松症：</label>
+					<input id="m_53" name="336-1" type="checkbox"  value="是" >
+					<label for="m_53">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">偏头痛/紧张性头痛：</label>
+					<input id="m_54" name="337-1" type="checkbox"  value="是" >
+					<label for="m_54">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">红斑狼疮：</label>
+					<input id="m_55" name="342-1" type="checkbox"  value="是" >
+					<label for="m_55">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肾功能衰竭：</label>
+					<input id="m_56" name="328-1" type="checkbox"  value="是" >
+					<label for="m_56">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">睡眠呼吸暂停综合症：</label>
+					<input id="m_57" name="357-1" type="checkbox"  value="是" >
+					<label for="m_57">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">凝血障碍：</label>
+					<input id="m_58" name="346-1" type="checkbox"  value="是" >
+					<label for="m_58">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">消化性溃疡：</label>
+					<input id="m_59" name="344-1" type="checkbox"  value="是" >
+					<label for="m_59">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">皮肤病（湿疹/牛皮癣）：</label>
+					<input id="m_60" name="341-1" type="checkbox"  value="是" >
+					<label for="m_60">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">膀胱问题：</label>
+					<input id="m_61" name="307-1" type="checkbox"  value="是" >
+					<label for="m_61">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">过敏/花粉热：</label>
+					<input id="m_62" name="312-1" type="checkbox"  value="是" >
+					<label for="m_62">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肝炎-甲肝/乙肝/丙肝：</label>
+					<input id="m_63" name="353-1" type="checkbox"  value="是" >
+					<label for="m_63">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">不孕不育：</label>
+					<input id="m_64" name="311-1" type="checkbox"  value="是" >
+					<label for="m_64">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">先天性心脏病：</label>
+					<input id="m_65" name="340-1" type="checkbox"  value="是" >
+					<label for="m_65">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">妇科疾病（子宫内膜异位）：</label>
+					<input id="m_66" name="349-1" type="checkbox"  value="是" >
+					<label for="m_66">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">心率不齐：</label>
+					<input id="m_67" type="checkbox" name="315"  value="是" >
+					<label for="m_67">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">周围血管疾病：</label>
+					<input id="m_68" name="348-1" type="checkbox"  value="是" >
+					<label for="m_68">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肺气肿（慢性阻塞性肺疾病）：</label>
+					<input id="m_69" name="361-1" type="checkbox"  value="是" >
+					<label for="m_69">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">结肠息肉：</label>
+					<input id="m_70" name="354-1" type="checkbox"  value="是" >
+					<label for="m_70">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">凝血块（退/肺）：</label>
+					<input id="m_71" name="324-1" type="checkbox"  value="是" >
+					<label for="m_71">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">胃灼热/反流（胃食管反流病）：</label>
+					<input id="m_72" name="379-1" type="checkbox"  value="是" >
+					<label for="m_72">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">炎性肠病：</label>
+					<input id="m_73" name="323-1" type="checkbox"  value="是" >
+					<label for="m_73">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">妊娠期糖尿病：</label>
+					<input id="m_74" name="305-1" type="checkbox"  value="是" >
+					<label for="m_74">是</label>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style_2">皮肤癌：</label>
+					<input id="m_75" name="374-1" type="checkbox"  value="是" >
+					<label for="m_75">是</label>
+					<input type="text" name="375"  class="input-text" style="width:25%;margin-left:80px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style_2">癌症（其他类型）：</label>
+					<input id="m_76" name="365-1" type="checkbox"  value="是" >
+					<label for="m_76">是</label>
+					<input type="text" name="366"  class="input-text" style="width:25%;margin-left:80px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style_2">其他请列出：</label>
+					<input type="text" name="380"  class="input-text" style="width:25%;margin-left:80px;"/>
+				</li>
+			</ul>
+		</div>
+		<!-- 手术史-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>手术史<span style="color:#c02029;margin-left: 20px;">如果没有手术史，不用填以下问题。</span>
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width: 40%;">
+					<label class="lable_style_2" style="width:190px;">是否有手术史：</label>
+					<input id="shu_1" name="401-1" type="checkbox"  value="是" >
+					<label for="shu_1">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">输精管结扎术：</label>
+					<input id="shu_2" name="442-1" type="checkbox"  value="是" >
+					<label for="shu_2">是</label>
+					<input class="input-text Wdate"  placeholder="手术年份" name="443" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" name="444" class="input-text" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">疝修补：</label>
+					<input id="shu_3" name="402-1" type="checkbox"  value="是" >
+					<label for="shu_3">是</label>
+
+					<input class="input-text Wdate"  placeholder="手术年份" name="403" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" name="404" class="input-text" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">白内障(右/左/两侧)：</label>
+					<input id="shu_4" name="417-1" type="checkbox"  value="是" >
+					<label for="shu_4">是</label>
+					<input class="input-text Wdate" placeholder="手术年份" name="418" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="419" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">活检（局部）：</label>
+					<input id="shu_5" name="408-1" type="checkbox"  value="是" >
+					<label for="shu_5">是</label>
+					<input class="input-text Wdate" placeholder="手术年份" name="409" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="410" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">背部/颈部（脊柱）手术：</label>
+					<input id="shu_6" name="405-1" type="checkbox"  value="是" >
+					<label for="shu_6">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="406" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="407" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">阑尾切除术：</label>
+					<input id="shu_7" name="414-1" type="checkbox"  value="是" >
+					<label for="shu_7">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="415" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="416" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">膝关节手术（右/左/两侧）：</label>
+					<input id="shu_8" name="445-1" type="checkbox"  value="是" >
+					<label for="shu_8">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="446" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="447" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">子宫全切或部分切除：</label>
+					<input id="shu_9" name="451-1" type="checkbox"  value="是" >
+					<label for="shu_9">是</label>
+
+					<input class="input-text Wdate"  placeholder="手术年份" name="452" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="453" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">食管胃十二直肠镜（胃镜）：</label>
+					<input id="shu_10" type="checkbox" name="424-1"  value="是" >
+					<label for="shu_10">是</label>
+
+					<input class="input-text Wdate" name="425"  placeholder="手术年份"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="426" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">髋关节手术（范围：右/左/两侧）：</label>
+					<input id="shu_11" name="439-1" type="checkbox"  value="是" >
+					<label for="shu_11">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="440" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="441" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">胆囊切除手术（开放性/腹腔镜）：</label>
+					<input id="shu_12" name="436-1" type="checkbox"  value="是" >
+					<label for="shu_12">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="437" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="438" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">卵巢切除或输卵管结扎：</label>
+					<input id="shu_13" name="457-1" type="checkbox"  value="是" >
+					<label for="shu_13">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="458" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="459" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">乳腺活检/手术（右/左/两侧）：</label>
+					<input id="shu_14" name="411-1" type="checkbox"  value="是" >
+					<label for="shu_14">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="412" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="413" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">结肠镜/乙状结肠镜检查：</label>
+					<input id="shu_15" type="checkbox" name="433-1"  value="是" >
+					<label for="shu_15">是</label>
+
+					<input class="input-text Wdate" name="434"  placeholder="手术年份"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="435" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">胃束带/胃旁路手术（减肥手术）：</label>
+					<input id="shu_16" name="430-1" type="checkbox"  value="是" >
+					<label for="shu_16">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="431" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="432" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style_2" style="width:190px;">冠状动脉旁路手术或支架：</label>
+					<input id="shu_17" name="427-1" type="checkbox"  value="是" >
+					<label for="shu_17">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="428" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="429" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">心脏手术（除了冠状动脉旁路手术）：</label>
+					<input id="shu_18" name="454-1" type="checkbox"  value="是" >
+					<label for="shu_18">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="455" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width:120px;"/>
+					<input type="text" class="input-text" name="456" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+					<label class="lable_style_2" style="width: 486px;">您身体这些部位（背部、臀部、腕关节）有金属置入或是曾经做过手术吗？：</label>
+					<input id="shu_19" type="checkbox" name="460-1"  value="是" >
+					<label for="shu_19">是</label>
+
+					<input class="input-text Wdate" name="461"  placeholder="手术年份"  onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="462" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+					<label class="lable_style_2" style="width: 486px;">美容整形手术（抗衰老治疗、塑形、修复或者重造乳房）：</label>
+					<input id="shu_20" name="448-1" type="checkbox"  value="是" >
+					<label for="shu_20">是</label>
+
+					<input class="input-text Wdate"  placeholder="手术年份" name="449" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="450" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+					<label class="lable_style_2" style="width: 486px;">骨折（请列出部位）：</label>
+					<input id="shu_21" name="420-1" type="checkbox"  value="是" >
+					<label for="shu_21">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="421" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="422" placeholder="部位" style="width:180px;"/>
+					<input type="text" class="input-text" name="423" placeholder="建议" style="width:180px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:80%;">
+					<label class="lable_style_2" style="width: 486px;">其他（请列出）：</label>
+					<input id="shu_22" name="463-1" type="checkbox"  value="是" >
+					<label for="shu_22">是</label>
+
+					<input class="input-text Wdate" placeholder="手术年份" name="464" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="465" placeholder="手术名" style="width:180px;"/>
+					<input type="text" class="input-text" name="466" placeholder="建议" style="width:180px;"/>
+				</li>
+			</ul>
+		</div>
+
+
+		<!-- 用药史-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>用药史<span style="color:#c02029;margin-left: 20px;">如果没有用药史，不用填以下问题。</span>
+			</div>
+			<div id="use-medication-history" style="width:100%;">
+				<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:88%;display: inline-block;margin: 0;">
+					<li class="f-l li-base li-rel" style="position:relative;width:1038px;">
+						<input type="text" class="input-text" name="501-1-1" placeholder="请输入药名" style="width:158px;"/>
+						<input type="text" class="input-text" name="502-1-1" placeholder="请输入剂量" style="width:82px;"/>
+						<select class="radius" name="503-1-1" style="height:30px;width:82px;">
+							<option value="" selected>计量单位</option>
+							<option value="g">g</option>
+							<option value="ml">ml</option>
+							<option value="袋">袋</option>
+							<option value="粒">粒</option>
+						</select>
+						<select class="radius" name="504-1-1" style="height:30px;width:82px;">
+							<option value="" selected>每日几次</option>
+							<option value="1次">1次</option>
+							<option value="2次">2次</option>
+							<option value="3次">3次</option>
+							<option value="4次">4次</option>
+							<option value="5次">5次</option>
+						</select>
+						<select class="radius" name="505-1-1" style="height:30px;width:180px;">
+							<option value="" selected>请选择多久服用一次该药物</option>
+							<option value="1小时">1小时</option>
+							<option value="2小时">2小时</option>
+							<option value="3小时">3小时</option>
+							<option value="4小时">4小时</option>
+							<option value="5小时">5小时</option>
+							<option value="6小时">6小时</option>
+							<option value="7小时">7小时</option>
+							<option value="8小时">8小时</option>
+							<option value="1天">1天</option>
+							<option value="2天">2天</option>
+							<option value="3天">3天</option>
+							<option value="4天">4天</option>
+							<option value="5天">5天</option>
+							<option value="6天">6天</option>
+							<option value="7天">7天</option>
+						</select>
+						<select class="radius" name="506-1-1" style="height:30px;width:97px;">
+							<option value="" selected>服用该药多久</option>
+							<option value="1周">1周</option>
+							<option value="2周">2周</option>
+							<option value="3周">3周</option>
+							<option value="4周">4周</option>
+							<option value="1个月">1个月</option>
+							<option value="2个月">2个月</option>
+							<option value="1年">1年</option>
+						</select>
+						<select class="radius" name="507-1-1" style="height:30px;width:125px;">
+							<option value="" selected>药品类型</option>
+							<option value="处方药">处方药</option>
+							<option value="非处方药">非处方药</option>
+							<option value="中草药">中草药</option>
+							<option value="矿物质/维生素">矿物质/维生素</option>
+						</select>
+						<select class="radius" name="508-1-1" style="height:30px;width:180px;">
+							<option value="" selected>该药物用于治疗什么疾病</option>
+							<option value="高血压">高血压</option>
+							<option value="糖药病">糖药病</option>
+							<option value="高血脂">高血脂</option>
+						</select>
+					</li>
+					<button class="f-l btn btn-success" id="addTexrow" type="button" style="display: inline-block;margin:10px 0;">添加</button>
+				</ul>
+			</div>
+			<button class="btn btn-danger del-1" type="button" style="margin-left: 20px;display: none;">删除</button>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:20px;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">利尿剂：</label>
+					<input id="yy_1" name="510-1" type="checkbox"  value="是" >
+					<label for="yy_1">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">抗惊厥药：</label>
+					<input id="yy_2" name="511-1" type="checkbox"  value="是" >
+					<label for="yy_2">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">肝素：</label>
+					<input id="yy_3" name="512-1" type="checkbox"  value="是" >
+					<label for="yy_3">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">化疗药物：</label>
+					<input id="yy_4" name="513-1" type="checkbox"  value="是" >
+					<label for="yy_4">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">钙剂：</label>
+					<input id="yy_5" name="515-1" type="checkbox"  value="是" >
+					<label for="yy_5">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">维生素D：</label>
+					<input id="yy_6" name="516-1" type="checkbox"  value="是" >
+					<label for="yy_6">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">安妥良：</label>
+					<input id="yy_7" name="517-1" type="checkbox"  value="是" >
+					<label for="yy_7">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">福善美：</label>
+					<input id="yy_8" name="518-1" type="checkbox"  value="是" >
+					<label for="yy_8">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">骨维壮：</label>
+					<input id="yy_9" name="519-1" type="checkbox"  value="是" >
+					<label for="yy_9">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">类固醇（7.5mg使用超过3个月）：</label>
+					<input id="yy_10" name="509-1" type="checkbox"  value="是" >
+					<label for="yy_10">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style_2">甲状腺药物：</label>
+					<input id="yy_11" name="514-1" type="checkbox"  value="是" >
+					<label for="yy_11">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:75%;">
+					<label class="lable_style_2" style="width: 65%;">密固达（唑来膦酸、重组甲状旁腺激素、降钙素、易维特、雌激素、三苯氧胺、司他夫定、齐多夫定）：</label>
+					<input id="yy_12" name="520-1" type="checkbox"  value="是" >
+					<label for="yy_12">是</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">若为糖尿病患者，是否服用以下药物</p>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:20px;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style_2">服药时间：</label>
+					<input type="text" name="522" class="input-text" style="width:100px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">甲福明：</label>
+					<input id="yy_14" name="525-1" type="checkbox"  value="是" >
+					<label for="yy_14">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">格列本脲+二甲双胍：</label>
+					<input id="yy_15" name="524-1" type="checkbox"  value="是" >
+					<label for="yy_15">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style_2">格列吡嗪+二甲双胍：</label>
+					<input id="yy_16" name="526-1" type="checkbox"  value="是" >
+					<label for="yy_16">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style_2">格华止：</label>
+					<input id="yy_17" name="523-1" type="checkbox"  value="是" >
+					<label for="yy_17">是</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">过敏药物</p>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:20px;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style">药物名称：</label>
+					<div id="reseach-medicine">
+						<div>
+							<input type="text" name="528-1-1" class="input-text" style="width:100px;"/>
+							<select class="radius" name="529-1-1" style="height:30px;width:180px;">
+								<option value="" selected>请选择过敏反应</option>
+								<option value="恶心">恶心</option>
+								<option value="发疹子">发疹子</option>
+							</select>
+							<button class="btn btn-success" type="button" id="addTextImput" >添加</button>
+						</div>
+					</div>
+					<button class="btn btn-danger del-2" type="button" style="display: none;">删除</button>
+				</li>
+			</ul>
+		</div>
+		<!-- 潜在心理压力-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>潜在的心里压力
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">谁和您生活在一起：</label>
+					<select class="radius" name="601" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="父母">父母</option>
+						<option value="朋友">朋友</option>
+						<option value="子女">子女</option>
+						<option value="亲戚">亲戚</option>
+						<option value="其他">其他</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:500px;">
+					<label class="lable_style" style="width:300px;">目前生活中，您最大的压力来源是什么：</label>
+					<input type="text" name="602" class="input-text" style="width:100px;"/>
+				</li>
+			</ul>
+		</div>
+		<!-- 娱乐活动-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>娱乐活动
+			</div>
+			<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+				<li class="f-l li-base li-rel" style="position:relative;width:500px;">
+					<label class="lable_style">平时喜欢的的娱乐活动：</label>
+					<input type="text" name="701" class="input-text" style="width:200px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:550px;">
+					<label class="lable_style" style="width:132px;">平时怎么处理压力：</label>
+					<input type="text" name="702" class="input-text" style="width:200px;"/>
+				</li>
+			</ul>
+		</div>
+		<!--生活习惯/危险因素-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>生活习惯/危险因素
+			</div>
+			<p class="baseinfo-list">1.饮食</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">您的饮食怎么样：</label>
+					<select class="radius" name="811" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="好">好</option>
+						<option value="一般">一般</option>
+						<option value="差">差</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">您是否需要饮食建议：</label>
+					<select class="radius" name="812" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="需要">需要</option>
+						<option value="不需要">不需要</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">素食主义者：</label>
+					<select class="radius" name="813" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+			</ul>
+			<p class="baseinfo-list">2.运动</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style" style="width:225px;">您是否定期进行强度较大的运动：</label>
+					<select class="radius" name="821" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">一周锻炼几次：</label>
+					<select class="radius" name="822" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+				</li>
+			</ul>
+			<p class="baseinfo-list">3.抽烟</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">是否抽烟：</label>
+					<select class="radius" name="831" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">一天几包：</label>
+					<select class="radius" name="832" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="<0.5">&lt;0.5</option>
+						<option value="0.5">0.5</option>
+						<option value="1.0">1.0</option>
+						<option value="1.5">1.5</option>
+						<option value="2.0">2.0</option>
+						<option value="2.5">2.5</option>
+						<option value="3.0">3.0</option>
+						<option value="3.5">3.5</option>
+						<option value="4.0">4.0</option>
+						<option value="4.5">4.5</option>
+						<option value="5.0">5.0</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">烟龄：</label>
+					<select class="radius" name="833" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="10">10</option>
+						<option value="15">15</option>
+						<option value="20">20</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;">
+					<label class="lable_style">抽烟类型：</label>
+					<select class="radius" name="836" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="香烟">香烟</option>
+						<option value="雪茄">雪茄</option>
+						<option value="烟斗">烟斗</option>
+						<option value="无烟烟草/鼻烟">无烟烟草/鼻烟</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width: 40%;">
+					<label class="lable_style">吸烟起止时间：</label>
+					<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="834" class="input-text Wdate" style="width:120px;">
+					至
+					<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="835" class="input-text Wdate" style="width:120px;">
+				</li>
+			</ul>
+			<p class="baseinfo-list">4.消费</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style" style="width:225px;">咖啡：</label>
+					<select class="radius" name="841" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+					<select class="radius" name="842" style="height:30px;width:100px;">
+						<option value="" selected>数量</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style">茶：</label>
+					<select class="radius" name="843" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+					<select class="radius" name="844" style="height:30px;width:100px;">
+						<option value="" selected>数量</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+				</li>
+			</ul>
+			<p class="baseinfo-list">5.饮酒</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style" style="width:225px;">饮酒：</label>
+					<select class="radius" name="851" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="从不">从不</option>
+						<option value="很少">很少</option>
+						<option value="规律">规律</option>
+					</select>
+					<select class="radius" name="852" style="height:30px;width:100px;">
+						<option value="" selected>数量</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+					<select class="radius" name="853" style="height:30px;width:100px;">
+						<option value="" selected>选择饮酒状态</option>
+						<option value="偶尔过度">偶尔过度</option>
+						<option value="需求帮助（戒酒）">需求帮助（戒酒）</option>
+					</select>
+				</li>
+			</ul>
+			<p class="baseinfo-list">6.软性毒品</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">软性毒品服药情况：</label>
+					<select class="radius" name="861" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="从不">从不</option>
+						<option value="很少">很少</option>
+						<option value="规律性使用">规律性使用</option>
+						<option value="偶尔过度使用">偶尔过度使用</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">使用针剂注射毒品：</label>
+					<select class="radius" name="862" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="没有">没有</option>
+						<option value="很">很</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">滥用处方药：</label>
+					<select class="radius" name="863" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="没有">没有</option>
+						<option value="很">很</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">曾寻求帮助（戒毒）：</label>
+					<select class="radius" name="864" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="没有">没有</option>
+						<option value="很">很</option>
+					</select>
+				</li>
+			</ul>
+			<p class="baseinfo-list">7.性生活</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">性生活：</label>
+					<select class="radius" name="871" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="同性恋">同性恋</option>
+						<option value="异地恋">异地恋</option>
+						<option value="双性恋">双性恋</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">去年有几位性伴侣：</label>
+					<select class="radius" name="872" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="3个以上">3个以上</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">曾经性伴侣有乙肝、吸毒或是性工作者：</label>
+					<input id="sh_1" name="873" type="checkbox"  value="是" >
+					<label for="sh_1">是</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">8.安全<span	>工作经历（现在或过去）</span></p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">开车总是系安全带：</label>
+					<input id="sh_2" name="881-1" type="checkbox"  value="是" >
+					<label for="sh_2">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">矿井工作：</label>
+					<input id="sh_3" name="882-1" type="checkbox"  value="是" >
+					<label for="sh_3">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">家里有烟雾报警器：</label>
+					<input id="sh_4" name="883-1" type="checkbox"  value="是" >
+					<label for="sh_4">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">接触粉尘、石棉或化学药品：</label>
+					<input id="sh_5" name="884-1" type="checkbox"  value="是" >
+					<label for="sh_5">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">家里有一氧化碳警报器：</label>
+					<input id="sh_6" name="885-1" type="checkbox"  value="是" >
+					<label for="sh_6">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">接触辐射：</label>
+					<input id="sh_7" name="886-1" type="checkbox"  value="是" >
+					<label for="sh_7">是</label>
+				</li>
+			</ul>
+		</div>
+		<!--症状回顾-->
+		<div class="collection-baseinfo">
+			<div class="navbar-collection">
+				<span style="margin-right:6px;">|</span>症状回顾<span>请选择您目前或曾经是否有过下列症状。</span>
+			</div>
+			<p class="baseinfo-list">1.一般情况</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_1" name="9011-1" type="checkbox"  value="是" >
+					<label for="zh_1">无异常</label>
+
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_2" name="9012-1" type="checkbox"  value="是" >
+					<label for="zh_2">无故失重</label>
+
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_3" name="9020-1" type="checkbox"  value="是" >
+					<label for="zh_3">失眠</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_4" name="9014-1" type="checkbox"  value="是" >
+					<label for="zh_4">发烧/出汗</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_5" name="9015-1" type="checkbox"  value="是" >
+					<label for="zh_5">入眠困难</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_6" name="9021-1" type="checkbox"  value="是">
+					<label for="zh_6">贫血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_7" name="9017-1" type="checkbox"  value="是" >
+					<label for="zh_7">四肢乏力</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_8" name="9016-1" type="checkbox"  value="是" >
+					<label for="zh_8">白天坐着易瞌睡</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_9" name="9019-1" type="checkbox"  value="是">
+					<label for="zh_9">常受感染</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_10" name="9013-1" type="checkbox"  value="是" >
+					<label for="zh_10">食欲改变</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_11" name="9018-1" type="checkbox"  value="是">
+					<label for="zh_11">每年体重增加超过2.3kg</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">2.皮肤</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_12" name="9031-1" type="checkbox"  value="是" >
+					<label for="zh_12">无问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_13" name="9043-1" type="checkbox"  value="是" >
+					<label for="zh_13">脱发掉发</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_14" name="9044-1" type="checkbox"  value="是" >
+					<label for="zh_14">指甲改变</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_15" name="9039-1" type="checkbox"  value="是" >
+					<label for="zh_15">持续性皮肤瘙痒</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_16" name="9040-1" type="checkbox"  value="是" >
+					<label for="zh_16">痣发生改变</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_17" name="9042-1" type="checkbox"  value="是">
+					<label for="zh_17">淋巴腺肿大</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_18" name="9041-1" type="checkbox"  value="是" >
+					<label for="zh_18">近两年内容易擦伤</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<input id="zh_19" name="9032-1" type="checkbox"  value="是" >
+					<label for="zh_19">皮疹或皮肤颜色改变（皮疹，肿块，疼痛）</label>
+
+					<input type="text" name="9033" class="input-text" placeholder="什么部位" style="width: 80px;margin-left: 85px;"/>
+					<input type="text" name="9034" class="input-text" placeholder="什么时候出现的" style="width: 80px;"/>
+					<select class="radius" name="9035" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="轻度">轻度</option>
+						<option value="中度">中度</option>
+						<option value="重度">重度</option>
+					</select>
+					<input type="text" name="9036" class="input-text" placeholder="什么情况下您的症状会好转或者变糟" style="width: 245px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style" style="width:225px;"></label>
+					<select class="radius" name="9037" style="height:30px;width:100px;margin-left: 144px;">
+						<option value="" selected>请选择</option>
+						<option value="无异常">无异常</option>
+						<option value="痒">痒</option>
+						<option value="疼痛">疼痛</option>
+					</select>
+					<input type="text" name="9038" class="input-text" placeholder="您曾经如何缓解与治疗这些症状" style="width: 415px;"/>
+				</li>
+			</ul>
+			<p class="baseinfo-list">3.眼</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_20" name="9051-1" type="checkbox"  value="是" >
+					<label for="zh_20">无问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_21" name="9052-1" type="checkbox"  value="是" >
+					<label for="zh_21">视力丧失</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_22" name="9053-1" type="checkbox"  value="是" >
+					<label for="zh_22">视物模糊或重影</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_23" name="9054-1" type="checkbox"  value="是" >
+					<label for="zh_23">眼痛或发红</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_24" name="9055-1" type="checkbox"  value="是" >
+					<label for="zh_24">眼睛问题/异常分泌物</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_25" name="9056-1" type="checkbox"  value="是">
+					<label for="zh_25">戴眼镜或隐性眼镜</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">4.耳，鼻，喉</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您双耳听力是否一致？</label>
+						<input id="zh_26" name="9061" type="radio"  value="是" >
+						<label for="zh_26">是</label>
+
+						<input id="zh_27" name="9061" type="radio"  value="否" >
+						<label for="zh_27">否</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_28" name="9062-1" type="checkbox"  value="是" >
+					<label for="zh_28">听力丧失</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_29" name="9063-1" type="checkbox"  value="是" >
+					<label for="zh_29">助听器</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您曾经出现过听力问题吗？</label>
+					<input id="zh_30" name="9064-1" type="checkbox"  value="是">
+					<label for="zh_30">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:50%;">
+					<label class="lable_style" style="width:225px;">最近您双耳是否有异常分泌物？</label>
+					<input id="zh_31" name="9065-1" type="checkbox"  value="是"  style="margin-left: 249px;" >
+					<label for="zh_31">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:75%;">
+					<label class="lable_style" style="width:225px;"></label>
+					<input type="text" name="9066" class="input-text" placeholder="请描述您的任何听力问题（如看电视，听收音机，与人交流，看电影等日常生活中是否受到影响）"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_32" name="9068-1" type="checkbox"  value="是" >
+					<label for="zh_32">耳鸣</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_33" name="9069-1" type="checkbox"  value="是" >
+					<label for="zh_33">耳内疼痛</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_34" name="9070-1" type="checkbox"  value="是" >
+					<label for="zh_34">头晕/眩晕</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_35" name="9071-1" type="checkbox"  value="是" >
+					<label for="zh_35">频繁流鼻血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_36" name="9072-1" type="checkbox"  value="是">
+					<label for="zh_36">鼻窦问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_37" name="9073-1" type="checkbox"  value="是">
+					<label for="zh_37">经常鼻塞或流鼻涕</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_38" name="9074-1" type="checkbox"  value="是">
+					<label for="zh_38">持续咽喉痛</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_39" name="9075-1" type="checkbox"  value="是">
+					<label for="zh_39">吞咽困难</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_40" name="9076-1" type="checkbox"  value="是">
+					<label for="zh_40">牙龈或鼻出血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_41" name="9077-1" type="checkbox"  value="是">
+					<label for="zh_41">声音改变或嘶哑</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">5.呼吸系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_42" name="9081-1" type="checkbox"  value="是" >
+					<label for="zh_42">无症状</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_43" name="9083-1" type="checkbox"  value="是" >
+					<label for="zh_43">气喘</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_44" name="9087-1" type="checkbox"  value="是" >
+					<label for="zh_44">打鼾</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_45" name="9084-1" type="checkbox"  value="是" >
+					<label for="zh_45">痰或粘液里带血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_46" name="9093-1" type="checkbox"  value="是">
+					<label for="zh_46">咳痰</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_47" name="9094-1" type="checkbox"  value="是">
+					<label for="zh_47">咳血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_48" name="9089-1" type="checkbox"  value="是">
+					<label for="zh_48">运动时-呼吸短促</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_49" name="9082-1" type="checkbox"  value="是">
+					<label for="zh_49">慢性咳嗽</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_50" name="9091-1" type="checkbox"  value="是">
+					<label for="zh_50">入睡后易惊醒</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_51" name="9092-1" type="checkbox"  value="是">
+					<label for="zh_51">躺下时-呼吸短促</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_52" name="9088-1" type="checkbox"  value="是">
+					<label for="zh_52">睡觉时呼吸改变</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_53" name="9090-1" type="checkbox"  value="是">
+					<label for="zh_53">爬行一段楼梯时</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_54" name="9085-1" type="checkbox"  value="是">
+					<label for="zh_54">结核菌素实验阳性</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:45%;">
+					<input id="zh_55" name="9086-1" type="checkbox"  value="是">
+					<label for="zh_55">胸部X线扫描异常</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您是否曾接触过石棉?</label>
+					<input id="zh_56" name="9095-1" type="checkbox"  value="是" >
+					<label for="zh_56">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:40%;">
+					<label class="lable_style" style="width:225px;">过去两周里，您是否打过造影剂？</label>
+					<input id="zh_57" name="9097-1" type="checkbox"  value="是" >
+					<label for="zh_57">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您惯用左手还是右手?</label>
+					<select class="radius"  name="9098" style="height:30px;width:110px;">
+						<option value="" selected>请选择</option>
+						<option value="左手">左手</option>
+						<option value="右手">右手</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">过去3年中，您是否进行过核医学通气血流比（V/Q）肺部扫描？</label>
+					<input id="zh_59"  name="9096-1" type="checkbox"  value="是" >
+					<label for="zh_59">是</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">6.神经系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_60" name="9101-1" type="checkbox"  value="是" >
+					<label for="zh_60">无症状</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_61" name="9113-1" type="checkbox"  value="是" >
+					<label for="zh_61">震颤</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_62" name="9110-1" type="checkbox"  value="是" >
+					<label for="zh_62">晕厥</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_63" name="9104-1" type="checkbox"  value="是" >
+					<label for="zh_63">记忆丧失</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_64" name="9106-1" type="checkbox"  value="是">
+					<label for="zh_64">单眼失明</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_65" name="9107-1" type="checkbox"  value="是">
+					<label for="zh_65">全身无力</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_66" name="9108-1" type="checkbox"  value="是">
+					<label for="zh_66">全身麻木</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_67" name="9109-1" type="checkbox"  value="是">
+					<label for="zh_67">身体失衡</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_68" name="9114-1" type="checkbox"  value="是">
+					<label for="zh_68">经常跌倒</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_69" name="9112-1" type="checkbox"  value="是">
+					<label for="zh_69">脚步不稳</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_70" name="9102-1" type="checkbox"  value="是">
+					<label for="zh_70">阵发性眩晕</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_71" name="9103-1" type="checkbox"  value="是">
+					<label for="zh_71">反复性头痛</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_72" name="9105-1" type="checkbox"  value="是">
+					<label for="zh_72">癫痫或抽搐</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:45%;">
+					<input id="zh_73" name="9111-1" type="checkbox"  value="是">
+					<label for="zh_73">脑血流图筛查</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">7.肌肉骨骼系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_74" name="9121-1" type="checkbox"  value="是" >
+					<label for="zh_74">无异常</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_75" name="9122-1" type="checkbox"  value="是" >
+					<label for="zh_75">骨骼疼痛或关节痛</label>
+					<input type="text" class="input-text" name="9123" placeholder="请输入疼痛部位" style="width:176px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_76" name="9127-1" type="checkbox"  value="是" >
+					<label for="zh_76">肌无力</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_77" name="9128-1" type="checkbox"  value="是">
+					<label for="zh_77">关节僵直</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_78" name="9129-1" type="checkbox"  value="是">
+					<label for="zh_78">关节活动不灵便</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_79" name="9124-1" type="checkbox"  value="是">
+					<label for="zh_79">肌肉疼痛</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_80" name="9125-1" type="checkbox"  value="是">
+					<label for="zh_80">关节肿胀</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_81" name="9126-1" type="checkbox"  value="是">
+					<label for="zh_81">静脉炎或腿静脉红肿</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">8.内分泌系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_82" name="9131-1" type="checkbox"  value="是" >
+					<label for="zh_82">无异常</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_83" name="9133-1" type="checkbox"  value="是" >
+					<label for="zh_83">异常口干</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_84" name="9135-1" type="checkbox"  value="是" >
+					<label for="zh_84">过度饥饿</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_85" name="9136-1" type="checkbox"  value="是">
+					<label for="zh_85">高/低血糖</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_86" name="9132-1" type="checkbox"  value="是">
+					<label for="zh_86">甲状腺问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_87" name="9134-1" type="checkbox"  value="是">
+					<label for="zh_87">对冷、热敏感</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">9.泌尿生殖系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_88" name="9141-1" type="checkbox"  value="是" >
+					<label for="zh_88">无问题</label>>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_89" name="9143-1" type="checkbox"  value="是" >
+					<label for="zh_89">尿频</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_90" name="9144-1" type="checkbox"  value="是" >
+					<label for="zh_90">夜间起来小便</label>
+					<input type="text" class="input-text" name="9145"  placeholder="次数" style="width:176px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_91" name="9146-1" type="checkbox"  value="是">
+					<label for="zh_91">尿失禁</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_92" name="9147-1" type="checkbox"  value="是">
+					<label for="zh_92">血糖</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_93" name="9152-1" type="checkbox"  value="是">
+					<label for="zh_93">担心性功能问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_94" name="9148-1" type="checkbox"  value="是">
+					<label for="zh_94">小便无力</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_95" name="9150-1" type="checkbox"  value="是">
+					<label for="zh_95">肾结石</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_96" name="9142-1" type="checkbox"  value="是">
+					<label for="zh_96">灼烧感或排尿疼痛</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_97" name="9153-1" type="checkbox"  value="是">
+					<label for="zh_97">睾丸疼/肿</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_98" name="9149-1" type="checkbox"  value="是">
+					<label for="zh_98">性病/性传染病</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_99"  name="9151-1" type="checkbox"  value="是">
+					<label for="zh_99">分泌物：阴茎或阴道</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">10.消化系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_100" name="9161-1" type="checkbox"  value="是" >
+					<label for="zh_100">无问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_101" name="9165-1" type="checkbox"  value="是" >
+					<label for="zh_101">腹痛</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_102" name="9170-1" type="checkbox"  value="是" >
+					<label for="zh_102">黄疸病</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_103" name="9162-1" type="checkbox"  value="是">
+					<label for="zh_103">恶心/呕吐</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_104" name="9171-1" type="checkbox"  value="是">
+					<label for="zh_104">痔疮</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_105" name="9175-1" type="checkbox"  value="是">
+					<label for="zh_105">没食欲</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_106" name="9167-1" type="checkbox"  value="是">
+					<label for="zh_106">血便或黑便</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_107" name="9169-1" type="checkbox"  value="是">
+					<label for="zh_107">肝脏问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_108" name="9168-1" type="checkbox"  value="是">
+					<label for="zh_108">排便异常</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_109" name="9172-1" type="checkbox"  value="是">
+					<label for="zh_109">胃灼热/反流</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_111" name="9174-1" type="checkbox"  value="是">
+					<label for="zh_111">进食困难</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_112" name="9164-1" type="checkbox"  value="是">
+					<label for="zh_112">胃灼热或消化不良</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_113" name="9176-1" type="checkbox"  value="是">
+					<label for="zh_113">胃肠道气体过多</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_114" name="9163-1" type="checkbox"  value="是">
+					<label for="zh_114">呕血或咖啡状物质</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">11.心血管系统</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_115" name="9181-1" type="checkbox"  value="是" >
+					<label for="zh_115">无问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_116" name="9187-1" type="checkbox"  value="是" >
+					<label for="zh_116">腿部或脚踝肿胀</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_117" name="9184-1" type="checkbox"  value="是" >
+					<label for="zh_117">睡觉需要多于一个枕头</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_118" name="9188-1" type="checkbox"  value="是">
+					<label for="zh_118">血压偏高</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_119" name="9185-1" type="checkbox"  value="是">
+					<label for="zh_119">风湿热/心脏杂音</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_120" name="9182-1" type="checkbox"  value="是">
+					<label for="zh_120">心动过速、心动过缓或心律不齐</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_121" name="9189-1" type="checkbox"  value="是">
+					<label for="zh_121">心动超声筛查</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_122" name="9183-1" type="checkbox"  value="是">
+					<label for="zh_122">手臂感觉放射样改变</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_124" name="9186-1" type="checkbox"  value="是">
+					<label for="zh_124">行走时小腿肌肉痉挛综合征</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_125" name="9190-1" type="checkbox"  value="是">
+					<label for="zh_125">心电图筛查异常</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_126" name="9191-1" type="checkbox"  value="是">
+					<label for="zh_126">胸痛或胸闷</label>
+					<select class="radius" name="9192" style="height:30px;width:180px;">
+						<option value="" selected>请选择</option>
+						<option value="心烦或高兴时">心烦或高兴时</option>
+						<option value="用力时">用力时</option>
+						<option value="休息时消失">休息时消失</option>
+					</select>
+				</li>
+			</ul>
+			<p class="baseinfo-list">12.情感</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_128" name="9201-1" type="checkbox"  value="是" >
+					<label for="zh_128">无问题</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_129" name="9205-1" type="checkbox"  value="是" >
+					<label for="zh_129">兴趣不高</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_130" name="9210-1" type="checkbox"  value="是" >
+					<label for="zh_130">突发精神坑奋</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_131" name="9215-1" type="checkbox"  value="是">
+					<label for="zh_131">厌食</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_132" name="9216-1" type="checkbox"  value="是">
+					<label for="zh_132">暴饮暴食</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_133" name="9204-1" type="checkbox"  value="是">
+					<label for="zh_133">常常焦虑或烦躁</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_134" name="9211-1" type="checkbox"  value="是">
+					<label for="zh_134">焦虑紧张</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_135" name="9209-1" type="checkbox"  value="是">
+					<label for="zh_135">幻听或幻视</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_136" name="9203-1" type="checkbox"  value="是">
+					<label for="zh_136">心情压抑或者抑郁症</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_137" name="9212-1" type="checkbox"  value="是">
+					<label for="zh_137">睡眠不好</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_138" name="9202-1" type="checkbox"  value="是">
+					<label for="zh_138">常常感到紧张</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_139" name="9208-1" type="checkbox"  value="是">
+					<label for="zh_139">想法异常或情绪低落</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_140" name="9213-1" type="checkbox"  value="是">
+					<label for="zh_140">行为改变</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_141" name="9207-1" type="checkbox"  value="是">
+					<label for="zh_141">注意力不集中</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input  id="zh_142" name="9206-1" type="checkbox"  value="是">
+					<label for="zh_142">精力下降或缺乏积极性</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_143" name="9214-1" type="checkbox"  value="是">
+					<label for="zh_143">性格改变</label>
+				</li>
+			</ul>
+			<p class="baseinfo-list">13.男士</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_144" name="9222-1"  type="checkbox"  value="是" >
+					<label for="zh_144">早泄</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_145" name="9223-1" type="checkbox"  value="是" >
+					<label for="zh_145">疝气</label>
+				</li>
+
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您现在服用激素吗？</label>
+					<input id="zh_146" name="9230-1" type="checkbox"  value="是">
+					<label for="zh_146">是</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_147" name="9221-1" type="checkbox"  value="是">
+					<label for="zh_147">性欲低下</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_148" name="9224-1" type="checkbox"  value="是">
+					<label for="zh_148">阳痿</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:118px;">您有几个孩子？</label>
+					<input type="text" class="input-text" name="9231"  placeholder="个数" style="width:176px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_149-1" name="9225-1" type="checkbox"  value="是">
+					<label class="lable_style" for="zh_149-1" style="width:155px;">性生活质量</label>
+					<select class="radius" name="9226" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="差">差</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="非常好">非常好</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:65%;">
+					<input id="zh_149" name="9227" type="checkbox"  value="是">
+					<label for="zh_149">激素替代疗法</label>
+					<input type="text" class="input-text" name="9228"  placeholder="什么时候" style="width:176px;"/>
+					<input type="text" class="input-text" name="9229"  placeholder="持续多久" style="width:176px;"/>
+				</li>
+			</ul>
+			<p class="baseinfo-list">14.女士</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">活产数：</label>
+					<input type="text" class="input-text" name="19236"  placeholder="什么时候" style="width:108px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">怀孕次数：</label>
+					<input type="text" class="input-text" name="19234"  placeholder="请输入" style="width:108px;"/>
+
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">上次经期持续天数、周期：</label>
+					<input type="text" class="input-text" name="19231"  placeholder="请输入" style="width:108px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">流产次数：</label>
+					<input type="text" name="19235" placeholder="请输入" style="width:108px;height:26px;border:1px solid #ddd;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">月经周期：</label>
+					<select class="radius" name="19232" style="height:30px;width:100px;">
+					<option value="" selected>请选择</option>
+					<option value="一周后">一周后</option>
+					<option value="两周后">两周后</option>
+					<option value="三周后">三周后</option>
+					<option value="目前处于月经期">目前处于月经期</option>
+				</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您现在怀孕或者计划怀孕吗？</label>
+					<select class="radius" name="19237" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您现在有几个孩子？</label>
+					<input type="text" class="input-text" name="19233" placeholder="请输入" style="width:110px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">卵巢切除手术？</label>
+					<select class="radius" name="19239" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">您是否进行过子宫摘除手术？</label>
+					<select class="radius" name="19238" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style" style="width:225px;">乳房手术</label>
+					<input id="zh_150" name="19246-1" type="checkbox"  value="是">
+					<label for="zh_150">是</label>
+					<input type="text" class="input-text" name="19247" placeholder="请输入手术名称" style="width:158px;"/>
+					<input type="text" class="input-text" name="19248" placeholder="请输入手术位置" style="width:158px;"/>
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19249" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="19250" placeholder="疗效" style="width:158px;"/>
+
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style" style="width:253px;">上次乳房钼靶检查（检查时间和结果）</label>
+					<input class="input-text Wdate" placeholder="请选择时间" name="19244" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="19245" placeholder="请输入结果" style="width:158px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style" style="width:253px;">上次子宫颈抹片检查（检查时间和结果）</label>
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19241" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="19242" placeholder="请输入结果" style="width:158px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="border: 1px solid #e2dfdf;margin:10px 0;width:100%;"></li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style" style="width:253px;">上次妇科B超筛查（检查时间和结果）</label>
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19252" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+					<input type="text" class="input-text" name="19253" placeholder="请输入结果" style="width:158px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_151" name="19254-1" type="checkbox"  value="是" >
+					<label for="zh_151">绝经前期</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_152" name="19255-1" type="checkbox"  value="是" >
+					<label for="zh_152">绝经后期</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;height: 33px;">
+					<input id="zh_153" name="19256-1" type="checkbox"  value="是" >
+					<label for="zh_153">停经年龄</label>
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19257" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 110px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_154" name="19259-1" type="checkbox"  value="是">
+					<label for="zh_154">月经失调</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_155" name="19269-1" type="checkbox"  value="是">
+					<label for="zh_155">担忧性功能</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_156" name="19266-1" type="checkbox"  value="是">
+					<label for="zh_156">乳头疼</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_157" name="19261-1" type="checkbox"  value="是">
+					<label for="zh_157">绝经期后出血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_158" name="19262-1" type="checkbox"  value="是">
+					<label for="zh_158">经期前紧张综合证</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_159" name="19258-1" type="checkbox"  value="是">
+					<label for="zh_159">更年期综合证</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_160" name="19267-1" type="checkbox"  value="是">
+					<label for="zh_160">乳头异常分泌物</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_161" name="19260-1" type="checkbox"  value="是">
+					<label for="zh_161">近期阴道分泌物增多</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_162" name="19263-1" type="checkbox"  value="是">
+					<label for="zh_162">常常潮红或盗汗</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_163" name="19268-1" type="checkbox"  value="是">
+					<label for="zh_163">性交疼痛或性交后出血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_164" name="19264-1" type="checkbox"  value="是">
+					<label for="zh_164">乳腺肿块，疼痛或异常分泌物</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<input id="zh_165" name="19265-1" type="checkbox"  value="是">
+					<label for="zh_165">过多或异常出血</label>
+				</li>
+				<li class="f-l li-base li-rel" style="border: 1px solid #e2dfdf;margin:10px 0;width:100%;"></li>
+				<li class="f-l li-base li-rel" style="position:relative;width:32%;">
+						<input id="zh_166"  name="19273-1" type="checkbox"  value="激素替代疗法">
+						<label for="zh_166">激素替代疗法？</label>
+					<input type="text" name="19274" class="input-text" placeholder="什么时候" style="width:110px;"/>
+					<input type="text" name="19275" class="input-text" placeholder="持续多久" style="width:110px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:25%;">
+					<label class="lable_style" style="width:155px;">性生活质量</label>
+					<select class="radius" name="19272" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="差">差</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="非常好">非常好</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">目前采用的避孕方式是</label>
+					<select class="radius" name="19270" style="height:30px;width:100px;">
+						<option value="" selected>请选择</option>
+						<option value="避孕套">避孕套</option>
+						<option value="雌激素">雌激素</option>
+						<option value="孕酮">孕酮</option>
+						<option value="三苯氧胺">三苯氧胺</option>
+						<option value="雷洛普芬">雷洛普芬</option>
+						<option value="瑞宁得">瑞宁得</option>
+						<option value="其他激素">其他激素</option>
+					</select>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<label class="lable_style" style="width:225px;">您现在服用性激素吗？</label>
+					<input id="zh_167" name="19276-1" type="checkbox"  value="是">
+					<label for="zh_167">是</label>
+					<input type="text" class="input-text" name="19277" placeholder="最后使用年龄" style="width:158px;"/>
+				</li>
+			</ul>
+			<p class="baseinfo-list">15.疾病预防</p>
+			<ul class="baseinfo-list" class="f-l" style="width:97%;background: #f8f7f7;border:1px solid #b7b7b7;">
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<input id="jb_1"  name="19281-1" type="checkbox"   value="是" >
+					<label for="jb_1">不清楚免疫接种情况</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">破伤风</label>
+					<input id="jb_2" name="19282-1" type="checkbox"  value="是" >
+					<label for="jb_2">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19283" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">肺炎：</label>
+					<input id="jb_3" name="19284-1" type="checkbox"  value="是" >
+					<label for="jb_3">是</label>
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19285" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">水痘：</label>
+					<input id="jb_4" name="19286-1" type="checkbox"  value="是" >
+					<label for="jb_4">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19287" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">脑膜炎：</label>
+					<input id="jb_5" name="19298-1" type="checkbox"  value="是" >
+					<label for="jb_5">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19299" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">乙型肝炎：</label>
+					<input id="jb_6" name="19292-1" type="checkbox"  value="是" >
+					<label for="jb_6">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19293" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">流感</label>
+					<input id="jb_7" name="19296-1" type="checkbox"  value="是" >
+					<label for="jb_7">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19297" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">麻腮风</label>
+					<input id="jb_8" name="19288-1" type="checkbox"  value="是" >
+					<label for="jb_8">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19289" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">甲型肝炎</label>
+					<input id="jb_9" name="19294-1" type="checkbox"  value="是" >
+					<label for="jb_9">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19295" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">人乳头状瘤病毒</label>
+					<input id="jb_10" name="19300-1" type="checkbox"  value="是" >
+					<label for="jb_10">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19301" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="border: 1px solid #e2dfdf;margin:10px 0;width:100%;"></li>
+
+				<li class="f-l li-base li-rel" style="position:relative;width:100%;">
+					<input id="jb_10-1" name="19304-1" type="checkbox"  value="是" >
+					<label for="jb_10-1">不清楚是否接受过检查</label>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">骨密度</label>
+					<input id="jb_11" name="19305-1" type="checkbox"  value="是" >
+					<label for="jb_11">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19306" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">胆固醇检查</label>
+					<input id="jb_12" name="19313-1" type="checkbox"  value="是" >
+					<label for="jb_12">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19314" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">前列腺癌检查（男士）：</label>
+					<input id="jb_13" name="19311-1" type="checkbox"  value="是" >
+					<label for="jb_13">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19312" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">牙科检查：</label>
+					<input id="jb_14" name="19307-1" type="checkbox"  value="是" >
+					<label for="jb_14">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19308" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">健康维护筛选：</label>
+					<input id="jb_15" name="19315-1" type="checkbox"  value="是" >
+					<label for="jb_15">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19316" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">阴道镜筛选（女士）：</label>
+					<input id="jb_16" name="19317-1" type="checkbox"  value="是" >
+					<label for="jb_16">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19318" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+				<li class="f-l li-base li-rel" style="position:relative;width:30%;">
+					<label class="lable_style" style="width:225px;">结肠镜检查</label>
+					<input id="jb_17" name="19309-1" type="checkbox"  value="是" >
+					<label for="jb_17">是</label>
+
+					<input class="input-text Wdate"  placeholder="请选择时间" name="19310" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" style="width: 122px;"/>
+				</li>
+			</ul>
+			<div class="collection-baseinfo">
+				<div class="navbar-collection">
+					<span style="margin-right:6px;">|</span>近期医疗症状
+				</div>
+				<ul class="baseinfo-list" class="f-l" style="margin-left:0px;width:100%;">
+					<li class="f-l li-base li-rel" style="position:relative;width:1038px;">
+						<label class="lable_style_2" style="width:900px;">请简单描述近期您的医疗情况和症状</label>
+						<textarea name="100000" cols="" rows="" class="textarea"  placeholder="请输入..."></textarea>
+					</li>
+				</ul>
+			</div>
+		</div>
+		</form>
+	</div>
+	<div style="text-align: center;margin-top: 40px;">
+		<button class="btn btn-success radius btn-user-edit" id="do_save" style="width: 100px;" type="button">保存</button>
+	</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script>
+//新增药物
+var num = 1;
+var num2=1;
+//删除行
+function del(del,pard,yw){
+	$(del).click(function(){
+		$(this).prev(pard).find(yw).remove();
+		num--;
+		num2--;
+		if(num<2){
+			$(this).css("display","none");
+		}
+	});
+}
+del(".del-1","#use-medication-history",".yw:last");
+del(".del-2","#reseach-medicine",".yw:last");
+
+
+$(function(){
+	//获取路径后面的参数
+	function getUrlParam(name){
+		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r!=null)return  unescape(r[2]); return null;
+	}
+	var userId=getUrlParam("id");
+	$.ajax({
+		url: "../../../HealthSurvey/getPersonalInfo.action",
+		type: "post",
+		dataType: 'json',
+		data: {user_id: userId},
+		success: function (p) {
+			var p1=p.data;
+			console.log(p1);
+			$("#user_name").val(p1.user_name);
+			$("#user_sex  option[value='"+p1.user_sex+"']").attr("selected",true);
+			$("#user_birthday").val(p1.user_birthday);
+			$("#user_phone").val(p1.user_phone);
+			$("#user_height").val(p1.user_height);
+			$("#user_weight").val(p1.user_weight );
+			$("#user_blood").val(p1.user_blood);
+			$("#user_marriage  option[value='"+p1.user_marriage+"']").attr("selected",true);
+			$("#user_address").val(p1.user_address);
+			$("#email").val(p1.email);
+		}
+	});
+
+	$('#addTextImput').click(function(){
+		num++;
+		num2++;
+		//$('#main').append('<div><input type="text" name="text-'+num+'"/><button type="button" onclick="del(this)">删除</button></div>');
+		$('#reseach-medicine').append('<div class="mb-10 yw"><input type="text" class="input-text  mr-5" style="width:100px;" name="528-'+num+'-'+num2+'"/><select class="radius mr-5" style="height:30px;width:180px;" name="529-'+num+'-'+num2+'"><option value="" selected>请选择过敏反应</option><option value="恶心">恶心</option><option value="发疹子">发疹子</option></select></div>');
+		$(".del-2").css("display","block");
+	});
+
+	$("#addTexrow").click(function(){
+		num++;
+		num2++;
+		var html='<ul class="baseinfo-list yw" class="f-l" style="margin-left:0px;width:88%;display: inline-block;margin:0;">'+
+				'<li class="f-l li-base li-rel" style="position:relative;width:1038px;">'+
+				'<input type="text" class="input-text " placeholder="请输入药名" style="width:158px;" name="501-'+num+'-'+num2+'"/>'+
+				'<input type="text" class="input-text ml-5" placeholder="请输入剂量" style="width:82px;" name="502-'+num+'-'+num2+'"/>'+
+				'<select class="radius  ml-5" style="height:30px;width:82px;" name="503-'+num+'-'+num2+'">'+
+				'<option value="" selected>计量单位</option>'+
+				'<option value="g">g</option>'+
+				'<option value="ml">ml</option>'+
+				'<option value="袋">袋</option>'+
+				'<option value="粒">粒</option>'+
+				'</select>'+
+				'<select class="radius ml-5" style="height:30px;width:82px;" name="504-'+num+'-'+num2+'">'+
+				'<option value="" selected>每日几次</option>'+
+				'<option value="1次">1次</option>'+
+				'<option value="2次">2次</option>'+
+				'<option value="3次">3次</option>'+
+				'<option value="4次">4次</option>'+
+				'<option value="5次">5次</option>'+
+				'</select>'+
+				'<select class="ml-5 radius" style="height:30px;width:180px;" name="505-'+num+'-'+num2+'">'+
+				'<option value="" selected>请选择多久服用一次该药物</option>'+
+				'<option value="1小时">1小时</option>'+
+				'<option value="2小时">2小时</option>'+
+				'<option value="3小时">3小时</option>'+
+				'<option value="4小时">4小时</option>'+
+				'<option value="5小时">5小时</option>'+
+				'<option value="6小时">6小时</option>'+
+				'<option value="7小时">7小时</option>'+
+				'<option value="8小时">8小时</option>'+
+				'<option value="1天">1天</option>'+
+				'<option value="2天">2天</option>'+
+				'<option value="3天">3天</option>'+
+				'<option value="4天">4天</option>'+
+				'<option value="5天">5天</option>'+
+				'<option value="6天">6天</option>'+
+				'<option value="7天">7天</option>'+
+				'</select>'+
+				'<select class="ml-5 radius" style="height:30px;width:97px;" name="506-'+num+'-'+num2+'">'+
+				'<option value="" selected>服用该药多久</option>'+
+				'<option value="1周">1周</option>'+
+				'<option value="2周">2周</option>'+
+				'<option value="3周">3周</option>'+
+				'<option value="4周">4周</option>'+
+				'<option value="1个月">1个月</option>'+
+				'<option value="2个月">2个月</option>'+
+				'<option value="1年">1年</option>'+
+				'</select>'+
+				'<select class="ml-5 radius" style="height:30px;width:125px;" name="507-'+num+'-'+num2+'">'+
+				'<option value="" selected>药品类型</option>'+
+				'<option value="处方药">处方药</option>'+
+				'<option value="非处方药">非处方药</option>'+
+				'<option value="中草药">中草药</option>'+
+				'<option value="矿物质/维生素">矿物质/维生素</option>'+
+				'</select>'+
+				'<select class="ml-5 radius" style="height:30px;width:180px;" name="508-'+num+'-'+num2+'">'+
+				'<option value="" selected>该药物用于治疗什么疾病</option>'+
+				'<option value="高血压">高血压</option>'+
+				'<option value="糖药病">糖药病</option>'+
+				'<option value="高血脂">高血脂</option>'+
+				'</select>'+
+				'</li>'+
+				'</ul>';
+		$('#use-medication-history').append(html);
+		$(".del-1").css("display","block");
+	});
+
+	//健康问卷调查报告填写
+	$("#do_save").click(function(){
+		var data=$.param({user_id: userId})+'&'+ $('#form-health-reasearch').serialize();
+		console.dir(data);
+		$.ajax({
+			url:"../../../HealthSurvey/saveHealthSurvey.action",
+			type:"post",
+			dataType:'json',
+			data:data,
+			success:function(response){
+				console.log(response);
+				if(response.status=="1"){
+					alert('成功添加健康档案调查问卷!');
+					window.location.href = "health-record-writelist.html";
+				}else{
+					layer.msg("添加失败！");
+				}
+			}
+		});
+	});
+});
+	</script>
+</body>
+</html>

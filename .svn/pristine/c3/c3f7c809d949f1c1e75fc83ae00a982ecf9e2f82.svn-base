@@ -1,0 +1,185 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.IdCard;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+@Repository
+public class DoctorDao extends BaseTemplateDao {
+
+	// 校验账号
+	public int countByAccount(String account) {
+		String sql = "";
+		if (account.matches("1[34578]\\d{9}")) {
+			sql = "select count(*) from n_user where user_phone = ?";
+		} else if (account.matches("\\d{15}|\\d{17}[\\dX]{1}")) {
+			sql = "select count(*) from n_user where user_card = ?";
+		} else {
+			sql = "select count(*) from n_user where passport = ?";
+		}
+		int count = this.getValue(sql, new Object[] { account }, Integer.class);
+		return count;
+	}
+
+	// 检验密码
+	public int countByAccount(String account, String user_pwd) {
+		String sql = "";
+		if (account.matches("1[34578]\\d{9}")) {
+			sql = "select count(*) from n_user where user_phone = ? and user_pwd = ? ";
+		} else if (account.matches("\\d{15}|\\d{17}[\\dX]")) {
+			sql = "select count(*) from n_user where user_card = ? and user_pwd = ? ";
+		} else {
+			sql = "select count(*) from n_user where passport = ? and user_pwd = ? ";
+		}
+		int count = this.getValue(sql, new Object[] { account, user_pwd }, Integer.class);
+		return count;
+	}
+
+	public String getUserId(String account,String user_type) {
+		String id = "";
+		String sql = "";
+
+		// 手机号码
+		if (account.matches("1[34578]\\d{9}")) {
+			sql = "select user_id from n_user where user_phone = ? and user_type = ? ";
+		}
+		// 身份证
+		else if (account.matches("\\d{15}|\\d{17}[\\dX]")) {
+			sql = "select user_id from n_user where user_card = ? and user_type = ? ";
+		}
+		// 护照
+		else {
+			sql = "select user_id from n_user where passport = ? and user_type = ? ";
+		}
+		
+		try {
+			id = this.getValue(sql, new Object[] { account, user_type }, String.class);
+		} catch (Exception e) {
+			
+		}
+		return id;
+	}
+
+	public Map<String, Object> getDoctorInfo(String doctor_id) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_name,a.user_phone,a.user_card,a.user_sex,a.user_age,c.hosp_order_id,d.hosp_name,"
+				+ "b.department_order_id,c.department_name,b.doctor_title,b.doctor_introduce," + "concat('" + url
+				+ "',user_head_pic_upload_index) user_head_pic_upload_index from n_user a,d_doctor b,"
+				+ "k_department c,k_hosp d where a.user_id = b.doctor_id and b.department_order_id = c.order_id "
+				+ "and c.hosp_order_id = d.order_id and a.user_id = ? ";
+		Map<String, Object> doctorInfo = this.get(sql, new Object[] { doctor_id });
+		if (doctorInfo.get("user_card") != null) {
+			IdCard cardInfo = IdCard.of(doctorInfo.get("user_card").toString());
+			if (cardInfo.flag) {
+				doctorInfo.put("user_age", cardInfo.getAge());
+				doctorInfo.putIfAbsent("user_sex", cardInfo.getSex() == 0 ? 200002 : 200001);
+				doctorInfo.putIfAbsent("user_birthday", cardInfo.getBirthday());
+			}
+		}
+		int count = this.getValue("select count(*) from c_push_message where is_read = '0' and doctor_id = ?",
+				new Object[] { doctor_id }, Integer.class);
+		if (count > 0) {
+			doctorInfo.put("message_flag", "1");
+		} else {
+			doctorInfo.put("message_flag", "0");
+		}
+		return doctorInfo;
+	}
+
+	public Page getMessageList(String doctor_id, int pageno, int pagesize) {
+		this.execute("update c_push_message set is_read = '1' where doctor_id = ? ", new Object[] { doctor_id });
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.order_id,a.patient_id,b.user_name,a.measurement_value,a.measurement_period,a.measurement_type,"
+				+ "a.measurement_result,a.is_read,date_format(a.create_date,'%Y-%m-%d %T') create_date,concat('" + url
+				+ "',b.user_head_pic_upload_index) user_head_pic_upload_index,"
+				+ "date_format(a.update_date,'%Y-%m-%d %T') update_date from c_push_message a,n_user b "
+				+ "where a.patient_id = b.user_id and a.doctor_id = ? order by update_date desc";
+		Page page = this.pageQuery(sql, new Object[] { doctor_id }, pageno, pagesize);
+		return page;
+	}
+
+	// 获取患者信息
+	public Map<String, Object> getPatientInfo(String patient_id) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,"
+				+ "a.user_height,a.user_weight,a.user_blood,a.user_medicare_card,a.user_marriage,a.user_address,a.user_phone,"
+				+ "a.user_phs_phone,a.user_pwd,a.email,a.user_work,a.user_medical_burden,a.user_waist,a.picture_head_order_id,"
+				+ "a.user_head_pic_upload_index,a.picture_card_front_order_id,a.user_card_front_upload_index,a.picture_card_back_order_id,"
+				+ "a.user_card_back_upload_index,date_format(a.create_date,'%Y-%m-%d %T') create_date,date_format(a.update_date,'%Y-%m-%d %T') update_date,"
+				+ "a.user_source,a.user_flag,a.ahdi_value,a.user_nation,a.clientId,a.os_type,a.qq,a.wechat,a.ahdi_level,a.chronic,a.mrs_value,"
+				+ "a.mrs_level,a.passport,a.mainland,a.country,a.country_name,b.is_send,b.doctor_id,c.doctor_name "
+				+ "from n_user a,d_patient b left outer join d_doctor c on b.doctor_id = c.doctor_id where	a.user_id = b.patient_id and a.user_id = ? ";
+		Map<String, Object> patientInfo = this.get(sql, new Object[] { patient_id });
+		if (patientInfo.get("user_head_pic_upload_index") != null) {
+			patientInfo.put("user_head_pic_upload_index", url + patientInfo.get("user_head_pic_upload_index"));
+		}
+		if (patientInfo.get("user_card_front_upload_index") != null) {
+			patientInfo.put("user_card_front_upload_index", url + patientInfo.get("user_card_front_upload_index"));
+		}
+		if (patientInfo.get("user_card_back_upload_index") != null) {
+			patientInfo.put("user_card_back_upload_index", url + patientInfo.get("user_card_back_upload_index"));
+		}
+		if (patientInfo.get("user_card") != null) {
+			IdCard card = IdCard.of(patientInfo.get("user_card").toString());
+			if (card.flag) {
+				patientInfo.put("user_age", card.getAge());
+				patientInfo.put("user_sex", card.getSex() % 2 == 1 ? "200001" : "200002");
+				patientInfo.put("user_birthday", card.getBirthday());
+			}
+		}
+		return patientInfo;
+	}
+
+	// 查询
+	public User getUserById(String user_id) {
+		String sql = "select * from n_user where user_id = ? ";
+		User user = this.get(sql, new Object[] { user_id }, User.class);
+		return user;
+	}
+
+	// 查询
+	public Patient getPatientById(String patient_id) {
+		String sql = "select * from d_patient where patient_id = ? ";
+		Patient patient = this.get(sql, new Object[] { patient_id }, Patient.class);
+		return patient;
+	}
+
+	// 查询
+	public Doctor getDoctorById(String doctor_id) {
+		String sql = "select * from d_doctor where doctor_id = ? ";
+		Doctor doctor = this.get(sql, new Object[] { doctor_id }, Doctor.class);
+		return doctor;
+	}
+
+	// 新增
+	public void save(User user, Patient patient) {
+		Long patient_id = this.insert(user, "n_user");
+		patient.setPatient_id(patient_id.toString());
+		this.insert(patient, "d_patient");
+	}
+
+	// 删除
+	public void delete(User user, Patient patient) {
+		this.delete(user, "n_user");
+		this.delete(patient, "n_user");
+	}
+
+	// 更新
+	public void update(User user, Patient patient) {
+		if(user!=null){
+			this.update(user, "n_user");
+		}
+		if (patient != null) {
+			this.update(patient, "d_patient");
+		}
+	}
+
+}

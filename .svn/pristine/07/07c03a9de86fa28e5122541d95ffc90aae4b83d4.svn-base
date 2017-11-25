@@ -1,0 +1,124 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.survey.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.survey.service.SurveyAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/survey-app")
+public class SurveyAppController {
+
+	@Autowired
+	private SurveyAppService service;
+
+	@Resource
+	private CommonUserService commonUserService;
+
+	private Logger logger = Logger.getLogger(getClass());
+
+	/**
+	 * 
+	 * @Title: getUserInfo @Description: 根据user_id得到个人用户信息 @param
+	 * user_id @return @throws
+	 */
+	@RequestMapping("/userInfo.action")
+	@ResponseBody
+	public Object getUserInfo(String user_id) {
+		// 根据是否传递user_id判断从患者端还是医生端传递
+		user_id = commonUserService.getPatientId(user_id);
+		Map<String, Object> user = service.getUserInfo(user_id);
+		return user;
+	}
+
+	/**
+	 * 
+	 * @Title: saveAnswer @Description: 保存健康评估调查报告答案 @param
+	 * request @return @throws
+	 */
+	@RequestMapping("/saveAnswer.action")
+	@ResponseBody
+	public Object saveAnswer(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			request.setAttribute("user_id", commonUserService.getPatientId(request.getParameter("user_id")));
+			dto = (ResponseDTO) service.saveAnswer(request);
+			service.call(String.valueOf(dto.getData()));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return dto;
+	}
+
+	/**
+	 * 
+	 * @Title: getTimeList @Description: 根据user_id得到用户所有健康评估的历史记录 @param
+	 * user_id @return @throws
+	 */
+	@RequestMapping("/getTimeList.action")
+	public InfoJson getTimeList(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getTimeList(user_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+
+	}
+
+	/**
+	 * 
+	 * @Title: getDetail @Description: 根据order_id得到健康评估调查报告的填写详情 @param
+	 * order_id @return @throws
+	 */
+	@RequestMapping("getDetail.action")
+	public InfoJson getDetail(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getDetail(order_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getDetail @Description: 根据order_id得到健康评估调查报告的填写详情 @param
+	 * order_id @return @throws
+	 */
+	@RequestMapping("getDetail2.action")
+	public InfoJson getDetail2(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getDetail2(order_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+	}
+}

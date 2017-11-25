@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>电子血压计</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <style>
+        .highcharts-background,.highcharts-root,.highcharts-container{height:350px;}
+    </style>
+</head>
+<body style="background: #f0f0f0">
+<div class="container">
+    <div class="pressure-result-box" style="background: white;">
+        <div class="line-align date-show">
+            <img src="../../common/image/myhealth/test-date-1.png" style="width: 21px;margin-right: 10px;"/>
+            <span style="font-size: 15px;line-height: 30px;">2017-04-24 13:20</span>
+        </div>
+        <div class="line-align test-result-box">
+            <p style="font-size: 15px;margin-right: 15px;color: #3D3D3D;">血压测量数据</p>
+            <ul>
+                <li style="margin-bottom: 15px;"><span style="font-size:28px;color: #3D3D3D;">92</span>次/分钟</li>
+                <li style="margin-top: 15px;"><span style="font-size:28px;color: #3D3D3D;">120/80</span>mmHg</li>
+            </ul>
+        </div>
+        <div class="dotted-line"></div>
+        <div class="line-align">
+            <span style="font-size: 15px;margin-right: 15px;color: #3D3D3D;margin-left: -78px;">血压测量数据</span>
+            <span style="font-size:28px;color: #3D3D3D;">正常</span>
+        </div>
+        <div class="line-align search-button">
+            <button id="blood-search-result">查看结果说明</button>
+        </div>
+    </div>
+    <div class="blood-pressure-trend" style="background: white;">
+        <div class="blood-title-box">
+            <p><h4 style="font-size: 17px;color: #3D3D3D;">血压数据走势 </h4>(mmHg)</p>
+            <select name="" id="" style="border-radius: 5px;margin-left: 10px;">
+                <option value="7">7天</option>
+                <option value="30" selected>30天</option>
+                <option value="90">90天</option>
+            </select>
+        </div>
+        <ul style="margin-top: 10px;">
+            <li class="line-align-left" style="margin-bottom: 5px;"><span style="margin-right:8px;background: #F85E34;display: inline-block;width: 16px;height: 2px;"></span><span>高压</span><span style="background: #FCB6A3;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>高压正常区间</span></li>
+            <li class="line-align-left"><span style="margin-right:8px;background: #57C3EE;display: inline-block;width: 16px;height: 2px;"></span><span>低压</span><span style="background: #C6E3FF;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>低压正常区间</span></li>
+        </ul>
+<!--        <div style="overflow: scroll;height: 250px;">
+            <canvas id="cvs" style="width:500px;"></canvas>
+        </div>-->
+        <div class="can_1" style="position: relative; width: 600px;; height: 220px">
+            <canvas id="axes" width="41" height="200" style="position: absolute; top: 5px; left: 0; z-index: 3"></canvas>
+            <div class="can_2" style="width: 100%; overflow: scroll; position: absolute; left: 41px">
+                <canvas id="cvs" width="1500" height="200" ></canvas>
+            </div>
+        </div>
+        <div class="line-align search-button">
+            <button id="blood-search-detail">查看结果详情</button>
+        </div>
+    </div>
+    <div class="blood-pressure-total" style="background: white;">
+        <p style="font-size: 17px;font-weight:600;margin-right: 15px;color: #3D3D3D;">血压数据统计</p>
+           <div class="line-align-left">
+
+
+            <ul style="margin-top: -276px;width: 30%;">
+                <li class="line-align-left" style="margin-bottom: 5px;"><span style="background: #F85E34;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>高于正常值</span></li>
+                <li class="line-align-left" style="margin-bottom: 5px;"><span style="background: #F7CE40;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>正常</span></li>
+                <li class="line-align-left"><span style="background: #4DBFEE;display: inline-block;width: 19px;height: 19px;margin-left: 10px;margin-right: 8px;"></span><span>低于正常值</span></li>
+            </ul>
+            <div id="container" style="width: 70%;"></div>
+           </div>
+    <div>
+</div>
+<script src="../../common/js/jquery-1.11.3.js"></script>
+<script src="js/RGraph.common.core.js"></script>
+<script src="js/RGraph.common.dynamic.js"></script>
+<script src="js/RGraph.common.tooltips.js"></script>
+<script src="js/RGraph.drawing.yaxis.js"></script>
+<script src="js/RGraph.line.js"></script>
+<script src="js/highcharts.js"></script>
+<script src="js/exporting.js"></script>
+<script>
+$(function () {
+/*new RGraph.Line({
+    id: 'cvs',
+    data: [[100,150,110,101,111,120,105,100,150,110,101,111,120,105], [55,100,99,80,79,55,66,55,100,99,80,79,55,66]],
+    options: {
+        labels: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+        backgroundHbars: [
+            [90,50,'rgba(254,222,214,0.5)'],
+            [60,30,'rgba(229,242,255,0.5)']
+        ],
+        gutterLeft: 20,
+        gutterRight: 35,
+        gutterBottom: 35,
+        ymin:50,
+        ymax:200,
+        textAccessible: true,
+        scaleZerostart: true,
+        linewidth: 1,
+        tickmarks:'filledcircle',
+        backgroundGridDashed: true,
+        shadow: null,
+        highlightStyle: 'halo',
+        colors: ['RGB(248,94,52)','RGB(87,195,238)']
+    }
+}).draw();*/
+        $(".can_1").css({'width':$(window).width()-20});
+        $(".can_2").css({'width':$(window).width()-71});
+    var line = new RGraph.Line({
+        id: 'cvs',
+        data: [[100,150,110,101,111,120,105,100,150,110,101,111,120,105], [55,100,99,80,79,55,66,55,100,99,80,79,55,66]],
+        options: {
+            labels: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+            backgroundHbars: [
+                [90,50,'rgba(254,222,214,0.5)'],
+                [60,30,'rgba(229,242,255,0.5)']
+            ],
+            tooltipsCoordsPage: true,
+            noxaxis: true,
+            noyaxis: true,
+            ymin:50,
+            ymax:250,
+            ylabels: false,
+            hmargin: 25,
+            gutterLeft: 0,
+            textAccessible: true,
+            linewidth: 1,
+            tickmarks:'filledcircle',
+            backgroundGridDashed: true,
+            shadow: null,
+            highlightStyle: 'halo',
+            colors: ['RGB(248,94,52)','RGB(87,195,238)']
+        }
+    }).draw();
+
+    var yaxis = new RGraph.Drawing.YAxis({
+        id: 'axes',
+        x: 40,
+        options: {
+            max: line.max,
+            min: line.min,
+            colors: ['black'],
+            textAccessible: true
+        }
+    }).draw();
+//环形图
+
+    $('#container').highcharts({
+        tooltip: {
+            backgroundColor: 'rgba(255,255,255,0.1)',   // 背景颜色
+            borderColor: 'rgba(255,255,255,0.1)',         // 边框颜色
+            shadow: false,
+            headerFormat: '',
+            pointFormat: ''
+        },
+        title: {
+            text: ''
+        },
+        credits: {
+            enabled:false
+        },
+        exporting: {
+            enabled:false
+        },
+        plotOptions: {
+            pie: {
+                dataLabels: {
+                    enabled: true,
+                    distance: -30,
+                    style: {
+                        fontWeight: 'normal',
+                        color: 'white'
+                    }
+                },
+            }
+        },
+        series: [{
+            type: 'pie',
+            innerSize: '40%',
+            data: [
+                ['88次', 80],
+                ['22次', 10],
+                ['33次', 20]
+            ],
+            colors: ['#F7CE40', '#4DBFEE', '#f85e34']
+        }]
+    });
+
+    //查看血压结果说明
+    $("#blood-search-result").click(function(){
+        window.location.href="blood-pressure-show-results.html";
+    });
+    //查看结果详情
+    $("#blood-search-detail").click(function(){
+        window.location.href="blood-pressure-show-detail.html";
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+package com.haaa.cloudmedical.platform.roleManage.service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.RoleDao;
+import com.haaa.cloudmedical.entity.Role;
+
+@Service
+public class RoleManageService {
+
+    @Resource
+    private RoleDao roleDao;
+
+    private Logger  logger = Logger.getLogger(RoleManageService.class);
+
+    @Transactional
+    public InfoJson addRole(Map<String, Object> data) {
+        InfoJson infoJson = new InfoJson();
+        try {
+            Date date = new Date();
+            Map<String, Object> roleMap = new HashMap<String, Object>();
+            roleMap.put("role_name", data.remove("role_name"));
+            roleMap.put("role_note", data.remove("role_note"));
+            roleMap.put("create_date", date);
+            long role_code = roleDao.addRole(roleMap);
+            List<Object[]> list = new ArrayList<Object[]>();
+
+            Object authority = data.get("authority");
+            if (authority instanceof List) {
+                List<Object> authorityList = (List<Object>) authority;
+                for (Object object : authorityList) {
+                    Map<String, Object> authMap = new HashMap<String, Object>();
+                    authMap.put("role_code", role_code);
+                    authMap.put("menu_code", object);
+                    roleDao.addAuthority(authMap);
+                }
+            } else {
+                Map<String, Object> authMap = new HashMap<String, Object>();
+                authMap.put("role_code", role_code);
+                authMap.put("menu_code", authority);
+                roleDao.addAuthority(authMap);
+            }
+            Map<String, Object> resultMap = roleDao.getRoleById(role_code + "");
+            if (resultMap != null) {
+                infoJson.setData(resultMap);
+                infoJson.setStatus(1);
+            }
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+        return infoJson;
+    }
+
+    public InfoJson deleteRole(String order_id) {
+        InfoJson infoJson = new InfoJson();
+        try {
+            if (order_id.equals(Constant.ROLE_CODE_DOCTOR) || order_id.equals(Constant.ROLE_CODE_MANAGER)
+                || order_id.equals(Constant.ROLE_CODE_OPERATER)) {
+                infoJson.setInfo("默认角色，无法删除");
+            } else {
+                int num1 = roleDao.deleteAuthortiesByRole(order_id);
+                int num2 = roleDao.deleteRoleById(order_id);
+                if (num2 > 0) {
+                    infoJson.setData(num2);
+                    infoJson.setStatus(1);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+        return infoJson;
+    }
+
+    public InfoJson getRoleByCondition(String roleName, String authority, String downTime, String upTime, Integer pageno, Integer pagesize) {
+        InfoJson infoJson = new InfoJson();
+        try {
+            infoJson.setData(roleDao.getRolesByCondition(roleName, authority, downTime, upTime, pageno, pagesize));
+            infoJson.setStatus(1);
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+        return infoJson;
+    }
+
+    public Page queryPage(Role model, Integer pageno, String datemin, String datemax) {
+        StringBuffer sql = new StringBuffer(
+            "select order_id,role_name,role_note,date_format(create_date,'%Y-%m-%d %H:%i') create_date from n_role where 1=1");
+        List<Object> params = new ArrayList<Object>();
+        if (StringUtil.isNotBlank(model.getRole_name())) {
+            sql.append(" and role_name like ? ");
+            params.add("%" + model.getRole_name() + "%");
+        }
+        if (StringUtil.isBlank(datemin) && StringUtil.isNotBlank(datemax)) {
+            params.add(datemax);
+            sql.append(" and create_date <= ?");
+        } else if (StringUtil.isNotBlank(datemin) && StringUtil.isBlank(datemax)) {
+            params.add(datemin);
+            sql.append(" and create_date >= ?");
+        } else if (StringUtil.isNotBlank(datemin) && StringUtil.isNotBlank(datemax) && !datemin.equals(datemax)) {
+            params.add(datemin);
+            params.add(datemax);
+            sql.append(" and create_date >= ? and create_date <= ?");
+        } else if (StringUtil.isNotBlank(datemin) && datemin.equals(datemax)) {
+            params.add(datemin);
+            sql.append(" and date_format(create_date,'%Y-%m-%d') = ?");
+        }
+        //
+        sql.append(" order by create_date desc");
+        Page page = roleDao.pageQuery(sql.toString(), params.toArray(), pageno);
+        return page;
+    }
+
+    /**
+     * 查询菜单
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年6月1日 下午3:01:50
+     */
+    public Object getMenuList() {
+        String sql = "select order_id,c_menu_code,c_menu_father,c_menu_name from n_menu";
+        return roleDao.select(sql);
+    }
+
+    public Object addRoleMenu(Role role) {
+        Long role_code = null;
+        if (StringUtil.isNotBlank(role.getRole_name())) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("role_name", role.getRole_name());
+            map.put("role_note", role.getRole_note());
+            map.put("create_date", DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+            role_code = roleDao.insert(map, "n_role");
+        }
+        List<Map<String, Object>> list = role.getList();
+        if (list != null && list.size() > 0) {
+            for (Map<String, Object> map : list) {
+                Map<String, Object> roleMenu = new HashMap<String, Object>();
+                roleMenu.put("role_code", role_code);
+                roleMenu.put("menu_code", map.get("c_menu_code"));
+                roleDao.insert(roleMenu, "n_role_menu");
+            }
+        }
+        return role_code;
+    }
+
+    /**
+     * 角色信息
+     * @Description: 
+     * @author 吴琪
+     * @param role
+     * @return 
+     * @date: 2017年6月2日 上午9:14:32
+     */
+    public Object getRoleAndMenuList(Role role) {
+        if (StringUtil.isNotBlank(role.getOrder_id())) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            //查询角色
+            String sql = "select * from n_role where order_id=" + role.getOrder_id();
+            List<Map<String, Object>> list = roleDao.select(sql);
+            if (list != null && !list.isEmpty()) {
+                map.put("role", list.get(0));
+            }
+            //查询角色菜单
+            sql = "select * from n_role_menu where role_code=" + role.getOrder_id();
+            List<Map<String, Object>> menulist = roleDao.select(sql);
+            map.put("menu", menulist);
+            return map;
+        }
+        return null;
+    }
+
+    /**
+     * 更新角色
+     * @Description: 
+     * @author 吴琪
+     * @param role 
+     * @date: 2017年6月2日 上午9:13:54
+     */
+    public Integer updateRole(Role role) {
+        Integer ret = null;
+        //更新角色
+        if (StringUtil.isNotBlank(role.getOrder_id())) {
+            Map<String, Object> roleMap = new HashMap<String, Object>();
+            roleMap.put("order_id", role.getOrder_id());
+            roleMap.put("role_name", role.getRole_name());
+            roleMap.put("role_note", role.getRole_note());
+            ret = roleDao.update(roleMap, "n_role");
+        }
+        if (role.getList() != null && role.getList().size() > 0) {
+            if (StringUtil.isNotBlank(role.getOrder_id())) {
+                String sql = "select * from n_role_menu where role_code = " + role.getOrder_id();
+                List<Map<String, Object>> list = roleDao.select(sql);
+                //获取ID数组
+                List<String> idList = list.stream().map(x -> {
+                    return x.get("order_id").toString();
+                }).collect(Collectors.toList());
+                //
+                if (list != null && list.size() > 0) {
+                    StringBuffer bf = new StringBuffer("(");
+                    list.forEach(x -> {
+                        bf.append("?,");
+                    });
+                    String info = bf.substring(0, bf.lastIndexOf(",")) + ")";
+                    //
+                    sql = "delete from n_role_menu where order_id in " + info;
+                    roleDao.execute(sql, idList.toArray());
+                }
+            }
+            //插入
+            StringBuffer values = new StringBuffer();
+            role.getList().forEach(r -> {
+                String value = "(" + role.getOrder_id() + "," + r.get("c_menu_code") + "),";
+                values.append(value);
+            });
+            String valueinfo = values.substring(0, values.lastIndexOf(","));
+            String sql = "insert into n_role_menu (role_code,menu_code) values " + valueinfo;
+            roleDao.execute(sql);
+        } else {
+            if (StringUtil.isNotBlank(role.getOrder_id())) {
+                String sql = "delete from n_role_menu where role_code = " + role.getOrder_id();
+                roleDao.execute(sql);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * 删除角色
+     * @Description: 
+     * @author 吴琪
+     * @param roles
+     * @return 
+     * @date: 2017年6月2日 下午2:22:02
+     */
+    public Object deleteRoles(Role role) {
+        if (role.getList() != null && role.getList().size() > 0) {
+            //验证是否绑定
+            List<String> idList = role.getList().stream().map(x -> {
+                return x.get("order_id").toString();
+            }).collect(Collectors.toList());
+            //
+            StringBuffer bf = new StringBuffer("(");
+            role.getList().forEach(x -> {
+                bf.append("?,");
+            });
+            String info = bf.substring(0, bf.lastIndexOf(",")) + ")";
+            //
+            String sql = "select user_id from n_manager where role_code in " + info;
+            List<Map<String, Object>> list = roleDao.select(sql, idList.toArray());
+            if(list != null && list.size() > 0){
+                return "bind";
+            }
+            //执行删除
+            for (Map<String, Object> map : role.getList()) {
+                //删除角色
+                sql = "delete from n_role where order_id = " + map.get("order_id");
+                roleDao.execute(sql);
+                //删除菜单
+                sql = "delete from n_role_menu where role_code = " + map.get("order_id");
+                roleDao.execute(sql);
+            }
+            return "success";
+        } else {
+            return "fail";
+        }
+    }
+
+    /**
+     * 查询角色列表
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年6月2日 下午5:20:20
+     */
+    public Object getRoleList() {
+        String sql = "select * from n_role";
+        return roleDao.select(sql);
+    }
+
+}

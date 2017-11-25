@@ -1,0 +1,198 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control"  content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>添加医院</title>
+</head>
+<body>
+<article class="page-container">
+    <form class="form form-horizontal" id="form-hospital-add" enctype="multipart/form-data">
+        <div class="row cl member-list-input">
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>医院名称</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <input id="hosp_name" name="hosp_name" class="input-text"  maxlength='20' placeholder="请输入医院名称" style="width:333px;">
+                    <span class="c-red" id="hosp_name_mes"></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>所属地区</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <select class="select-box" style="width: 111px;">
+                        <option value="" selected>浙江省</option>
+                    </select>
+                    <select class="select-box" style="width: 111px;">
+                        <option value="" selected>宁波市</option>
+                    </select>
+                    <select class="select-box" name="area_id" style="width: 101px;">
+                        <option value="330226" selected>宁海县</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>医院等级</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <select class="select-box" id="hosp_level" name="hosp_level" style="height:30px;width:150px;">
+                        <option value="" selected>请选择</option>
+                        <option value="一级甲等">一级甲等</option>
+                        <option value="一级乙等">一级乙等</option>
+                        <option value="一级丙等">一级丙等</option>
+                        <option value="二级甲等">二级甲等</option>
+                        <option value="二级乙等">二级乙等</option>
+                        <option value="二级丙等">二级丙等</option>
+                        <option value="三级甲等">三级甲等</option>
+                        <option value="三级乙等">三级乙等</option>
+                        <option value="三级丙等">三级丙等</option>
+                        <option value="未定级">未定级</option>
+                    </select>
+                    <span class="c-red" id="hosp_level_mes"></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>医院性质</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <select class="select-box" id="hosp_property" name="hosp_property" style="height:30px;width:150px;">
+                        <option value="" selected>请选择</option>
+                        <option value="非营利性（政府办）">非营利性（政府办）</option>
+                        <option value="营利性">营利性</option>
+                    </select>
+                    <span class="c-red" id="hosp_property_mes"></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>科&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;室</label>
+                <div class="formControls col-xs-7 col-sm-7" id="administrative-list">
+                    <span class="mb-5 pointer" id="addTextImput" style="display:inline-block;width:31px;height: 31px;background: url('../images/add_01.png') no-repeat;background-size: 33px;" ></span>
+                    <input class="input-text mb-5 del" id="department_name" name="department_name" type="text" style="width: 116px;"/>
+                	<span class="c-red" id="department_name_mes"></span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 member-input-1">
+                <label class="form-label col-xs-2 col-sm-2">医院标志</label>
+                <div class="formControls col-xs-7 col-sm-7">
+                    <img src="../images/photo_01.png" class='bor' id="show_pic" style="width:120px;height:120px;cursor: pointer;" onclick="javascript:$('#pic').click()">
+                    <input class="file" id="pic" name="pic" type="file" ACCEPT="image/gif,image/jpeg,image/jpg,image/png" style="display:none">
+                    <span class="btn-upload form-group">
+                        <input type="file" multiple name="image1" class="input-file">
+                        <span style="color:rgb(180,180,180);">上传图片大小建议为:160*360px</span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-2">
+                <button class="btn btn-danger radius" type="button" onclick="hospital_save()">保存</button>
+                <button class="btn btn-danger radius" type="button" onclick="layer_close()">取消</button>
+            </div>
+        </div>
+    </form>
+</article>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../static/h-admin/js/verification-check.js"></script>
+<script type="text/javascript" src="../lib/jquery.validation/js/jquery.validate.js"></script>
+<script type="text/javascript">
+$(function(){
+    //点击选择图片预览
+    function preview_img(up_img, show_img) {
+        $(up_img).change(function() {
+            var file = this.files[0];
+            var r = new FileReader();
+            r.readAsDataURL(file);
+            $(r).load(function() {
+                $(show_img).attr({src : this.result,class : 'no-bor'});
+            })
+        })
+    }
+    preview_img("#pic", "#show_pic");
+    //自定义科室
+    $('#addTextImput').click(function(){
+        $('#administrative-list').append('<input class="input-text mb-5 del" name="department_name" type="text" style="width: 116px;"/><span class="pointer mb-5 mr-10" style="color:#da281f;" onclick="del($(this))">删除</span>');
+    });
+});
+//删除科室input元素
+function del(obj){
+    obj.prev(".del").remove();
+    obj.remove();
+}
+//点击保存
+function hospital_dosave(){
+	var data=$("#form-hospital-add").serialize();
+       $.ajax({
+           url: "../../../hospital-platform/addHospital.action",
+           type: "post",
+           dataType: 'json',
+           data: data,
+           success: function (response) {
+               if(response.flag==true){
+                   upload_image(response.data);
+                   layer.msg('添加成功!');
+                   //页面8秒钟后关闭
+                   setTimeout(function () {
+                       parent.location.reload(); // 父页面刷新
+                       parent.layer.close(index);
+                   }, 1000);
+               }else{
+                   layer.msg('添加失败!');
+               }
+
+           }
+       });
+       var index = parent.layer.getFrameIndex(window.name);
+}
+function hospital_save(){
+    hospital_flag_add_check();
+    $.when(hospital_istrue()).done(function(a1) {
+        //console.log(a1);
+        if (a1 != undefined) {
+            if (a1.flag == true) {
+                //提交调用校验
+                if (hospital_flag) {
+                    hospital_dosave();
+                }
+            }
+        }
+    });
+}
+ //上传图片
+function upload_image(order_id){
+    var data=new FormData($("#form-hospital-add")[0]);
+    $.ajax({
+        type:"post",
+        url:"../../../upload/file.action",
+        headers:{order_id:order_id,report_type:'500011'},
+        data:data,
+        dataType:"json",
+        processData:false,
+        contentType:false,
+        success:function(data){         
+            files = data;
+        }
+    }); 
+}
+</script>
+</body>
+</html>

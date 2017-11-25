@@ -1,0 +1,14 @@
+package com.haaa.cloudmedical.platform.plan.service;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.entity.User;
+
+public interface IPlanManagerService {
+
+    Page getPage(int pageno, User user);
+
+    Object getPlanList(Integer user_id);
+
+    Object getPlanItem(Integer order_id);
+    
+}

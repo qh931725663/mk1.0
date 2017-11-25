@@ -1,0 +1,510 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+    <!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>计划管理</title>
+    <style type="text/css">
+    	.section>p{padding-left: 15px;}
+        .topnav{height: 35px;background: #ddd;line-height: 35px;padding: 0 5px; margin-bottom: 20px}
+        .contentBox{padding:0 20px;}
+        .contentBox>li{display:inline-block;width:30%;margin-bottom: 20px;}
+        .basicinfo{display:inline-block;width:18%;margin-left: 15px;}
+        .mbname{width:25%;}
+        .problem{display:inline-block;margin: 0 15px;}
+        .info,.tetbox{border: solid 1px #ddd;width: 170px;box-sizing: border-box;font-size: 14px;height: 31px;line-height: 1.42857;padding: 4px;vertical-align: middle;}
+        .must{color:red;padding-right:2px;}
+        .sel_op{border-radius: 4px;height: 30px;width: 138px;}
+        .mbjiat>li>p{margin-top: 5px;line-height: 2;margin-left: 15px;}
+        .final{text-align: center;margin: 30px 0;}
+        .goback,.save{width:100px;}
+        .goback{margin-right: 100px;}
+    </style>
+</head>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont"></i>高血压慢病管理 <span class="c-gray en">&gt;</span>基础信息填写
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="page-container">
+	<input type="text" id="order_id" value=""/>
+    <form id="hypertension_form">
+    <div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				基础信息
+			</div>
+	        <ul class="contentBox">
+				<li>
+					<label class="basicinfo">性别：</label>
+					<input class="info" type="text" name="user_sex" readonly="true"/>
+				</li>
+				<li>
+					<label class="basicinfo">出生日期：</label>
+					<input class="info" type="text"  name="user_birthday" readonly="true"/>
+				</li>
+				<li>
+					<label class="basicinfo">年龄：</label>
+					<input class="info" type="text" name="user_age" readonly="true"/> <span class="mond">岁</span>
+				</li>
+				<li>
+					<label class="basicinfo">身份证号：</label>
+					<input class="info" type="text" name="user_card" readonly="true"/>
+				</li>
+				<li>
+					<label class="basicinfo">联系方式：</label>
+					<input class="info" type="text" name="user_phone" readonly="true"/>
+				</li>
+				<li>
+					<label class="basicinfo">身高：</label>
+					<input class="tetbox" type="number" name="030501"/> <span class="mond">cm</span>
+				</li>
+				<li>
+					<label class="basicinfo">体重：</label>
+					<input class="tetbox" type="number" name="030601"/> <span class="mond">Kg</span>
+				</li>
+				<li>
+					<label class="basicinfo">腰围：</label>
+					<input class="tetbox" type="number" name="030701"/> <span class="mond">cm</span>
+				</li>
+				<li>
+					<label class="basicinfo">BMI：</label>
+					<input class="tetbox" type="number" name="030801"/> <span class="mond">Kg/m2</span>
+				</li>
+				<li>
+					<label class="basicinfo">心率：</label>
+					<input class="tetbox" type="number" name="030101"/> <span class="mond">次/分</span>
+				</li>
+				<li>
+					<label class="basicinfo">脉搏：</label>
+					<input class="tetbox" type="number" name="030201"/> <span class="mond">次/分</span>
+				</li>
+				<li>
+					<label class="basicinfo">呼吸：</label>
+					<input class="tetbox" type="number" name="030301"/> <span class="mond">次/分</span>
+				</li>
+				<li>
+					<label class="problem">血压等级：</label>
+					<input class="ck" type="radio" name="030403" id="blood1" value="1"/>
+					<label class="basicinfo" for="blood1" style="width:7%;">一级</label>
+					<input class="ck" type="radio" name="030403" id="blood2" value="2"/>
+					<label class="basicinfo" for="blood2" style="width:7%;">二级</label>
+					<input class="ck" type="radio" name="030403" id="blood3" value="3"/>
+					<label class="basicinfo" for="blood3" style="width:7%;">三级</label>
+				</li>
+				<li style="width:40%;">
+					<label class="problem" style="width:11%;">血压：</label>
+					<input class="tetbox" type="number" name="030401"/>/<input class="tetbox" type="number" name="030402"/> <span class="mond">mmHg</span>
+				</li>
+				
+			</ul>
+		</div>
+    	<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				生活方式
+			</div>
+			<p><span class="must">*</span>1、体育锻炼</p>
+			<ul class="contentBox">
+	        	<li>
+					<label class="basicinfo">锻炼频率：</label>
+					<select name="010101" class="sel_op sports">
+						<option value="">请选择</option>
+						<option value="1">每天</option>
+						<option value="2">每周一次以上</option>
+						<option value="3">偶尔</option>
+						<option value="4">从不锻炼</option>
+					</select>
+				</li>
+				<li>
+					<label class="basicinfo" style="width:21%;">每次锻炼时间：</label>
+					<input class="tetbox" type="number" name="010102"/> <span class="mond">分钟</span>
+				</li>
+				<li>
+					<label class="basicinfo">锻炼方式：</label>
+					<input class="tetbox" type="text" name="010103"/>
+				</li>
+	        </ul>
+	        <p><span class="must">*</span>2、饮食习惯</p>
+	        <ul class="contentBox">
+	        	<li style="display:block;">
+					<label class="basicinfo">荤素比例：</label>
+					<select name="010201" class="sel_op">
+						<option value="">请选择</option>
+						<option value="1">荤素均衡</option>
+						<option value="2">荤食为主</option>
+						<option value="3">素食为主</option>
+					</select>
+				</li>
+				<li style="display:block;">
+					<label class="basicinfo">偏好：</label>
+					<input class="ck" type="checkbox" name="010202" value="1" id="yan"/>
+					<label class="basicinfo" for="yan">嗜盐</label>
+					<input class="ck" type="checkbox" name="010202" value="2" id="you"/>
+					<label class="basicinfo" for="you">嗜油</label>
+					<input class="ck" type="checkbox" name="010202" value="3" id="tang"/>
+					<label class="basicinfo" for="tang">嗜糖 </label>
+				</li>
+				<li style="display:block;">
+					<label class="basicinfo">每日摄盐量：</label>
+					<input class="tetbox" type="number" name="010203"/> <span class="mond">克</span>
+				</li>
+	        </ul>
+	        <p><span class="must">*</span>3、睡眠时间</p>
+	        <ul class="contentBox">
+	        	<li style="display:block;">
+					<label class="problem">您平均每晚的睡眠时间能达到7个小时吗？</label>
+					<select name="010301" class="sel_op">
+						<option value="">请选择</option>
+						<option value="0">没有</option>
+						<option value="1">有</option>
+					</select>
+				</li>
+	        </ul>
+	        <p><span class="must">*</span>4、吸烟情况</p>
+			<ul class="contentBox">
+	        	<li>
+					<label class="basicinfo">吸烟状况：</label>
+					<select name="010401" class="sel_op dosmoke">
+						<option value="">请选择</option>
+						<option value="1">从不吸烟</option>
+						<option value="2">已戒烟</option>
+						<option value="3">吸烟 </option>
+					</select>
+				</li>
+				<li class="smoking">
+					<label class="basicinfo">日吸烟量：</label>
+					<input class="tetbox" type="number" name="010402"/> <span class="mond">支</span>
+				</li>
+				<li class="smoking">
+					<label class="basicinfo">烟 龄：</label>
+					<input class="tetbox" type="number" name="010403"/> <span class="mond">年</span>
+				</li>
+				<li class="smoked">
+					<label class="basicinfo">戒烟年龄：</label>
+					<input class="tetbox" type="number" name="010404"/> <span class="mond">年</span>
+				</li>
+	        </ul>
+	        <p><span class="must">*</span>5、饮酒情况</p>
+			<ul class="contentBox">
+	        	<li>
+					<label class="basicinfo">饮酒频率：</label>
+					<select name="010501" class="sel_op drinking">
+						<option value="">请选择</option>
+						<option value="1">从不</option>
+						<option value="2">偶尔</option>
+						<option value="3">经常 </option>
+						<option value="4">每天 </option>
+					</select>
+				</li>
+				<li>
+					<label class="basicinfo">日均饮酒量：</label>
+					<input class="tetbox" type="number" name="010502"/> <span class="mond">两</span>
+				</li>
+				<li>
+					<label class="basicinfo">酒 龄：</label>
+					<input class="tetbox" type="number" name="010503"/> <span class="mond">年</span>
+				</li>
+				<li>
+					<label class="problem">近期是否醉酒：</label>
+					<input class="rd" type="radio" name="010504" id="drinky" value="0"/>
+					<label class="basicinfo" for="drinky">没有 </label>
+					<input class="rd" type="radio" name="010504" id="drinkn" value="1"/>
+					<label class="basicinfo" for="drinkn">有 </label>
+				</li>
+				<li style="display:block;">
+					<label class="basicinfo">饮酒种类：</label>
+					<input class="ck" type="checkbox" name="010505" id="drink1" value="1"/>
+					<label class="basicinfo" for="drink1" style="width:8%;">白酒</label>
+					<input class="ck" type="checkbox" name="010505" id="drink2" value="2"/>
+					<label class="basicinfo" for="drink2" style="width:8%;">啤酒</label>
+					<input class="ck" type="checkbox" name="010505" id="drink3" value="3"/>
+					<label class="basicinfo" for="drink3" style="width:8%;">红酒</label>
+					<input class="ck" type="checkbox" name="010505" id="drink4" value="4"/>
+					<label class="basicinfo" for="drink4" style="width:8%;">黄酒</label>
+					<input class="ck" type="checkbox" name="010505" id="drink5" value="5"/>
+					<label class="basicinfo" for="drink5" style="width:8%;">其他</label>
+				</li>
+	        </ul>
+	        <p><span class="must">*</span>6、心理状态</p>
+			<ul class="contentBox">
+				<li style="display:block;">
+					<label class="problem" style="width:50%;">您与家人和朋友的关系好吗?</label>
+					<select name="020101" class="sel_op">
+						<option value="">请选择</option>
+						<option value="1">不好</option>
+						<option value="2">一般</option>
+						<option value="3">好 </option>
+						<option value="4">很好</option>
+						<option value="5">特别好</option>
+					</select>
+				</li>
+				<li style="display:block;">
+					<label class="problem" style="width:50%;">您对现在的生活满意吗？</label>
+					<select name="020201" class="sel_op">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+				</li>
+				<li style="display:block;">
+					<label class="problem" style="width:50%;">您会经常感觉郁闷焦虑吗？</label>
+					<select name="020202" class="sel_op">
+						<option value="">请选择</option>
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+				</li>
+	        </ul>
+		</div>
+		<div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				既往史
+			</div>
+			<p><span class="must">*</span>1、病史</p>
+			<ul class="contentBox">
+				<li>
+					<label class="basicinfo">高血压：</label>
+					<input class="tetbox" type="number" name=""/> <span class="mond">年</span>
+				</li>
+				<li>
+					<label class="basicinfo">糖尿病：</label>
+					<input class="tetbox" type="number" name=""/> <span class="mond">年</span>
+				</li>
+			</ul>
+			<p><span class="must">*</span>2、是否有疾病史 
+				<input class="rd sick" type="radio" name="040101" value="0" id="jibingw" style="margin-left: 20px;"/>
+				<label class="basicinfo" for="jibingw" style="width:4%;">没有</label>
+				<input class="rd sick" type="radio" name="040101" value="1" id="jibingy"/>
+				<label class="basicinfo" for="jibingy" style="width:4%;">有</label>
+			</p>
+			<ul class="contentBox">
+				<li>
+					<input class="ck" type="checkbox" name="04010201" value="1" id="manbing1"/>
+					<label class="basicinfo mbname" for="manbing1">高血压</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010301"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010202" value="2"  id="manbing2"/>
+					<label class="basicinfo mbname" for="manbing2">糖尿病</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010302"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010203" value="3" id="manbing3"/>
+					<label class="basicinfo mbname" for="manbing3">冠心病</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010303"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010204" value="4" id="manbing4"/>
+					<label class="basicinfo mbname" for="manbing4">慢性阻塞性肺疾病</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010304"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010205" value="5" id="manbing5"/>
+					<label class="basicinfo mbname" for="manbing5">恶性肿瘤</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010305"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010206" value="6" id="manbing6"/>
+					<label class="basicinfo mbname" for="manbing6">脑卒中</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010306"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010207" value="7" id="manbing7"/>
+					<label class="basicinfo mbname" for="manbing7">重性精神疾病</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010307"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010208" value="8" id="manbing8"/>
+					<label class="basicinfo mbname" for="manbing8">结核病</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010308"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010209" value="9" id="manbing9"/>
+					<label class="basicinfo mbname" for="manbing9">肝炎</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010309"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010211" value="11" id="manbing10"/>
+					<label class="basicinfo mbname" for="manbing10">其他法定传染病</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010311"/>
+				</li>
+				<li>
+					<input class="ck" type="checkbox" name="04010210" value="10" id="manbing11"/>
+					<label class="basicinfo mbname" for="manbing11">其他</label>
+					<label class="basicinfo">确诊时间:</label>
+					<input type="date" name="04010310"/>
+				</li>
+	        </ul>
+	        <p><span class="must">*</span>3、是否有手术史 
+				<input class="rd sick" type="radio" name="040201" value="0" id="shoushu1" style="margin-left: 20px;"/>
+				<label class="basicinfo" for="shoushu1" style="width:4%;">否</label>
+				<input class="rd sick" type="radio" name="040201" value="1" id="shoushu2"/>
+				<label class="basicinfo" for="shoushu2" style="width:4%;">是</label>
+			</p>
+			<ul class="contentBox">
+				<li style="width:98%;">
+					<label class="problem">手术名称：</label>
+					<input class="tetbox" type="text" name="040202"/>
+					<label class="problem">手术时间：</label>
+					<input class="tetbox" type="date" name="040203"/>
+					<input class="btn btn-success radius" type="button" value="添加"/>
+				</li>
+				<li><input class="btn btn-danger radius" type="button" style="margin-left: 15px;" value="删除"/></li>
+	        </ul>
+	        <p><span class="must">*</span>4、是否有外伤史 
+				<input class="rd sick" type="radio" name="040301" value="0" id="shoushu1" style="margin-left: 20px;"/>
+				<label class="basicinfo" for="shoushu1" style="width:4%;">否</label>
+				<input class="rd sick" type="radio" name="040301" value="1" id="shoushu2"/>
+				<label class="basicinfo" for="shoushu2" style="width:4%;">是</label>
+			</p>
+			<ul class="contentBox">
+				<li style="width:98%;">
+					<label class="problem">外伤名称：</label>
+					<input class="tetbox" type="text" name="040302"/>
+					<label class="problem">外伤时间：</label>
+					<input class="tetbox" type="date" name="040303"/>
+					<input class="btn btn-success radius" type="button" value="添加"/>
+				</li>
+				<li><input class="btn btn-danger radius" type="button" style="margin-left: 15px;" value="删除"/></li>
+	        </ul>
+	       <p><span class="must">*</span>5、是否有输血史 
+				<input class="rd sick" type="radio" name="040401" value="0" id="shoushu1" style="margin-left: 20px;"/>
+				<label class="basicinfo" for="shoushu1" style="width:4%;">否</label>
+				<input class="rd sick" type="radio" name="040401" value="1" id="shoushu2"/>
+				<label class="basicinfo" for="shoushu2" style="width:4%;">是</label>
+			</p>
+			<ul class="contentBox">
+				<li style="width:98%;">
+					<label class="problem">输血原因：</label>
+					<input class="tetbox" type="text" name="040402"/>
+					<label class="problem">输血时间：</label>
+					<input class="tetbox" type="date" name="040403"/>
+					<input class="btn btn-success radius" type="button" value="添加"/>
+				</li>
+				<li><input class="btn btn-danger radius" type="button" style="margin-left: 15px;" value="删除"/></li>
+	        </ul>
+	        <p><span class="must">*</span>6、是否家庭疾病史 
+				<input class="rd sick" type="radio" name="050101" value="0" id="shoushu1" style="margin-left: 20px;"/>
+				<label class="basicinfo" for="shoushu1" style="width:4%;">否</label>
+				<input class="rd sick" type="radio" name="050101" value="1" id="shoushu2"/>
+				<label class="basicinfo" for="shoushu2" style="width:4%;">是</label>
+			</p>
+			<ul class="contentBox mbjiat">
+				<li style="width:98%;">
+					<label class="problem">家庭成员：</label>
+					<select name="050102" class="sel_op">
+						<option value="">请选择</option>
+						<option value="1">父亲</option>
+						<option value="2">母亲</option>
+						<option value="3">哥哥</option>
+						<option value="4">弟弟</option>
+						<option value="5">姐姐</option>
+						<option value="6">妹妹</option>
+						<option value="7">儿子</option>
+						<option value="8">女儿</option>
+					</select><br/>
+					<label class="problem" style="margin-top: 10px;">疾病名称：</label>
+					<p>
+						<input class="ck" type="checkbox" name="05010301" value="1" id="familymb1"/>
+						<label class="problem" for="familymb1">高血压 </label>
+						<input class="ck" type="checkbox" name="05010302" value="2" id="familymb2"/>
+						<label class="problem" for="familymb2">糖尿病 </label>
+						<input class="ck" type="checkbox" name="05010303" value="3" id="familymb3"/>
+						<label class="problem" for="familymb3">冠心病 </label>
+						<input class="ck" type="checkbox" name="05010304" value="4" id="familymb4"/>
+						<label class="problem" for="familymb4">慢性阻塞性肺疾病</label>
+						<input class="ck" type="checkbox" name="05010305" value="5" id="familymb5"/>
+						<label class="problem" for="familymb5">恶性肿瘤</label><br/>
+						<input class="ck" type="checkbox" name="05010306" value="6" id="familymb6"/>
+						<label class="problem" for="familymb6">脑卒中</label>
+						<input class="ck" type="checkbox" name="05010307" value="7" id="familymb7"/>
+						<label class="problem" for="familymb7">重性精神疾病 </label>
+						<input class="ck" type="checkbox" name="05010308" value="8" id="familymb8"/>
+						<label class="problem" for="familymb8">结核病 </label>
+						<input class="ck" type="checkbox" name="05010309" value="9" id="familymb9"/>
+						<label class="problem" for="familymb9">肝炎</label>
+						<input class="ck" type="checkbox" name="05010310" value="10" id="familymb10"/>
+						<label class="problem" for="familymb10">先天畸形</label>
+						<input class="ck" type="checkbox" name="05010311" value="11" id="familymb11"/>
+						<label class="problem" for="familymb11">其他</label>
+					</p>
+					<input class="btn btn-success radius" type="button" style="margin-left: 15px;" value="添加"/>
+				</li>
+				<li><input class="btn btn-danger radius" type="button" style="margin-left: 15px;" value="删除"/></li>
+	        </ul>
+		</div>
+		 <div class="section">
+			<div class="topnav">
+				<span style="margin:0 6px;">|</span>
+				查体
+			</div>
+			<p><span class="must">*</span>1、下肢水肿
+				<select name="060101" class="sel_op" style="margin-left: 103px;">
+					<option value="">请选择</option>
+					<option value="1">无</option>
+					<option value="2">单侧</option>
+					<option value="3">双侧不对称 </option>
+					<option value="4">双侧对称 </option>
+				</select>
+			</p>
+			<p><span class="must">*</span>2、足背动脉搏动
+				<select name="060102" class="sel_op"  style="margin-left: 75px;">
+					<option value="">请选择</option>
+					<option value="1">未触及</option>
+					<option value="2">触及双侧对称</option>
+					<option value="3">触及左侧弱或消失</option>
+					<option value="4">触及右侧弱或消失 </option>
+				</select>
+			</p>
+	     </div>
+	     <p class="final"><button class="btn btn-danger radius goback">返回</button><button class="btn btn-success radius save">保存</button></p>
+    </form>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+<script type="text/javascript" src="js/chronicDisease-hypertension-add.js"></script>
+ </body>
+</html>

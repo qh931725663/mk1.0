@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>电子尿液分析仪</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <style>
+        .container .content{min-height:500px}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content" style="margin-top: 30px;">
+        <div class="blood-data-show" id="demo">
+<!--             <div class="pressure-result-box" style="background: white;">
+                <div class="line-align date-show">
+                    <img src="../../common/image/myhealth/test-date-1.png" style="width: 21px;margin-right: 10px;"/>
+                    <span style="font-size: 15px;line-height: 30px;">2017-04-24 13:20</span>
+                </div>
+                <p style="font-size: 15px;color: #3D3D3D;text-align: center;">尿液测量数据</p>
+                <div class="dotted-line" style="margin: 10px 15px;"></div>
+                <ul class="urine-list">
+                    <li><span class="fl">URO/尿胆原</span><span class="fr">-</span></li>
+                    <li><span class="fl">BLD/潜血</span><span class="fr">+</span></li>
+                    <li><span class="fl">BlL/胆红素</span><span class="fr">++++</span></li>
+                    <li><span class="fl">KET/酮体</span><span class="fr">-</span></li>
+                    <li><span class="fl">GLH/葡萄糖</span><span class="fr">+</span></li>
+                    <li><span class="fl">PRO/蛋白质</span><span class="fr">++++</span></li>
+                    <li><span class="fl">PH/酸碱度</span><span class="fr">5.0</span></li>
+                    <li><span class="fl">NlT/亚硝酸亚</span><span class="fr">+</span></li>
+                    <li><span class="fl">LEU/白细胞</span><span class="fr">+++</span></li>
+                    <li><span class="fl">SG/比重</span><span class="fr">1.000</span></li>
+                    <li><span class="fl">VC/抗坏血酸</span><span class="fr">+</span></li>
+                </ul>
+            </div> -->
+         </div>
+        <div class="show_message" style="text-align: center;display:none;">没有更多数据了...</div>
+    </div>
+</div>
+<script src="../../common/js/jquery-1.11.3.js"></script>
+<script>
+var pagecount;
+$(function(){
+	//初始化加载数据
+	init(1);
+});
+function init(current){
+	var data=$.param({pageno:current});
+	$.ajax({
+        url:"../../../../../urine_test-wx/page.action",
+        type:"GET",
+        dataType : 'json',
+        data:data,
+        success:function(list) {
+        	var list_data=list.data;
+			var pageno=list.pageno;
+			if(list.status==0){
+				var html="";
+				$.each(list_data.datalist,function(i,p){
+					html+= "<div class='pressure-result-box' style='background: white;'>"+
+	                		"<div class='line-align date-show'>"+
+	                    	"<img src='../../common/image/myhealth/test-date-1.png' style='width: 21px;margin-right: 10px;'/>"+
+	                    	"<span style='font-size: 15px;line-height: 30px;'>"+ p.datetime+"</span>"+
+                			"</div>"+
+                			"<p style='font-size: 15px;color: #3D3D3D;text-align: center;margin:20px 0;'>尿液测量数据</p>"+
+                			"<div class='dotted-line' style='margin: 10px 15px;'></div>"+
+			                "<ul class='urine-list'>"+
+			                    "<li><span class='fl'>URO/尿胆原</span><span class='fr'>"+p.URO+"</span></li>"+
+			                    "<li><span class='fl'>BLD/潜血</span><span class='fr'>"+p.BLD+"</span></li>"+
+			                    "<li><span class='fl'>BlL/胆红素</span><span class='fr'>"+p.BIL+"</span></li>"+
+			                    "<li><span class='fl'>KET/酮体</span><span class='fr'>"+p.KET+"</span></li>"+
+			                    "<li><span class='fl'>GLH/葡萄糖</span><span class='fr'>"+p.GLU+"</span></li>"+
+			                    "<li><span class='fl'>PRO/蛋白质</span><span class='fr'>"+p.PRO+"</span></li>"+
+			                    "<li><span class='fl'>PH/酸碱度</span><span class='fr'>"+p.PH+"</span></li>"+
+			                    "<li><span class='fl'>NlT/亚硝酸亚</span><span class='fr'>"+p.NIT+"</span></li>"+
+			                    "<li><span class='fl'>LEU/白细胞</span><span class='fr'>"+p.LEU+"</span></li>"+
+			                    "<li><span class='fl'>SG/比重</span><span class='fr'>"+p.SG+"</span></li>"+
+			                    "<li><span class='fl'>VC/抗坏血酸</span><span class='fr'>"+p.VC+"</span></li>"+
+			                "</ul>"+
+            				"</div>";
+				});
+				if(pageno==1){
+					$("#demo").html(html);
+				}else{
+					$("#demo").append(html);
+				}
+				pagecount=list_data.pagecount;
+				//显示加载更多
+				if(list_data.pageno==list_data.pagecount){
+					$(".show_message").show();
+				}
+			} 
+      	}
+	});		
+}
+
+//滑动处理
+var current1=1;
+$(window).scroll(function(){
+　　var scrollTop = $(this).scrollTop();
+　　var scrollHeight = $(document).height();
+　　var windowHeight = $(this).height();
+　　if(scrollTop + windowHeight == scrollHeight){
+ 		var current=current1++;
+		if(current<= pagecount){
+			init(current1);
+		}
+　　}
+});
+</script>
+</body>
+</html>

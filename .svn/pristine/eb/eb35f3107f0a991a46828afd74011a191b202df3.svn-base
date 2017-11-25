@@ -1,0 +1,91 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.BloodSugar;
+
+@Repository
+public class BloodSugarDao extends EquipmentDao{
+	
+
+	
+	public long add(BloodSugar bloodSugar) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, bloodSugar);
+		return insert(map, "c_blood_sugar");
+	}
+
+	
+	/**
+	 * 鏌ヨ鏈�杩�7澶╂墍鏈夋椂闂存鏁版嵁
+	 * 
+	 * @param user_id
+	 * @param period     娴嬮噺鏃舵鐮佽〃鍊�
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecentAll(long user_id) {
+		String sql = "SELECT DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.BloodSugar,findName(B.measurement_period) period,B.measurement_period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ?  AND "
+				+ " DATE_SUB(NOW(),INTERVAL "+Constant.RECENT+" DAY) <A.create_date AND A.create_date<NOW() ORDER BY A.create_date DESC";
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql,user_id );
+	}
+
+	
+	
+	/**
+	 * 鏌ヨ鏈�杩�90澶╂暟鎹�
+	 * 
+	 * @param user_id
+	 * @param period     娴嬮噺鏃舵鐮佽〃鍊�
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecent(long user_id,int period) {
+		String sql = "SELECT DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B.BloodSugar ,findName(B.measurement_period) period,B.measurement_period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND B.measurement_period =? AND "
+				+ " DATE_SUB(NOW(),INTERVAL "+Constant.RECENT+" DAY) <A.create_date AND A.create_date<NOW() ORDER BY A.create_date DESC";
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql, new Object[] { user_id,period });
+	}
+	
+	
+	
+	public List<Map<String, Object>> queryByMonth(Long user_id, String year_month,int pageno, int pagesize) {
+		String sql = "SELECT A.create_date datetime,B.BloodSugar ,findName(B.measurement_period) period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id  AND A.user_id = ? AND "
+				+ " DATE_FORMAT(A.create_date,'%Y-%m')=? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql, user_id, year_month, start, pagesize);
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT A.create_date datetime,B.BloodSugar BloodSugar,findName(B.measurement_period) period "
+				+ " FROM c_equipment_use A,c_blood_sugar B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+
+	/*
+	 * 鏌ヨ涓�涓勾鍐呮湁鏁版嵁鐨勬湀浠�
+	 */
+	public List<Map<String, Object>> queryMonth(long user_id) {
+		String sql = "SELECT DISTINCT(DATE_FORMAT(A.create_date,'%Y-%m')) yearmonth "
+				+ " FROM c_equipment_use A,c_blood_sugar B WHERE "
+				+ " A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL 1 YEAR) <A.create_date AND A.create_date<NOW() ORDER BY A.create_date DESC ";
+		return jdbcTemplate.queryForList(sql, user_id);
+	}
+}

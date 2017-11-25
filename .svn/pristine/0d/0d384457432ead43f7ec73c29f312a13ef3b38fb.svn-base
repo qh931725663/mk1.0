@@ -1,0 +1,185 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>管理员列表</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		会员管理 <span class="c-gray en">&gt;</span> 医生列表
+		<a class="btn btn-danger radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+<div class="page-container">
+	<form id="form-doctor-search">
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:60px;">姓名</span>
+			<input type="text" class="input-text input-width radius" id="user_name"  name="user_name" placeholder="请输入姓名"/>
+			<span style="display:inline-block;width:60px;">身&nbsp;份&nbsp;证</span>
+			<input type="text" class="input-text input-width radius" id="user_card"  name="user_card" placeholder="请输入身份证"/>
+			<span class="ml-10" style="display:inline-block;width:60px;">手&nbsp;机&nbsp;号</span>
+			<input type="text" class="input-text input-width radius" id="user_phone"  name="user_phone" placeholder="请输入手机号"/>
+			<span class="ml-10" style="display:inline-block;width:60px;">职&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称</span>
+			<select class="radius" id="doctor_title" name="doctor_title" style="height:30px;width:150px;">
+				<option value="" selected>请选择</option>
+				<option value="1700002">主任医生</option>
+				<option value="1700001">副主任医生</option>
+				<option value="1700003">主治医师</option>
+				<option value="1700004">住院医师</option>
+			</select>
+			<button type="button" class="btn btn-danger btn-search">查询</button>
+			<button type="button" class="btn btn-success f-r" onclick="doctor_add('新增','doctor-add.html','100','100')">新增</button>
+		</div>
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:60px;">医&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;院</span>
+			<select id="hosp_order_id" class="radius" name="hosp_order_id" style="height:30px;width:150px;">
+				<option value="">全部</option>
+			</select>
+			<span style="display:inline-block;width:60px;">科&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;室</span>
+				<select id="department_order_id" class="radius" name="department_order_id" style="height:30px;width:150px;">
+					<option value="">全部</option>
+				</select>
+			<span class="ml-10" style="display:inline-block;width:62px;">创建时间</span>
+			<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="startDate" class="input-text Wdate" style="width:172px;">
+			至
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="endDate" class="input-text Wdate" style="width:182px;">
+		</div>
+	</form>
+	<table class="table table-border table-bordered table-striped table-bg table-hover doctor-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>姓名</th>
+				<th>编号</th>
+				<th>身份证号</th>
+				<th>手机号</th>
+				<th>性别</th>
+				<th>年龄</th>
+				<th>职称</th>
+				<th>医院</th>
+				<th>科室</th>
+				<th>创建日期</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="doctor-tbody">
+		</tbody>
+	</table>
+	<div id="Pagination" class="pagination"></div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript">
+$(function(){
+	//医生管理列表初始化加载
+	getDataList(0,null);
+
+	//条件查询
+	var initFlag2="";
+	$(".btn-search").click(function(){
+		initFlag2=true;
+		getDataList(0,null);
+	});
+	var initFlag = true;
+	//查询函数
+	function getDataList(currPage, jg) {
+		var data=$.param({pageno :currPage+1})+'&'+ $('#form-doctor-search').serialize();
+		mkh.ajax({
+			url : "../../../user-platform/doctorgridquery.action",
+			type : "post",
+			dataType : 'json',
+			data : data,
+			success : function(response) {
+				console.log(response);
+				var page_count=response.recordCount;
+				if (initFlag) {
+					//分页插件
+					$("#Pagination").pagination(page_count,{
+						callback : getDataList//回调函数
+					});
+					initFlag = false;
+				}
+				if (initFlag2) {
+					//debugger;
+					$("#Pagination").pagination(page_count,{
+						callback : getDataList//回调函数
+					});
+					initFlag2 = false;
+				}
+				//调用数据展示函数
+				show_list(response);
+			}
+		});
+	}
+
+	//数据列表展示公共函数
+	function show_list(response){
+		var html = '';
+		var pn=response.pageNo;
+		var num=(pn-1)*10+1;
+		$.each(response.data, function(i,p){
+			html +=`<tr class='text-c'>
+			<td>`+(num+i)+`</td>
+			<td>${p.user_name}</td>
+			<td>${p.user_id}</td>
+			<td>${p.user_card}</td>
+			<td>${p.user_phone}</td>
+			<td>${p.user_sex}</td>
+			<td>${p.user_age}</td>
+			<td>${p.doctor_title}</td>
+			<td>${p.hosp_name}</td>
+			<td>${p.department_name}</td>
+			<td>${p.ceate_date}</td>
+			<td>
+			<span onclick="doctor_edit(${p.user_id});"  style="width:75px;color:#da281f;cursor: pointer;">编辑</span>
+			</td>
+			</tr>`;
+		});
+		$(".doctor-tablelist .doctor-tbody").html(html);
+		$(".page-count").html(response.pageCount);
+	}
+
+});
+/*医生编辑*/
+function doctor_edit(user_id){
+	layer_show('医生编辑','doctor-edit.html?'+user_id,'100','100');
+
+}
+/*增加医生*/
+function doctor_add(title,url,w,h){
+	layer_show(title,url,w,h);
+}
+</script>
+</body>
+</html>

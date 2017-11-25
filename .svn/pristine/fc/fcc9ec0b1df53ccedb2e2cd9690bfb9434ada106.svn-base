@@ -1,0 +1,156 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.platform.survey.service;
+
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.dao.BasicInfoSurveyDao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+@Log(name = "后台基础调查")
+public class BasicInfoSurveyService {
+
+	@Resource
+	private BasicInfoSurveyDao basicInfoSurveyDao;
+
+	public InfoJson getBasicInfo(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		DecimalFormat dFormat = new DecimalFormat("#.0");
+		Map<String, Object> basicInfoMap = basicInfoSurveyDao.getBasiceInfo(user_id);
+		basicInfoMap.forEach((k,v)->{
+			if (v==null) {
+				v=String.valueOf("");
+			}
+		});
+		if (basicInfoMap.get("user_heigth") != null && basicInfoMap.get("user_weight") != null) {
+			float height = (float) basicInfoMap.get("user_height");
+			float weight = (float) basicInfoMap.get("user_weight");
+			basicInfoMap.put("BMI", dFormat.format(weight / Math.pow(height / 100, 2)));
+		}else{
+			basicInfoMap.put("BMI", "");
+		}
+		String idcard = (String)basicInfoMap.get("user_card");
+		IdcardInfoExtractor idInfo = new IdcardInfoExtractor(idcard);
+		basicInfoMap.put("user_age", idInfo.getAge());
+		infoJson.setData(basicInfoMap);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	public InfoJson addBasicInfoSurvey(Map<String, Object> map) {
+		InfoJson infoJson = new InfoJson();
+		Date date = new Date();
+		Number history_id = addBasicInfoSurveyHistory(map, date);
+		map.forEach((k, v) -> {
+			saveAnswer(k, v, history_id, date);
+		});
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	private void saveAnswer(String question, Object answer, Number history_id, Date date) {
+		String[] questionarr = question.split("-");
+		String question_id = questionarr[0];
+		Map<String, Object> questionMap = basicInfoSurveyDao.getQuestionById(question_id);
+		questionMap.put("base_order_id", history_id);
+		questionMap.put("question_k_order_id", questionMap.remove("order_id"));
+		questionMap.put("create_date", date);
+		if (questionarr.length == 3) {
+			String index = questionarr[2];
+			questionMap.put("question_index", index);
+		} else {
+		}
+		Number question_order_id = basicInfoSurveyDao.insertAndGetKey(questionMap, "s_base_question");
+		Map<String, Object> answerMap = new HashMap<String, Object>();
+		answerMap.put("base_order_id", history_id);
+		answerMap.put("question_order_id", question_order_id);
+		answerMap.put("answer", answer);
+		answerMap.put("create_date", date);
+		basicInfoSurveyDao.insertAndGetKey(answerMap, "s_base_answer");
+	}
+
+	private Number addBasicInfoSurveyHistory(Map<String, Object> map, Date date) {
+		Map<String, Object> basicInfoMap = new HashMap<String, Object>();
+		basicInfoMap.put("user_id", map.remove("user_id"));
+		basicInfoMap.put("user_name", map.remove("user_name"));
+		basicInfoMap.put("fixed_phone", map.remove("fixed_phone"));
+		basicInfoMap.put("user_phone", map.remove("user_phone"));
+		basicInfoMap.put("user_sex", map.remove("user_sex"));
+		basicInfoMap.put("user_address", map.remove("user_address"));
+		basicInfoMap.put("email", map.remove("email"));
+		basicInfoMap.put("language", map.remove("language"));
+		basicInfoMap.put("user_height", map.remove("user_height"));
+		basicInfoMap.put("user_weight", map.remove("user_weight"));
+		basicInfoMap.put("doctor_id", map.remove("doctor_id"));
+		basicInfoMap.put("user_card", map.remove("user_card"));
+		basicInfoMap.put("user_nation", map.remove("user_nation"));
+		basicInfoMap.put("user_blood", map.remove("user_blood"));
+		basicInfoMap.put("user_medical_burden", map.remove("user_medical_burden"));
+		basicInfoMap.put("user_blood_is_rh-", map.remove("user_blood_is_rh-"));
+		basicInfoMap.put("career", map.remove("career"));
+		basicInfoMap.put("income", map.remove("income"));
+		basicInfoMap.put("work_unit", map.remove("work_unit"));
+		basicInfoMap.put("work_address", map.remove("work_address"));
+		basicInfoMap.put("create_date", date);
+		return basicInfoSurveyDao.insertAndGetKey(basicInfoMap, "s_base");
+	}
+
+	public InfoJson getBasicInfoSurveyHistory(String datemax, String datemin, String user_id) {
+		InfoJson infoJson = new InfoJson();
+		infoJson.setData(basicInfoSurveyDao.getBasicInfoSurveyHistory(datemax, datemin, user_id));
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	public InfoJson getBasicInfoSurveyDetail(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<Map<String, Object>> list = basicInfoSurveyDao.getBasicInfoSurveyDetail(order_id);
+		list.forEach(s -> {
+			if ((int) s.get("question_index") == 0) {
+				if (!resultMap.containsKey("a" + s.get("question_k_order_id"))) {
+					resultMap.put("a" + s.get("question_k_order_id"), s.get("answer"));
+				} else {
+					resultMap.put("a" + s.get("question_k_order_id"),
+							resultMap.get("a" + s.get("question_k_order_id") + "," + s.get("answer")));
+				}
+			} else {
+				int table_id =(int)basicInfoSurveyDao.getQuestionTableId(s.get("questiont_k_order_id").toString())
+						.get("table_id");
+				if (!resultMap.containsKey("t"+table_id)) {
+					resultMap.put("t"+table_id, new HashMap<String, Object>());
+				}
+				Map<String, Object> tableMap = (Map)resultMap.get("t"+table_id);
+				if (!tableMap.containsKey("c"+s.get("question_index"))) {
+					tableMap.put("c"+s.get("question_index"),new HashMap<String, Object>());
+				}
+				Map<String, Object> subMap = (Map)tableMap.get("c"+s.get("question_index"));
+				if (!subMap.containsKey("a"+s.get("question_k_order_id"))) {
+					subMap.put("a"+s.get("question_k_order_id"),s.get("answer"));
+				}else{
+					subMap.put("a"+s.get("question_k_order_id"),subMap.get("a" + s.get("question_k_order_id") + "," + s.get("answer")));
+				}
+			}
+		});
+		infoJson.setData(resultMap);
+		infoJson.setStatus(1);
+		return infoJson;
+
+	}
+}

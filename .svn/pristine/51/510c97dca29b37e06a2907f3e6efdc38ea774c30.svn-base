@@ -1,0 +1,235 @@
+package com.haaa.cloudmedical.platform.healthRecords.service.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.HealthRecordsPlatformDao;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+import com.haaa.cloudmedical.platform.healthRecords.service.HealthRecordService;
+
+@Service
+@Log(name = "健康档案管理")
+public class HealthRecordServiceImpl implements HealthRecordService {
+
+    private Logger                   logger = Logger.getLogger(HealthRecordServiceImpl.class);
+
+    @Autowired
+    private HealthRecordsPlatformDao dao;
+
+    @Override
+    public Page queryPage(String user_name, String user_card, String user_phone, Integer pageNo) {
+        //
+        StringBuffer sql = new StringBuffer("select user_id,user_name,user_card,user_phone from n_user where user_type = '1500001'");
+        List<Object> params = new ArrayList<Object>();
+        if (StringUtil.isNotBlank(user_name)) {
+            sql.append(" and user_name like ? ");
+            params.add("%" + user_name + "%");
+        }
+        if (StringUtil.isNotBlank(user_card)) {
+            sql.append(" and user_card like ? ");
+            params.add("%" + user_card + "%");
+        }
+        if (StringUtil.isNotBlank(user_phone)) {
+            sql.append(" and user_phone like ? ");
+            params.add("%" + user_phone + "%");
+        }
+        sql.append("order by create_date desc");
+        Page page = dao.pageQuery(sql.toString(), params.toArray(), pageNo);
+        return page;
+    }
+
+    @Override
+    @Log(name = "保存体检报告")
+    public Long saveCheck(CheckReport entity) {
+        String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+        entity.setCreate_date(date);
+        entity.setUser_name(this.getUserName(entity.getUser_id()));
+        return dao.insert(entity, "p_check_report");
+    }
+
+    private String getUserName(String user_id) {
+        List<Map<String, Object>> list = dao.select("select user_name from n_user where user_id = " + user_id);
+        Map<String, Object> map = list.get(0);
+        if (map != null) {
+            return map.get("user_name").toString();
+        }
+        return null;
+    }
+
+    @Override
+    @Log(name = "保存住院报告")
+    public Long saveHospital(HospitalReport entity) {
+        String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+        entity.setPatient_name(this.getUserName(entity.getPatient_id()));
+        entity.setCreate_date(date);
+        return dao.insert(entity, "p_hospital_report");
+    }
+
+    @Override
+    @Log(name = "保存门诊报告")
+    public Long saveClinic(ClinicReport entity) {
+        String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+        entity.setUser_name(this.getUserName(entity.getUser_id()));
+        entity.setCreate_date(date);
+        return dao.insert(entity, "p_clinic_report");
+    }
+
+    @Override
+    @Log(name = "保存医保记录")
+    public Long saveMedical(InsuranceReport entity) {
+        String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+        entity.setUser_name(this.getUserName(entity.getUser_id()));
+        entity.setCreate_date(date);
+        return dao.insert(entity, "p_medical_insurance_report");
+    }
+
+    public List<Map<String, Object>> getReport(String user_id, String pic_type, String start, String end) {
+        String info_sql = null;
+        String uploadUrl = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+        /*if (start == null || end == null || "".equals(start) || "".equals(end)) {
+        	int month = Calendar.getInstance().get(2) + 1;
+        	if (month <= 6) {
+        		start = Calendar.getInstance().get(1) + "/01/01";
+        		end = Calendar.getInstance().get(1) + "/06/30";
+        	} else if (month >= 7) {
+        		start = Calendar.getInstance().get(1) + "/07/01";
+        		end = Calendar.getInstance().get(1) + "/12/31";
+        	}
+        }*/
+        String time = "";
+        String orderby = "";
+        // 住院报告
+        if (pic_type.equals(Constant.HOSPITAL_REPORT)) {
+            info_sql = "select b.order_id,b.report_no,a.user_name,a.user_card,date_format(b.hospital_report_time,'%Y-%m-%d') hospital_report_time,b.hosp_name,b.hospital_report_days,b.department_name,"
+                       + "b.doctor_name,b.hospital_report_disease,b.hospital_report_result from n_user a,p_hospital_report b where a.user_id = b.patient_id and a.user_id = ?";
+            time = "b.hospital_report_time";
+            orderby = " order by b.hospital_report_time desc";
+        } else if (pic_type.equals(Constant.CLINIC_REPORT)) {
+            // 门诊报告
+            info_sql = "select a.order_id,a.report_no,b.user_name,date_format(a.clinic_report_time,'%Y-%m-%d') clinic_report_time,a.hosp_name,a.department_name,a.doctor_name,a.clinic_report_disease,"
+                       + "a.clinic_report_result from p_clinic_report a , n_user b where b.user_id = a.user_id and a.user_id = ?";
+            time = "a.clinic_report_time";
+            orderby = " order by a.clinic_report_time desc";
+        } else if (pic_type.equals(Constant.INSURANCE_REPORT)) {
+            // 医保记录
+            info_sql = "select b.order_id,b.report_no,a.user_name,a.user_card,a.user_medicare_card,b.hosp_name,findName(b.medical_insurance_type) medical_insurance_type,date_format(b.medical_insurance_time,'%Y-%m-%d') medical_insurance_time,"
+                       + "b.medical_insurance_total,b.medical_insurance_reimbursement_amount,b.medical_insurance_subsidy_amount from n_user a,p_medical_insurance_report b where a.user_id = b.user_id "
+                       + "and a.user_id = ? ";
+            time = "b.medical_insurance_time";
+            orderby = " order by b.medical_insurance_time desc";
+        } else if (pic_type.equals(Constant.CHECK_REPORT)) {
+            // 体检报告
+            info_sql = "select	a.order_id,a.report_no,b.user_name,date_format(a.check_time,'%Y-%m-%d') check_time,a.hosp_name,a.report_no from p_check_report a , n_user b where a.user_id = b.user_id and a.user_id = ?";
+            time = "a.check_time";
+            orderby = " order by a.check_time desc";
+        }
+        //
+        String pic_sql = "select parent_id,concat('" + uploadUrl + "',medical_picture_upload) medical_picture_upload from p_picture where "
+                         + "pic_type = " + pic_type + " and parent_id = ?";
+        List<Map<String, Object>> infolist = null;
+        //
+        if (StringUtil.isBlank(start) && StringUtil.isNotBlank(end) && StringUtil.isNotBlank(time)) {
+            info_sql += " and " + time + " <=?" + orderby;
+            infolist = dao.select(info_sql, user_id, end);
+        } else if (StringUtil.isNotBlank(start) && StringUtil.isBlank(end) && StringUtil.isNotBlank(time)) {
+            info_sql += " and " + time + " >=?" + orderby;
+            infolist = dao.select(info_sql, user_id, start);
+        } else if (StringUtil.isNotBlank(start) && StringUtil.isNotBlank(end) && StringUtil.isNotBlank(time)) {
+            info_sql += " and " + time + ">=? and " + time + "<=?" + orderby;
+            infolist = dao.select(info_sql, user_id, start, end);
+        } else {
+            info_sql += orderby;
+            infolist = dao.select(info_sql, user_id);
+        }
+        //
+        try {
+            for (Map<String, Object> info : infolist) {
+                String order_id = info.get("order_id").toString();
+                List<Map<String, Object>> piclist = dao.select(pic_sql, order_id);
+                info.put("pictures", piclist);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("查询有误!");
+        }
+        return infolist;
+    }
+
+    @Override
+    public List<Map<String, Object>> getHosptialList() {
+        String sql = "select order_id ,hosp_name value from k_hosp";
+        return dao.select(sql);
+    }
+
+    @Override
+    public Object getDepartmentList(String hosp_order_id) {
+        String sql = "select order_id ,department_name  from k_department where hosp_order_id = " + hosp_order_id;
+        return dao.select(sql);
+    }
+
+    @Override
+    public Object getDoctorList(String department_order_id) {
+        String sql = "select doctor_id ,doctor_name  from d_doctor where department_order_id = " + department_order_id;
+        return dao.select(sql);
+    }
+
+    @SuppressWarnings("all")
+    @Override
+    public Object getOptionContent() {
+        String sql = "select order_id ,survey_question_order_id, survey_option_content from s_survey_option";
+        Map map = new HashMap();
+        List<Map<String, Object>> list = dao.select(sql);
+        for (Map m : list) {
+            List item = new ArrayList();
+            String key = "select_" + m.get("survey_question_order_id");
+            if (map.containsKey(key)) {
+                Object obj = map.get(key);
+                ((List<Object>) map.get(key)).add(m);
+            } else {
+                item.add(m);
+                map.put(key, item);
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @Log(name = "保存图片")
+    public void savePicture(HttpServletRequest request, String path) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("pic_type", request.getParameter("report_type"));
+        map.put("parent_id", request.getParameter("order_id"));
+        map.put("pic_num", 1);
+        map.put("medical_picture_upload", path);
+        String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+        map.put("create_date", date);
+        dao.insert(map, "p_picture");
+    }
+
+    @Override
+    public List<Map<String, Object>> queryMedicalRecord(String order_id) {
+        String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+        String sql = "select concat('" + url
+                     + "',medical_picture_upload) medical_picture_upload from p_picture where parent_id = ? and pic_type = ? order by pic_num";
+        List<Map<String, Object>> list = dao.select(sql, order_id, Constant.PIC_TYPE_MedicalRecord);
+        return list;
+    }
+}

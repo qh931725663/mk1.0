@@ -1,0 +1,26 @@
+package com.haaa.cloudmedical.test.service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.test.dao.TestDao;
+
+@Service
+public class TestService {
+	@Autowired private TestDao dao;
+	
+	public List<User> select() throws InstantiationException, IllegalAccessException{
+		String sql = "select * from n_user";
+		List<User> list = BeanUtil.toObjectFromMap(dao.select(sql), User.class);
+		Map<Object,List<User>> result = list.stream().collect(Collectors.groupingBy(user->user.getUser_id()));
+		System.out.println(result);
+		return list;
+	}
+
+}

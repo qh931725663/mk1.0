@@ -1,0 +1,283 @@
+package com.haaa.cloudmedical.app.chronicplan.service.impl;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.app.chronicplan.service.ChronicPlanService;
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.ChronicPlanDao;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+
+
+
+/**
+ * 
+ * @author Owen
+ *
+ */
+@Service
+@Log(name = "慢性病计划管理")
+public class ChronicPlanServiceImpl implements ChronicPlanService{
+	@Autowired
+	public ChronicPlanDao chronicPlanDao;
+	/**
+	 *  @description 添加跟踪检测的记录
+	 */
+	@Override
+	public void addPlanItems(List<Map> parseArray) {	
+		//添加iterm表
+		String plan_order_id =String.valueOf(parseArray.get(0).get("plan_order_id"));
+		String plan_dic_order_id = String.valueOf(parseArray.get(0).get("dic_order_id"));
+		String create_date = String.valueOf(parseArray.get(0).get("create_date"));
+		String create_by = String.valueOf(parseArray.get(0).get("create_by"));	
+		String user_id=chronicPlanDao.getUserId(plan_order_id).toString();
+		Long item_order_id= chronicPlanDao.addItem(plan_order_id, user_id,plan_dic_order_id,create_date,create_by);	
+		if (item_order_id!=null) {
+			//调用存储过程进行不同类型的慢性病的检测数据同步共享
+			chronicPlanDao.callStoreSyn(String.valueOf(item_order_id));
+			//调用存储过程更新report表
+			chronicPlanDao.callStoreUpd(String.valueOf(item_order_id));
+		}
+		//采用批量提交测量表单的数据
+		chronicPlanDao.batchADD(parseArray, String.valueOf(item_order_id));
+		/*for (Map map2 : parseArray) {
+			map2.remove("plan_order_id");
+			map2.remove("dic_order_id");
+			map2.put("item_order_id", item_order_id);
+			chronicPlanDao.insert(map2, "p_plan_item_content");
+		}	*/		
+		
+	}
+	
+	/**
+	 * 将管理计划的数据同步到七件套的数据中去
+	 */
+
+	
+	
+	
+	/**
+	 * @description 用于计划跟踪检测的列表展示
+	 */
+	@Override
+	public  InfoJson getPlanTrackItems(String plan_id, String dic_order_id) {	
+		InfoJson infoJson = new InfoJson();
+		//查询出每次提交的iterm
+		List<Map<String, Object>> allIterms =chronicPlanDao.getAllIterms(plan_id, dic_order_id);
+		infoJson.setCount(allIterms.size());
+		
+		
+		if (allIterms!=null) {	
+			for (Map<String, Object> map : allIterms) {		
+				BigInteger order_id= (BigInteger)map.get("item_order_id");
+				//通过Iterm的id获取每次提交的数据
+				List<Map<String,Object>> singleItermMap = chronicPlanDao.getAllOptionByIterm(order_id);
+				map.put("itemContents", singleItermMap);
+			}	
+			infoJson.setData(allIterms);
+		}
+		return infoJson;	
+	}
+	
+	/**
+	 * 删除某次检测记录
+	 */
+	@Override
+	public void deletePlanItems(String item_order_id) {
+		chronicPlanDao.deletePlanItems(item_order_id);
+		chronicPlanDao.deletePlanContents(item_order_id);
+	}
+
+	/**
+	 * @Description: app端查询曲线数据 (android IOS)  这里的count为数据条数
+	 * @Title: queryRecent 
+	 * @param  user_id 
+	 * @param period 
+	 * @return InfoJson 返回类型
+	 * @throws
+	 */
+	public InfoJson queryRecent(Long user_id, int period, int days) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println("走得1");
+		Map<String, Object> data = new HashMap<String, Object>();
+		List<Map<String, Object>> list = chronicPlanDao.queryRecent(user_id, period, days);
+		infoJson.setCount(list.size());
+		int temp_period;
+		float temp_bloodsugar;
+		for (Map<String, Object> map2 : list) {
+			temp_period = (int) map2.get("measurement_period");
+			temp_bloodsugar = (float) map2.get("BloodSugar");
+			int temp = classifyBloodSugar(temp_bloodsugar, temp_period);
+			if (temp == -1) {
+				map2.put("result", "不正常");
+				map2.put("result_icon", 0);
+			} else if (temp == 1) {
+				map2.put("result", "不正常");
+				map2.put("result_icon", 0);
+			} else if (temp == 0) {
+				map2.put("result", "正常");
+				map2.put("result_icon", 1);
+			}
+			map2.put("BloodSugar", (NumberUtil.decimalFormat((float) map2.remove("BloodSugar"), 1)));
+		}
+		data.put("period", period);
+		List<Map<String, Object>> maps = chronicPlanDao.queryMonth(user_id,period);
+		data.put("size", maps.size());
+		data.put("list", list);
+		infoJson.setData(data);
+
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+	/**
+	 * 血糖分页数据的查询 这里的count为分页的总页数
+	 */
+	@Override
+	public InfoJson pageQuery(Long user_id, String year_month, int period,int pageno, int pagesize) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+		List<Object> monthList = new ArrayList<Object>();
+		// 如果year_month为空，进行普通分页查询
+		if (!StringUtil.isEmpty(year_month)) {
+			dataList = chronicPlanDao.queryByMonth(user_id, year_month,period, pageno, pagesize);
+			infoJson.setCount(chronicPlanDao.pageNumberByMonth(user_id, year_month,period, pagesize));
+
+		} else {
+			dataList = chronicPlanDao.pageQuery(user_id,period ,pageno, pagesize);
+			infoJson.setCount(chronicPlanDao.pageNumber(user_id,period , pagesize));
+
+		}
+		System.out.println(dataList);
+		if (dataList.size() > 0) {
+			Iterator<Map<String, Object>> iterator = dataList.iterator();
+			Map<String, Object> map = iterator.next();
+			Date date = (Date) map.get("datetime");
+			String yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+			String monthDay = DateUtil.dateFormat(date, "MM-dd");
+			String tempYearMonth = null;
+			// 分类可以用groupingBy代替
+			outer: while (true) {
+				if (map == null) {
+					break;
+				}
+				Map<String, Object> monthMap = new HashMap<String, Object>();
+				tempYearMonth = yearMonth;
+				monthList.add(monthMap);
+				monthMap.put("yearmonth", yearMonth);
+				List<Object> timeList = new ArrayList<Object>();
+				while (tempYearMonth.equals(yearMonth)) {
+					monthMap.put("timelist", timeList);
+					Map<String, Object> timeMap = new HashMap<String, Object>();
+					map.put("datetime", DateUtil.dateFormat(date, "MM-dd HH:mm"));
+					map.put("BloodSugar", (NumberUtil.decimalFormat((float) map.remove("BloodSugar"), 1)));
+					map.put("month", yearMonth);
+					timeMap.put("singledata", map);
+					int hour = DateUtil.getHour(date);
+					int periodtime = periodDefine(hour);
+					timeMap.put("period", period);
+					timeList.add(timeMap);
+					if (iterator.hasNext()) {
+						map = iterator.next();
+						date = (Date) map.get("datetime");
+						yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+						monthDay = DateUtil.dateFormat(date, "MM-dd");
+					} else {
+						break outer;
+					}
+
+				}
+			}
+		}
+		infoJson.setData(monthList);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	//格式化时间
+	private int classifyBloodSugar(float blood_sugar, int period) {
+		if (period == Constant.EMPTY_STOMACH) {
+			if (blood_sugar < Constant.LOW_FBG) {
+				return -1;
+			} else if (blood_sugar > Constant.HIGH_FBG) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		// 睡前
+		else if (period == Constant.BEFORE_SLEEP) {
+			if (blood_sugar < Constant.LOW_PRE_BG) {
+				return -1;
+			} else if (blood_sugar > Constant.HIGH_PRE_BG) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		// 饭后
+		else if (period == Constant.AFTER_BREAKFAST || period == Constant.AFTER_DINNER
+				|| period == Constant.AFTER_LUNCH) {
+			if (blood_sugar < Constant.LOW_POST_BG) {
+				return -1;
+			} else if (blood_sugar > Constant.HIGH_POST_BG) {
+				return 1;
+			} else {
+				return 0;
+			}
+
+		} else if (period == Constant.BEFORE_DINNER || period == Constant.BEFORE_LUNCH) {// 饭前
+			if (blood_sugar < Constant.LOW_PRE_BG) {
+				return -1;
+			} else if (blood_sugar > Constant.HIGH_PRE_BG) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * 
+	 * @Title: periodDefine 
+	 * @Description: 根据查询的时间 判断早中晚时间段，-1上午，0下午，1晚上 
+	 * @param  hour 
+	 * @return 
+	 * @throws
+	 */
+	private int periodDefine(int hour) {
+		int period = 0;
+		if (hour < Constant.MORNING_END && hour >= 0) {
+			period = -1;
+		} else if (hour < Constant.NIGHT_BEGIN) {
+			period = 0;
+		} else {
+			period = 1;
+		}
+		return period;
+	}
+
+}
+	
+
+	
+	
+	
+	
+

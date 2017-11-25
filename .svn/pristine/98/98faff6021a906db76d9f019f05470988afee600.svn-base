@@ -1,0 +1,329 @@
+package com.haaa.cloudmedical.platform.RemindManage.service;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.app.gettui.MkhPush;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.RemindSendView;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.RemindManageDao;
+import com.haaa.cloudmedical.entity.RemindSend;
+import com.haaa.cloudmedical.platform.RemindManage.util.AppPushUtils;
+
+@Service
+public class RemindManageService {
+
+    @Autowired
+    private RemindManageDao dao;
+
+    public List<Map<String, Object>> getMedicalList(String helpname) {
+        String sql = "select a.order_id drug_id,generic_drug_name,a.drug_specification,a.helpname from k_drug_code a where helpname like ? ";
+        List<Map<String, Object>> list = dao.select(sql, "%" + helpname + "%");
+        return list;
+    }
+
+    public ResponseDTO getRemind(String user_id) {
+
+        Object measurement = getMeasurementRemind(user_id).getData();// 测量提醒
+        Object medication = getMedicationRemind(user_id).getData();// 用药提醒
+        Object doctor = getDoctorRemind(user_id).getData();// 就诊提醒
+
+        Map<String, Object> remind = new HashMap<String, Object>();
+        remind.put("measurement", measurement);
+        remind.put("medication", medication);
+        remind.put("doctor", doctor);
+
+        ResponseDTO dto = new ResponseDTO();
+        dto.setData(remind);
+        dto.setFlag(true);
+
+        return dto;
+    }
+
+    // 获取提醒详情入口
+    public ResponseDTO getRemind(String user_id, String remind_type) {
+        ResponseDTO dto = null;
+        if (remind_type.equals(Constant.remind_type_medication))
+            dto = getMedicationRemind(user_id);
+        else if (remind_type.equals(Constant.remind_type_doctor))
+            dto = getDoctorRemind(user_id);
+        else if (remind_type.equals(Constant.remind_type_measurement))
+            dto = getMeasurementRemind(user_id);
+        return dto;
+    }
+
+	// 获取用药提醒
+	public ResponseDTO getMedicationRemind(String user_id) {
+		String sql = "select order_id,findname(chronic_code) chronic_name,generic_drug_name,drug_specification,"
+				+ "date_format(medication_remind_time_one,'%H:%i') medication_remind_time_one,"
+				+ "date_format(medication_remind_time_two,'%H:%i') medication_remind_time_two,"
+				+ "date_format(medication_remind_time_three,'%H:%i') medication_remind_time_three,"
+				+ "date_format(medication_remind_time_four,'%H:%i') medication_remind_time_four,"
+				+ "findname(drug_note) drug_note,medication_remind_num,medication_remind_dosage "
+				+ "from r_medication_remind where user_id = ? ";
+		List<Map<String, Object>> list = dao.select(sql, user_id);
+		list.forEach(map->map.forEach((k,v)->map.putIfAbsent(k, "")));
+		Map<String, List<Map<String, Object>>> listByChronicName = list.stream().collect(Collectors.groupingBy(m -> m.get("chronic_name").toString()));
+		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
+		for (Map.Entry<String,List<Map<String, Object>>> entry : listByChronicName.entrySet()) {
+			Map<String,Object> map = new HashMap<String, Object>();
+			map.put("chronic_name", entry.getKey());
+			map.put("meical_list", entry.getValue());
+			result.add(map);
+		}
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(result);
+		return dto;
+	}
+ 
+
+    // 获取就诊提醒
+    public ResponseDTO getDoctorRemind(String user_id) {
+        String sql = "select a.order_id,a.doctor_remind_date,date_format(a.doctor_remind_time,'%H:%i') doctor_remind_time,"
+        		+ "a.hosp_order_id,c.hosp_name doctor_remind_hospital,a.department_id,b.department_name doctor_remind_department "
+        		+ "from r_doctor_remind a,k_department b,k_hosp c "
+        		+ "where 1=1 and a.hosp_order_id=c.order_id and a.department_id=b.order_id and a.patient_id = ? ";
+        List<Map<String, Object>> list = dao.select(sql, user_id);
+        list.forEach(map->map.forEach((k,v)->map.putIfAbsent(k, "")));
+        ResponseDTO dto = new ResponseDTO();
+        dto.setFlag(true);
+        dto.setData(list);
+        return dto;
+    }
+
+    // 获取测量提醒
+    public ResponseDTO getMeasurementRemind(String user_id) {
+        String sql = "select a.order_id,findname(a.measurement_remind_title) measurement_remind_title,a.measurement_remind_content,"
+                     + "if(a.monday=1,'星期一','') monday,if(a.tuesday=2,'星期二','') tuesday,if(a.wednesday=3,'星期三','') wednesday,"
+                     + "if(a.thursday=4,'星期四','') thursday,if(a.friday=5,'星期五','') friday,if(a.saturday=6,'星期六','') saturday,"
+                     + "if(a.sunday=7,'星期日','') sunday,a.interval_day,date_format(a.time1,'%H:%i') time1,"
+                     + "date_format(a.time2,'%H:%i') time2,date_format(a.time3,'%H:%i') time3,date_format(a.time4,'%H:%i') time4,a.begin_day "
+                     + "from r_measurement_remind a where a.user_id = ? ";
+        List<Map<String, Object>> list = dao.select(sql, user_id);
+        list.forEach(map->map.forEach((k,v)->map.putIfAbsent(k, "")));
+        ResponseDTO dto = new ResponseDTO();
+        dto.setFlag(true);
+        dto.setData(list);
+        return dto;
+    }
+
+    public long addRemind(Map<String, Object> remind, String remind_type) {
+        String table = "";
+        long order_id = 0;
+
+        if (remind_type.equals(Constant.remind_type_medication)) {
+            table = "r_medication_remind";
+        } else if (remind_type.equals(Constant.remind_type_doctor)) {
+            table = "r_doctor_remind";
+        } else if (remind_type.equals(Constant.remind_type_measurement)) {
+            table = "r_measurement_remind";
+        }
+        try {
+            order_id = dao.insert(remind, table);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order_id;
+    }
+
+    // 删除提醒
+    public boolean deleteRemind(String order_id, String remind_type) {
+        String table = "";
+        boolean flag = false;
+        if (remind_type.equals(Constant.remind_type_medication)) {
+            table = "r_medication_remind";
+        } else if (remind_type.equals(Constant.remind_type_doctor)) {
+            table = "r_doctor_remind";
+        } else if (remind_type.equals(Constant.remind_type_measurement)) {
+            table = "r_measurement_remind";
+        }
+        try {
+            dao.delete(table, order_id);
+            flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    // 修改提醒
+    public boolean updateRemind(Map<String, Object> remind, String remind_type) {
+        String table = "";
+        boolean flag = false;
+        if (remind_type.equals(Constant.remind_type_medication)) {
+            table = "r_medication_remind";
+        } else if (remind_type.equals(Constant.remind_type_doctor)) {
+            table = "r_doctor_remind";
+        } else if (remind_type.equals(Constant.remind_type_measurement)) {
+            table = "r_measurement_remind";
+        }
+        try {
+            dao.update(remind, table);
+            flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    public boolean addRemindSend(RemindSend send) {
+        System.out.println(send);
+        boolean flag = false;
+        Object[] time = send.getTime();
+        send.setTime(null);
+        for (int i = 0; i < time.length; i++) {
+            try {
+                send.setRemind_time(time[i].toString());
+                dao.insert(send, "r_remind_send");
+                flag = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return flag;
+    }
+
+    public boolean deleteRemindSend(String user_id, String remind_id) {
+        boolean flag = false;
+        String sql = "update r_remind_send set remind_flag = '0' where user_id = ? and remind_id = ? ";
+        try {
+            dao.execute(sql, user_id, remind_id);
+            flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    public void pushMessage() {
+        LocalTime start = LocalTime.now();
+        LocalTime end = start.plusMinutes(30);
+        /*String sql="select b.os_type,findname (a.remind_title) remind_title,b.clientId,a.user_id from remind_send_view a,n_user b "
+        		+ "where a.user_id = b.user_id and a.remind_time between ? and ? group by b.os_type,a.user_id,a.remind_title ";*/
+        String sql = "select(case a.remind_type when '1400001' then concat(findname(a.remind_title),'测量') else findname(a.remind_title) end) remind_title,"
+                     + "a.user_id from remind_send_view a where a.remind_time between ? and ? group by a.user_id,a.remind_title";
+        start = LocalTime.of(0, 0);
+        end = LocalTime.of(23, 50);
+        List<Map<String, Object>> sqlResultSet = dao.select(sql, start, end);
+        List<RemindSendView> view = BeanUtil.toObjectFromMap(sqlResultSet, RemindSendView.class);
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        view.stream().collect(Collectors.groupingBy(RemindSendView::getUser_id)).forEach((user_id, item) -> {
+            String title = item.stream().map(RemindSendView::getRemind_title).collect(Collectors.joining(","));
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("title", title);
+            map.put("user_id", user_id);
+            list.add(map);
+        });
+        Map<String, List<String>> remind = new HashMap<String, List<String>>();
+        list.stream().collect(Collectors.groupingBy(map -> map.get("title"))).forEach((title, item) -> {
+            List<String> user_id_list = item.stream().map(m -> m.get("user_id")).collect(Collectors.toList());
+            remind.put(title, user_id_list);
+        });
+        System.out.println(remind);
+
+        /*List<RemindSendViewDTO> androidList = new ArrayList<RemindSendViewDTO>();
+        List<RemindSendViewDTO> iosList = new ArrayList<RemindSendViewDTO>();
+        List<RemindSendView> android = view.stream().filter(r->r.getOs_type().toString().equals("1")).collect(Collectors.toList());
+        android.stream().collect(Collectors.groupingBy(RemindSendView::getUser_id)).forEach((user_id,byUserId)->{			
+        	RemindSendViewDTO dto = new RemindSendViewDTO();
+        	dto=byUserId.stream().reduce(dto,(u,t)->u.getRemindTitle(t),(u,t)->u);
+        	androidList.add(dto);
+        });
+        
+        List<RemindSendView> ios = view.stream().filter(r->r.getOs_type().toString().equals("2")).collect(Collectors.toList());
+        ios.stream().collect(Collectors.groupingBy(RemindSendView::getUser_id)).forEach((user_id,byUserId)->{
+        	RemindSendViewDTO dto = new RemindSendViewDTO();
+        	dto=byUserId.stream().reduce(dto,(u,t)->u.getRemindTitle(t),(u,t)->u);
+        	iosList.add(dto);
+        });
+        
+        Map<String,Map<String,List<String>>> remind = new HashMap<String, Map<String,List<String>>>();
+        remind.put("1", getTitleUserList(androidList));
+        remind.put("2", getTitleUserList(iosList));*/
+
+        pushMessageToUser(remind, start, end);
+
+    }
+
+    public void pushMessageToUser(Map<String, List<String>> remind, LocalTime start, LocalTime end) {
+        System.out.println("开始推送");
+        MkhPush push = new MkhPush();
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("HH:mm");
+        for (Map.Entry<String, List<String>> entry : remind.entrySet()) {
+            String message = "您在" + start.format(pattern) + "分到" + end.format(pattern) + "分期间有" + entry.getKey();
+            if (!message.endsWith("提醒"))
+                message += "提醒！";
+            List<String> user_id_list = entry.getValue();
+            if (user_id_list.size() < 10) {
+                for (String user_id : user_id_list) {
+                    push.pushToSingle(user_id, message);
+                }
+            } else {
+                push.pushToList(user_id_list, message);
+            }
+        }
+        //push.pushToApp("您在今天有健康提醒");
+        System.out.println("结束推送");
+    }
+
+    public Object pushToUser() {
+        //查询sql
+        String sql = this.getPushSQL();
+        List<Map<String, Object>> list = this.dao.select(sql);
+        if (null != list && list.size() > 0) {
+            for (Map<String, Object> m : list) {
+                Map<String, String> msg = new HashMap<String, String>();
+                msg.put("title", "提醒");
+                msg.put("text", m.get("message").toString());
+                msg.put("transText", "");
+                AppPushUtils.pushMsgToSingleByAlias(m.get("user_id").toString(), msg);
+            }
+        }
+        //
+        return list;
+    }
+
+    private String getPushSQL() {
+        StringBuffer buf = new StringBuffer();
+        //系统小时
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        String hour = calendar.get(Calendar.HOUR_OF_DAY) + ":00";
+        //查询测量提醒
+        String sql1 = "select concat('请今天" + hour + "测量',findName(a.measrtrment_remind_type)) message,a.user_id from r_measurement_remind a where "
+                      + "(a.monday = date_format(curdate(),'%w') or a.tuesday = date_format(curdate(),'%w') or a.wednesday = date_format(curdate(),'%w') "
+                      + "or a.thursday = date_format(curdate(),'%w') or a.friday = date_format(curdate(),'%w') or a.saturday = date_format(curdate(),'%w') "
+                      + "or a.sunday = date_format(curdate(),'%w'))  and (a.time1 = '" + hour + "' or a.time2 = '" + hour + "' or a.time3 = '" + hour
+                      + "' " + "or a.time4 = '" + hour + "')";
+        //查询用药提醒
+        buf.append(sql1).append(" union ");
+        String sql2 = "select concat('请" + hour
+                      + "点开始吃',group_concat(b.Generic_drug_name)) message,b.user_id from r_medication_remind b where b.medication_remind_time_one = '"
+                      + hour + "' " + "or b.medication_remind_time_two = '" + hour + "' or b.medication_remind_time_three = '" + hour
+                      + "' or b.medication_remind_time_four = '" + hour + "'";
+        buf.append(sql2).append(" union ");
+        //查询就诊提醒
+        String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd");
+        String sql3 = "select concat('请" + date
+                      + "去',d.hosp_name,'就诊') message,c.patient_id user_id from r_doctor_remind c left join k_hosp d on c.hosp_order_id = d.order_id "
+                      + "where c.doctor_remind_date = '" + date + "'";
+        buf.append(sql3);
+
+        return buf.toString();
+    }
+
+}

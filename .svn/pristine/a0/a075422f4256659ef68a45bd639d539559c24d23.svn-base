@@ -1,0 +1,33 @@
+package com.haaa.cloudmedical.platform.smoking.controller;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.entity.SmokingPlatformView;
+import com.haaa.cloudmedical.platform.smoking.service.SmokingPlatformService;
+
+@Controller
+@RequestMapping("/smoking")
+public class SmokingPlatformController {
+	@Autowired
+	private SmokingPlatformService service;	
+	//后台页面戒烟用户信息查询接口
+	@RequestMapping("/findSmokingUser.action")
+	@ResponseBody
+	public List<Map<String,Object>> findSmokingUser(SmokingPlatformView view) throws SQLException, Exception{
+		
+		
+		
+		return service.findSmokingUser(view);
+	}
+	   
+
+	
+
+}

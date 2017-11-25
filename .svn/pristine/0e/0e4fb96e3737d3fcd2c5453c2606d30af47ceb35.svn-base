@@ -1,0 +1,128 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.platform.survey.controller;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.platform.survey.service.BasicInfoSurveyService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/BasicInfoSurvey")
+public class BasicInfoSurveyController {
+
+	@Resource
+	private BasicInfoSurveyService service;
+	
+	@Resource
+	private CommonUserService commonUserService;
+	
+	private Logger logger = Logger.getLogger(BasicInfoSurveyController.class);
+	
+	@RequestMapping(value={"/getBasicInfo.action"},method={RequestMethod.GET})
+	public InfoJson getBasicInfo(String user_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			try {
+				user_id= commonUserService.getPatientId(user_id);
+			} catch (IllegalArgumentException e) {
+				// 服务台没有token,抓空指针异常
+			}
+			infoJson = service.getBasicInfo(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+	
+	@RequestMapping(value={"/addBasicInfoSurvey.action"},method={RequestMethod.POST})
+	public InfoJson addBasicInfoSurvey(@RequestParam Map<String, Object> data){
+		InfoJson infoJson = new InfoJson();
+		try {
+			try {
+				data.put("user_id", commonUserService.getPatientId((String) data.get("user_id")));
+				data.put("doctor_id", commonUserService.getDoctorId());
+			} catch (IllegalArgumentException e) {
+				// 后台没有token,抓空指针异常
+			}			
+			infoJson = service.addBasicInfoSurvey(data);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;	
+	}
+	
+	@RequestMapping(value={"/getBasicInfoSurveyHistoryByTime.action"},method={RequestMethod.GET})
+	public InfoJson getBasicInfoSurveyHistory(String datemax,String datemin,String user_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			try {
+				user_id= commonUserService.getPatientId(user_id);
+			} catch (IllegalArgumentException e) {
+				// 服务台没有token,抓空指针异常
+			}
+			infoJson = service.getBasicInfoSurveyHistoryByTime(datemax, datemin, user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;	
+	}
+	
+	@RequestMapping(value={"/getBasicInfoSurveyDetail.action"},method={RequestMethod.GET})
+	public InfoJson getBasicInfoSurveyDetail(String order_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getBasicInfoSurveyDetail(order_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;		
+	}
+	
+	@RequestMapping(value={"/getBasicInfoSurveyDetailByTime.action"},method={RequestMethod.GET})
+	public InfoJson getAllBasicInfoSurveyDetail(String datemax,String datemin,String user_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			try {
+				user_id= commonUserService.getPatientId(user_id);
+			} catch (IllegalArgumentException e) {
+				// 服务端台没有token,抓空指针异常
+			}
+			infoJson = service.getBasicInfoSurveyDetailByTime(datemax, datemin, user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;		
+	}
+	
+	
+	@RequestMapping(value={"/getBasicInfoSurvey.action"},method={RequestMethod.GET})
+	public InfoJson getBasicInfoSurvey(String user_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			try {
+				user_id= commonUserService.getPatientId(user_id);
+			} catch (IllegalArgumentException e) {
+				// 服务端台没有token,抓空指针异常
+			}
+			infoJson = service.getBasicInfoSurvey(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;		
+	}
+}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加糖尿病档案</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="css/diabetes-comm.css"/>
+    <link rel="stylesheet" href="css/diabete-main.css"/>
+</head>
+<body>
+<div class="container">
+    <ul class="table-list">
+        <li class="base_status"><span class="fl dia-height"></span><span class="fl dia-height">基础信息</span><span id="base_status" class="fr dia-height" style="font-size:22px;"></span></li>
+        <li class="image_status"><span class="fl dia-height"></span><span class="fl dia-height">辅助检查</span><span id="image_status" class="fr dia-height" style="font-size:22px;"></span></li>
+        <li class="station_status"><span class="fl dia-height"></span><span class="fl dia-height">疾病风险评估</span><span id="station_status" class="fr dia-height" style="font-size:22px;"></span></li>
+    </ul>
+</div>
+<script src="../../../js/jquery-1.4.2.min.js"></script>
+<script>
+$(function(){
+	//初始化加载数据
+	init();
+	
+	function init(){//状态
+	     $.ajax({
+	         url: "../../../diabetesDoc-app/getBasicDoc.action",
+	         type: "GET",
+	         dataType: 'json',
+	         data: {order_id:'9'},
+	         success: function (response) {
+				 var p1=response.data;
+	             if(response.status=='1'){
+	            	$("#base_status").html(p1.base_status==0?"未完成":p1.base_status==1?"已完成":"");
+	            	$("#image_status").html(p1.image_status==0?"未完成":p1.image_status==1?"已完成":"");
+	            	$("#station_status").html(p1.station_status==0?"未完成":p1.station_status==1?"已完成":"");
+	             }
+	         }
+	     });	
+	}
+	//点击添加基础档案
+	$(".base_status").click(function(){
+		window.location.href = "diabetes-baseinfo-write.html?order_id="+9;
+	});
+	//点击添加辅助检查
+	$(".image_status").click(function(){
+		window.location.href = "supplementary-examination-write.html?order_id="+9;
+	});
+	//点击添加疾病风险评估
+	$(".station_status").click(function(){
+		window.location.href = "rsk-factor-total-write.html?order_id="+9; 
+	});
+});
+
+
+</script>
+</body>
+</html>

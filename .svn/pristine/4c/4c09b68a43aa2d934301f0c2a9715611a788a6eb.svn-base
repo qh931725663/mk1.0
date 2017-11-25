@@ -1,0 +1,320 @@
+package com.haaa.cloudmedical.app.user.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gexin.rp.sdk.http.IGtPush;
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.service.PositionService;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.TokenUtil;
+import com.haaa.cloudmedical.common.util.redis.RedisCacheUtil;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+@Log(name = "患者端APP")
+public class UserAppService {
+
+	@Autowired
+	private UserAppDao dao;
+
+	@Autowired
+	private PositionService positionService;
+
+	@Autowired
+	public RedisCacheUtil<Object> redis;
+
+	private Logger logger = Logger.getLogger(UserAppService.class);
+
+	// 信息查询
+	public ResponseDTO getUser(String user_id, String user_type) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, Object> user = dao.selectById(user_id, user_type);
+		Set<String> keys = user.keySet();
+		List<String> nullKeys = new ArrayList<String>();
+		for (String key : keys) {
+			if (user.get(key) == null || user.get(key).equals("null"))
+				nullKeys.add(key);
+		}
+		for (String key : nullKeys) {
+			user.remove(key);
+		}
+		if (user != null) {
+			//dao.redisPut(user_id, user);
+			dto.setFlag(true);
+			dto.setData(user);
+		}
+		return dto;
+	}
+
+	// 用户信息修改
+	@Log(name = "更新患者信息")
+	public ResponseDTO updateUser(User user, Patient patient) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dao.update(user, "n_user");
+			try {
+				dao.update(patient, "d_patient");
+				dto.setFlag(true);
+			} catch (Exception e) {
+				logger.error(patient.getPatient_id() + ":d_patient表信息更新失败！" + e.getMessage());
+			}
+		} catch (Exception e) {
+			logger.error(user.getUser_id() + ":n_user表信息更新失败！" + e.getMessage());
+		}
+		String sql = "select a.* from n_user a where a.user_id = ?";
+		Map<String, Object> map = dao.select(sql, user.getUser_id()).get(0);
+		dto.setData(map);
+		return dto;
+	}
+
+	// 用户信息修改
+	@Log(name = "更新患者信息")
+	@Transactional
+	public ResponseDTO updateUser(User user, String doctor_id) {
+		ResponseDTO dto = new ResponseDTO();
+		String user_phone = user.getUser_phone();
+		String user_card = user.getUser_card();
+		String fromId = user.getUser_id();
+		if (user_card != null && user_card.length() > 0) {
+			List<Map<String, Object>> list = dao.select("select * from n_user where user_card = ? ", user_card);
+			if (list.size() == 0) {
+				dao.update(user, "n_user");
+				dao.execute("update d_patient set patient_name = ? ,doctor_id = ? where patient_id = ? ",user.getUser_name(), doctor_id, fromId);
+				Map<String, Object> patientInfo = dao.selectById(fromId, Constant.USER_TYPE_PATIENT);
+				dto.setData(patientInfo);
+				dto.setFlag(true);
+			}
+			if (list.size() == 1) {
+				Map<String, Object> userInfoByCard = list.get(0);
+				String toId = userInfoByCard.get("user_id").toString();
+				if (userInfoByCard.get("user_phone") == null || userInfoByCard.get("user_phone").toString().length() == 0) {
+					Map<String, Object> userInfoByPhone = dao.select("select * from n_user where user_phone = ? ", user_phone).get(0);
+					Map<String, Object> patientInfoPhone = dao.select("select * from d_patient where patient_id = ? ", userInfoByPhone.get("user_id")).get(0);
+					dao.execute("delete from n_user where user_id = ?", fromId);
+					dao.execute("delete from d_patient where patient_id = ?", fromId);
+					userInfoByPhone.put("user_id", userInfoByCard.get("user_id"));
+					userInfoByPhone.put("user_card", user_card);
+					dao.update(userInfoByPhone, "n_user");
+					Object doctorId = doctor_id == null || doctor_id.length() == 0 ? patientInfoPhone.get("doctor_id"): doctor_id;
+					dao.execute("update d_patient set patient_name = ? ,doctor_id = ? where patient_id = ? ",user.getUser_name(), doctorId, toId);
+					user.setUser_id(toId);
+					dao.update(user, "n_user");
+					Map<String, Object> patientInfo = dao.selectById(toId, Constant.USER_TYPE_PATIENT);
+					Map<String,Object> map = new HashMap<>();
+					map.put("user", patientInfo);
+					String token = TokenUtil.generateToken(toId, user_phone);
+					redis.setCacheMap(token, map);
+					dto.setData(patientInfo);
+					dto.setLoginToken(token);
+					dto.setFlag(true);
+				} 
+				else if(userInfoByCard.get("user_phone").toString().equals(user_phone)) {
+					dao.update(user, "n_user");
+					dao.execute("update d_patient set patient_name = ? ,doctor_id = ? where patient_id = ? ",user.getUser_name(), doctor_id, fromId);
+					Map<String, Object> patientInfo = dao.selectById(fromId, Constant.USER_TYPE_PATIENT);
+					dto.setData(patientInfo);
+					dto.setFlag(true);
+				}else{
+					dto.setErrmsg("该身份证号已被其他手机号绑定");
+				}
+			}
+		} else {
+			dao.update(user, "n_user");
+			dao.execute("update d_patient set patient_name = ? ,doctor_id = ? where patient_id = ? ",user.getUser_name(), doctor_id, fromId);
+			Map<String, Object> patientInfo = dao.selectById(fromId, Constant.USER_TYPE_PATIENT);
+			dto.setData(patientInfo);
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+
+	// 修改密码
+	@Log(name = "修改密码")
+	public ResponseDTO password(String user_phone, String user_pwd) {
+		String sql = "update n_user set user_pwd = ? where user_phone = ?";
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			int count = dao.execute(sql, user_pwd, user_phone);
+			if (count > 0) {
+				/*Map<String, Object> user = dao.selectByAccount(user_phone);
+				dao.redisPut(user.get("user_id").toString(), user);
+				dto.setData(user);*/
+				dto.setFlag(true);
+			} else {
+				dto.setErrmsg("重置密码失败");
+			}
+
+		} catch (Exception e) {
+			logger.error("重置密码失败:" + e.getMessage());
+		}
+		return dto;
+	}
+
+	// 检查该手机号码的个数
+	public int getPhones(String user_phone) {
+		String sql = "select count(*) from n_user where user_phone = ?";
+		int size = dao.count(sql, user_phone);
+		return size;
+	}
+
+	// 检查该身份证的个数
+	public int getUserCard(String user_card) {
+		String sql = "select count(*) from n_user where user_card = ?";
+		int size = dao.count(sql, user_card);
+		return size;
+	}
+
+	// 注册
+	@Log(name = "注册")
+	public ResponseDTO register(String user_phone, String user_pwd, String user_type) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy/MM/dd HH:mm:ss");
+		ResponseDTO dto = new ResponseDTO();
+		User user = new User();
+		user.setUser_phone(user_phone);
+		user.setUser_pwd(user_pwd);
+		user.setUser_type(user_type);
+		user.setUser_flag(Constant.USER_FLAG_START);
+		user.setUser_source(Constant.USER_SOURCE_REGIEST);
+		user.setCreate_date(date);
+		long user_id = 0;
+		try {
+			user_id = dao.insert(user, "n_user");
+			if (user_type.equals(Constant.USER_TYPE_PATIENT)) {
+				Patient patient = new Patient();
+				patient.setPatient_id(String.valueOf(user_id));
+				patient.setCreate_date(date);
+				try {
+					dao.insert(patient, "d_patient");
+					dto.setFlag(true);
+				} catch (Exception e) {
+					logger.error("写入d_patient表失败！" + e.getMessage());
+					dao.delete(user, String.valueOf(user_id));
+				}
+			}
+		} catch (Exception e) {
+			logger.error("写入n_user表失败！" + e.getMessage());
+		}
+		return dto;
+	}
+
+	// 登录
+	@Log(name = "登录")
+	public ResponseDTO login(String user_phone, String user_card, String user_pwd, String os_type) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			Map<String, Object> user = dao.selectByAccount(user_phone, user_card, user_pwd);
+			String user_id = user.get("user_id").toString();
+			String token = TokenUtil.generateToken(user_id, user_phone);
+			dto.setFlag(true);
+			dto.setData(user);
+			dto.setLoginToken(token);
+			// 缓存用户
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("user", user);
+			redis.deleteCache(token);
+			redis.setCacheMap(token, map);
+			IGtPush push = new IGtPush(Constant.URL, Constant.AppKey, Constant.MasterSecret);
+			push.unBindAliasAll(Constant.AppId, user_id);
+		} catch (Exception e) {
+			dto.setErrmsg("登录失败！");
+			logger.error("登录失败！", e);
+		}
+		return dto;
+	}
+
+	public void redisPut(String key, String value, long seconds) {
+		if (seconds <= 0)
+			dao.redisPut(key, value);
+		else
+			dao.redisPut(key, value, seconds);
+	}
+
+	public Object redisGet(String key) {
+		Object value = dao.redisGet(key);
+		return value;
+	}
+
+	public void redisDelete(String key) {
+		dao.redisDelete(key);
+	}
+
+	public int getMySqlTime() {
+		String sql = "select date_format(now(),'%Y')";
+		int year = dao.query(sql);
+		return year;
+	}
+
+	public double getAhdi(String user_phone, String user_card) {
+		double ahdi = -1;
+		List<String> params = new ArrayList<String>();
+		String sql = " select ahdi_value from n_user where 1=1";
+		if (user_phone != null && !"".equals(user_phone)) {
+			params.add(user_phone);
+			sql += " and user_phone = ? ";
+		}
+		if (user_card != null && !"".equals(user_card)) {
+			params.add(user_card);
+			sql += " and user_card = ? ";
+		}
+		try {
+			ahdi = Double.parseDouble(dao.select(sql, params.toArray()).get(0).get("ahdi_value").toString());
+		} catch (Exception e) {
+			logger.error("数据库没有数据：" + e.getMessage());
+		}
+		return ahdi;
+	}
+
+	public double getAhdiValue(String user_id) {
+		double ahdi = 0;
+		String sql = "select ahdi_value from n_user where user_id = ?";
+		List<Map<String, Object>> list = dao.select(sql, user_id);
+		try {
+			ahdi = Double.parseDouble(list.get(0).get("ahdi_value").toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ahdi;
+	}
+
+	@Log(name = "绑定手机,身份证")
+	@Transactional
+	public Map<String, Object> bind(String user_phone, String user_card) {
+		Map<String, Object> user = null;
+		int count = dao.count(user_phone);
+		if (count == 0) {
+			dao.execute("update n_user set user_phone = ? where user_card = ? ", user_phone, user_card);
+		}
+		if (count == 1) {
+			Map<String, Object> userInfoByPhone = dao.select("select * from n_user where user_phone = ? ", user_phone).get(0);
+			Map<String, Object> userInfoByCard = dao.select("select * from n_user where user_card = ? ", user_card).get(0);
+			Map<String, Object> patientInfoPhone = dao.select("select * from d_patient where patient_id = ? ", userInfoByPhone.get("user_id")).get(0);
+			if (userInfoByPhone.get("user_card") == null || userInfoByPhone.get("user_card").toString().length() == 0) {
+				dao.execute("delete from n_user where user_id = ?", userInfoByPhone.get("user_id"));
+				dao.execute("delete from d_patient where patient_id = ?", userInfoByPhone.get("user_id"));
+				userInfoByPhone.put("user_id", userInfoByCard.get("user_id"));
+				userInfoByPhone.put("user_card", user_card);
+				dao.update(userInfoByPhone, "n_user");
+				dao.execute("update d_patient set patient_name = ? ,doctor_id = ? where patient_id = ? ",patientInfoPhone.get("patient_name"), patientInfoPhone.get("doctor_id"),userInfoByCard.get("user_id"));
+				user = dao.selectByAccount(user_phone);
+			} else {
+				System.out.println("该手机号已绑定其他身份证号");
+			}
+		}
+		return user;
+	}
+
+}

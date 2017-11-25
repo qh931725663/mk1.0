@@ -1,0 +1,82 @@
+package com.haaa.cloudmedical.common.util;
+
+/**
+ * @author BowenF
+ *
+ */
+public class InfoJson {
+	public static final String ERROR="系统繁忙，请稍后重试";
+
+	/**
+	 * 1:成功状态码，其余错误码
+	 */
+	private Integer status = 1;
+	/**
+	 * 返回信息
+	 */
+	private String info;
+	private Object data;
+	/**
+	 * goback =-1时，返回上一页
+	 */
+	private int goback;
+	public InfoJson(){}
+	public InfoJson(Integer status,String info){
+		this.status=status;
+		this.info=info;
+	}
+	public static InfoJson setSucc(Object data){
+		InfoJson info= new InfoJson();
+		info.setStatus(1);
+		info.setInfo("成功");
+		info.setData(data);
+		return info;
+	}
+	public static InfoJson setInfo(Integer status,String infos){
+		InfoJson info= new InfoJson();
+		info.status=status;
+		info.info=infos;
+		return info;
+	}
+	public static InfoJson setExceptionReturn(String e,Object data){
+		InfoJson info= new InfoJson();
+		info.setStatus(0);
+		if(e!=null){
+			info.setInfo(e);
+		}else{
+			info.setInfo("系统繁忙，请稍后重试");
+		}
+		if(null!=data) info.setData(data);
+		return info;
+	}
+	public static InfoJson setFaile(){
+		InfoJson info= new InfoJson();
+		info.setStatus(0);
+		info.setInfo("系统繁忙，请稍后重试");
+		return info;
+	}
+	public int getGoback() {
+		return goback;
+	}
+	public void setGoback(int goback) {
+		this.goback = goback;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public String getInfo() {
+		return info;
+	}
+	public void setInfo(String info) {
+		this.info = info;
+	}
+	public Object getData() {
+		return data;
+	}
+	public void setData(Object data) {
+		this.data = data;
+	}
+}

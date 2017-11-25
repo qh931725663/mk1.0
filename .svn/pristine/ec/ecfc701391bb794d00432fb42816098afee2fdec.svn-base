@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>尿液分析仪</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="use-explain">
+        <ul class="use-explain-list">
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_1.png" alt="" style="width:100%;"/>
+                </div>
+                <p>1、长按开关机键开机；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_2.png" alt="" style="width:100%;"/>
+                </div>
+                <p>2、将试纸条浸入待测样本中，等待2-3秒，取出试纸条（试纸条上的检测块需全部浸入待测样本）；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_3.png" alt="" style="width:100%;"/>
+                </div>
+                <p>3、将试纸条侧放在吸水纸上沥去多余尿液；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_4.png" alt="" style="width:100%;"/>
+                </div>
+                <P>4、将试纸条平放在试纸托盘的凹槽内，平推至凹槽顶端；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_5.png" alt="" style="width:100%;"/>
+                </div>
+                <P>5、按确认键，开始测量；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_6.png" alt="" style="width:100%;"/>
+                </div>
+                <P>6、测量完成后，试纸托盘自动滑出；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_7.png" alt="" style="width:100%;"/>
+                </div>
+                <P>7、尿液分析仪可以存储多组数据；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/urin-img/equipment_8.png" alt="" style="width:100%;"/>
+                </div>
+                <P>8、尿液分析仪在无任何操作的情况下一分钟进入省电模式，三十分钟后自动关机。</P>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+package com.haaa.cloudmedical.dao.equipment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.entity.LungCapacity;
+
+
+@Repository
+public class LungCapacityDao extends EquipmentDao {
+
+
+	public long add(LungCapacity lungCapacity) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(map, lungCapacity);
+		return insert(map, "c_lung_capacity");
+	}
+	
+//	/**
+//	 * 查询所有user_id的记录
+//	 * @param user_id
+//	 * @return
+//	 */
+//	public List<Map<String, Object>> queryAllRecent(long user_id){
+//		String sql = "SELECT DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime";
+//		for (int i = 0; i < Constant.LUNGCAPACITYPARAMS.length; i++) {			
+//			sql=sql+",B."+Constant.LUNGCAPACITYPARAMS[i]+",B."+Constant.LUNGCAPACITYPARAMS[i]+"_rate ";
+//		}	
+//		sql=sql+ " FROM c_equipment_use A,c_lung_capacity B "
+//				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+//				+ " DATE_SUB(NOW(),INTERVAL 7 DAY) <A.create_date AND A.create_date<NOW() ORDER BY A.create_date DESC";
+//		return jdbcTemplate.queryForList(sql,user_id);
+//	}
+	
+
+	
+	/**
+	 * 查询最近90天数据
+	 * AND A.create_date<NOW()
+	 * @param user_id
+	 * @return
+	 */
+	public List<Map<String, Object>> queryRecent(long user_id,String type) {
+		String sql = "SELECT DATE_FORMAT(A.create_date,'%Y-%m-%d %H:%i') datetime,B."+type+" param,"+type+"_rate param_rate"
+				+ " FROM c_equipment_use A,c_lung_capacity B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL "+Constant.RECENT+" DAY) <A.create_date  ORDER BY A.create_date DESC";
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql, new Object[] { user_id });
+	}
+	
+	
+	public List<Map<String, Object>> queryByMonth(Long user_id, String year_month,int pageno, int pagesize) {
+		String sql = "SELECT A.create_date datetime,B.fvc,B.fvc_rate,B.fev1,B.fev1_rate,B.pef,B.pef_rate "
+				+ " FROM c_equipment_use A,c_lung_capacity B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_FORMAT(A.create_date,'%Y-%m')=?  ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql, user_id, year_month,start,pagesize);
+	}
+
+	public List<Map<String, Object>> pageQuery(long user_id, int pageno, int pagesize) {
+		String sql = "SELECT A.create_date datetime,B.fvc,B.fvc_rate,B.fev1,B.fev1_rate,B.pef,B.pef_rate "
+				+ " FROM c_equipment_use A,c_lung_capacity B "
+				+ " WHERE A.order_id=B.equipment_use_order_id AND A.user_id = ? ORDER BY A.create_date DESC LIMIT ?,?";
+		int start = (pageno - 1) * pagesize;
+		System.out.println(sql);
+		return jdbcTemplate.queryForList(sql, user_id, start, pagesize);
+	}
+
+	/*
+	 * 查询一个年内有数据的月份
+	 */
+	public List<Map<String, Object>> queryMonth(long user_id) {
+		String sql = "SELECT DISTINCT(DATE_FORMAT(A.create_date,'%Y-%m')) yearmonth "
+				+ " FROM c_equipment_use A,c_lung_capacity B WHERE "
+				+ " A.order_id=B.equipment_use_order_id AND A.user_id = ? AND "
+				+ " DATE_SUB(NOW(),INTERVAL 1 YEAR) <A.create_date ORDER BY A.create_date DESC ";
+		return jdbcTemplate.queryForList(sql, user_id);
+	}
+
+	
+}

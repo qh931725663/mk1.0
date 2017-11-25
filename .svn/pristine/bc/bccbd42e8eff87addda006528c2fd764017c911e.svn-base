@@ -1,0 +1,114 @@
+package com.haaa.cloudmedical.entity;
+
+import java.util.Date;
+
+public class LungCapacity {
+
+	private Long order_id;
+
+	private Long equipment_use_order_id;
+
+	private Float fvc;
+
+	private Float fvc_rate;
+
+	private Float fev1;
+
+	private Float fev1_rate;
+
+	private Float pef;
+
+	private Float pef_rate;
+
+	private Date create_date;
+
+	private Date update_date;
+
+	public Long getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Long order_id) {
+		this.order_id = order_id;
+	}
+
+	public Long getEquipment_use_order_id() {
+		return equipment_use_order_id;
+	}
+
+	public void setEquipment_use_order_id(Long equipment_use_order_id) {
+		this.equipment_use_order_id = equipment_use_order_id;
+	}
+
+	public Float getFvc() {
+		return fvc;
+	}
+
+	public void setFvc(Float fvc) {
+		this.fvc = fvc;
+	}
+
+	public Float getFvc_rate() {
+		return fvc_rate;
+	}
+
+	public void setFvc_rate(Float fvc_rate) {
+		this.fvc_rate = fvc_rate;
+	}
+
+	public Float getFev1() {
+		return fev1;
+	}
+
+	public void setFev1(Float fev1) {
+		this.fev1 = fev1;
+	}
+
+	public Float getFev1_rate() {
+		return fev1_rate;
+	}
+
+	public void setFev1_rate(Float fev1_rate) {
+		this.fev1_rate = fev1_rate;
+	}
+
+	public Float getPef() {
+		return pef;
+	}
+
+	public void setPef(Float pef) {
+		this.pef = pef;
+	}
+
+	public Float getPef_rate() {
+		return pef_rate;
+	}
+
+	public void setPef_rate(Float pef_rate) {
+		this.pef_rate = pef_rate;
+	}
+
+	public Date getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(Date create_date) {
+		this.create_date = create_date;
+	}
+
+	public Date getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(Date update_date) {
+		this.update_date = update_date;
+	}
+
+	@Override
+	public String toString() {
+		return "LungCapacity [order_id=" + order_id + ", equipment_use_order_id=" + equipment_use_order_id + ", fvc="
+				+ fvc + ", fvc_rate=" + fvc_rate + ", fev1=" + fev1 + ", fev1_rate=" + fev1_rate + ", pef=" + pef
+				+ ", pef_rate=" + pef_rate + ", create_date=" + create_date + ", update_date=" + update_date + "]";
+	}
+
+}

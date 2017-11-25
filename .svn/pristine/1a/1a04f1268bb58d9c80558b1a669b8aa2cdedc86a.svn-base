@@ -1,0 +1,340 @@
+package com.haaa.cloudmedical.platform.allinone.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.common.util.XMLUtil;
+import com.haaa.cloudmedical.dao.AIODao;
+import com.haaa.cloudmedical.dao.UserAppDao;
+
+@Service
+public class AIOService {
+
+	@Resource
+	private UserAppDao userAppDao;
+
+	@Resource
+	private AIODao aioDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	private Logger logger = Logger.getLogger(AIOService.class);
+
+	public Map<String, Object> login(String requestXml) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		try {
+			Map<String, Object> userMap = XMLUtil.xml2Map(requestXml);
+			String authType = (String) userMap.get("AuthType");
+			Map<String, Object> userMap2 = null;
+			System.out.println(authType);
+			if (authType.equals("08")) {
+				String identityCard = (String) userMap.get("AuthData");
+				userMap2 = userAppDao.selectByIdCard(identityCard);
+			} else if (authType.equals("07")) {
+				Map<String, Object> authData = (Map<String, Object>) userMap.get("AuthData");
+				String account = (String) authData.get("Account");
+				String pwd = (String) authData.get("Pwd");
+				pwd = MD5Util.encode(pwd);
+				System.out.println(pwd);
+				userMap2 = userAppDao.selectByAccount(account, pwd);
+			}
+			if (userMap2 != null) {
+				responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				if (userMap2.get("user_sex") == null || userMap2.get("user_birthday") == null) {
+					responseMap.put("ResultCode", "9");
+					responseMap.put("ResultMsg", "请先填写生日和性别信息");
+				} else {
+					responseMap.put("ResultCode", "0");
+					responseMap.put("ResultMsg", "");
+					responseMap.put("ResultData", new HashMap<String, Object>());
+					Map<String, Object> map = (Map<String, Object>) responseMap.get("ResultData");
+					map.put("UserId", userMap2.get("user_id"));
+					map.put("UserName", userMap2.get("user_name"));
+					// if ((Integer)userMap2.get("user_sex")%2==1) {
+					// map.put("UserSex","男");
+					// }else{
+					// map.put("UserSex","女");
+					// }
+					map.put("UserSex", unicodeService.getNameById(String.valueOf(userMap2.get("user_sex"))));
+					map.put("IdentityCard", userMap2.get("user_id"));
+					map.put("Birthday", userMap2.get("user_birthday"));
+					System.out.println(responseMap);
+				}
+
+			} else {
+				responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				responseMap.put("ResultCode", "1");
+				responseMap.put("ResultMsg", "不存在该用户！！！");
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+			responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+			responseMap.put("ResultCode", "9");
+			responseMap.put("ResultMsg", "");
+		}
+		return responseMap;
+	}
+
+	public Map<String, Object> saveData(String requestData) {
+		Map<String, Object> dataMap2 = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Map<String, Object> dataMap = XMLUtil.xml2Map(requestData);
+			dataMap2.put("create_date", dataMap.get("TimeStamp"));
+			dataMap2.put("user_id", dataMap.get("UserDiscernData"));
+			Map<String, Object> senseData = (Map<String, Object>) dataMap.get("SenseData");
+			Object item = senseData.get("Item");
+			int size = 0;           // 标志位用来判断是否7件套数据都测试了
+			if (item instanceof Map) {
+				fieldTrans(dataMap2, (Map<String, Object>) item,size);
+			} else {
+				// TODO
+				for (Map<String, Object> element : (List<Map<String, Object>>) item) {
+					size = fieldTrans(dataMap2, element, size);
+				}
+				
+			}
+			long id = aioDao.saveData(dataMap2);
+			resultMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+			if (id > 0) {
+				resultMap.put("ResultCode", "0");
+				resultMap.put("ResultMsg", "数据同步成功");
+			} else {
+				resultMap.put("ResultCode", "1");
+				resultMap.put("ResultMsg", "数据同步失败");
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+			resultMap.put("ResultCode", "1");
+			resultMap.put("ResultMsg", "数据同步失败");
+		}
+
+		return resultMap;
+	}
+
+	private Integer fieldTrans(Map<String, Object> map, Map<String, Object> dataMap, Integer size) {
+		String type = (String) dataMap.get("ItemType");
+		Map<String, Object> itemDataMap = (Map<String, Object>) dataMap.get("ItemData");
+		switch (type) {
+		case "bloodPress":
+			map.put("HighPressure", itemDataMap.get("SBP"));
+			map.put("LowPressure", itemDataMap.get("DBP"));
+			map.put("PulseRate", itemDataMap.get("PulseRate"));
+			size++;
+			break;
+		case "bloodGlucose":
+			map.put("BloodSugar", itemDataMap.get("BloodGlucose"));
+			size++;
+			break;
+		case "bloodOxygen":
+			map.put("Oxygen", itemDataMap.get("BloodOxygen"));
+			map.put("PulseRate", itemDataMap.get("PulseRate"));
+			size++;
+			break;
+		case "heightWeight":
+			map.put("user_height", itemDataMap.get("Height"));
+			map.put("user_weight", itemDataMap.get("Weight"));
+			map.put("BMI", itemDataMap.get("BMI"));
+			size++;
+			break;
+		case "temperature":
+			map.put("temperature", itemDataMap.get("thermometer"));
+			size++;
+			break;
+		case "lungFunction":
+			map.put("fvc", itemDataMap.get("FVC"));
+			map.put("fev1", itemDataMap.get("FevOne"));
+			map.put("pef", itemDataMap.get("PEF"));
+			map.put("fef25", itemDataMap.get("FiveOne"));
+			map.put("fef2575", itemDataMap.get("FiveTwo"));
+			map.put("fef75", itemDataMap.get("FiveThree"));
+			size++;
+			break;
+		case "urineRoutine":
+			map.put("LEU", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("LEU")));
+			map.put("PH", itemDataMap.get("PH"));
+			map.put("NIT", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("NIT")));
+			map.put("GLU", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("GLU")));
+			map.put("VC", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("VC")));
+			map.put("SG", itemDataMap.get("SG"));
+			map.put("URO", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("UBG")));
+			map.put("BIL", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("LRY")));
+			map.put("KET", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("KET")));
+			map.put("BLD", DataTransfromUtil.urineTestString2Unicode((String) itemDataMap.get("BU")));
+			size++;
+			break;
+		default:
+
+			break;
+		}
+		return size;
+	}
+
+	public InfoJson getTimeList(long user_id, String downTime, String upTime) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println(upTime);
+		System.out.println(user_id);
+		System.out.println(downTime);
+		try {
+			List<Map<String, Object>> list = aioDao.getTimeList(user_id, downTime, upTime);
+			System.out.println(list);
+			infoJson.setData(list);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			// TODO: handle exception
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson getDetail(long user_id, long order_id) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println(user_id);
+		System.out.println(order_id);
+		try {
+			Map<String, Object> selfServiceCheck = aioDao.getDetail(user_id, order_id);
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("UserName", selfServiceCheck.get("user_name"));
+			resultMap.put("Hospital", selfServiceCheck.get("hosp_name"));
+			resultMap.put("date", selfServiceCheck.get("create_date"));
+			resultMap.put("HeartRate", selfServiceCheck.get("HeartRate"));
+			resultMap.put("Oxygen", NumberUtil.decimalFormat((float) selfServiceCheck.get("Oxygen"), 2));
+			resultMap.put("OPulseRate", selfServiceCheck.get("PulseRate"));
+			resultMap.put("PPulseRate", selfServiceCheck.get("PulseRate"));
+			resultMap.put("HighPressure", selfServiceCheck.get("HighPressure"));
+			resultMap.put("LowPressure", selfServiceCheck.get("LowPressure"));
+			resultMap.put("Weight", NumberUtil.decimalFormat((float) selfServiceCheck.get("user_weight"), 2));
+			resultMap.put("Height", NumberUtil.decimalFormat((float) selfServiceCheck.get("user_height"), 2));
+			resultMap.put("BloodSugar", NumberUtil.decimalFormat((float) selfServiceCheck.get("BloodSugar"), 2));
+			resultMap.put("FVC", NumberUtil.decimalFormat((float) selfServiceCheck.get("FVC"), 2));
+			resultMap.put("Temperature", NumberUtil.decimalFormat((float) selfServiceCheck.get("temperature"), 2));
+			Float bmi = (Float) selfServiceCheck.get("BMI");
+			resultMap.put("BMI", bmi);
+			if (bmi != null) {
+				if (bmi < Constant.BMI1) {
+					resultMap.put("BMIResult", "过轻");
+				} else if (bmi < Constant.BMI2) {
+					resultMap.put("BMIResult", "正常");
+				} else if (bmi < Constant.BMI3) {
+					resultMap.put("BMIResult", "过重");
+				} else if (bmi < Constant.BMI4) {
+					resultMap.put("BMIResult", "肥胖");
+				} else {
+					resultMap.put("BMIResult", "非常肥胖");
+				}
+			}
+			if (selfServiceCheck.get("BLD") != null && selfServiceCheck.get("BIL") != null
+					&& selfServiceCheck.get("GLU") != null && selfServiceCheck.get("KET") != null
+					&& selfServiceCheck.get("LEU") != null && selfServiceCheck.get("NIT") != null
+					&& selfServiceCheck.get("PRO") != null && selfServiceCheck.get("URO") != null
+					&& selfServiceCheck.get("SG") != null && selfServiceCheck.get("PH") != null) {
+				if ((int) selfServiceCheck.get("BLD") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("BIL") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("GLU") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("KET") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("LEU") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("LEU") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("PRO") != Constant.URINEMINUS
+						|| (int) selfServiceCheck.get("URO") != Constant.URINEMINUS
+						|| (float) selfServiceCheck.get("SG") < Constant.URINESG1
+						|| (float) selfServiceCheck.get("SG") > Constant.URINESG2
+						|| (float) selfServiceCheck.get("PH") < Constant.URINEPH1
+						|| (float) selfServiceCheck.get("PH") > Constant.URINEPH2) {
+					resultMap.put("UrineResult", "异常");
+				} else {
+					resultMap.put("UrineResult", "正常");
+				}
+			}
+			infoJson.setData(resultMap);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson getDetailByTime(long user_id, String downTime, String upTime) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			List<Map<String, Object>> selfServiceCheckList = aioDao.getDetailByTime(user_id, downTime, upTime);
+			List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+			for (Map<String, Object> selfServiceCheck : selfServiceCheckList) {
+				Map<String, Object> resultMap = new HashMap<String, Object>();
+				resultMap.put("UserName", selfServiceCheck.get("user_name"));
+				resultMap.put("Hospital", selfServiceCheck.get("hosp_name"));
+				resultMap.put("date", DateUtil.dateFormat((String) selfServiceCheck.get("create_date"), "yyyy-MM-dd"));
+				resultMap.put("HeartRate", selfServiceCheck.get("HeartRate"));
+				resultMap.put("Oxygen", NumberUtil.decimalFormat((float) selfServiceCheck.get("Oxygen"), 2));
+				resultMap.put("OPulseRate", selfServiceCheck.get("PulseRate"));
+				resultMap.put("PPulseRate", selfServiceCheck.get("PulseRate"));
+				resultMap.put("HighPressure", selfServiceCheck.get("HighPressure"));
+				resultMap.put("LowPressure", selfServiceCheck.get("LowPressure"));
+				resultMap.put("Weight", NumberUtil.decimalFormat((float) selfServiceCheck.get("user_weight"), 2));
+				resultMap.put("Height", NumberUtil.decimalFormat((float) selfServiceCheck.get("user_height"), 2));
+				resultMap.put("BloodSugar", NumberUtil.decimalFormat((float) selfServiceCheck.get("BloodSugar"), 2));
+				resultMap.put("FVC", NumberUtil.decimalFormat((float) selfServiceCheck.get("FVC"), 2));
+				resultMap.put("Temperature", NumberUtil.decimalFormat((float) selfServiceCheck.get("temperature"), 2));
+				Float bmi = (Float) selfServiceCheck.get("BMI");
+				resultMap.put("BMI", bmi);
+				if (bmi != null) {
+					if (bmi < Constant.BMI1) {
+						resultMap.put("BMIResult", "过轻");
+					} else if (bmi < Constant.BMI2) {
+						resultMap.put("BMIResult", "正常");
+					} else if (bmi < Constant.BMI3) {
+						resultMap.put("BMIResult", "过重");
+					} else if (bmi < Constant.BMI4) {
+						resultMap.put("BMIResult", "肥胖");
+					} else {
+						resultMap.put("BMIResult", "非常肥胖");
+					}
+				}
+				if (selfServiceCheck.get("BLD") != null && selfServiceCheck.get("BIL") != null
+						&& selfServiceCheck.get("GLU") != null && selfServiceCheck.get("KET") != null
+						&& selfServiceCheck.get("LEU") != null && selfServiceCheck.get("NIT") != null
+						&& selfServiceCheck.get("PRO") != null && selfServiceCheck.get("URO") != null
+						&& selfServiceCheck.get("SG") != null && selfServiceCheck.get("PH") != null) {
+					if ((int) selfServiceCheck.get("BLD") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("BIL") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("GLU") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("KET") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("LEU") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("LEU") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("PRO") != Constant.URINEMINUS
+							|| (int) selfServiceCheck.get("URO") != Constant.URINEMINUS
+							|| (float) selfServiceCheck.get("SG") < Constant.URINESG1
+							|| (float) selfServiceCheck.get("SG") > Constant.URINESG2
+							|| (float) selfServiceCheck.get("PH") < Constant.URINEPH1
+							|| (float) selfServiceCheck.get("PH") > Constant.URINEPH2) {
+						resultMap.put("UrineResult", "异常");
+					} else {
+						resultMap.put("UrineResult", "正常");
+					}
+				}
+				resultList.add(resultMap);
+			}
+			infoJson.setData(resultList);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

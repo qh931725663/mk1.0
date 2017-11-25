@@ -1,0 +1,124 @@
+package com.haaa.cloudmedical.platform.healthRecords.service;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.dao.HealthRecordsPlatformDao;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+public class HealthRecordsPlatformService {
+
+	@Autowired
+	private HealthRecordsPlatformDao dao;
+
+	public List<Map<String, Object>> getReport(String user_id, String pic_type, String start, String end) {
+		String info_sql = null;
+		String pic_sql = null;
+		String uploadUrl = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		if (start == null || end == null || "".equals(start) || "".equals(end)) {
+			int month = Calendar.getInstance().get(2) + 1;
+			if (month <= 6) {
+				start = Calendar.getInstance().get(1) + "/01/01";
+				end = Calendar.getInstance().get(1) + "/06/30";
+			} else if (month >= 7) {
+				start = Calendar.getInstance().get(1) + "/07/01";
+				end = Calendar.getInstance().get(1) + "/12/31";
+			}
+		}
+		// 住院报告
+		if (pic_type.equals(Constant.HOSPITAL_REPORT)) {
+			info_sql = "select b.order_id,b.report_no,a.user_name,a.user_card,date_format(b.hospital_report_time,'%Y-%m-%d') hospital_report_time,b.hosp_name,b.hospital_report_days,b.department_name,"
+					+ "b.report_doctor,b.hospital_report_disease,b.hospital_report_result from n_user a,p_hospital_report b where a.user_id = b.patient_id and a.user_id = ? and b.create_date>=? and b.create_date<=?";
+			pic_sql = "select parent_id,concat('" + uploadUrl
+					+ "',medical_picture_upload) medical_picture_upload from p_picture where exists ( select 1 from p_hospital_report where order_id=parent_id and patient_id=? ) and pic_type=? and create_date>=? and create_date<=? ";
+		} else if (pic_type.equals(Constant.CLINIC_REPORT)) {
+			// 门诊报告
+			info_sql = "select a.order_id,a.report_no,a.user_name,date_format(a.clinic_report_time,'%Y-%m-%d') clinic_report_time,a.hosp_name,a.department_name,a.report_doctor,a.clinic_report_disease,"
+					+ "a.clinic_report_result from p_clinic_report a where a.user_id = ? and a.create_date>=? and a.create_date<=?";
+			pic_sql = "select parent_id,concat('" + uploadUrl
+					+ "',medical_picture_upload) medical_picture_upload from p_picture where exists ( select 1 from p_clinic_report where order_id=parent_id and user_id=? ) and pic_type=? and create_date>=? and create_date<=?";
+
+		} else if (pic_type.equals(Constant.INSURANCE_REPORT)) {
+			// 医保记录
+			info_sql = "select b.order_id,b.report_no,a.user_name,a.user_card,a.user_medicare_card,b.hosp_name,b.medical_insurance_type,date_format(b.medical_insurance_time,'%Y-%m-%d') medical_insurance_time,"
+					+ "b.medical_insurance_total,b.medical_insurance_reimbursement_amount,b.medical_insurance_subsidy_amount from n_user a,p_medical_insurance_report b where a.user_id = b.user_id and a.user_id = ? and b.create_date>=? and b.create_date<=?";
+			pic_sql = "select parent_id,concat('" + uploadUrl
+					+ "',medical_picture_upload) medical_picture_upload from p_picture where exists ( select 1 from p_medical_insurance_report where order_id=parent_id and user_id=? ) and pic_type=? and create_date>=? and create_date<=?";
+		} else if (pic_type.equals(Constant.CHECK_REPORT)) {
+			// 体检报告
+			info_sql = "select	a.order_id,a.report_no,a.user_name,date_format(a.check_time,'%Y-%m-%d') check_time,a.hosp_name,a.report_no from p_check_report a where a.user_id = ? and a.create_date>=? and a.create_date<=?";
+			pic_sql = "select parent_id,concat('" + uploadUrl
+					+ "',medical_picture_upload) medical_picture_upload from p_picture where exists ( select 1 from p_check_report where order_id=parent_id and user_id=? ) and pic_type=? and create_date>=? and create_date<=?";
+		} else if (pic_type.equals(Constant.MECHINE_REPORT)) {
+			// 体检一体机
+			info_sql = "select order_id,user_name,date_format(update_date,'%Y-%m-%d') update_date,hosp_name,HeartRate,Oxygen,PulseRate,HighPressure,LowPressure,user_weight,"
+					+ "BloodSugar,temperature,fvc,BMI,(case when URO = '-' and BLD = '-' and BIL = '-' and KET = '-' and GLU = '-' and PRO = '-' and PH >= 6 and PH <= 8 "
+					+ "and NIT = '-' and LEU = '-' and SG = '-' and VC = '-' and MAL = '-' then '正常' else '异常' end ) resulet from self_service_check where user_id =? and update_date>=? and update_date<=?";
+		}
+		List<Map<String, Object>> infolist = dao.select(info_sql, user_id, start, end);
+		try {
+			List<Map<String, Object>> piclist = dao.select(pic_sql, user_id, pic_type, start, end);
+			List<String> list = null;
+			for (Map<String, Object> info : infolist) {
+				list = new ArrayList<String>();
+				String order_id = info.get("order_id").toString();
+				for (Map<String, Object> pic : piclist) {
+					String parent_id = pic.get("parent_id").toString();
+					if (parent_id.equals(order_id)) {
+						list.add(pic.get("medical_picture_upload").toString());
+					}
+				}
+				if (list.size() > 0)
+					info.put("picture", list);
+			}
+		} catch (Exception e) {
+
+		}
+		return infolist;
+	}
+
+	public long save(Object report, User user) {
+		String table = "";
+		if (report instanceof CheckReport) {
+			table = "p_check_report";
+		} else if (report instanceof ClinicReport) {
+			table = "p_clinic_report";
+		} else if (report instanceof HospitalReport) {
+			table = "p_hospital_report";
+		} else if (report instanceof InsuranceReport) {
+			table = "p_medical_insurance_report";
+		}
+		long order_id = dao.insert(report, table);
+		if (user != null && user.getUser_medicare_card() != null && !"".equals(user.getUser_medicare_card())) {
+			dao.update(user, "n_user");
+		}
+		return order_id;
+	}
+
+	// 查询
+	public Map<String, Object> query(String user_id) {
+		Map<String, Object> map = null;
+		String sql = "select a.user_id,a.user_name,a.user_card,a.user_phone,case a.user_is_vip when 101 then 'VIP会员' when 102 then '普通会员' end as user_is_vip,"
+				+ "findname(a.user_sex) user_sex,a.user_age,findname(a.user_marriage) user_marriage,a.user_medicare_card,"
+				+ "findname(a.user_medical_burden) user_medical_burden,findname(a.user_work) user_work,a.user_height,a.user_weight,findname(a.user_blood) user_blood,"
+				+ "(select c.doctor_name from d_patient b,d_doctor c where b.doctor_id=c.doctor_id and b.patient_id = a.user_id) doctor_name,date_format(a.create_date,'%Y-%m-%d') create_date "
+				+ "from	n_user a where a.user_id = ?";
+		List<Map<String,Object>> list = dao.select(sql, user_id);
+		if(list.size()>0)
+			map=list.get(0);
+		return map;
+	}
+
+}

@@ -1,0 +1,171 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>自我监测</title>
+</head>
+<body>
+
+<div class="page-container">
+<input type="hidden" id="user_id">
+<input type="hidden" id="period">
+	<table class="table table-border table-bordered table-striped table-bg table-hover doctor-tablelist">
+		<thead class="thead-list">
+		</thead>
+		<tbody class="doctor-tbody">
+		</tbody>
+	</table>
+	<div id="Pagination" class="pagination"></div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript">
+$(function(){
+    //获取地址栏order_id方法
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+			return null;
+		}
+	var user_id=getUrlParam("user_id");
+	var period=getUrlParam("period");
+	debugger;
+	$("#user_id").val(user_id);
+	$("#period").val(period);
+	
+	//判断血压监测
+	if(period!=""){
+		//数据初始化
+		getDataList(0,null);
+		var initFlag = true;
+		//查询函数
+		function getDataList(currPage) {
+			var data={"pageno":currPage+1,"user_id":$("#user_id").val(),"period":$("#period").val()};
+			$.ajax({
+				url : "../../../chronicplan/bloodSugarQuery.action",
+				type : "get",
+				dataType : 'json',
+				data : data,
+				success : function(response) {
+				console.log(response)
+					var page_count=response.info;
+					debugger;
+					if (initFlag) {
+						//分页插件
+						debugger;
+						$("#Pagination").pagination(page_count,{
+							items_per_page :15,
+							callback : getDataList//回调函数
+						});
+						initFlag = false;
+					}
+					//调用数据展示函数
+					show_list(response);
+				}
+			});
+		}
+	
+		//数据列表展示公共函数
+		function show_list(response){
+			var html = '';
+			var thead='<tr class="text-c">'+
+				'<th>时间</th>'+
+				'<th>测量值</th>';
+				'</tr>';
+				$(".thead-list").html(thead);
+			$.each(response.data, function(i,p){
+				$.each(p.timelist,function(i,k){
+					html +="<tr class='text-c'>"+
+					"<td>"+k.singledata.datetime+"</td>"+
+					"<td>"+k.singledata.BloodSugar+"mmol/L</td>"+
+					"</tr>";				
+				});
+			});
+			$(".doctor-tablelist .doctor-tbody").html(html);
+			$(".page-count").html(response.count);
+		}
+	}else{
+		//数据初始化
+		getDataList2(0,null);
+		var initFlag = true;
+		//查询函数
+		function getDataList2(currPage) {
+			var data={"pageno":currPage+1,"user_id":$("#user_id").val()};
+			$.ajax({
+				url : "../../../equipment/bloodPressurePage.action",
+				type : "get",
+				dataType : 'json',
+				data : data,
+				success : function(response) {
+					var page_count=response.data.recordCount;
+					if (initFlag) {
+						//分页插件
+						$("#Pagination").pagination(page_count,{
+							items_per_page :15,
+							callback : getDataList2//回调函数
+						});
+						initFlag = false;
+					}
+					//调用数据展示函数
+					show_list2(response);
+				}
+			});
+		}
+	
+		//数据列表展示公共函数
+		function show_list2(response){
+			var html = '';
+			var thead='<tr class="text-c">'+
+					'<th>时间</th>'+
+					'<th>血压值</th>'+
+					'<th>心率值</th>'+
+					'</tr>';
+			$(".thead-list").html(thead);
+			$.each(response.data.data, function(i,k){
+				html+= "<tr class='text-c'>"+
+						"<td>"+k.datetime+"</td>"+
+						"<td>"+(k.HighPressure+"/" + k.LowPressure)+"mmHg</td>"+
+						"<td>"+k.PulseRate+"次/分钟</td>"+
+						"</tr>";				
+				});
+			$(".doctor-tablelist .doctor-tbody").html(html);
+			$(".page-count").html(response.data.pageCount);
+		}	
+	}
+});
+
+</script>
+</body>
+</html>

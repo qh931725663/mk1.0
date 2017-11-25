@@ -1,0 +1,21 @@
+*{font:12px "微软雅黑";}
+body{-webkit-overflow-scrolling:touch;overflow: auto;padding:0;margin:0;}
+img{vertical-align:bottom;}
+a,button,input,optgroup,select,textarea {-webkit-tap-highlight-color:rgba(0,0,0,0); /*去掉a、input和button点击时的蓝色外边框和灰色半透明背景*/ }
+a, img {-webkit-touch-callout: none; /*禁止长按链接与图片弹出菜单*/}
+ul,li,p,h1,h2,h3,h4,h5,h6,dl,dt,dd {margin:0px;padding:0px;border:none;list-style:none;}
+a img {border: 0}
+a{text-decoration: none;}
+ul{list-style: none;}
+.fl{float: left;}
+.fr{float: right;}
+/*去掉iPhone、iPad的默认按钮样式*/
+input {-webkit-appearance: none;appearance: none;}
+textarea {-webkit-appearance: none;}
+select {  -webkit-appearance: none;appearance: none;border:none;}
+.button{ border-radius: 0;}
+input[type="date"]:before{content: attr(placeholder);color: gba(0,0,0,0);}
+/*移动端禁止粘贴复制*/
+*{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none; user-select:none;}
+input,textarea {-webkit-user-select:auto;margin: 0px;padding: 0px;outline: none;}
+.text-right{text-align: right;}

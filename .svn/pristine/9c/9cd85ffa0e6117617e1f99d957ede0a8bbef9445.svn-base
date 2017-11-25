@@ -1,0 +1,107 @@
+package com.haaa.cloudmedical.app.equipment.controller;
+
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.equipment.service.BloodOxygenService;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+
+@RestController
+@RequestMapping("/blood_oxygen")
+public class BloodOxygenController {
+	@Resource
+	private BloodOxygenService service;
+
+	private Logger logger = Logger.getLogger(BloodOxygenController.class);
+
+	/**
+	 * 
+	 * @Title: add 
+	 * @Description: app血氧数据添加 
+	 * @param equipmentUse
+	 * @param bloodOxygen
+	 * @param request
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping(value = { "/add.action" }, method = { RequestMethod.POST })
+	public InfoJson add(EquipmentUse equipmentUse,BloodOxygen bloodOxygen, HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (bloodOxygen.getOxygen()!=null) {
+				infoJson = service.add(equipmentUse, bloodOxygen);
+			}else{
+				infoJson.setInfo("没有数据传入！！！");
+			}			
+		} catch (Exception e) {
+			logger.error("", e);
+		}        
+		return infoJson;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @Title: query 
+	 * @Description: 数据查询
+	 * @param user_id
+	 * @param recent  不为null时表示，曲线图查询
+	 * @param year_month
+	 * @param pageno
+	 * @param pagesize
+	 * @param request
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping(value = { "/query.action" }, method = { RequestMethod.GET })
+	public InfoJson query(Long user_id, String recent, String year_month, Integer pageno, Integer pagesize,Integer days,
+			HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (pagesize == null) {
+				pagesize = Constant.DEFAULT_PAGESIZE;
+			}
+			if (recent != null) {
+				if (days==null) {
+					days = Constant.RECENT;
+				}
+				infoJson = service.queryRecent(user_id,days);
+			} else if (pageno != null) {
+				infoJson = service.pageQuery(user_id, year_month, pageno, pagesize);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: queryMonth 
+	 * @Description: 查询一年内具有数据的月份
+	 * @param user_id
+	 * @return
+	 * @throws
+	 */
+	@RequestMapping(value = { "/month.action" }, method = { RequestMethod.GET })
+	public InfoJson queryMonth(Long user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.queryMonth(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+
+	}
+}

@@ -1,0 +1,136 @@
+package com.haaa.cloudmedical.platform.survey.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.BasicInfoSurveyDao;
+import com.haaa.cloudmedical.platform.survey.service.SurveyService;
+
+@Controller
+@RequestMapping("/survey")
+public class SurveyController {
+	
+	@Autowired
+	private SurveyService service;
+	
+	@Resource
+	private BasicInfoSurveyDao basicInfoSurveyDao;
+	
+	
+	@RequestMapping("/userInfo.action")
+	@ResponseBody
+	public Object getUserInfo(String user_id){
+		Map<String,Object> user = service.getUserInfo(user_id);
+		return user;
+	}
+	
+	@RequestMapping("/saveAnswer.action")
+	@ResponseBody
+	public Object saveAnswer(HttpServletRequest request){
+		ResponseDTO dto = new ResponseDTO(); 
+
+		//保存人员信息
+		String user_id = request.getParameter("user_id");
+		if(basicInfoSurveyDao.getBasicInfoSurveyHistory(null, null, user_id).size()>0){
+			String email = request.getParameter("email");
+			String post_code = request.getParameter("post_code");
+			String user_address = request.getParameter("user_address");
+			String user_height = request.getParameter("user_height");
+			String user_weight = request.getParameter("user_weight");
+			String user_waist = request.getParameter("user_waist");
+			String fbg = request.getParameter("fbg");   //空腹血糖
+			String total_chol = request.getParameter("total_chol");   //胆固醇
+			String hdl_chol = request.getParameter("hdl_chol");   //hdl胆固醇
+			String steps = request.getParameter("steps");   //步数
+			String dia_pressure = request.getParameter("dia_pressure");   //舒张压
+			String sys_pressure = request.getParameter("sys_pressure");   //收缩压
+			
+			String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+			Map<String, Object> survey = new HashMap<String, Object>();
+			survey.put("user_id", user_id);
+			survey.put("email", email);
+			survey.put("post_code", post_code);
+			survey.put("user_address", user_address);
+			survey.put("user_height", user_height);
+			survey.put("user_weight", user_weight);
+			survey.put("user_waist", user_waist);
+			survey.put("fbg", fbg);
+			survey.put("total_chol", total_chol);
+			survey.put("hdl_chol", hdl_chol);
+			survey.put("steps", steps);
+			survey.put("dia_pressure",dia_pressure);
+			survey.put("sys_pressure", sys_pressure);
+			survey.put("create_date", date);
+			
+			//初始化健康评估表
+			long order_id = service.addSurvey(survey);
+			
+			//获取答案并保存
+			List<Map<String,Object>> question_list = service.getSurveyQuestionList(order_id);
+			List<Map<String,Object>> answer_list = new ArrayList<Map<String,Object>>();
+			for (Map<String, Object> map : question_list) {
+				String survey_question_order_id = map.get("order_id").toString();//问题ID
+				String question_k_order_id = map.get("question_k_order_id").toString();//问题编码
+				String survey_option_order_id = request.getParameter(question_k_order_id);// key=问题编码,value=答案编码
+				if(survey_option_order_id!=null&&!"".equals(survey_option_order_id)){
+					Map<String,Object> question = new HashMap<String,Object>();
+					question.put("survey_order_id", order_id);//评估表ID
+					question.put("survey_question_order_id", survey_question_order_id);//问题ID
+					question.put("survey_option_order_id", survey_option_order_id);//答案ID
+					question.put("survey_option_content", service.getSurveyAnswerContent(Long.parseLong(survey_option_order_id)));//答案内容
+					question.put("create_date", date);
+					answer_list.add(question);
+					//保存默认计划
+					//service.saveChronicManage(question_k_order_id, question, user_id);
+				}
+			}
+			service.saveAnswer(answer_list);
+			service.call(String.valueOf(order_id));
+			dto.setFlag(true);
+		}else{
+			dto.setFlag(false);
+			dto.setErrmsg("请先去完善基础档案");
+		}
+		return dto;
+	}
+	
+	@RequestMapping("/querySurvey.action")
+    @ResponseBody
+	public Object querySurvey(String user_id, String start, String end){
+	    return service.querySurvey(user_id, start, end);
+	}
+	
+	@RequestMapping("/queryUserSurvey.action")
+    @ResponseBody
+    public Object queryUserSurvey(String user_id){
+        return service.queryUserSurvey(user_id);
+    }
+	
+	@RequestMapping("/queryUserInfo.action")
+    @ResponseBody
+    public Object queryUserInfo(String user_id){
+        return service.queryUserInfo(user_id);
+    }
+
+	@RequestMapping("/getLastSurvey.action")
+    @ResponseBody
+	public InfoJson getLastSurvey(String user_id){
+		InfoJson info = service.getDetail(user_id);
+		return info;
+	}
+
+}

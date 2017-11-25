@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+
+
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>用户列表</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		账号管理 <span class="c-gray en">&gt;</span> 用户列表
+		<a class="btn btn-danger radius r btn-refresh" style="line-height:1.6em;margin-top:3px" href="javascript:window.location.reload();" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i>
+		</a>
+	</nav>
+<div class="page-container">
+	<form id="form-user">
+		<div style="width:100%;margin-bottom:15px;">
+<!-- 			<span style="display:inline-block;width:50px;text-align: right">用户名</span>
+			<input type="text" class="input-text radius"  name="" placeholder="请输入用户名" style="width:130px;"/>
+ -->			<span style="display:inline-block;width:50px;text-align: right;margin-right: 8px;">姓名</span>
+			<input type="text" class="input-text input-width radius" id="user_name"  name="user_name" placeholder="请输入姓名">
+			<span style="display:inline-block;width:50px;text-align: right">角色</span>
+			<select class="radius" id="role_name" name="role_code" style="height:30px;width:90px;">
+				<option value="" selected>全部</option>
+				<option value="1500004">管理员</option>
+				<option value="1500002">医生</option>
+				<option value="1500003">运营</option>
+			</select>
+			<span style="display:inline-block;width:70px;text-align: right">用户状态</span>
+			<select class="radius" id="user_flag" name="user_flag" style="height:30px;width:90px;">
+				<option value="" >全部</option>
+				<option value="2000001" selected>有效</option>
+				<option value="2000002">无效</option>
+			</select>
+
+			<button type="button" class="btn btn-danger btn-search">查询</button>
+			<button type="button" class="btn btn-success batch-upload" style="float: right;margin-left: 10px;">批量导入</button>
+			<button type="button" class="btn btn-success btn-user-add" style="float: right;">新增</button>
+		</div>
+	</form>
+	<table class="table table-border table-bordered table-bg table-hover user-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+ 				<th>手机号</th>
+ 				<th >姓名</th>
+				<th>角色名称</th>
+				<th>用户状态</th>
+				<th>上次登录时间</th>
+				<th>创建时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="user-tbody"></tbody>
+	</table>
+	<div id="Pagination" class="pagination"></div>
+
+</div>
+<!--用户批量上传弹框-->
+<div id="layer_batch_upload" style="width:100%;display:none;">
+<form >
+	<div style="background:#5eb95e;color:#fff;height:30px;padding:5px 0 5px 5px;line-height: 30px;">批量导入
+	</div>
+	<div style="width:390px;margin:45px auto;">
+		<div style="width: 20px;"></div>
+		<span class="btn-upload">
+			<input class="input-text upload-url" type="text" name="uploadfile" id="uploadfile" nullmsg="请添加附件！" style="width:209px;margin-left:48px;">
+			<input type="file" id="input-file" multiple name="file-2" class="input-file">
+			<span class="btn btn-success radius" style="font-size:13px;font-style: normal">浏览</span>
+		</span>
+		<span id="upload-file" class="btn" style="background: #da281f;color:#fff;" >导入</span>
+		<p style="color:#b5b5b5;margin-left: 46px;margin-top: 3px;">按照模板格式填写数据，上传Excel表格
+		</p>
+	</div>
+	<a href="../files/memberexcel.xlsx" style="display: block;margin:10px 24px;text-align: right;"><i class="dowload-excel"></i>下载模板</a>
+	</form>
+</div>
+<!-- 上传信息提示 -->	
+<div id="layer_batch_upload_mes" style="width:100%;display:none;">
+	<div style="background:#5eb95e;color:#fff;height:30px;padding:5px 0 5px 5px;line-height: 30px;">
+	上传信息提示
+	</div>
+	<span id='layer_mes' style='display:inline-block;width:100%;margin: 17px 0px;'>数据正在加载,请耐心等待...<span>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+//定义全局菜单变量
+var t="";
+$(function(){
+	//获取地址栏后面菜单参数
+	 var a = window.location.href;
+	 var s=a.indexOf("?");
+	 t=a.substring(s+1);
+
+	 //用户管理初始化加载数据
+     getDataList(0,null);
+
+    //条件查询
+    var initFlag2="";
+    $(".btn-search").click(function(){
+    	 initFlag2=true;
+		getDataList(0,null);
+    });
+
+    var initFlag = true;
+	//查询函数
+	function getDataList(currPage, jg) {
+	    var page=currPage+1;
+		$.ajax({
+		    url : "../../../user-platform/gridquery.action",
+		    type : "post",
+		    dataType : 'json',
+		    data : {pageno :currPage+1,c_menu_code:t,user_name:$("#user_name").val(),role_code:$("#role_name").val(),user_flag:$("#user_flag").val()},
+		    success : function(response) {
+		    //console.log(response.recordCount);
+		    var page_count=response.recordCount;
+		    if (initFlag) {
+		    	//debugger;
+	        	$("#Pagination").pagination(page_count,{
+
+	            	/*items_per_page : rows,*/
+	            	/*num_edge_entries : 1,
+	            	num_display_entries : 10,*/
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag = false;
+            }
+            if (initFlag2) {
+		    	//debugger;
+	        	$("#Pagination").pagination(page_count,{
+
+	            	/*items_per_page : rows,*/
+	            	/*num_edge_entries : 1,
+	            	num_display_entries : 10,*/
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag2 = false;
+            }	
+	
+	    	//调用数据展示函数
+	    	//window.location.replace(window.location.href)
+		    show_list(response);
+		   }
+		});
+	}	
+
+ //数据展示公共函数
+ function show_list(response){
+   var html ="";
+   var html2="";
+   var pn=response.pageNo;
+   var num=(pn-1)*10+1;
+   console.log(response.data);
+    $.each(response.data, function(i,p){
+    	if(p.user_flag=="有效"){
+				html2=`<span id="user-staus" style="color:#da281f;cursor:pointer;" onclick="user_status($(this),${p.user_id},'${p.user_flag}')">停用</span>`;
+    	}else{
+ 				html2=`<span id="user-staus" style="color:#da281f;cursor:pointer;" onclick="user_status($(this),${p.user_id},'${p.user_flag}')">启用</span>`;   		
+    	}
+        html +=`<tr class='text-c'>
+               	<td>`+(num+i)+`</td>
+               	<td>${p.user_phone}</td>
+                <td>${p.user_name}</td>
+                <td>${p.role_name}</td>
+                <td>${p.user_flag}</td>
+                <td>${p.update_date}</td>
+                <td>${p.ceate_date}</td>
+                <td class="td-manage">
+				<span class="btn-user-edit" style="cursor:pointer" onclick=user_edit(${p.user_id},t)>编辑</span>`+html2+`
+				</td>
+                </tr>`;
+                });
+        $(".user-tablelist .user-tbody").html(html);
+        $(".page-count").html(response.pageCount);
+    }
+
+
+	//用户批量上传弹框
+	$(".batch-upload").click(function(){
+		index_layer_receivable_fund=layer.open({
+			type: 1,
+			area: ['450px', '250px'],
+			title: false,
+			content:$('#layer_batch_upload')
+		});
+	});
+	//数据导入
+	$("#upload-file").click(function(){
+		if($("#uploadfile").val()!=""){
+			setTimeout(function(){
+				layer.close(index_layer_receivable_fund);
+				index_layer_upload_mes=layer.open({
+						type: 1,
+						area: ['300px', '200px'],
+						title: false,
+						content: $("#layer_batch_upload_mes")
+					});	
+			},10);
+			$.ajax({
+			    url : "../../../batch/read.action",
+			    type : "post",
+			    dataType : 'json',
+			    timeout:55000,
+			    data :{path:"D:/memberexcel.xlsx",data_type:'1'},
+			    success : function(response) {
+			    	$("#layer_mes").html(response.data);
+			    },
+			    error: function (XmlHttpRequest, textStatus, errorThrown) {
+					//alter(data);
+					layer.msg("上传失败！");
+				}	
+			}); 
+		}		
+	});
+
+	/*管理员-增加*/
+	$(".btn-user-add").click(function(){
+		layer_show('新增用户','user-add.html?'+t,'100','100');
+	});
+	
+});
+//启用 停用
+	function user_status(obj,user_id,flagg){
+		//console.log(a);
+		if(flagg=='有效'){
+			//debugger;
+			obj.html("启用");
+			window.location.reload();
+
+			$.ajax({
+            	url:"../../../user-platform/userflag.action",
+            	type:"post",
+            	dataType:'json',
+            	data:{user_id:user_id,user_flag:2000002},
+            	success:function(response) {
+            	}
+        	});	
+        }else{
+        	//debugger;
+        	obj.html("停用");
+        	window.location.reload();
+			$.ajax({
+            	url:"../../../user-platform/userflag.action",
+            	type:"post",
+            	dataType:'json',
+            	data:{user_id:user_id,user_flag:2000001},
+            	success:function(response) {
+            		window.location.reload();
+            	}
+        	});
+        }
+	}
+
+	/*编辑用户*/
+	function user_edit(id){
+		layer_show('编辑用户','user-edit.html?'+t+'&'+id,'100','100');
+
+	}	
+
+//批量导入
+
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+package com.haaa.cloudmedical.platform.survey.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.MedicalSurveyDao;
+
+@Service
+public class MedicalSurveyService {
+
+	@Resource
+	private MedicalSurveyDao medicalSurveyDao;
+
+	private Logger logger = Logger.getLogger(MedicalSurveyService.class);
+
+	public InfoJson getPersonalInfo(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson.setData(medicalSurveyDao.getPersonalInfo(user_id));
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@Transactional
+	public InfoJson saveHealthSurvey(Map<String, Object> data) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			Date date = new Date();
+			long order_id = saveHealthSurveyHistory(data,date);
+			Set<String> questionSet = data.keySet();
+			for (String string : questionSet) {
+				Map<String, Object> question = medicalSurveyDao.getQuestionById(string);
+				question.put("medical_history_order_id",order_id);
+				question.put("create_date", date);
+				Map<String, Object> answer = new HashMap<String, Object>();
+				answer.put("create_date", date);
+				answer.put("survey_answer", data.get("survey_answer"));
+				medicalSurveyDao.addQuestion(question);
+				medicalSurveyDao.addAnswer(answer);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	
+	private long saveHealthSurveyHistory(Map<String, Object> data,Date date){
+		Map<String, Object> survey_history = new HashMap<String, Object>();
+		survey_history.put("user_id", data.remove("user_id"));
+		survey_history.put("user_name", data.remove("user_name"));
+		survey_history.put("fixed_telephone", data.remove("fixed_telephone"));
+		survey_history.put("user_phone", data.remove("user_phone"));
+		survey_history.put("user_sex", data.remove("user_sex"));
+		survey_history.put("user_address", data.remove("user_address"));
+		survey_history.put("email", data.remove("email"));
+		survey_history.put("language", data.remove("language"));
+		survey_history.put("employment_status", data.remove("employment_status"));
+		survey_history.put("user_height", data.remove("user_height"));
+		survey_history.put("user_weight", data.remove("user_weight"));
+		survey_history.put("HighPressure", data.remove("HighPressure"));
+		survey_history.put("LowPressure", data.remove("LowPressure"));
+		survey_history.put("medical_insurance", data.remove("medical_insurance"));
+		survey_history.put("medical_insurance_code", data.remove("medical_insurance_code"));
+		survey_history.put("emergency_contact", data.remove("emergency_contact"));
+		survey_history.put("medical_insurance_code", data.remove("medical_insurance_code"));
+		survey_history.put("emergency_contact_phone", data.remove("emergency_contact_phone"));
+		survey_history.put("last_check", data.remove("last_check"));
+        survey_history.put("create_date",date);		
+        return medicalSurveyDao.saveHealthHistory(survey_history);
+	}
+}

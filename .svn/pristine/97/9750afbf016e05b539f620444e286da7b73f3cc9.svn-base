@@ -1,0 +1,222 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.dao;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Repository
+public class DiabetesDocDao extends BaseTemplateDao {
+
+	public long addDoc(Map<String, Object> map) {
+		String user_id = map.get("user_id").toString();
+		String now = LocalDate.now().toString();
+		String sql = "select count(*) from t_chronic_dm where user_id = ? and date_format(create_time,'%Y-%m-%d')<=? and date_format(date_add(create_time,INTERVAL 1 YEAR),'%Y-%m-%d')>=?";
+		if(this.getValue(sql, new Object[]{user_id,now,now}, Integer.class)==0){
+			return this.insert(map, "t_chronic_dm");
+		}
+		return 0;
+	}
+
+	public int updateDoc(Map<String, Object> map) {
+		return update(map, "t_chronic_dm");
+	}
+
+	public long addQuestions(Map<String, Object> map) {
+		return insert(map, "t_chronic_dm_question");
+	}
+
+	public long addAnswers(Map<String, Object> map) {
+		return insert(map, "t_chronic_dm_answer");
+	}
+
+	public Map<String, Object> getDocBasicInfo(long order_id) {
+		String sql = "select order_id,base_status,image_status,station_status,status from t_chronic_dm where order_id =? ";
+		return get(sql, new Object[] { order_id });
+	}
+
+	/**
+	 * 
+	 * @Title: getKOptions 
+	 * @Description: 如果scope_flag为null,则查询所有选项
+	 * @param scope_flag
+	 * @return
+	 * @throws
+	 */
+	public List<Map<String, Object>> getKOptions(String scope_flag) {
+		StringBuffer sql = new StringBuffer(
+				"select order_id, question_k_order_id,option_content,scope_flag,question_type from t_chronic_dm_options a inner join (select order_id question_order_id,question_type,scope_flag from t_chronic_dm_question_k )b on  a.question_k_order_id=b.question_order_id ");
+		LinkedList<Object> params = new LinkedList<Object>();
+		if (!StringUtil.isEmpty(scope_flag)) {
+			sql.append(" where scope_flag=?");
+			params.add(scope_flag);
+		}
+		return select(sql.toString(), params.toArray());
+	}
+
+	/**
+	 * 
+	 * @Title: getKQuestions 
+	 * @Description: 如果scope_flag为null,则查询所有问题
+	 * @param scope_flag
+	 * @return
+	 * @throws
+	 */
+	public List<Map<String, Object>> getKQuestions(String scope_flag) {
+		StringBuffer sql = new StringBuffer(
+				"select order_id, question_content,parent_id,question_type,table_id,is_require,scope_flag from t_chronic_dm_question_k  ");
+		LinkedList<Object> params = new LinkedList<Object>();
+		if (!StringUtil.isEmpty(scope_flag)) {
+			sql.append(" where scope_flag=?");
+			params.add(scope_flag);
+		}
+		return select(sql.toString(), params.toArray());
+
+	}
+
+	/**
+	 * 
+	 * @Title: getAnswers @Description:如果scope_flag为null,则查询所有答案  @param
+	 * order_id @param scope_flag @return @throws
+	 */
+	public List<Map<String, Object>> getAnswers(long order_id, String scope_flag) {
+		StringBuffer sql = new StringBuffer(
+				"SELECT c.table_id,b.question_index,b.question_k_order_id, a.option_order_id, a.option_content, c.question_type FROM t_chronic_dm_answer a LEFT JOIN t_chronic_dm_question b ON a.question_order_id = b.order_id LEFT JOIN t_chronic_dm_question_k c ON b.question_k_order_id = c.order_id WHERE a.dm_order_id = ? ");
+		LinkedList<Object> params = new LinkedList<Object>();
+		params.add(order_id);
+		if (!StringUtil.isEmpty(scope_flag)) {
+			sql.append(" AND b.scope_flag = ?");
+			params.add(scope_flag);
+		}
+		return select(sql.toString(), params.toArray());
+	}
+
+	public List<Map<String, Object>> getQuestionsByOrderId(long order_id) {
+		String sql = "select * from t_chronic_dm_question where dm_order_id=?";
+		return select(sql, order_id);
+	}
+
+	public void batchAddQuestions(String[] fields, List<Object[]> params) {
+		StringBuffer fieldString = new StringBuffer();
+		StringBuffer paramsString = new StringBuffer();
+		Arrays.asList(fields).forEach(s -> {
+			fieldString.append(s + ",");
+			paramsString.append("?,");
+		});
+		fieldString.deleteCharAt(fieldString.length() - 1);
+		paramsString.deleteCharAt(paramsString.length() - 1);
+		String sql = "insert into t_chronic_dm_question (" + fieldString.toString() + ")values("
+				+ paramsString.toString() + ")";
+		super.jdbcTemplate.batchUpdate(sql, params);
+	}
+
+	public void batchAddAnswers(String[] fields, List<Object[]> params) {
+		StringBuffer fieldString = new StringBuffer();
+		StringBuffer paramsString = new StringBuffer();
+		Arrays.asList(fields).forEach(s -> {
+			fieldString.append(s + ",");
+			paramsString.append("?,");
+		});
+		fieldString.deleteCharAt(fieldString.length() - 1);
+		paramsString.deleteCharAt(paramsString.length() - 1);
+		String sql = "insert into t_chronic_dm_answer (" + fieldString.toString() + ")values(" + paramsString.toString()
+				+ ")";
+		super.jdbcTemplate.batchUpdate(sql, params);
+	}
+
+	public Map<String, Object> getBasicDoc(long order_id) {
+		String sql = "select * from t_chronic_dm where order_id= ?";
+		return jdbcTemplate.queryForMap(sql, order_id);
+	}
+
+	
+	/**
+	 * 
+	 * @Title: getDocPage 
+	 * @Description: 分页
+	 * @param user_id
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 * @throws
+	 */
+	public Page getDocPage(long user_id, int pageno, int pagesize) {
+		//TODO 根据产品需求修改sql语句
+		String sql = "select * from t_chronic_dm where user_id=?";
+		return pageQuery(sql, new Object[] { user_id }, pageno, pagesize);
+
+	}
+	
+	public List<Map<String,Object>> getDocList(String patient_id){
+		String sql = "select order_id,user_id,base_status,image_status,station_status,status,type,level,"
+				+ "date_format(create_time,'%Y-%m-%d %T') create_time,date_format(update_time,'%Y-%m-%d %T') update_time "
+				+ "from t_chronic_dm where user_id = ? order by create_time desc";
+		return this.select(sql, new Object[]{patient_id});
+	}
+
+	public int deleteAnswers(long order_id, int scope_flag) {
+		String sql1 = "delete from t_chronic_dm_answer where question_order_id in (select order_id from t_chronic_dm_question where dm_order_id = ? and scope_flag = ?)";
+		String sql2 = "delete from t_chronic_dm_question where dm_order_id = ? and scope_flag = ?";
+		this.execute(sql1, order_id,scope_flag);
+		this.execute(sql2, order_id,scope_flag);
+		return 1;
+	}
+	
+	
+	public Map<String, Object> getBasicInfo(long order_id){
+		String sql = "select n.user_name,n.user_card,n.user_sex,n.user_birthday,n.user_phone  from t_chronic_dm t right join n_user n on t.user_id=n.user_id where t.order_id=?";
+		return jdbcTemplate.queryForMap(sql, order_id);
+	}
+	
+	/**
+	 * 生成管理计划
+	 * @param patient_id	患者id
+	 * @param order_id		档案id
+	 */
+	public void callProcedure(String patient_id,String order_id){
+		String sql = "select date_format(max(plan_end),'%Y-%m-%d %T') plan_end from p_plan where type = '900001' and user_id = ? ";
+		String time = this.getValue(sql, new Object[]{patient_id}, String.class);
+		if(time==null){
+			this.callProcedure("proc_chronic_plan_dm(?)", new Object[]{order_id}, null);
+			return;
+		}
+		LocalDateTime plan_end = LocalDateTime.parse(time,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		if(LocalDateTime.now().isAfter(plan_end)){
+			this.callProcedure("proc_chronic_plan_dm(?)", new Object[]{order_id}, null);
+			return;
+		}
+	}
+	
+	//追踪慢病档案
+	public void track(String patient_id){
+		
+		String sql1 = "select order_id from p_plan where type = '900001' and user_id = ? and plan_begin < ? and plan_end > ? ";
+		String now = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String order_id = this.getValue(sql1, new Object[]{patient_id,now,now}, String.class);
+		String sql2 = "update p_plan_report a set a.real_num = ifnull(a.real_num,0)+1 where a.user_id = ? and a.plan_order_id = ? "
+				+ "and a.plan_dict_order_id in (357,361)";
+		this.execute(sql2, patient_id,order_id);		
+	}
+	
+	
+	
+}

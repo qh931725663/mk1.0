@@ -1,0 +1,158 @@
+//
+var mkh = {
+	errTips : function(selector, msg) {
+		this.errTipsRemove(selector);
+		$(selector).tips({
+			msg : msg,
+			side : 2,
+			time : 0,
+			x : 10,
+		})
+	},
+	errTipsRemove : function(selector) {
+		if (selector.indexOf('#') != 0) {
+			throw new Error('必须传入ID！');
+		}
+		var id = $(selector).attr('id');
+		var error_element = "div.jq_tips_box." + id;
+		if ($(error_element).length != 0) {
+			$(error_element).remove();
+		}
+	},
+	initHospital : function(selector) {
+		$(selector).on("change", function() {
+			var $input = $(this).prev();
+			if ($input.length > 0) {
+				if ($(this).val())
+					$input.val($(this).find("option:selected").text());
+				else
+					$input.val("");
+			}
+		});
+		$.ajax({
+			type : "post",
+			url : "../../../health-record/getHosptialList.action",
+			dataType : "json",
+			success : function(data) {
+				if (data) {
+					var html = ""
+					$.each(data.data, function(i, item) {
+						html += "<option value='" + item.order_id + "'>" + item.hosp_name + "</option>";
+					});
+					$(selector).append(html);
+				}
+			}
+		});
+	},
+	getUrlParam : function(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+		return null;
+	},
+	addPicture : function() {
+		//
+		var html = "<form class='form'><div class='upload_pic' style='margin-right:4px;'><img src='../images/browse.jpg' " +
+			"class='bor' style='width:120px;height:120px;cursor: pointer;' " +
+			"onclick='javascript:$(this).next().click()'><input class='image file'  " +
+			"name='image' type='file' MULTIPLE='true' ACCEPT='image/gif,image/jpeg,image/jpg,image/png' " +
+			"style='display:none'><span class='btn-upload form-group'><input type='file' multiple " +
+			"name='image1' class='input-file'></span><img src='../images/delete.png' class='delete_img'></div></form>";
+		$('#add_pic').before(html);
+	},
+	initPictures : function() {
+		var self = this;
+		$('#add_pic').on('click', function() {
+			self.addPicture();
+		});
+		//
+		$('#upload_file').on('mouseover mouseout', '.upload_pic', function() {
+			if (event.type == "mouseover") {
+				$(this).find('.delete_img').show();
+			} else if (event.type == "mouseout") {
+				$(this).find('.delete_img').hide();
+			}
+		});
+		$('#upload_file').on('click', '.delete_img', function() {
+			$(this).parent().remove();
+		});
+	},
+	hospitalAutocomplete : function(options) {
+		var param = {
+			showDept : $.noop,
+		}
+		param = $.extend(param, options || {});
+		$("#hosp_name").autocomplete({
+			source : "../../../health-record/getHosptialList.action",
+			select : function(event, data) {
+				//
+				$("#hosp_name").val(data.item.label);
+				$('#hosp_order_id').val(data.item.order_id);
+				//联动
+				param.showDept(data.item.order_id);
+				// 必须阻止事件的默认行为，否则autocomplete默认会把ui.item.value设为输入框的value值
+				event.preventDefault();
+			},
+			open : function(event, ui) {
+				$(".ui-menu-item").each(function(i) {
+					var text = $(this).find('a').text();
+					var input_val = $("#hosp_name").val();
+					if (text.indexOf(input_val) < 0) {
+						$(this).remove();
+					}
+				});
+			}
+		});
+		//绑定科室change
+		$('#department_order_id').on('change', function() {
+			var department_order_id = $(this).val();
+			var department_name = $(this).find("option:selected").text();
+			$("#department_name").val(department_name);
+			//
+			if (department_order_id) {
+				$.ajax({
+					url : "../../../health-record/getDoctorList.action",
+					type : "post",
+					dataType : 'json',
+					data : {
+						department_order_id : department_order_id
+					},
+					success : function(data) {
+						var html = "<option value=''>全部</option>";
+						if (data && data.length > 0) {
+							$.each(data, function(i, item) {
+								html += "<option value='" + item.doctor_id + "''>" + item.doctor_name + "</option>";
+							});
+						}
+						$('#doctor_id').empty();
+						$('#doctor_id').append(html);
+					}
+				});
+			}
+		});
+		//绑定医生change
+		$('#doctor_id').on('change', function() {
+			var doctor_id = $(this).val();
+			var doctor_name = $(this).find("option:selected").text();
+			$("#doctor_name").val(doctor_name);
+
+		});
+	},
+	filterStr : function(str) {
+		var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%+_]");
+		var specialStr = "";
+		for (var i = 0; i < str.length; i++) {
+			specialStr += str.substr(i, 1).replace(pattern, '');
+		}
+		return specialStr;
+	},
+	filterInput : function(){
+		$(":input:visible").each(function(){
+			console.log($(this).val())
+			if($(this).val()){
+				var newstr = mkh.filterStr($(this).val());
+				$(this).val(newstr);
+			}
+		});
+	}
+};

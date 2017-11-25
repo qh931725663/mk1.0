@@ -1,0 +1,14 @@
+package com.haaa.cloudmedical.common.util;
+
+import java.util.ResourceBundle;
+
+public class BeanUtil {
+	public static ResourceBundle getProperty(String name){
+		ResourceBundle rb = ResourceBundle.getBundle(name);
+		return rb;
+	}
+	public static void main(String[] args) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		System.out.println(url);
+	}
+}

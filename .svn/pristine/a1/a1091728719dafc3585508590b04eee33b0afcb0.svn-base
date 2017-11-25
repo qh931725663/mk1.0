@@ -1,0 +1,600 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css"
+	href="../static/view-image/css/lightbox.css">
+<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>健康数据统计</title>
+<style type="text/css">
+.f-l span {
+	margin-left: 15px;
+}
+
+.check_img img {
+	margin-left: 15px;
+}
+
+.show_data {
+	span-size: 14px;
+	color: #008000;
+}
+
+.unit-m {
+	margin-left: 6px;
+}
+
+.lable_style {
+	display: inline-block;
+	width: 100px;
+	text-align: left;
+	font-weight: bold;
+}
+
+.lable_style_2 {
+	display: inline-block;
+	width: 100px;
+	text-align: left;
+	width: 220px;
+	font-weight: bold;
+}
+
+.lable-xu {
+	width: 360px;
+}
+
+.li-base {
+	width: 300px;
+}
+
+.li-xu {
+	width: 570px;
+}
+
+.check-box input {
+	display: block;
+	width: 140%;
+	height: 140%;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	opacity: 0;
+	background: rgb(255, 255, 255);
+}
+
+.li-rel {
+	position: relative;
+}
+
+.li-rel .check-box {
+	position: absolute;
+	left: 240px;
+}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconspan">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>
+		健康档案 <span class="c-gray en">&gt;</span>详情 <a
+			class="btn btn-success radius r"
+			style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconspan">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<div id="tab-system" class="HuiTab">
+			<div class="tabBar cl">
+				<span>血压</span> <span>血糖</span> <span>血氧</span> <span>耳温</span> <span>肺活量
+				</span><span>心电图</span><span>尿检</span>
+			</div>
+
+
+			<!-- 血压 -->
+			<div class="tabCon" id="blood_pressure">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal">
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							 name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							 name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_blood_pressure">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+				</div>
+				<div id="c_blood_pressure" style="height: 600px;width: 1000px"></div>
+			</div>
+
+
+			<!-- 血糖 -->
+			<div class="tabCon" id="blood_sugar">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal">
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							 name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							 name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_blood_sugar">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+				</div>
+				<div id="c_blood_sugar" style="height: 600px;width: 1000px"></div>
+			</div>
+
+			<!-- 血氧 -->
+			<div class="tabCon" id="blood_oxygen">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal">
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							 name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							 name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_blood_oxygen">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+				</div>
+				<div id="c_blood_oxygen" style="height: 600px;width: 1000px"></div>
+			</div>
+
+
+			<!-- 耳温 -->
+			<div class="tabCon" id="ear_thermometer">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal">
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							 name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_ear_thermometer">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+				</div>
+				<div id="c_ear_thermometer" style="height: 600px;width: 1000px"></div>
+			</div>
+
+
+
+			<!-- 肺活量 -->
+			<div class="tabCon" id="lung_capacity">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal">
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							 name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_lung_capacity">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+				</div>
+				<div id="c_lung_capacity" style="height: 600px;width: 1000px"></div>
+			</div>
+
+
+			<!-- 心电 -->
+			<div class="tabCon" id="electrocardiograph">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal" >
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							 name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							 name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_electrocardiograph">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+
+					<div style="float:right;">
+						<span
+							style="display:inline-block;width:100px;margin-top:2px;color:#000">心电记录：</span>
+						<select class="radius" id="electrocardiograph_list"
+							style="height:30px;width:150px;">
+						</select>
+					</div>
+				</div>
+				<div id="c_electrocardiograph" style="height: 600px;width: 1000px"></div>
+			</div>
+
+			<!-- 尿检 -->
+			<div class="tabCon" id="urine_test">
+				<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+					<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+					<form class="form form-horizontal" id="form_chart">
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="s_urine_test">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</form>
+				</div>
+				<div id="c_urine_test" style="height: 600px;width: 1000px"></div>
+			</div>
+
+
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="../static/view-image/js/lightbox-plus-jquery.min.js"></script>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="js/echarts.min.js"></script>
+	<script type="text/javascript">
+		var c_blood_pressure;
+		var c_blood_sugar;
+		var c_blood_oxygen;
+		var c_ear_thermometer;
+		var c_lung_capacity;
+		var c_electrocardiograph;
+	
+		var toolbox = {
+			show : true,
+			feature : {
+				mark : {
+					show : true
+				},
+				dataView : {
+					show : true,
+					readOnly : false
+				},
+				restore : {
+					show : true
+				},
+				saveAsImage : {
+					show : true
+				}
+			}
+		}
+	
+	
+	
+		var chartSet = {
+			title : {
+				text : '',
+				x : 'center'
+			},
+			tooltip : {
+				trigger : 'item',
+				formatter : function(params) {
+					return pointFormat(params);
+				}
+			},
+			toolbox : toolbox,
+			dataZoom : {
+				show : true,
+				start : 70
+			},
+			grid : {
+				y2 : 80
+			},
+			calculable : true,
+			legend : {
+				data : [],
+				x : 'left'
+			},
+			xAxis : [
+				{
+					type : 'time'
+				}
+			],
+			yAxis : [
+				{
+					name : '',
+					type : 'value'
+				}
+			],
+			series : []
+		};
+	
+		var pointFormat = function(params) {
+			var date = new Date(params.value[0]);
+			data = date.getFullYear() + '-'
+			+ (date.getMonth() + 1) + '-'
+			+ date.getDate() + ' '
+			+ date.getHours() + ':'
+			+ date.getMinutes();
+			return 'Y:' + data + '<br/>X:'
+				+ params.value[1];
+		}
+	
+		//请求地址参数
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		//清除方法
+		var clear = function() {
+			$('.btn-danger').on('click', function() {
+				$(this).parent().find('input').val("");
+				$(this).parent().find('.btn-success').click();
+			});
+		}();
+	
+		//tab点击事件
+		var tabsClick = function() {
+			$('.tabBar').find('span').on('click', function() {
+				var index = $(this).index();
+				if (index === 0) {
+					$(".btn-success[name='s_blood_pressure']").click();
+				} else if (index === 1) {
+					$(".btn-success[name='s_blood_sugar']").click();
+				} else if (index === 2) {
+					$(".btn-success[name='s_blood_oxygen']").click();
+				} else if (index === 3) {
+					$(".btn-success[name='s_ear_thermometer']").click();
+				} else if (index === 4) {
+					$(".btn-success[name='s_lung_capacity']").click();
+				} else if (index === 5) {
+					$(".btn-success[name='s_electrocardiograph']").click();
+				} else if (index === 6) {
+					$(".btn-success[name='s_urine_test']").click();
+				}
+			});
+		}();
+	
+	
+		//查询方法
+		var search = function() {
+			$('.btn-success').on('click', function() {
+				var name = this.name;
+				var url = "";
+				if (name == "s_blood_pressure") {
+					url = "../../../equipment/bloodPressureChart.action";
+				} else if (name == "s_blood_sugar") {
+					url = "../../../equipment/bloodSugarChart.action";
+				} else if (name == "s_blood_oxygen") {
+					url = "../../../equipment/bloodOxygenChart.action";
+				} else if (name == "s_ear_thermometer") {
+					url = "../../../equipment/earThermometerChart.action";
+				} else if (name == "s_lung_capacity") {
+					url = "../../../equipment/lungCapacityChart.action";
+				} else if (name == "s_electrocardiograph") {
+					url = "../../../equipment/electrocardiographList.action";
+				}
+				loadData(url, name, this);
+			});
+		}();
+	
+		var loadData = function(url, type, element) {
+			//debugger;
+			var user_id = getUrlParam("id");
+			//var user_id = 357;
+			var jsonData = $(element).parent().serialize();
+			jsonData = jsonData + '&user_id=' + user_id;
+			$.ajax({
+				url : url,
+				type : "post",
+				dataType : 'json',
+				data : jsonData,
+				success : function(result) {
+					switch (type) {
+					case 's_blood_pressure':
+						c_blood_pressure.setOption(chartOption(result.data));
+						break;
+					case 's_blood_sugar':
+						c_blood_sugar.setOption(chartOption(result.data));
+						break;
+					case 's_blood_oxygen':
+						c_blood_oxygen.setOption(chartOption(result.data));
+						break;
+					case 's_ear_thermometer':
+						c_ear_thermometer.setOption(chartOption(result.data));
+						break;
+					case 's_lung_capacity':
+						c_lung_capacity.setOption(chartOption(result.data));
+						break;
+					case 's_electrocardiograph':
+						loadElectrocardiographList(result.data);
+						break;
+					default:
+					}
+				}
+			});
+		};
+	
+	
+	
+		var chartOption = function(data) {
+			var newSet = defaultChartSet();
+			newSet.title.text = data.title;
+			newSet.yAxis[0].name = data.unit;
+			for (a in data.list) {
+				var seriesSet = defaultSeriesSet();
+				seriesSet.data = data.list[a].data;
+				seriesSet.name = data.list[a].name;
+				newSet.series.push(seriesSet);
+				newSet.legend.data.push(data.list[a].name);
+			}
+	
+			return newSet;
+		}
+	
+		//初始化
+		$(function() {
+			$.Huitab("#tab-system .tabBar span", "#tab-system .tabCon", "current", "click", "0");
+			c_blood_pressure = echarts.init(document.getElementById('c_blood_pressure'));
+			c_blood_sugar = echarts.init(document.getElementById('c_blood_sugar'));
+			c_blood_oxygen = echarts.init(document.getElementById('c_blood_oxygen'));
+			c_ear_thermometer = echarts.init(document.getElementById('c_ear_thermometer'));
+			c_lung_capacity = echarts.init(document.getElementById('c_lung_capacity'));
+			c_electrocardiograph = echarts.init(document.getElementById('c_electrocardiograph'));
+	
+			c_blood_pressure.setOption(defaultChartSet('血压'));
+			c_blood_sugar.setOption(defaultChartSet('血糖'));
+			c_blood_oxygen.setOption(defaultChartSet('血氧'));
+			c_ear_thermometer.setOption(defaultChartSet('耳温'));
+			c_lung_capacity.setOption(defaultChartSet('肺活量'));
+			c_electrocardiograph.setOption(defaultChartSet('心电图'));
+	
+			$(".btn-success[name='s_blood_pressure']").click();
+	
+		});
+	
+		//加载心电列表
+		function loadElectrocardiographList(data) {
+			$('#electrocardiograph_list').empty();
+			for (a in data) {
+				var content = '<option value="' + data[a].order_id + '">' + data[a].datetime + '</option>';
+				$('#electrocardiograph_list').append(content);
+			}
+			console.log($("#electrocardiograph_list"));
+			$("#electrocardiograph_list").on("change", function() {
+				var $select = $(this).find("option:selected");
+				console.log($select.val());
+				$.ajax({
+					url : "../../../equipment/electrocardiographChart.action",
+					type : "post",
+					dataType : 'json',
+					data : {
+						'order_id' : $select.val()
+					},
+					success : function(result) {
+						var newSet = defaultCharSet();
+						newSet.title.text = data.title;
+						newSet.xAxis[0].type = 'value';
+						newSet.yAxis[0].name = data.unit;
+						for (a in data.list) {
+							var seriesSet = defaultSeriesSet();
+							seriesSet.data = data.list[a].data;
+							seriesSet.name = data.list[a].name;
+							newSet.series.push(seriesSet);
+							newSet.legend.data.push(data.list[a].name);
+						}
+						c_electrocardiograph.setOption(newSet);
+					}
+				});
+			});
+		}
+	
+		var defaultChartSet = function(title) {
+			var newSet = {
+				title : {
+					text : '',
+					x : 'center'
+				},
+				tooltip : {
+					trigger : 'item',
+					formatter : function(params) {
+						return pointFormat(params);
+					}
+				},
+				toolbox : toolbox,
+				dataZoom : {
+					show : true,
+					start : 70
+				},
+				grid : {
+					y2 : 80
+				},
+				calculable : true,
+				legend : {
+					data : [],
+					x : 'left'
+				},
+				xAxis : [
+					{
+						type : 'time'
+					}
+				],
+				yAxis : [
+					{
+						name : '',
+						type : 'value'
+					}
+				],
+				series : []
+			};
+			newSet.title.text = title;
+			return newSet;
+		}
+		var defaultSeriesSet = function() {
+			return {
+				name : '',
+				type : 'line',
+				data : []
+			};
+		}
+	</script>
+</body>
+</html>

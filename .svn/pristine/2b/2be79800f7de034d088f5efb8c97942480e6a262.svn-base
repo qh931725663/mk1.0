@@ -1,0 +1,439 @@
+package com.haaa.cloudmedical.platform.healthRecords.contorller;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.user.service.DoctorAppService;
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.entity.Hypertension;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.healthRecords.service.ChronicRecordsService;
+import com.haaa.cloudmedical.platform.plan.model.PlanVo;
+
+/**
+ * 
+ * @author Owen
+ *
+ */
+@RestController
+@RequestMapping("/chronicRecord")
+public class ChronicRecordsPlatformController {
+	@Autowired
+    private ChronicRecordsService service;
+	private static Logger logger = Logger.getLogger(DoctorAppService.class);	
+	 /*
+     * 分页数据
+     */
+    @RequestMapping("/pageData.action")
+    public Object getPage(PlanVo model) {
+    	 if (model.getPageno() == null || model.getPageno() == 0) {
+             model.setPageno(1);
+         }
+         //查询分页
+         Page page = null;
+         try {
+             page = service.getPage(model);
+         } catch (Exception e) {
+             e.printStackTrace();
+             return new StdDTO(0, "系统异常");
+         }
+         return new StdDTO(1, page);
+    }
+    
+///////////////////////////////高血压慢病档案CRUD开始////////////////////////////////////////////////////////////
+    
+    /**
+	 * 新增高血压慢病档案
+	 * 
+	 * @param patient_id
+	 */
+	@RequestMapping("/addNewHypertension.action")
+	public ResponseDTO addNewHypertension(String patient_id) {
+		ResponseDTO dto = new ResponseDTO();
+		String create_date = DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		Hypertension hypertension = new Hypertension(); 
+		hypertension.setUser_id(patient_id);
+		hypertension.setCreate_date(create_date);
+		try {
+			long order_id = service.addNewHypertensionDocument(hypertension);
+			dto.setFlag(true);
+			dto.setData(order_id);
+		} catch (Exception e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+
+		return dto;
+	}
+
+	/**
+	 * 新增高血压慢病档案-基本信息
+	 * 
+	 * @see updateBasicInfo.action
+	 * @param request
+	 */
+	@Deprecated
+	@RequestMapping("/addBasicInfo.action")
+	public ResponseDTO addBasicInfo(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, String[]> raw = request.getParameterMap();
+		Map<String, String[]> data = service.getHypertensionData(raw);
+		try {
+			service.check(data, "1");
+			//service.addBasicInfo(data);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+
+	}
+
+	/**
+	 * 新增高血压慢病档案-辅助检查
+	 * 
+	 * @see updateCheckInfo.action
+	 * @param request
+	 */
+	@Deprecated
+	@RequestMapping("/addCheckInfo.action")
+	public ResponseDTO addCheckInfo(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, String[]> raw = request.getParameterMap();
+		Map<String, String[]> data = service.getHypertensionData(raw);
+		try {
+			service.check(data, "2");
+			//service.addCheckInfo(data);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+	}
+
+	/**
+	 * 新增高血压慢病档案--工作站
+	 * 
+	 * @see addWorkStationInfo.action
+	 * @param request
+	 */
+	@Deprecated
+	@RequestMapping("/addWorkStationInfo.action")
+	public ResponseDTO addWorkStationInfo(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, String[]> raw = request.getParameterMap();
+		Map<String, String[]> data = service.getHypertensionData(raw);
+		try {
+			service.check(data, "3");
+			//service.addWorkstation(data);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+	}
+
+	/******************************************** update ******************************************************/
+
+	/**
+	 * 修改或完善高血压慢病档案-基本信息
+	 * 
+	 * @param request
+	 */
+	@RequestMapping("/updateBasicInfo.action")
+	public ResponseDTO updateBasicInfo(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, String[]> raw = request.getParameterMap();
+		Map<String, String[]> data = service.getHypertensionData(raw);
+		try {
+			service.check(data, "1");
+			service.updateBasicInfo(data);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+	}
+
+	/**
+	 * 修改或完善高血压慢病档案-辅助检查
+	 * 
+	 * @param request
+	 */
+	@RequestMapping("/updateCheckInfo.action")
+	public ResponseDTO updateCheckInfo(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, String[]> raw = request.getParameterMap();
+		Map<String, String[]> data = service.getHypertensionData(raw);
+		try {
+			service.check(data, "2");
+			service.updateCheckInfo(data);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+	}
+
+	/**
+	 * 修改或完善高血压慢病档案--工作站
+	 * 
+	 * @param request
+	 */
+	@RequestMapping("/updateWorkStationInfo.action")
+	public ResponseDTO updateWorkStationInfo(HttpServletRequest request) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, String[]> raw = request.getParameterMap();
+		Map<String, String[]> data = service.getHypertensionData(raw);
+		try {
+			service.check(data, "3");
+		} catch (Exception e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		if(raw.get("risk")==null){
+			dto.setErrmsg("评估结果不能为空");
+			logger.error("评估结果不能为空");
+			return dto;
+		}
+		try {
+			service.updateWorkStation(data);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+	}
+
+	/******************************************** delete ******************************************************/
+
+	/**
+	 * 删除高血压慢病档案
+	 * 
+	 * @param order_id
+	 */
+	@RequestMapping("/deleteHypertension.action")
+	public ResponseDTO deleteHypertension(String order_id) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			service.deleteHypertension(order_id);
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+			logger.error(e.getLocalizedMessage(), e);
+		}
+		return dto;
+
+	}
+
+	/******************************************** query ******************************************************/
+
+	/**
+	 * 获取档案列表
+	 * @param patient_id
+	 */
+	@RequestMapping("/getDocList.action")
+	public ResponseDTO getDocList(String patient_id) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto.setData(service.getDocList(patient_id));
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+		}
+		return dto;
+	}
+	
+	/**
+	 * 获取档案基本信息
+	 * @param patient_id
+	 */
+	@RequestMapping("/getDocInfo.action")
+	public ResponseDTO getDocInfo(String order_id){
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto.setData(service.getDocInfo(order_id));
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+		}
+		return dto;
+		
+	}
+
+	/**
+	 * 获取一般信息
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getBasicInfo.action")
+	public ResponseDTO getBasicInfo(String order_id) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto.setData(service.getDocuMent(order_id, "1"));
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+		}
+		return dto;
+	}
+
+	/**
+	 * 获取辅助检查信息
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getCheckInfo.action")
+	public ResponseDTO getCheckInfo(String order_id) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto.setData(service.getDocuMent(order_id, "2"));
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+		}
+		return dto;
+	}
+
+	/**
+	 * 获取工作站内容信息
+	 * @param order_id
+	 * @return
+	 */
+	@RequestMapping("/getWorkStationInfo.action")
+	public ResponseDTO getWorkStationInfo(String order_id) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dto.setData(service.getDocuMent(order_id, "3"));
+			dto.setFlag(true);
+		} catch (RuntimeException e) {
+			dto.setErrmsg(e.getLocalizedMessage());
+		}
+		return dto;
+	}
+	
+///////////////////////////////高血压慢病档案CRUD结束////////////////////////////////////////////////////////////
+	
+	
+///////////////////////////////糖尿病慢病档案CRUD结束////////////////////////////////////////////////////////////	
+	@Resource
+	private CommonUserService commonUserService;	
+	/**
+	 * 获取档案列表
+	 * @param patient_id
+	 */
+	@RequestMapping("/getDocList2.action")
+	public InfoJson getDocList2(String patient_id) {
+		InfoJson infoJson = new InfoJson(); 
+		try {
+			infoJson = InfoJson.setSucc(service.getDocList2(patient_id));
+		} catch (Exception e) {
+			infoJson = InfoJson.setFaile(e.getMessage());
+			e.printStackTrace();
+		}
+		return infoJson;
+	}
+	
+	
+	/**
+	 * 新增高血压档案主表
+	 * @param user_id
+	 * @return
+	 */
+	@RequestMapping("/addDoc.action")
+	public InfoJson addDoc(String patient_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			// long patient_id = commonUserService.getPatientId(Long.valueOf(user_id));
+			infoJson = service.addDoc(Long.parseLong(patient_id));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+	}
+	
+	
+	@RequestMapping("/addAnswers.action")
+	public InfoJson addAnswers(@RequestParam MultiValueMap<String, Object> map) {		
+		InfoJson infoJson = new InfoJson();
+		try {
+		Map<String, List<Object>> map2 = map;
+		infoJson= service.addAnswers(map2);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+	}
+
+
+
+	
+	@RequestMapping("/updateAnswers.action")
+	public InfoJson updateAnswers(@RequestParam MultiValueMap<String, Object> map) {		
+		InfoJson infoJson = new InfoJson();
+		try {
+		Map<String, List<Object>> map2 = map;
+		infoJson= service.update(map2);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+	}
+	
+	@RequestMapping("/getAnswers.action")
+	public InfoJson getAnswers(long order_id,String scope_flag) {		
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getAnswers(order_id, scope_flag);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+	}
+	
+	@RequestMapping("/getBasicDoc.action")
+	public InfoJson getBasicDoc(long order_id) {		
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getBasicDoc(order_id);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return infoJson;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

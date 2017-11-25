@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>错误数据查询</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		运行分析<span class="c-gray en">&gt;</span> 错误数据
+		<a class="btn btn-danger radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+<div class="page-container">
+	<form id="form">
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:59px;">数据类型</span>
+			<select class="radius" id="data_type" name="data_type" style="height:30px;width:97px;" >
+				<option value="1" selected>会员数据</option>
+				<option value="2">一体机数据</option>
+			</select>
+			<span class="ml-5">导入时间</span>
+			<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="startDate" class="input-text Wdate" placeholder="开始时间" style="width:120px;">
+			至
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="endDate" class="input-text Wdate" placeholder="结束时间" style="width:120px;">
+			<button type="button" class="btn btn-success btn-search radius"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
+			<button type="button" class="btn btn-danger btn_style btn-clean radius"><i class="Hui-iconfont">&#xe72a;</i> 清空</button>
+		</div>
+	</form>
+	<div id="member" style="display:block;">
+	<table class="table table-border table-bordered table-striped table-bg table-hover news-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>错误原因</th>
+				<th>姓名</th>
+				<th>身份证</th>
+				<th>手机号</th>
+				<th>血型</th>
+				<th>民族</th>
+				<th>婚姻状况</th>
+				<th>工作强度</th>
+				<th>医保卡号</th>
+				<th>费用自负形式</th>
+				<th>家庭地址</th>
+				<th>家庭医生身份证</th>
+				<th>家庭医生手机号</th>			
+				<th>导入时间</th>
+			</tr>
+		</thead>
+		<tbody class="data-tbody">
+		</tbody>
+	</table>
+	</div>
+	<div id="aio" style="display:none;">
+	<table class="table table-border table-bordered table-striped table-bg table-hover news-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>错误原因</th>
+				<th>医院</th>
+				<th>姓名</th>
+				<th>身份证</th>
+				<th>手机号</th>
+				<th>身高</th>
+				<th>体重</th>
+				<th>体温</th>
+				<th>血氧</th>
+				<th>脉搏</th>
+				<th>血糖</th>
+				<th>收缩压</th>
+				<th>舒张压</th>
+				<th>心率</th>
+				<th>PH</th>
+				<th>SG</th>
+				<th>BLD</th>
+				<th>KET</th>
+				<th>BIL</th>
+				<th>GLU</th>
+				<th>PRO</th>
+				<th>URO</th>
+				<th>LEU</th>
+				<th>VC</th>
+				<th>NIT</th>
+				<th>FVC</th>
+				<th>FEV1</th>
+				<th>PEF</th>
+				<th>PEF25</th>
+				<th>PEF75</th>
+				<th>PEF2575</th>
+				<th>体检时间</th>		
+				<th>导入时间</th>
+			</tr>
+		</thead>
+		<tbody class="data-tbody">
+		</tbody>
+	</table>
+	</div>
+	<div id="Pagination" class="pagination"></div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript">
+var menucode="";
+$(function(){
+	//获取地址栏后面菜单code
+	 var a = window.location.href;
+	 var s=a.indexOf("?");
+	 menucode=a.substring(s+1);
+	 //错误数据列表初始化加载
+	 getDataList(0,null);
+
+	 //条件查询
+    var initFlag2="";
+    $(".btn-search").click(function(){
+		initFlag2=true;
+		getDataList(0,null);
+    });
+
+    var initFlag = true;
+    var initFlag2 ='';
+	//查询函数
+	function getDataList(currPage, jg) {
+		var type=$('#data_type').val();
+	    var page=currPage+1;
+	    		if(type==1){
+				document.getElementById('member').style.display='block';
+				document.getElementById('aio').style.display='none';
+			}
+			else if(type==2){
+				document.getElementById('aio').style.display='block';
+				document.getElementById('member').style.display='none';
+			}
+	    var data={pageno :currPage+1,c_menu_code:menucode,data_type:$("#data_type").val(),startDate:$("#datemin").val(),endDate:$("#datemax").val()};
+		$.ajax({
+		    url : "../../../analysis/getErrData.action",
+		    type : "post",
+		    dataType : 'json',
+		    data : data,
+		    success : function(response) {
+		    var page_count=response.recordCount;
+		    if (initFlag) {
+	        	$("#Pagination").pagination(page_count,{
+	        		items_per_page :20,
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag = false;
+            }
+            if (initFlag2) {
+	        	$("#Pagination").pagination(page_count,{
+	        		items_per_page :20,
+	        		callback : getDataList//回调函数
+	        	});
+	            initFlag2 = false;
+            }
+	    	//调用数据展示函数
+		   show_list(response);
+		   }
+		});
+	}
+
+	//数据展示公共函数
+	function show_list(response){
+	   var html = '';
+	   var pn=response.pageNo;
+	   var num=(pn-1)*20+1;
+	   var type=$('#data_type').val();
+	    $.each(response.data, function(i,p){
+	    	if(type==1){
+	    		html +="<tr class='text-c'>"+
+	               	"<td>"+(num+i)+"</td>"+
+	                "<td>"+p.result_value+"</td>"+
+	                "<td>"+p.user_name+"</td>"+
+	                "<td>"+p.user_card+"</td>"+
+	                "<td>"+p.user_phone+"</td>"+
+	                "<td>"+p.user_blood+"</td>"+
+	                "<td>"+p.user_nation+"</td>"+
+	                "<td>"+p.user_marriage+"</td>"+
+	                "<td>"+p.user_work+"</td>"+
+	                "<td>"+p.user_medicare_card+"</td>"+
+	                "<td>"+p.user_medical_burden+"</td>"+
+	                "<td>"+p.user_address+"</td>"+
+	                "<td>"+p.doctor_card+"</td>"+
+	                "<td>"+p.doctor_phone+"</td>"+
+	                "<td>"+p.d_time+"</td>"+
+	                "</tr>";
+	    	}
+	    	else if(type==2){
+	    		html +="<tr class='text-c'>"+
+	               	"<td>"+(num+i)+"</td>"+
+	                "<td>"+p.sql_text+"</td>"+
+	                "<td>"+p.hosp_name+"</td>"+
+	                "<td>"+p.user_name+"</td>"+
+	                "<td>"+p.user_card+"</td>"+
+	                "<td>"+p.user_phone+"</td>"+
+	                "<td>"+p.user_height+"</td>"+
+					"<td>"+p.user_weight+"</td>"+
+					"<td>"+p.temperature+"</td>"+
+					"<td>"+p.Oxygen+"</td>"+
+					"<td>"+p.PulseRate+"</td>"+
+					"<td>"+p.BloodSugar+"</td>"+
+					"<td>"+p.HighPressure+"</td>"+
+					"<td>"+p.LowPressure+"</td>"+
+					"<td>"+p.HeartRate+"</td>"+
+	               	"<td>"+p.PH+"</td>"+
+					"<td>"+p.SG+"</td>"+
+					"<td>"+p.BLD+"</td>"+
+					"<td>"+p.KET+"</td>"+
+					"<td>"+p.BIL+"</td>"+
+					"<td>"+p.GLU+"</td>"+
+					"<td>"+p.PRO+"</td>"+
+					"<td>"+p.URO+"</td>"+
+					"<td>"+p.LEU+"</td>"+
+					"<td>"+p.VC+"</td>"+
+					"<td>"+p.NIT+"</td>"+
+					"<td>"+p.FVC+"</td>"+
+					"<td>"+p.FEV1+"</td>"+
+	                "<td>"+p.PEF+"</td>"+
+	                "<td>"+p.FEF25+"</td>"+
+	                "<td>"+p.FEF75+"</td>"+
+	                "<td>"+p.FEF2575+"</td>"+
+	                "<td>"+"</td>"+
+	                "<td>"+p.create_date+"</td>"+
+	                "</tr>";
+	    	}
+	    });
+	    $(".news-tablelist .data-tbody").html(html);
+	    $(".page-count").html(response.pageCount);
+	    }
+});
+
+</script>
+</body>
+</html>

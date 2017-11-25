@@ -1,0 +1,161 @@
+package com.haaa.cloudmedical.platform.RemindManage.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.dao.RemindManageDao;
+
+@Service
+public class RemindManageService {
+
+	@Autowired
+	private RemindManageDao dao;
+
+	public List<Map<String, Object>> getMedicalList(String helpname) {
+		String sql = "select a.order_id drug_id,generic_drug_name,a.drug_specification,a.helpname from k_drug_code a where helpname like ? ";
+		List<Map<String, Object>> list = dao.select(sql, "%" + helpname + "%");
+		return list;
+	}
+	
+	public ResponseDTO getRemind(String user_id){
+		
+		Object measurement = getMeasurementRemind(user_id).getData();//测量提醒
+		Object medication = getMedicationRemind(user_id).getData();//用药提醒
+		Object doctor = getDoctorRemind(user_id).getData();//就诊提醒
+		
+		Map<String,Object> remind = new HashMap<String, Object>();
+		remind.put("measurement", measurement);
+		remind.put("medication",medication );
+		remind.put("doctor",doctor );
+		
+		ResponseDTO dto = new ResponseDTO();
+		dto.setData(remind);
+		dto.setFlag(true);
+		
+		return dto;
+	}
+
+	// 获取提醒详情入口
+	public ResponseDTO getRemind(String user_id, String remind_type) {
+		ResponseDTO dto = null;
+		if (remind_type.equals(Constant.remind_type_medication))
+			dto = getMedicationRemind(user_id);
+		else if (remind_type.equals(Constant.remind_type_doctor))
+			dto = getDoctorRemind(user_id);
+		else if (remind_type.equals(Constant.remind_type_measurement))
+			dto = getMeasurementRemind(user_id);
+		return dto;
+	}
+
+	// 获取用药提醒
+	public ResponseDTO getMedicationRemind(String user_id) {
+		String sql = "select a.order_id,a.chronic_code,a.chronic_name,b.generic_drug_name,b.drug_specification,a.medication_remind_time_one,"
+				+ "a.medication_remind_time_two,a.medication_remind_time_three,a.medication_remind_time_four "
+				+ "from r_medication_remind a,k_drug_code b where a.drug_id=b.order_id and a.user_id = ? ";
+		List<Map<String, Object>> list = dao.select(sql, user_id);
+		Map<String, List<Map<String, Object>>> result = list.stream()
+				.collect(Collectors.groupingBy(m -> m.get("chronic_name").toString()));
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(result);
+		return dto;
+	}
+
+	// 获取就诊提醒
+	public ResponseDTO getDoctorRemind(String user_id) {
+		String sql = "select a.order_id,a.doctor_remind_date,a.doctor_remind_time,a.hosp_order_id,a.doctor_remind_hospital,"
+				+ "a.department_id,a.doctor_remind_department from r_doctor_remind a where a.patient_id = ? ";
+		List<Map<String, Object>> list = dao.select(sql, user_id);
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(list);
+		return dto;
+	}
+
+	// 获取测量提醒
+	public ResponseDTO getMeasurementRemind(String user_id) {
+		String sql = "select a.order_id,findname(a.measurement_remind_title) measurement_remind_title,a.measurement_remind_content,"
+				+ "if(a.monday=101,'星期一',null) monday,if(a.tuesday=101,'星期二',null) tuesday,if(a.wednesday=101,'星期三',null) wednesday,"
+				+ "if(a.thursday=101,'星期四',null) thursday,if(a.friday=101,'星期五',null) friday,if(a.saturday=101,'星期六',null) saturday,"
+				+ "if(a.sunday=101,'星期日',null) sunday,a.interval_day,a.time1,a.time2,a.time3,a.time4,a.begin_day "
+				+ "from r_measurement_remind a where a.user_id = ? ";
+		List<Map<String, Object>> list = dao.select(sql, user_id);
+		ResponseDTO dto = new ResponseDTO();
+		dto.setFlag(true);
+		dto.setData(list);
+		return dto;
+	}
+
+	public boolean addRemind(Map<String, Object> remind, String remind_type) {
+		String table = "";
+		boolean flag = false;
+		if (remind_type.equals(Constant.remind_type_medication)){
+			table = "r_medication_remind";
+		}
+		else if (remind_type.equals(Constant.remind_type_doctor)){
+			table = "r_doctor_remind";
+		}
+		else if (remind_type.equals(Constant.remind_type_measurement)){
+			table = "r_measurement_remind";
+		}
+		try{
+			dao.insert(remind, table);
+			flag = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	//删除提醒
+	public boolean deleteRemind(String order_id, String remind_type){
+		String table = "";
+		boolean flag = false;
+		if (remind_type.equals(Constant.remind_type_medication)){
+			table = "r_medication_remind";
+		}
+		else if (remind_type.equals(Constant.remind_type_doctor)){
+			table = "r_doctor_remind";
+		}
+		else if (remind_type.equals(Constant.remind_type_measurement)){
+			table = "r_measurement_remind";
+		}
+		try{
+			dao.delete(table, order_id);
+			flag = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	//修改提醒
+	public boolean updateRemind(Map<String,Object> remind,String remind_type){
+		String table = "";
+		boolean flag = false;
+		if (remind_type.equals(Constant.remind_type_medication)){
+			table = "r_medication_remind";
+		}
+		else if (remind_type.equals(Constant.remind_type_doctor)){
+			table = "r_doctor_remind";
+		}
+		else if (remind_type.equals(Constant.remind_type_measurement)){
+			table = "r_measurement_remind";
+		}
+		try{
+			dao.update(remind, table);
+			flag = true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return flag;
+	}
+
+}

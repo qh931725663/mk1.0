@@ -1,0 +1,165 @@
+package com.haaa.cloudmedical.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+
+@Repository
+public class AIODao extends BaseTemplateDao {
+
+	public long saveData(Map<String, Object> map) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		Map<String, Object[]> property = this.getParamsAndValues(map);
+		Object[] params = property.get("params");
+		Object[] values = property.get("values");
+		final String sql = "insert into self_service_check (" + StringUtils.join(params, ",") + ") values("
+				+ StringUtils.repeat("?", ",", params.length) + ")";
+		System.out.println(sql);
+		this.jdbcTemplate.update(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql, 1);
+				for (int i = 0; i < values.length; i++) {
+					ps.setObject(i + 1, values[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
+
+		Long generatedId = keyHolder.getKey().longValue();
+		return generatedId;
+	}
+
+	public List<Map<String, Object>> getTimeList(String user_id, String datemin, String datemax) {
+		List<Map<String, Object>> list;
+		String sql = "select order_id,DATE_FORMAT(create_date,'%Y-%m-%d %H:%i') date from v_self_service_check where user_id=?";
+		if (datemin != null && datemax != null) {
+			sql += " AND create_date BETWEEN ? AND ? ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id, datemin, datemax);
+		} else if (datemin != null) {
+			sql += " AND create_date > ? ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id, datemin);
+		} else if (datemax != null) {
+			sql += " create_date < ? ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id, datemax);
+		} else {
+			sql += " AND DATE_SUB(NOW(),INTERVAL 6 MONTH) < create_date ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id);
+		}
+		return list;
+	}
+
+	public List<Map<String, Object>> getTimeList(String user_id) {
+		List<Map<String, Object>> list;
+		String sql = "select order_id ,DATE_FORMAT(create_date,'%Y-%m-%d %H:%i') date from v_self_service_check where user_id=?  ORDER BY create_date DESC";
+		list = jdbcTemplate.queryForList(sql, user_id);
+		return list;
+	}
+
+	public Map<String, Object> getDetail(String order_id) {
+		String sql = "select * from v_self_service_check where order_id=?";
+		return jdbcTemplate.queryForMap(sql, order_id);
+	}
+
+	public List<Map<String, Object>> getDetailByTime(String user_id, String datemin, String datemax) {
+		List<Map<String, Object>> list;
+		String sql = "select * from v_self_service_check where user_id=? AND";
+		if (datemin != null && !datemin.equals("") && datemax != null && !datemax.equals("")) {
+			sql += " create_date BETWEEN ? AND ? ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id, datemin, datemax);
+		} else if (datemin != null && !datemin.equals("")) {
+			sql += " create_date > ? ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id, datemin);
+		} else if (datemax != null && !datemax.equals("")) {
+			sql += " create_date < ? ORDER BY create_date DESC";
+			list = jdbcTemplate.queryForList(sql, user_id, datemax);
+		} else {
+			sql += " DATE_SUB(NOW(),INTERVAL 6 MONTH) < create_date ORDER BY create_date DESC ";
+			list = jdbcTemplate.queryForList(sql, user_id);
+		}
+		return list;
+	}
+
+	public Map<String, Object> getAppDetailById(String order_id) {
+		List<Map<String, Object>> list;
+		String sql = "select equipment_property_order_id,FORMAT(user_height,1)user_height,FORMAT(user_weight,1)user_weight,FORMAT(BMI,2)BMI,FORMAT(HighPressure,0)HighPressure,"
+				+ "FORMAT(LowPressure,0)LowPressure,FORMAT(PulseRate,0)PulseRate,FORMAT(BloodSugar,1)BloodSugar,ecg1,ecg2,ecg3,ecg4,ecg5,ecg6,ecg7,ecg8,ecg9,ecg10,ecg11,ecg12,"
+				+ "findName(measurement_period) measurement_period,FORMAT(temperature,1)temperature,FORMAT(HeartRate,0)HeartRate,"
+				+ "findName(result)result,FORMAT(fev1,2)fev1,FORMAT(fvc,2)fvc,FORMAT(pef,2)pef,"
+				+ "FORMAT(Oxygen,0)Oxygen,findName(URO)URO,findName(BLD)BLD,findName(BIL)BIL,findName(KET)KET,findName(GLU)GLU,findName(PRO)PRO,"
+				+ "FORMAT(PH,1)PH,findName(NIT)NIT,findName(LEU)LEU,FORMAT(SG,3)SG,findName(VC)VC,"
+				+ "DATE_FORMAT(create_date,'%Y-%m-%d %H:%i') date,s6500_pic_index from v_self_service_check where order_id=?";
+		list = jdbcTemplate.queryForList(sql, order_id);
+		if (list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+	public Map<String, Object> getAppLatestDetail(String user_id) {
+		List<Map<String, Object>> list;
+		String sql = "select equipment_property_order_id,FORMAT(user_height,1)user_height,FORMAT(user_weight,1)user_weight,FORMAT(BMI,2)BMI,FORMAT(HighPressure,0)HighPressure,"
+				+ "FORMAT(LowPressure,0)LowPressure,FORMAT(PulseRate,0)PulseRate,FORMAT(BloodSugar,1)BloodSugar,ecg1,ecg2,ecg3,ecg4,ecg5,ecg6,ecg7,ecg8,ecg9,ecg10,ecg11,ecg12,"
+				+ "findName(measurement_period) measurement_period,FORMAT(temperature,1)temperature,FORMAT(HeartRate,0)HeartRate,"
+				+ "findName(result)result,FORMAT(fev1,2)fev1,FORMAT(fvc,2)fvc,FORMAT(pef,2)pef,"
+				+ "FORMAT(Oxygen,0)Oxygen,findName(URO)URO,findName(BLD)BLD,findName(BIL)BIL,findName(KET)KET,findName(GLU)GLU,findName(PRO)PRO,"
+				+ "FORMAT(PH,1)PH,findName(NIT)NIT,findName(LEU)LEU,FORMAT(SG,3)SG,findName(VC)VC,"
+				+ "DATE_FORMAT(create_date,'%Y-%m-%d %H:%i') date,s6500_pic_index from v_self_service_check where user_id=? ORDER BY create_date DESC LIMIT 1";
+		list = jdbcTemplate.queryForList(sql, user_id);
+		if (list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+	public long addAioReportPic(Map<String, Object> picture) {
+		return insert(picture, "p_picture");
+	}
+
+	public long addCommon(Map<String, Object> map) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		final Map<String, Object> data = map;
+		Map<String, Object[]> property = this.getParamsAndValues(data);
+		Object[] params = property.get("params");
+		Object[] values = property.get("values");
+		String sql = "insert into c_common_check (" + StringUtils.join(params, ",") + ") values("
+				+ StringUtils.repeat("?", ",", params.length) + ")";
+		System.out.println(sql);
+		this.jdbcTemplate.update(new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				PreparedStatement ps = connection.prepareStatement(sql, 1);
+				for (int i = 0; i < values.length; i++) {
+					ps.setObject(i + 1, values[i]);
+				}
+				return ps;
+			}
+		}, keyHolder);
+
+		return keyHolder.getKey().longValue();
+	}
+
+	public int updateCommon(Map<String, Object> map) {
+		return super.update(map, "c_common_check");
+	}
+
+	public Map<String, Object> selectCommonByUseId(String use_id) {
+		List<Map<String, Object>> list;
+		String sql = "SELECT * FROM c_common_check WHERE equipment_use_order_id=?";
+		list = jdbcTemplate.queryForList(sql, use_id);
+		if (list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+}

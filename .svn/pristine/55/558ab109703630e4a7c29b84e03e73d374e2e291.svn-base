@@ -1,0 +1,109 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>追踪明细</title>
+</head>
+<body>
+<div class="page-container">
+	<table class="table table-border table-bordered table-striped table-bg table-hover doctor-tablelist">
+		<thead class="thead-table">
+			<tr class="text-c thead-tr">
+<!-- 				<th>主食</th>
+				<th>蔬果</th>
+				<th>肉蛋鱼豆类</th>
+				<th>烹调油</th>
+				<th>其他事项说明</th>  -->
+			</tr>
+		</thead>
+		<tbody class="tbody-list">
+		<!--<tr class='text-c'>
+			<td>大米</td>
+			<td>白菜</td>
+			<td>鲫鱼</td>
+			<td>花生油</td>
+			<td>其他事项</td>
+			</tr> -->
+		</tbody>
+	</table>
+	<div id="Pagination" class="pagination"></div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script>
+$(function(){
+    //获取地址栏order_id方法
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+			return null;
+		}
+	var dict_order_id=getUrlParam("dict_order_id");
+	var plan_order_id=getUrlParam("plan_order_id");
+	init(dict_order_id,plan_order_id);
+	function init(dict_order_id,plan_order_id){
+		var data={'dict_order_id':dict_order_id,'plan_order_id':plan_order_id}
+	  	$.ajax({
+	    	url:"../../../plan/trackItemList.action",
+	    	type:"get",
+	    	dataType:'json',
+	    	data:data,
+	    	success:function(response){
+	    		if(response.status=="1"){
+					var data=response.data;
+					var title="";
+					$.each(data[0].data,function(i,p){
+						title+='<th>'+p.option_name+'</th>';
+					});
+					$(".thead-tr").append(title);
+					
+					var tr=""
+					$.each(data,function(i,p){
+						var tr_td="";
+						$.each(p.data,function(i,s){
+							tr_td+='<td>'+(s.option_value==null?"":s.option_value)+'</td>';
+						});
+						tr+='<tr class="text-c">'+tr_td+'</tr>';
+					});
+					$(".tbody-list").append(tr);
+	    		}
+	    	}
+	    });
+	}
+
+});
+</script>
+</body>
+</html>

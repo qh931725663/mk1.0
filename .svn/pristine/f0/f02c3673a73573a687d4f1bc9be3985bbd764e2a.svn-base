@@ -1,0 +1,411 @@
+package com.haaa.cloudmedical.app.chrondoc.service;
+
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.app.user.service.DoctorAppService;
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.HypertensionAppDao;
+import com.haaa.cloudmedical.entity.Hypertension;
+import com.haaa.cloudmedical.entity.HypertensionAnswer;
+import com.haaa.cloudmedical.entity.HypertensionQuestion;
+
+@Service
+public class HypertensionAppservice {
+
+	@Autowired
+	private HypertensionAppDao dao;
+	
+	private static Logger logger = Logger.getLogger(DoctorAppService.class);
+
+	/**
+	 * 新增高血压慢病管理档案
+	 * 
+	 * @param hypertension
+	 * @return
+	 */
+	@Log(name = "新增高血压慢病管理档案")
+	@Transactional
+	public long addNewHypertensionDocument(Hypertension hypertension) {
+		long order_id = dao.addHypertension(hypertension);
+		return order_id;
+	}
+
+	/**
+	 * 删除高血压慢病管理档案
+	 * 
+	 * @param order_id
+	 */
+	@Log(name = "删除高血压慢病管理档案")
+	@Transactional
+	public void deleteHypertension(String order_id) {
+		dao.deleteHypertension(order_id);
+
+	}
+
+	/**
+	 * 新增基本信息
+	 * 
+	 * @param data
+	 */
+	@Log(name = "填写基本信息")
+	@Transactional
+	public void addBasicInfo(Map<String, String[]> data) {
+		List<HypertensionQuestion> questions = this.disposalData(data, "1");
+		for (HypertensionQuestion question : questions) {
+			List<HypertensionAnswer> answers = question.getAnswers();
+			question.setAnswers(null);
+			dao.saveQuestion(question);
+			for (HypertensionAnswer answer : answers) {
+				dao.saveAnswer(answer);
+			}
+		}
+		String order_id = data.get("order_id")[0];
+		dao.changeFlag1(order_id);
+	}
+
+	/**
+	 * 新增辅助检查
+	 * 
+	 * @param data
+	 */
+	@Log(name = "填写辅助检查项目信息")
+	@Transactional
+	public void addCheckInfo(Map<String, String[]> data) {
+		List<HypertensionQuestion> questions = this.disposalData(data, "2");
+		for (HypertensionQuestion question : questions) {
+			List<HypertensionAnswer> answers = question.getAnswers();
+			question.setAnswers(null);
+			dao.saveQuestion(question);
+			for (HypertensionAnswer answer : answers) {
+				dao.saveAnswer(answer);
+			}
+		}
+		String order_id = data.get("order_id")[0];
+		dao.changeFlag2(order_id);
+	}
+
+	/**
+	 * 新增工作站
+	 * 
+	 * @param data
+	 */
+	@Log(name = "填写工作站信息")
+	@Transactional
+	public void addWorkstation(Map<String, String[]> data) {
+		String order_id = data.get("order_id")[0];
+		if (!dao.checkFlag(order_id)) {
+			throw new RuntimeException("基础信息或辅助检查未完善");
+		}
+		List<HypertensionQuestion> questions = this.disposalData(data, "3");
+		for (HypertensionQuestion question : questions) {
+			List<HypertensionAnswer> answers = question.getAnswers();
+			question.setAnswers(null);
+			dao.saveQuestion(question);
+			for (HypertensionAnswer answer : answers) {
+				dao.saveAnswer(answer);
+			}
+		}
+		dao.changeFlag3(order_id);
+		dao.changeFlag(order_id);
+	}
+
+	/**
+	 * 修改高血压慢病管理档案-基本信息
+	 * 
+	 * @param data
+	 */
+	@Log(name = "完善或修改基本信息")
+	@Transactional
+	public void updateBasicInfo(Map<String, String[]> data) {
+		List<HypertensionQuestion> questions = this.disposalData(data, "1");
+		String hypertension_order_id = data.get("hypertension_order_id")[0];
+		for (HypertensionQuestion question : questions) {
+			List<HypertensionAnswer> answers = question.getAnswers();
+			question.setAnswers(null);
+			dao.deleteQuestion(hypertension_order_id, "1");
+			dao.saveQuestion(question);
+			for (HypertensionAnswer answer : answers) {
+				dao.deleteAnswer(hypertension_order_id, "1");
+				dao.saveAnswer(answer);
+			}
+		}
+		dao.changeFlag1(hypertension_order_id);
+	}
+
+	/**
+	 * 修改高血压慢病管理档案-辅助检查
+	 * 
+	 * @param data
+	 */
+	@Log(name = "完善或修改辅助检查项目信息")
+	@Transactional
+	public void updateCheckInfo(Map<String, String[]> data) {
+		List<HypertensionQuestion> questions = this.disposalData(data, "2");
+		String hypertension_order_id = data.get("hypertension_order_id")[0];
+		for (HypertensionQuestion question : questions) {
+			List<HypertensionAnswer> answers = question.getAnswers();
+			question.setAnswers(null);
+			dao.deleteQuestion(hypertension_order_id, "2");
+			dao.saveQuestion(question);
+			for (HypertensionAnswer answer : answers) {
+				dao.deleteAnswer(hypertension_order_id, "2");
+				dao.saveAnswer(answer);
+			}
+		}
+		dao.changeFlag2(hypertension_order_id);
+	}
+
+	/**
+	 * 修改高血压慢病管理档案-工作站
+	 * 
+	 * @param data
+	 */
+	@Log(name = "完善或修改工作站信息")
+	@Transactional
+	public void updateWorkStation(Map<String, String[]> data) {
+		List<HypertensionQuestion> questions = this.disposalData(data, "3");
+		String hypertension_order_id = data.get("hypertension_order_id")[0];
+		for (HypertensionQuestion question : questions) {
+			List<HypertensionAnswer> answers = question.getAnswers();
+			question.setAnswers(null);
+			dao.deleteQuestion(hypertension_order_id, "3");
+			dao.saveQuestion(question);
+			for (HypertensionAnswer answer : answers) {
+				dao.deleteAnswer(hypertension_order_id, "3");
+				dao.saveAnswer(answer);
+			}
+		}
+		String sql = "update s_hypertension set risk = ? ,level = ? where order_id = ? ";
+		dao.execute(sql, data.get("risk")[0],data.get("level")[0],data.get("hypertension_order_id")[0]);
+		dao.changeFlag3(hypertension_order_id);
+		dao.changeFlag(hypertension_order_id);
+	}
+
+	/**
+	 * 获取档案列表
+	 * 
+	 * @param patient_id
+	 * @return
+	 */
+	@Log(name = "获取高血压档案列表")
+	public List<Map<String, String>> getHypertensionInfo(String patient_id) {
+		List<Map<String, String>> hypertensionInfo = dao.getHypertension(patient_id);
+		return hypertensionInfo;
+	}
+	
+	/**
+	 * 获取患者基本信息
+	 * 
+	 * @param patient_id
+	 * @return
+	 */
+	@Log(name = "获取患者基本信息")
+	public Map<String,String> getPatientInfo(String patient_id) {
+		Map<String,String> patientInfo = dao.getPatientInfoById(patient_id);
+		return patientInfo;
+	}
+
+	/**
+	 * 获取档案详细信息(1:基本信息，2：辅助检查，3 工作站)
+	 * 
+	 * @param order_id
+	 * @param question_region
+	 * @return
+	 */
+	@Log(name = "获取档案详细信息")
+	public Map<String,Object> getDocuMent(String order_id, String question_region) {
+		Map<String,Object> info = new HashMap<>();
+		Map<String,String> patientInfo = dao.getPatientInfoById(order_id);
+		Map<String, String> relation = dao.getDocQuestion(order_id, question_region);
+		Map<String, List<HypertensionAnswer>> answers = dao.getDocAnswer(order_id, question_region);
+		Map<String, List<Map<String, String>>> result = new HashMap<>(relation.size());
+		relation.forEach((k, v) -> {
+			int size = answers.get(k).size();
+			List<Map<String, String>> sub = new ArrayList<>(size);
+			if (v == null) {
+				List<HypertensionAnswer> temp = answers.get(k);
+				if (size == 1) {
+					Map<String, String> answer = new HashMap<>(1);
+					String value = temp.get(0).getAnswer_code() == null ? temp.get(0).getAnswer_text() : temp.get(0).getAnswer_code();
+					answer.put(k, value);
+					sub.add(answer);
+				}
+				if (size > 1) {
+					Format format = new DecimalFormat("00");
+					for (int i = 1; i <= size; i++) {
+						String group_id = format.format(i);
+						Map<String, String> answer = new HashMap<>(2);
+						String value = temp.stream().filter(a -> a.getGroup_id().equals(group_id))
+								.map(a -> a.getAnswer_code() == null ? a.getAnswer_text() : a.getAnswer_code())
+								.findFirst().get();
+						answer.put(k, value);
+						sub.add(answer);
+					}
+				}
+
+			}
+			if (v != null) {
+				List<HypertensionAnswer> temp1 = answers.get(k);
+				List<HypertensionAnswer> temp2 = answers.get(v);
+				if (size == 1) {
+					Map<String, String> answer = new HashMap<>(2);
+					String value1 = temp1.get(0).getAnswer_code() == null ? temp1.get(0).getAnswer_text() : temp1.get(0).getAnswer_code();
+					String value2 = temp2.get(0).getAnswer_code() == null ? temp2.get(0).getAnswer_text() : temp2.get(0).getAnswer_code();
+					answer.put(k, value1);
+					answer.put(v, value2);
+					sub.add(answer);
+				}
+				if (size > 1) {
+					Format format = new DecimalFormat("00");
+					for (int i = 1; i <= size; i++) {
+						String group_id = format.format(i);
+						Map<String, String> answer = new HashMap<>(2);
+						String value1 = temp1.stream().filter(a -> a.getGroup_id().equals(group_id))
+								.map(a -> a.getAnswer_code() == null ? a.getAnswer_text() : a.getAnswer_code())
+								.findFirst().get();
+						String value2 = temp2.stream().filter(a -> a.getGroup_id().equals(group_id))
+								.map(a -> a.getAnswer_code() == null ? a.getAnswer_text() : a.getAnswer_code())
+								.findFirst().get();
+						answer.put(k, value1);
+						answer.put(v, value2);
+						sub.add(answer);
+					}
+				}
+			}
+			result.put(k, sub);
+		});
+		info.put("patientInfo",patientInfo);
+		info.put("documentInfo",result);
+		return info;
+	}
+
+	/*****************************************************************************************************/
+
+	/**
+	 * 原始数据清洗
+	 * 
+	 * @param raw
+	 * @return
+	 */
+	public Map<String, String[]> getHypertensionData(Map<String, String[]> raw) {
+		Map<String, String[]> data = new HashMap<>(raw.size());
+		for (Map.Entry<String, String[]> entry : raw.entrySet()) {
+			String key = entry.getKey();
+			String[] value = entry.getValue();
+			long count = Stream.of(value).filter(s -> !s.equals("")).count();
+			if (count != 0) {
+				data.put(key, value);
+			}
+		}
+		return data;
+	}
+
+	/**
+	 * 必填项校验
+	 * 
+	 * @param data
+	 */
+	public boolean check(Map<String, String[]> data, String question_region) {
+		List<String> compare = dao.getAllQuestions().stream()
+				.filter(m -> m.get("question_region").equals(question_region))
+				.filter(m -> m.get("required").equals("1")).map(m -> m.get("order_id")).collect(Collectors.toList());
+		for (String s : compare) {
+			if (data.get(s) == null) {
+				 return false; 
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 将原始数据组合成规范数据
+	 * 
+	 * @param data
+	 * @param question_region
+	 * @return
+	 */
+	public List<HypertensionQuestion> disposalData(Map<String, String[]> data, String question_region) {
+
+		// 问题码表
+		Map<String, List<Map<String, String>>> questionList = dao.getAllQuestions().stream()
+				.collect(Collectors.groupingBy(m -> m.get("order_id")));
+
+		// 答案码表
+		Map<String, List<Map<String, String>>> answerList = dao.getAllAnswers().stream()
+				.collect(Collectors.groupingBy(m -> m.get("question_order_id") + ":" + m.get("answer_code")));
+
+		String create_date = DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String order_id = data.get("order_id")[0];
+		List<HypertensionQuestion> questions = new ArrayList<>();
+		for (Map.Entry<String, String[]> entry : data.entrySet()) {
+
+			String key = entry.getKey();
+			String[] values = entry.getValue();
+
+			List<HypertensionAnswer> answers = new ArrayList<>();
+			HypertensionQuestion question = new HypertensionQuestion();
+
+			question.setHypertension_order_id(order_id);
+			question.setQuestion_region(question_region);
+			question.setCreate_date(create_date);
+
+			String group_id = null;
+			String question_order_id = null;
+			if (key.equals("order_id")) {
+				continue;
+			}
+			if (key.length() == 6) {
+				question_order_id = key;
+			}
+			if (key.length() == 8) {
+				question_order_id = key.substring(0, 6);
+				group_id = key.substring(6);
+			}
+
+			question.setQuestion_order_id(question_order_id);
+			question.setParent_id(questionList.get(question_order_id).get(0).get("parent_id"));
+			question.setQuestion_content(questionList.get(question_order_id).get(0).get("question_content"));
+			for (String value : values) {
+				HypertensionAnswer answer = new HypertensionAnswer();
+				answer.setHypertension_order_id(order_id);
+				answer.setQuestion_order_id(question_order_id);
+				answer.setGroup_id(group_id);
+				answer.setQuestion_region(question_region);
+				String question_type = questionList.get(question_order_id).get(0).get("question_type");
+
+				// 单选或多选
+				if (question_type.equals("1") || question_type.equals("2")) {
+					answer.setAnswer_code(value);
+					if (answerList.get(question_order_id + ":" + value) != null) {
+						answer.setAnswer_content(
+								answerList.get(question_order_id + ":" + value).get(0).get("answer_content"));
+					}
+				}
+				// 手写
+				else if (question_type.equals("3")) {
+					answer.setAnswer_text(value);
+				}
+				answer.setCreate_date(create_date);
+				answers.add(answer);
+			}
+			question.setAnswers(answers);
+			questions.add(question);
+		}
+		return questions;
+	}
+
+}

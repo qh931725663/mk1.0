@@ -1,0 +1,158 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>推送消息情况</title>
+</head>
+<body>
+<div class="page-container">
+<!--保存患者id  -->
+<input type="hidden" id="patient_id" name="patient_id" />
+	<form id="form-doctor-push-message">
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:60px;">类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别</span>
+			<select class="radius"  name="measurement_type" style="height:30px;width:150px;">
+				<option value="" selected>全部</option>
+				<option value="1400004">血压</option>
+				<option value="1400005">血糖</option>
+			</select>
+			<span style="display:inline-block;width:60px;">严重程度</span>
+			<select class="radius"  name="measurement_result" style="height:30px;width:150px;">
+				<option value="" selected>全部</option>
+				<option value="2">中度</option>
+				<option value="3">重度</option>
+			</select>
+			<span class="ml-5">测量时间</span>
+			<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" name="start" class="input-text Wdate" placeholder="开始时间" style="width:120px;">
+			至
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" name="end" class="input-text Wdate" placeholder="结束时间" style="width:120px;">
+			<button type="button" class="btn btn-success btn-search radius"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
+			<button type="button" class="btn btn-danger btn_style radius btn-clean"><i class="Hui-iconfont">&#xe72a;</i> 清空</button>
+		</div>
+	</form>
+	<table class="table table-border table-bordered table-striped table-bg table-hover doctor-tablelist">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>姓名</th>
+				<th>测量结果</th>
+				<th>类别</th>
+				<th>严重程度</th>
+				<th>测量时间</th>
+			</tr>
+		</thead>
+		<tbody class="doctor-tbody">
+		</tbody>
+	</table>
+	<div id="Pagination" class="pagination"></div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/mkh.common.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript">
+ $(function(){
+    //获取地址栏的参数
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+		return null;
+	}
+	var patient_id=getUrlParam("user_id");
+    $("#patient_id").val(patient_id);
+    
+	//医生管理列表初始化加载
+	getDataList(0,null);
+
+	//条件查询
+	var initFlag2="";
+	$(".btn-search").click(function(){
+		initFlag2=true;
+		getDataList(0,null);
+	});
+	var initFlag = true;
+	//查询函数
+	function getDataList(currPage, jg) {
+		var data=$.param({pageNo :currPage+1,patient_id:$("#patient_id").val()})+'&'+ $('#form-doctor-push-message').serialize();
+		mkh.ajax({
+			url : "../../../user-platform/getMessageList.action",
+			type : "post",
+			dataType : 'json',
+			data : data,
+			success : function(response) {
+				var page_count=response.recordCount;
+				if (initFlag) {
+					//分页插件
+					$("#Pagination").pagination(page_count,{
+						items_per_page :20,
+						callback : getDataList//回调函数
+					});
+					initFlag = false;
+				}
+				if (initFlag2) {
+					$("#Pagination").pagination(page_count,{
+						items_per_page :20,
+						callback : getDataList//回调函数
+					});
+					initFlag2 = false;
+				}
+				//调用数据展示函数
+				show_list(response);
+			}
+		});
+	}
+
+	//数据列表展示公共函数
+	function show_list(response){
+		var html = '';
+		var pn=response.pageNo;
+		var num=(pn-1)*10+1;
+		$.each(response.data, function(i,p){
+			html +="<tr class='text-c'>"+
+			"<td>"+(num+i)+"</td>"+
+			"<td>"+p.patient_name+"</td>"+
+			"<td>"+p.measurement_value+"</td>"+
+			"<td>"+(p.measurement_type=='1400004'?'血压':'血糖')+"</td>"+
+			"<td>"+(p.measurement_result=='2'?'中度':p.measurement_result=='3'?'重度':'轻度')+"</td>"+
+			"<td>"+p.create_date+"</td>"+
+			"</tr>";
+		});
+		$(".doctor-tablelist .doctor-tbody").html(html);
+		$(".page-count").html(response.pageCount);
+	}
+
+});
+</script>
+</body>
+</html>

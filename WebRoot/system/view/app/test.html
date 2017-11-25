@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>test.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=no, width=device-width">
+	
+<link rel="stylesheet" type="text/css" href="css/main.css" />
+<script type="text/javascript" src="../lib/jquery/jquery-1.11.3.js"></script>
+
+</head>
+<body>
+	<!-- 档案填写 -->
+	<div class="archive">
+		<div class="title">编辑基础档案</div>
+		<ul class="tab">
+			<li class="active-li">基本信息</li>
+			<li>生活方式</li>
+			<li>既往史</li>
+			<li>问卷调查</li>
+			<li>辅助检查</li>
+			<li>预防检疫</li>
+		</ul>
+		<div class="tab-item base">
+			<ul class="archive-item">
+				<li>
+					<label for="name">姓名</label> 
+					<span class="input-jt">张三</span>
+				</li>
+				<li>
+					<label for="sex">性别</label> 
+					<span class="input-jt">男</span>
+				</li>
+				<li>
+					<label for="age">年龄</label> 
+					<span class="input-jt">18</span>
+				</li>
+				<li>
+					<span>身份证号</span> 
+					<span class="input-jt">330102195806153210</span>
+				</li>
+				<li>
+					<label for="height">身高</label> 
+					<span class="input-jt">cm</span>
+					<input class="input-text" id="height" value="" dir="rtl" placeholder="输入身高">
+				</li>
+				<li>
+					<label for="weight">体重</label> 
+					<span class="input-jt">kg</span>
+					<input class="input-text" id="weight" value="" dir="rtl" placeholder="输入体重">
+				</li>
+				<li>
+					<label for="weight">腰围</label> 
+					<span class="input-jt">cm</span>
+					<input class="input-text" id="weight" value="" dir="rtl" placeholder="输入腰围">
+				</li>
+				<li>
+					<label for="weight">血型</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>A型</option>
+						<option>B型</option>
+						<option>O型</option>
+						<option>AB型</option>
+						<option>不详</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">是否RH阴性</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>是</option>
+						<option>否</option>
+						<option>不详</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">婚姻状况</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>未婚</option>
+						<option>已婚</option>
+						<option>丧偶</option>
+						<option>离婚</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">常住类型</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>户籍</option>
+						<option>非户籍</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">民族</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>汉族</option>
+						<option>少数民族</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">文化程度</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>文盲及半文盲</option>
+						<option>小学</option>
+						<option>初中</option>
+						<option>高中/技校/中专</option>
+						<option>大学专科及以上</option>
+						<option>不详</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">职业</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>农民</option>
+						<option>企业职工</option>
+						<option>做生意</option>
+						<option>打工</option>
+						<option>退休人员</option>
+						<option>公务员/事业单位</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">年家庭收入</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>小于5万</option>
+						<option>5万-10万</option>
+						<option>10万-15万</option>
+						<option>大于15万</option>
+					</select>
+				</li>
+				<li>
+					<label for="weight">医疗费用类型</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>城镇职工基本医疗保险</option>
+						<option>城乡居民基本医疗保险</option>
+						<option>贫困救助</option>
+						<option>商业医疗保险</option>
+						<option>全公费</option>
+						<option>全自费</option>
+					</select>
+				</li>
+				<li>
+					<label for="height">家庭住址</label> 
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="输入家庭住址">
+				</li>
+				<li>
+					<label for="height">工作单位</label> 
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="输入工作单位">
+				</li>
+				<li>
+					<label for="height">单位地址</label> 
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="输入单位地址">
+				</li>
+				<li>
+					<label for="height">是否有家庭成员</label>
+					<div class="input-radio" >
+						<input type="radio" name="family">否
+					</div>
+					<div class="input-radio">
+						<input type="radio" name="family">是
+					</div>
+				</li>
+			</ul>
+			<div class="add-cy">
+				<span class="add-link">添加成员联系方式</span>
+			</div>
+			
+			<div class="next"><span>下一步</span></div>
+		</div>
+		<!-- 生活方式 -->
+		<div class="tab-item life">
+			<ul class="archive-item">
+				<li class="item-title">1、体育锻炼</li>
+				<li>
+					<label for="weight">锻炼频率</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>从不锻炼</option>
+						<option>偶尔</option>
+						<option>每周一次以上</option>
+						<option>每天</option>
+					</select>
+				</li>
+				<li>
+					<label for="height">每次锻炼时间</label> 
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li>
+					<label for="height">锻炼方式</label> 
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li class="item-title">2、饮食习惯</li>
+				<li>
+					<label for="weight">荤素比例</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>荤素均衡</option>
+						<option>荤食为主</option>
+						<option>素食为主</option>
+					</select>
+				</li>
+				<li class="more-style">
+					<label for="height">偏好</label> 
+					<span class="input-jt">&gt;</span>
+					<span class="select-more food-like">请选择</span>
+				</li>
+				<li class="item-title">3、吸烟情况</li>
+				<li>
+					<label for="weight">是否吸烟</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>从不吸烟</option>
+						<option>已戒烟</option>
+						<option>吸烟</option>
+					</select>
+				</li>
+				<li>
+					<label for="height">日吸烟量</label> 
+					<span class="input-jt">支</span>
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li>
+					<label for="height">烟龄</label> 
+					<span class="input-jt">年</span>
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li>
+					<label for="height">戒烟年龄</label> 
+					<span class="input-jt">年</span>
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li class="item-title">4、饮酒情况</li>
+				<li>
+					<label for="weight">是否饮酒</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>从不吸烟</option>
+						<option>已戒烟</option>
+						<option>吸烟</option>
+					</select>
+				</li>
+				<li>
+					<label for="height">日饮酒量</label> 
+					<span class="input-jt">两</span>
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li>
+					<label for="height">酒龄</label> 
+					<span class="input-jt">年</span>
+					<input class="input-text" id="height" value=""
+					dir="rtl" placeholder="请输入时间">
+				</li>
+				<li>
+					<label for="height">近期是否醉酒</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>是</option>
+						<option>否</option>
+					</select>
+				</li>
+				<li>
+					<label for="height">饮酒种类</label> 
+					<span class="input-jt">&gt;</span>
+					<select class="select-style">
+						<option>请选择</option>
+						<option>白酒</option>
+						<option>啤酒</option>
+						<option>红酒</option>
+					</select>
+				</li>
+			</ul>
+			
+			<div class="next"><span>下一步</span></div>
+		</div>
+		
+	</div>
+	
+	<!-- JS代码 -->
+	<script type="text/javascript">
+		/* $(".life").show(); */
+		/* document.addEventListener("touchstart", function(e) {
+			e.preventDefault();
+		}) */
+		//
+		window.onload = function(){
+			$(".base").hide();
+			$(".life").show();
+			//
+			$(".add-link").on("touchstart", function(e) {
+				this.style.background = 'red';
+				$(".archive").hide();
+				$(".family").show();
+			});
+			$(".add-link").on("touchend", function(e) {
+				this.style.background = '#919191';
+			});
+			//
+			$(".next").on("touchstart", function(e) {
+				this.style.background = 'red';
+			});
+			$(".next").on("touchend", function(e) {
+				this.style.background = '#919191';
+			});
+			
+			$(".food-like").one("touchstart", function(){
+				var arr = ["嗜盐","嗜油","嗜糖"];
+				$(this).parent().append(add_more(arr));
+			});
+			
+			//
+			function add_more(arr){
+				if(arr.lengt < 1) return;
+				var html = "<div class='more-check'>";
+				$.each(arr, function(i,item){
+					html+="<span class='check-item'>"+item+"</span>";
+				});
+				html+="</div>";
+				return html;
+			}
+			//
+			/* $(".tab li").on("touchstart", function(e){
+				var index = $(this).index();
+				//清除样式
+				$(".tab-item").hide();
+				$(".tab li").removeClass("active-li");
+				//显示样式
+				$(".tab-item").eq(index).show();
+				$(this).addClass("active-li");
+			}); */
+			
+			/* //添加家庭成员
+			$(".family-add").on("touchstart", function(e) {
+				$(".archive").show();
+				$(".family").hide();
+			})
+			//
+			$(".add-btn").on("touchstart", function(e){
+				$(".family-item").first().clone(true).insertBefore(this).append("<img src='delete.png' class='delete-img'>");
+				//绑定删除
+				$(".delete-img").unbind();
+				$(".delete-img").on("touchstart", function(e) {
+					$(this).parent().remove();
+				});
+			});  */
+			
+		}
+		
+		
+	</script>
+</body>
+</html>

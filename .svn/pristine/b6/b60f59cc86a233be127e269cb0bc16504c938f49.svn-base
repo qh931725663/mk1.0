@@ -1,0 +1,191 @@
+package com.haaa.cloudmedical.platform.allinone.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.dao.AIODao;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.entity.AIO6500;
+
+/**
+ * 6500一体机
+ * 
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class AIO6500Service {
+
+	@Resource
+	private UserAppDao userAppDao;
+
+	@Resource
+	private AIODao aioDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+
+	/**
+	 * 
+	 * @Title: login @Description: 登录接口 @param request @return @throws
+	 */
+	public String login(HttpServletRequest request) {
+		String responseStr = null;
+		String contentType = request.getContentType();
+		if (contentType != null && contentType.indexOf("multipart/form-data") != -1) {
+			System.out.println("--------始验证用");
+			FileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			Iterator items;
+			String username = "";
+			String passwd = "";
+			try {
+				items = upload.parseRequest(request).iterator();
+				while (items.hasNext()) {
+					FileItem item = (FileItem) items.next();
+					if (item.isFormField()) {
+						if (0 == item.getFieldName().compareTo("username")) {
+							username = item.getString().trim();
+						} else if (0 == item.getFieldName().compareTo("password")) {
+							passwd = item.getString().trim();
+						}
+					}
+				}
+				passwd = MD5Util.encode(passwd);
+				Map<String, Object> user;
+				if (username.length() == 18 || username.length() == 15) {
+					user = userAppDao.selectByIdCard6500(username);
+					if (user != null) {
+						if (user.get("user_pwd").equals(passwd)) {
+							responseStr = getPaitInfo(user, request);
+						} else {
+							responseStr = "ERR_INVALID_LOGIN_PWD:";
+						}
+					} else {
+						responseStr = "ERR_INVALID_LOGIN_ID:";
+					}
+
+				} else {
+					user = userAppDao.selectByAccount(username);
+					if (user != null) {
+						if (user.get("user_pwd").equals(passwd)) {
+							responseStr = getPaitInfo(user, request);
+						} else {
+							responseStr = "ERR_INVALID_LOGIN_PWD:";
+						}
+					} else {
+						responseStr = "ERR_INVALID_LOGIN_ID:";
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			// 可以做出错处理也可不处理
+		}
+		return responseStr;
+	}
+
+	/**
+	 * 
+	 * @Title: saveData @Description: 保存信息 @param aio @return @throws
+	 */
+	public String saveData(AIO6500 aio) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> user;
+		if (aio.getUser().length() == 15 || aio.getUser().length() == 18) {// 身份证登录
+			user = userAppDao.selectByIdCard(aio.getId());
+			map.put("user_card", aio.getUser());
+			map.put("user_phone", user.get("user_phone"));
+		} else {// 帐号登录
+			user = userAppDao.selectByAccount6500(aio.getUser());
+			map.put("user_phone", aio.getUser());
+			map.put("user_card", user.get("user_card"));
+		}
+		map.put("user_id", user.get("user_id"));
+		map.put("user_name", user.get("user_name"));
+		map.put("create_date", new Date());
+		map.put("PulseRate", aio.getPr() != null && !aio.getPr().equals("error") ? aio.getPr() : null);
+		map.put("HeartRate",
+				aio.getHeartrate() != null && !aio.getHeartrate().equals("error") ? aio.getHeartrate() : null);
+		map.put("user_height", aio.getStature() != null && !aio.getStature().equals("error") ? aio.getStature() : null);
+		map.put("user_weight", aio.getWeight() != null && !aio.getWeight().equals("error") ? aio.getWeight() : null);
+		map.put("HighPressure", aio.getSys() != null && !aio.getSys().equals("error") ? aio.getSys() : null);
+		map.put("LowPressure", aio.getDia() != null && !aio.getDia().equals("error") ? aio.getDia() : null);
+		map.put("Oxygen", aio.getSpo2() != null && !aio.getSpo2().equals("error") ? aio.getSpo2() : null);
+		map.put("BloodSugar",
+				aio.getBloodsuger() != null && !aio.getBloodsuger().equals("error") ? aio.getBloodsuger() : null);
+		map.put("temperature", aio.getTemp() != null && !aio.getTemp().equals("error") ? aio.getTemp() : null);
+		long resultId = aioDao.saveData(map);
+		if (resultId > 0) {
+			return "HTTP_SUCCESS:loginok";
+		} else {
+			return "ERR_DB_UPLOAD_TREND:";
+		}
+	}
+
+	/**
+	 * 
+	 * @Title: getPaitInfo @Description: 编辑登录返回信息 @param map @param
+	 *         request @return @throws
+	 */
+	private String getPaitInfo(Map<String, Object> map, HttpServletRequest request) {
+		String headString = "<?xml version=\"1.0\" encoding=\"GBK\"?>\n";
+		StringBuffer sbs = new StringBuffer(headString);
+		sbs.append("<downinfo>\n");
+		sbs.append("<id>" + map.get("user_id") + "</id>\n");
+		sbs.append("<startdate></startdate>\n");
+		sbs.append("<enddate></enddate>\n");
+		sbs.append("<diskspace></diskspace>\n");
+		sbs.append("<used>0</used>\n");
+		sbs.append("<total>500</total>\n");
+		sbs.append("<username>" + map.get("user_name") + "</username>\n");
+		sbs.append("<cardtype></cardtype>\n"); // 卡类�?
+		if (map.get("user_card") != null) {
+			IdcardInfoExtractor idcardInfo = new IdcardInfoExtractor((String) map.get("user_card"));
+			sbs.append("<personid>" + map.get("user_card") + "</personid>\n");
+			if (idcardInfo.getGender().equals("男")) {
+				sbs.append("<sex>" + 0 + "</sex>\n");
+			} else {
+				sbs.append("<sex>" + 1 + "</sex>\n");
+			}
+			sbs.append("<sex>" + idcardInfo.getGender() + "</sex>\n");
+			sbs.append("<birthday>" + DateUtil.dateFormat(idcardInfo.getBirthday(), "yyyy-MM-dd") + "</birthday>\n");
+		}
+		if (map.get("user_age") != null) {
+			sbs.append("<age>" + map.get("user_age") + "</age>\n");
+		}
+
+		if (map.get("user_phone") != null) {
+			sbs.append("<phone>" + map.get("user_phone") + "</phone>\n");
+		}
+		sbs.append("<hospitalid></hospitalid>\n");
+		if (map.get("user_height") != null) {
+			sbs.append("<height>" + (int) ((float) map.get("user_height") * 10) + "</height>\n");
+		}
+		if (map.get("user_weight") != null) {
+			sbs.append("<weight>" + (int) ((float) map.get("user_weight") * 10) + "</weight>\n");
+		}
+		sbs.append("</downinfo>\n");
+		System.out.println(request.getSession().getId());
+		String returnValue = "HTTP_SUCCESS:PHPSESSID=" + request.getSession().getId() + sbs.toString();
+		return returnValue;
+	}
+}

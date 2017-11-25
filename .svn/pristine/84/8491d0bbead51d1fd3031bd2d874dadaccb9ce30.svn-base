@@ -1,0 +1,77 @@
+package com.haaa.cloudmedical.interceptor;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.haaa.cloudmedical.platform.user.service.UserPlatformService;
+
+public class CommonInterceptor implements HandlerInterceptor {
+
+    private Logger log = Logger.getLogger(UserPlatformService.class);
+
+    /**  
+     * 在业务处理器处理请求之前被调用  
+     * 如果返回false  
+     *     从当前的拦截器往回执行所有拦截器的afterCompletion(),再退出拦截器链 
+     * 如果返回true  
+     *    执行下一个拦截器,直到所有的拦截器都执行完毕  
+     *    再执行被拦截的Controller  
+     *    然后进入拦截器链,  
+     *    从最后一个拦截器往回执行所有的postHandle()  
+     *    接着再从最后一个拦截器往回执行所有的afterCompletion()  
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
+        log.info("*******************************拦截器*******************************");
+        //获取请求的URL  
+        String url = request.getRequestURI();
+        //是否登录
+        if (url.indexOf("login.action") >= 0) {
+            return true;
+        }
+        Map<String, Object> user = (Map<String, Object>) request.getSession().getAttribute("user");
+        if (user == null) {
+            log.info("未登录");
+            this.returnJson(response, "{\"flag\":\"fail\"}");
+            return false;
+        }
+        return true;
+    }
+
+    private void returnJson(HttpServletResponse response, String json) throws Exception {
+        PrintWriter writer = null;
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        try {
+            writer = response.getWriter();
+            writer.print(json);
+
+        } catch (IOException e) {
+            log.error("response error", e);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object obj, Exception e) throws Exception {
+        //log.info("afterCompletion");
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object obj, ModelAndView m) throws Exception {
+        //log.info("postHandle");
+    }
+
+}

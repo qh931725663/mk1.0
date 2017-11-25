@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>index.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+	
+<link rel="stylesheet" type="text/css" href="css/index.css" />
+<link rel="stylesheet" type="text/css" href="css/layer.css" />
+<script type="text/javascript" src="../lib/jquery/jquery-1.11.3.js"></script>
+<script type="text/javascript" src="js/layer.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+	<div class="core">
+		<header class="header">
+			<div class="nav">
+				<div class="spot">
+					<div class="line"></div>
+					<div class="tab-base">
+						<img alt="" src="image/tab-select.png" class="tab-select-img">
+					</div>
+					<div class="tab-life">
+						<img alt="" src="image/tab-gray.png" class="tab-img">
+					</div>
+					<div class="tab-history">
+						<img alt="" src="image/tab-gray.png" class="tab-img">
+					</div>
+					<div class="tab-examine">
+						<img alt="" src="image/tab-gray.png" class="tab-img">
+					</div>
+					<div class="tab-auxiliary">
+						<img alt="" src="image/tab-gray.png" class="tab-img">
+					</div>
+					<div class="tab-prevent">
+						<img alt="" src="image/tab-gray.png" class="tab-img">
+					</div>
+				</div>
+				<div class="tab tab-select">基本信息</div>
+				<div class="tab">生活方式</div>
+				<div class="tab">既往史&nbsp;</div>
+				<div class="tab">问卷调查</div>
+				<div class="tab">辅助检查</div>
+				<div class="tab">预防检疫</div>
+			</div>
+		</header>
+		<div class="active-base content">
+			<ul>
+				<li class="info">
+					<span class="title lable">姓名</span>
+					<span class="data" data-name="user_name"></span>
+				</li>
+				<li class="info">
+					<span class="title lable">性别</span>
+					<span class="data" data-name="user_sex"></span>
+				</li>
+				<li class="info">
+					<span class="title lable">年龄</span>
+					<span class="data" data-name="user_age"></span>
+				</li>
+				<li class="info">
+					<span class="title lable">身份证号</span>
+					<span class="data" data-name="user_card"></span>
+				</li>
+				<li class="info">
+					<span class="title lable">手机号</span>
+					<span class="data" data-name="user_phone"></span>
+				</li>
+				<li>
+					<span class="title lable">身高</span>
+					<span class="title-right">cm</span>
+					<input type="number" placeholder="请输入身高" data-name="user_height" class="input-text" dir="rtl">
+				</li>
+				<li>
+					<span class="title lable">体重</span>
+					<span class="title-right">kg</span>
+					<input type="number" placeholder="请输入体重" data-name="user_weight" class="input-text" dir="rtl">
+				</li>
+				<li>
+					<span class="title lable">腰围</span>
+					<span class="title-right">cm</span>
+					<input type="number" placeholder="请输入腰围" data-name="user_waist" class="input-text" dir="rtl">
+				</li>
+				
+				<li class="select-more blood">
+					<span class="title lable">血型</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="user_blood">请选择</span>
+					<div class="more-check">
+						<span class="check-item">A型</span>
+						<span class="check-item">B型</span>
+						<span class="check-item">AB型</span>
+						<span class="check-item">O型</span>
+						<span class="check-item">其它</span>
+					</div>
+				</li>
+				
+				<li class="select-more">
+					<span class="title lable">是否RH阴性</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="user_blood_is_rh">请选择</span>
+					<div class="more-check">
+						<span class="check-item">是</span>
+						<span class="check-item">否</span>
+						<span class="check-item">不详</span>
+					</div>
+				</li>
+				<li class="select-more marriage">
+					<span class="title lable">婚姻状况</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="user_marriage">请选择</span>
+					<div class="more-check">
+						<span class="check-item">未婚</span>
+						<span class="check-item">已婚</span>
+						<span class="check-item">丧偶</span>
+						<span class="check-item">离婚</span>
+					</div>
+				</li>
+				<li class="select-more">
+					<span class="title lable">常住类型</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="resident_type">请选择</span>
+					<div class="more-check">
+						<span class="check-item">户籍</span>
+						<span class="check-item">非户籍</span>
+					</div>
+				</li>
+				<li class="select-more">
+					<span class="title lable">民族</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="user_nation">请选择</span>
+					<div class="more-check">
+						<span class="check-item">汉族</span>
+						<span class="check-item">少数民族</span>
+					</div>
+				</li>
+				<li class="select-more">
+					<span class="title lable">文化程度</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="cultural_level">请选择</span>
+					<div class="more-check">
+						<span class="check-item" style="width:20%">文盲及半文盲</span>
+						<span class="check-item">小学</span>
+						<span class="check-item">初中</span>
+						<span class="check-item" style="width:22%">高中/技校/中专</span>
+						<span class="check-item" style="width:22%">大学专科及以上</span>
+						<span class="check-item">不详</span>
+					</div>
+				</li>
+				<li class="select-more">
+					<span class="title lable">职业</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="career">请选择</span>
+					<div class="more-check">
+						<span class="check-item">农民</span>
+						<span class="check-item">企业职工</span>
+						<span class="check-item">做生意</span>
+						<span class="check-item">打工</span>
+						<span class="check-item" style="width:15%">退休人员</span>
+						<span class="check-item" style="width:28%">公务员/事业单位</span>
+					</div>
+				</li>
+				<li class="select-more">
+					<span class="title lable">年家庭收入</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="income">请选择</span>
+					<div class="more-check">
+						<span class="check-item" style="width:20%">小于5万</span>
+						<span class="check-item" style="width:20%">5万-10万</span>
+						<span class="check-item" style="width:20%">10万-15万</span>
+						<span class="check-item" style="width:20%">大于15万</span>
+					</div>
+				</li>
+				<li class="select-more">
+					<span class="title lable">医疗费用类型</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1 right" data-name="user_medical_burden">请选择</span>
+					<div class="more-check">
+						<span class="check-item" style="width:28%">城镇职工基本医疗保险</span>
+						<span class="check-item" style="width:28%">城乡居民基本医疗保险</span>
+						<span class="check-item" style="width:15%">贫困救助</span>
+						<span class="check-item" style="width:20%">商业医疗保险</span>
+						<span class="check-item">全公费</span>
+						<span class="check-item">全自费</span>
+					</div>
+				</li>
+				<li>
+					<span class="title lable">家庭住址</span>
+					<input type="text" placeholder="请输入家庭住址" data-name="user_address" class="input-text font-def1 nouint" dir="rtl">
+				</li>
+				<li>
+					<span class="title lable">工作单位</span>
+					<input type="text" placeholder="请输入工作单位" data-name="work_unit" class="input-text font-def1 nouint" dir="rtl">
+				</li>
+				<li>
+					<span class="title lable">单位地址</span>
+					<input type="text" placeholder="请输入单位地址" data-name="work_address" class="input-text font-def1 nouint" dir="rtl">
+				</li>
+				<li class="select-more" data-name="1100">
+					<span class="title lable">是否有家庭成员</span>
+					<div class="check check-no">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="base-btn">
+						<div class="base-dashed">
+							<div class="backgd family-btn">
+								<div>
+									<img src="image/add.png" class="add-img">
+									<span class="desc">添加家庭成员联系方式</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<div class="next btn-after">下一步</div>
+		</div>
+		<!-- 生活方式 -->
+		<div class="active-life content" style="display: none;">
+			<ul class="life-content">
+				<li class="life-title" data-name="2100">
+					1、体育锻炼
+				</li>
+				<li class="life-more exercise" data-name="2101">
+					<span class="title lable">锻炼频率</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check on-check">
+						<span class="check-item never">从不锻炼</span>
+						<span class="check-item">偶尔</span>
+						<span class="check-item" style="width: 20%">每周一次以上</span>
+						<span class="check-item">每天</span>
+					</div>
+				</li>
+				<li class="life-item exercise-item" data-name="2102">
+					<span class="item-lable">每次锻炼时间</span>
+					<span class="item-right">分钟</span>
+					<input type="text" placeholder="请输入锻炼时间" class="input-text" dir="rtl">
+				</li>
+				<li class="life-item exercise-item" data-name="2103">
+					<span class="item-lable">锻炼方式</span>
+					<input type="text" placeholder="请输入锻炼方式" class="input-text right" dir="rtl">
+				</li>
+				<li class="life-title" data-name="2200">
+					2、饮食习惯
+				</li>
+				<li class="life-more food-item" data-name="2230">
+					<span class="title lable">荤素比例</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">荤素均衡</span>
+						<span class="check-item">荤食为主</span>
+						<span class="check-item">荤食为主</span>
+					</div>
+				</li>
+				<li class="life-more check-more food-check" data-name="2250">
+					<span class="title lable">偏好</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">嗜油</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">嗜盐</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">嗜糖</span>
+						</span>
+					</div>
+				</li>
+				<li class="life-title">
+					3、吸烟情况
+				</li>
+				<li class="life-more smoke" data-name="2300">
+					<span class="title lable">是否吸烟</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check on-check">
+						<span class="check-item never">从不吸烟</span>
+						<span class="check-item">已戒烟</span>
+						<span class="check-item">吸烟</span>
+					</div>
+				</li>
+				<li class="life-item smoke-item" data-name="2304">
+					<span class="item-lable">日吸烟量</span>
+					<span class="item-right">支</span>
+					<input type="text" placeholder="请输入吸烟量 " class="input-text" dir="rtl">
+				</li>
+				<li class="life-item smoke-item" data-name="2305">
+					<span class="item-lable">烟龄</span>
+					<span class="item-right">年</span>
+					<input type="text" placeholder="请输入烟龄" class="input-text" dir="rtl">
+				</li>
+				<li class="life-item smoke-item" data-name="2306">
+					<span class="item-lable">戒烟年龄</span>
+					<span class="item-right">年</span>
+					<input type="text" placeholder="请输入戒烟年龄" class="input-text" dir="rtl">
+				</li>
+				<li class="life-title">
+					4、饮酒情况
+				</li>
+				<li class="life-more wine" data-name="2400">
+					<span class="title lable">是否饮酒</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check on-check">
+						<span class="check-item never">从不</span>
+						<span class="check-item">偶尔</span>
+						<span class="check-item">经常</span>
+						<span class="check-item">每天</span>
+					</div>
+				</li>
+				<li class="life-item wine-item" data-name="2405">
+					<span class="item-lable">日饮酒量</span>
+					<span class="item-right">两</span>
+					<input type="text" placeholder="请输入饮酒量 " class="input-text" dir="rtl">
+				</li>
+				<li class="life-item wine-item" data-name="2406">
+					<span class="item-lable">酒龄</span>
+					<span class="item-right">年</span>
+					<input type="text" placeholder="请输入酒龄" class="input-text" dir="rtl">
+				</li>
+				<li class="life-more wine-item" data-name="2407">
+					<span class="title lable">近期是否醉酒</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check wine-alone">
+						<span class="check-item">是</span>
+						<span class="check-item">否</span>
+					</div>
+				</li>
+				<li class="life-more check-more wine-item" data-name="2408">
+					<span class="title lable">饮酒种类</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">白酒</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">啤酒</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">红酒</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">黄酒</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">其它</span>
+						</span>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="next before btn-before">上一步</div>
+			<div class="next after btn-after">下一步</div>
+		</div>
+		<!-- 既往 -->
+		<div class="active-history content" style="display: none;">
+			<ul class=history-content>
+				<li class="history-more more" data-name="3101">
+					<span class="title">1、是否有药物过敏史</span>
+					<div class="check check-no" data-name="3100">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3100">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="more-check" data-name="3101">
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt" >青霉素</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">磺胺</span>
+						</span>
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">链霉素</span>
+						</span>
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">其它药物</span>
+						</span>
+					</div>
+				</li>
+				<li class="history-more more" data-name="3201">
+					<span class="title">2、是否有疾病史</span>
+					<div class="check check-no" data-name="3200">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3200">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="more-check" id="diseaseHistory">
+						<div class="to-top"></div>
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">高血压</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">糖尿病</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">冠心病</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width:22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">慢性阻塞性肺疾病</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width:18%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">恶性肿瘤</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">脑卒中</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width:18%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">重性精神疾病</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item" style="width: 15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">结核病</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">肝炎</span>
+						</span>
+						<input type="hidden">
+						<span class="more-item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">其它</span>
+						</span>
+						<input type="hidden">
+					</div>
+				</li>
+				<li class="history-more more-input">
+					<span class="title">3、是否有手术史</span>
+					<div class="check check-no" data-name="3300">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3300">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="history-btn">
+						<div class="history-dashed">
+							<div class="backgd operation-btn">
+								<img src="image/add.png" class="add-img">
+								<span class="desc">添加手术史</span>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="history-more more-input">
+					<span class="title">4、是否有外伤史</span>
+					<div class="check check-no" data-name="3400">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span>否</span>
+					</div>
+					<div class="check check-yes" data-name="3400">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="history-btn">
+						<div class="history-dashed">
+							<div class="backgd trauma-btn">
+								<img src="image/add.png" class="add-img">
+								<span class="desc">添加外伤史</span>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="history-more more-input">
+					<span class="title">5、是否有输血史</span>
+					<div class="check check-no" data-name="3500">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3500">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="history-btn">
+						<div class="history-dashed">
+							<div class="backgd transfusion-btn">
+								<img src="image/add.png" class="add-img">
+								<span class="desc">添加输血史</span>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="history-more more-input">
+					<span class="title">6、是否有家族成员病史</span>
+					<div class="check check-no" data-name="3600">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3600">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="history-btn">
+						<div class="history-dashed">
+							<div class="backgd illness-btn">
+								<img src="image/add.png" class="add-img">
+								<span class="desc">添加成员病史</span>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="history-more input" >
+					<span class="title">7、是否有遗传病史</span>
+					<div class="check check-no" data-name="3700">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3700">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="more-check">
+						<span class="title">遗传病名称</span>
+						<input type="text" placeholder="请输入遗传病名称" data-name="3701" class="input-text history-input" dir="rtl">
+					</div>
+				</li>
+				<li class="history-more more" data-name="3801">
+					<span class="title">8、是否有残疾</span>
+					<div class="check check-no" data-name="3800">
+						<img alt="" src="image/alone-check.png" class="alone-img alone-check">
+						<span class="no">否</span>
+					</div>
+					<div class="check check-yes" data-name="3800">
+						<img alt="" src="image/alone-def.png" class="alone-img">
+						<span class="yes">是</span>
+					</div>
+					<div class="more-check">
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">视力残疾</span>
+						</span>
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">听力残疾</span>
+						</span>
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">言语残疾</span>
+						</span>
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">肢体残疾</span>
+						</span>
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">智力残疾</span>
+						</span>
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">精神残疾</span>
+						</span>
+						<span class="more-item" style="width:15%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">其它残疾</span>
+						</span>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="next before btn-before">上一步</div>
+			<div class="next after btn-after">下一步</div>
+		</div>
+		<!-- 问卷调查 -->
+		<div class="active-examine content"  style="display: none;">
+			<ul class="examine-content">
+				<li class="examine-more more" data-name="4100">
+					<span class="title">1、您是否有以下症状?</span>
+					<div class="examine-check" style="display: block;">
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">头痛</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">头晕</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">心悸</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">胸闷</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">胸痛</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">慢性咳嗽</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">咳痰</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">呼吸困难</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">多饮</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">多尿</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">体重下降</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">乏力</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">关节肿痛</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">手脚麻木</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">尿急</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">尿痛</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">便秘</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">腹泻</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">恶心呕吐</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">耳鸣</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">乳房胀痛</span>
+						</span>
+						<span class="item" style="width:20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">以上都没有</span>
+						</span>
+					</div>
+				</li>
+				
+				<li class="examine-more more" data-name="4200">
+					<span class="title">2、您是否有以下慢性疾病?</span>
+					<div class="examine-check" style="display: block;">
+						<input type="hidden" class="hide" id="chronicDisease_4201" data-name="4201" value="">
+						<input type="hidden" class="hide" id="chronicDisease_4202" data-name="4202" value="">
+						<input type="hidden" class="hide" id="chronicDisease_4203" data-name="4203" value="">
+						<input type="hidden" class="hide" id="chronicDisease_4204" data-name="4204" value="">
+						<span class="item" id="hypertension">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">高血压</span>
+						</span>
+						<span class="item"  id="diabetes">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">糖尿病</span>
+						</span>
+						<span class="item" style="width: 18%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">高脂血症</span>
+						</span>
+						<span class="item" style="width: 20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">糖尿病前期</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">哮喘</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">房颤</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">痛风</span>
+						</span>
+						<span class="item" style="width: 20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">类风湿关节炎</span>
+						</span>
+						<span class="item" style="width: 35%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">慢性静脉血栓性疾病</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">慢性肾功能不全</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">慢性阻塞性肺病</span>
+						</span>
+						
+						<span class="item" style="width: 37%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">慢性阻塞性肺病伴肺动脉高压症</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">充血性心力衰竭</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">冠状动脉疾病</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">抑郁症</span>
+						</span>
+						<span class="item">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">癫痫</span>
+						</span>
+						<span class="item" style="width: 30%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">人类免疫缺陷病毒感染</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">甲状腺功能亢进</span>
+						</span>
+						<span class="item" style="width: 20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">代谢综合征</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">多发性硬化症</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">帕金森氏病</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">外周动脉疾病</span>
+						</span>
+						<span class="item" style="width: 22%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">风湿性多肌痛</span>
+						</span>
+						<span class="item" style="width: 37%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">肺动脉高压症（与COPD无关）</span>
+						</span><span class="item" style="width: 20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">局限性肠炎</span>
+						</span>
+						<span class="item" style="width: 25%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">睡眠呼吸暂停征</span>
+						</span>
+						<span class="item" style="width: 20%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">溃疡性结肠炎</span>
+						</span><span class="item" style="width: 25%">
+							<img alt="" src="image/more-def.png" class="check-img">
+							<span class="opt">以上都没有</span>
+						</span>
+					</div>
+				</li>
+				<li class="examine-more alone" data-name="4300">
+					<span class="title lable">3、您与家人和朋友的关系好吗？</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">不好</span>
+						<span class="check-item">一般</span>
+						<span class="check-item">好</span>
+						<span class="check-item">很好</span>
+						<span class="check-item">特别好</span>
+					</div>
+				</li>
+				<li class="examine-more alone" data-name="4400">
+					<span class="title lable">4、您对现在的生活满意吗？</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">满意</span>
+						<span class="check-item">不满意</span>
+					</div>
+				</li>
+				<li class="examine-more alone" data-name="4500">
+					<span class="title lable">5、您会经常感觉郁闷焦虑吗？</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">会</span>
+						<span class="check-item">不会</span>
+					</div>
+				</li>
+				<li class="examine-more alone" data-name="4600">
+					<span class="title lable">6、您平均每晚的睡眠时间能达到7个小时吗？</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">有</span>
+						<span class="check-item">没有</span>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="next before btn-before">上一步</div>
+			<div class="next after btn-after">下一步</div>
+		</div>
+		<!-- 辅助调查 -->
+		<div class="active-auxiliary content" style="display: none;">
+			<ul class="auxiliary-content">
+				<li class="auxiliary-more" data-name="5001">
+					<span class="title lable">1、下肢水肿？</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">无</span>
+						<span class="check-item">单侧</span>
+						<span class="check-item" style="width: 15%">双侧不对称</span>
+						<span class="check-item">双侧对称</span>
+					</div>
+				</li>
+				<li class="auxiliary-more" data-name="5002">
+					<span class="title lable">2、足背动脉搏动？</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">未触及</span>
+						<span class="check-item" style="width: 20%">触及双侧对称</span>
+						<span class="check-item" style="width: 20%">触及左侧弱或消失</span>
+						<span class="check-item" style="width: 20%">触及右侧弱或消失</span>
+					</div>
+				</li>
+			</ul>
+			<div class="next before btn-before">上一步</div>
+			<div class="next after btn-after">下一步</div>
+		</div>
+		<!-- 预防检疫 -->
+		<div class="active-prevent content" style="display: none;">
+			<ul class="prevent-content">
+				<li class="prevent-more" data-name="6001">
+					<span class="title lable">1、最近一次结肠癌筛查</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">从不</span>
+						<span class="check-item" style="width: 18%">在过去一年</span>
+						<span class="check-item">1-5年前</span>
+						<span class="check-item">超过5年前</span>
+						<span class="check-item">不记得了</span>
+					</div>
+				</li>
+				<li class="prevent-more" data-name="6002">
+					<span class="title lable">2、最近一次直肠检查</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">从不</span>
+						<span class="check-item" style="width: 18%">在过去一年</span>
+						<span class="check-item">1-5年前</span>
+						<span class="check-item">超过5年前</span>
+						<span class="check-item">不记得了</span>
+					</div>
+				</li>
+				<li class="prevent-more" data-name="6003">
+					<span class="title lable">3、最近一次注射破伤风疫苗</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">从不</span>
+						<span class="check-item" style="width: 18%">在过去一年</span>
+						<span class="check-item">1-5年前</span>
+						<span class="check-item">超过5年前</span>
+						<span class="check-item">不记得了</span>
+					</div>
+				</li>
+				<li class="prevent-more" data-name="6004">
+					<span class="title lable">4、最近一次血压、血脂检查</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">从不</span>
+						<span class="check-item" style="width: 18%">在过去一年</span>
+						<span class="check-item">1-5年前</span>
+						<span class="check-item">超过5年前</span>
+						<span class="check-item">不记得了</span>
+					</div>
+				</li>
+				<li class="prevent-more" data-name="6005">
+					<span class="title lable">5、最近一次牙科检查</span>
+					<img alt="右" src="image/jt-right.png" class="jt">
+					<span class="data font-def1">请选择</span>
+					<div class="more-check">
+						<span class="check-item">从不</span>
+						<span class="check-item" style="width: 18%">在过去一年</span>
+						<span class="check-item">1-5年前</span>
+						<span class="check-item">超过5年前</span>
+						<span class="check-item">不记得了</span>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="next before btn-before">上一步</div>
+			<div class="next after save" id="do-save">保存</div>
+		</div>
+	</div>
+	
+	<!-- 家庭成员 -->
+	<div class="win family"  style="display: none;">
+		<div class="content">
+			<div class="title">
+				<span class="del" style="display: none;">删除</span>
+			</div>
+			<div class="item" data-name="1100">
+				<ul>
+					<li class="family-select" data-name="1101">
+						<span class="lable">亲属关系</span>
+						<img alt="右" src="image/jt-right.png" class="jt">
+						<span class="data font-def1">请选择</span>
+						<div class="more-check">
+							<span class="check-item">配偶</span>
+							<span class="check-item">儿子</span>
+							<span class="check-item">女儿</span>
+							<span class="check-item">孙子</span>
+							<span class="check-item">孙女</span>
+						</div>
+					</li>
+					<li data-name="1102">
+						<span class="lable">姓名</span>
+						<input type="text" placeholder="请输入姓名" class="input-text" dir="rtl">
+					</li>
+					<li data-name="1103">
+						<span class="lable">联系电话</span>
+						<input type="text" placeholder="请输入联系电话" class="input-text" dir="rtl">
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="btn-add">
+			<div class="btn-border">
+				<div class="btn-click">
+					<img src="image/add.png" class="img">
+					<span>添加家庭成员</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="return">返回</div>
+		<div class="btn-save">保存</div>
+	</div>
+	
+	<!-- 手术历史 -->
+	<div class="win operation" style="display: none;">
+		<div class="content" data-name="3300">
+			<div class="title">
+				<span class="del" style="display: none;">删除</span>
+			</div>
+			<div class="item">
+				<ul>
+					<li>
+						<span class="lable">手术名称</span>
+						<input type="text" placeholder="请输入手术名称" class="input-text" dir="rtl" data-name="3301">
+					</li>
+					<li>
+						<span class="lable">手术时间</span>
+						<input type="text" data-type="time" placeholder="请输入手术时间" class="input-text" dir="rtl" data-name="3302">
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="btn-add">
+			<div class="btn-border">
+				<div class="btn-click">
+					<img src="image/add.png" class="img">
+					<span>添加手术历史</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="return">返回</div>
+		<div class="btn-save">保存</div>
+	</div>
+	
+	<!-- 外伤历史 --> 
+	<div class="win trauma" style="display: none;">
+		<div class="content" data-name="3400">
+			<div class="title">
+				<span class="del" style="display: none;">删除</span>
+			</div>
+			<div class="item">
+				<ul>
+					<li>
+						<span class="lable">外伤名称</span>
+						<input type="text" placeholder="请输入外伤名称" class="input-text" dir="rtl" data-name="3401">
+					</li>
+					<li>
+						<span class="lable">发生时间</span>
+						<input type="text" data-type="time" placeholder="请输入手术时间" class="input-text" dir="rtl" data-name="3402">
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="btn-add">
+			<div class="btn-border">
+				<div class="btn-click">
+					<img src="image/add.png" class="img">
+					<span>添加外伤历史</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="return">返回</div>
+		<div class="btn-save">保存</div>
+	</div>
+	
+	<!-- 输血历史 -->
+	<div class="win transfusion" style="display: none;">
+		<div class="content" data-name="3500">
+			<div class="title">
+				<span class="del" style="display: none;">删除</span>
+			</div>
+			<div class="item">
+				<ul>
+					<li>
+						<span class="lable">输血原因</span>
+						<input type="text" placeholder="请输入输血原因" class="input-text" dir="rtl" data-name="3501">
+					</li>
+					<li>
+						<span class="lable">发生时间</span>
+						<input type="text" data-type="time" placeholder="请输入发生时间" class="input-text" dir="rtl" data-name="3502">
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="btn-add">
+			<div class="btn-border">
+				<div class="btn-click">
+					<img src="image/add.png" class="img">
+					<span>添加输血历史</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="return">返回</div>
+		<div class="btn-save">保存</div>
+	</div>
+	
+	<!-- 家族成员病史 -->
+	<div class="win illness" style="display: none;">
+		<div class="content" data-name="3600">
+			<div class="title">
+				<span class="del" style="display: none;">删除</span>
+			</div>
+			<div class="item">
+				<ul>
+					<li class="family-select" data-name="3601">
+						<span class="lable">亲属关系</span>
+						<img alt="右" src="image/jt-right.png" class="jt">
+						<span class="data font-def1">请选择</span>
+						<div class="more-check illness-alone">
+							<span class="check-item">父亲</span>
+							<span class="check-item">母亲</span>
+							<span class="check-item">兄弟姐妹</span>
+							<span class="check-item">子女</span>
+						</div>
+					</li>
+					<li class="family-select" data-name="3602">
+						<span class="lable">选择所患疾病</span>
+						<img alt="右" src="image/jt-right.png" class="jt">
+						<span class="data font-def1">请选择</span>
+						<div class="more-check illness-more">
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">高血压</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">糖尿病</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">冠心病</span>
+							</span>
+							<span class="more-item" style="width: 30%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">慢性阻塞性肺疾病</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">恶性肿瘤</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">脑卒中</span>
+							</span>
+							<span class="more-item" style="width: 25%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">重性精神疾病</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">结核病</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">肝炎</span>
+							</span>
+							<span class="more-item" style="width: 15%;height: 15px;">
+								<img alt="" src="image/more-def.png" class="check-img">
+								<span class="opt">其它</span>
+							</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="btn-add">
+			<div class="btn-border">
+				<div class="btn-click">
+					<img src="image/add.png" class="img">
+					<span>添加手术历史</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="return">返回</div>
+		<div class="btn-save">保存</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>电子血压计</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../common/css/reset.css"/>
+    <link rel="stylesheet" href="../../common/css/main.css"/>
+    <style>
+        .line-align-left{display: -webkit-flex;display: flex; align-items: center;  -webkit-align-items: center;}
+        .table-green{background: #9BBB58;color:#fff; }
+        .table-box tr{height:30px;border: 1px solid #ddd;}
+        .rowspan-td{background:#dee7d2; }
+        .blood-data-show dl dt{height: 30px;background: #eee;line-height: 30px;padding-left: 8px;}
+        .blood-data-show dl dd ul{margin: 10px 18px;}
+        .blood-data-show dl dd ul li{margin: 10px 0;border-bottom: 1px solid #F0F0F0;padding-bottom: 10px;}
+        .blood-data-show dl dd ul li:last-child{border-bottom:none;}
+        .container .content{min-height:500px}
+    </style>
+</head>
+<body>
+<div class="container">
+<form id="form_pressure_show">
+    <p class="line-align-left" style="padding: 0 10px;color: #A6A6A6;height: 40px;position: fixed;left: 0;top: 0;width: 100%;background: #fff;">
+        <img src="../../common/image/myhealth/_radius_01.png" alt="" style="width: 10px;"/>
+        <span style="font-size: 17px;color: #3D3D3D;display: inline-block;margin-left:50px;width: 50%;text-align: center;">血压数据</span>
+        <select name="yearmonth" id="yearmonth" style="border: 0px;float: left;">
+            <option value="">查看月数据</option>
+        </select>
+    </p>
+</form>    
+    <div class="content" style="margin-top: 40px;">
+        <div class="blood-data-show" id="demo">
+			<!--<dl>
+                <dt class='time'>2017-02</dt>
+                <dd>
+                    <ul >
+                        <li class="line-align-left"><img src="../../common/image/myhealth/morning_01.png" alt="" style="width: 10%;"/><span style="margin-left: 30px;font-size: 14px;">02-15 08:30</span><span style="margin-left: 70px;font-size: 17px;">135/86 mmHg</span></li>
+                        <li class="line-align-left"><img src="../../common/image/myhealth/afternoon_01.png" alt="" style="width: 10%;"/><span style="margin-left: 30px;font-size: 14px;">02-12 08:30</span><span style="margin-left: 70px;font-size: 17px;">135/86 mmHg</span></li>
+                        <li class="line-align-left"><img src="../../common/image/myhealth/nigth_01.png" alt="" style="width: 10%;"/><span style="margin-left: 30px;font-size: 14px;">02-10 08:30</span><span style="margin-left: 70px;font-size: 17px;">135/86 mmHg</span></li>
+                    </ul>
+                </dd>
+            </dl> -->
+        </div>
+        <div class="show_message" style="text-align: center;display:none;">没有更多数据了...</div>
+    </div>
+</div>
+<script src="../../common/js/jquery-1.11.3.js"></script>	
+<script>
+	var pagecount;//定义总页数变量
+	$(function(){
+		//初始化加载数据
+		init(1);
+		//初始化加载月份
+		$.ajax({
+	        url:"../../../../../blood_pressure-wx/months.action",
+	        type:"get",
+	        dataType : 'json',
+	        success:function(json) {
+				if(json.status==0){
+					var month="<option value=''>查看月数据</option>";
+					$.each(json.data.list, function(i,p){
+						month += "<option value='"+p.yearmonth+"'>"+p.yearmonth+"</option>";
+					});
+					$('#yearmonth').html(month);
+				}
+
+	      	}
+ 		});
+	});
+	function init(current){
+		var data=$.param({pageno:current})+'&'+ $("#form_pressure_show").serialize();
+		$.ajax({
+	        url:"../../../../../blood_pressure-wx/page.action",
+	        type:"post",
+	        dataType : 'json',
+	        data:data,
+	        success:function(list) {
+	        	var list_data=list.data;
+				if(list.status==0){
+	            	$.each(list_data.monthlist,function(i,p){
+	            		var time = p.yearmonth;
+	            		var dl = "";
+	            		
+	            		var len = $('.blood-data-show').find('.time').length;
+	            		//判断是否有标题
+	            		if(len == 0){
+	            			dl = "<dl><dt class='time'>" + time + "</dt><dd><ul></ul></dd></dl>";
+	            			$('#demo').append(dl);
+	            		}else{
+	            			//判断标题不相等
+	            			var temp = true;
+	            			$('.blood-data-show').find('.time').each(function(){
+	            				if($(this).text() == time){
+	            					temp = false;
+	            				}
+	            			});
+	            			if(temp){
+	            				dl = "<dl><dt class='time'>" + time + "</dt><dd><ul></ul></dd></dl>";
+	            				$('#demo').append(dl);
+	            			}
+	            		}
+	            		//判断标题相等
+	            		$('.blood-data-show').find('.time').each(function(){
+	            			if($(this).text() == time){
+	            				var li = "";
+			            		var data = p.datalist;
+			            		 $.each(p.datalist,function(v,k){
+			 	                	li+="<li class='line-align-left'><img src='"+(k.period=='-1'?'../../common/image/myhealth/morning_01.png':k.period==0?'../../common/image/myhealth/afternoon_01.png':'../../common/image/myhealth/nigth_01.png')+"'  style='width: 10%;'/><span style='margin-left: 30px;font-size: 14px;'>"+k.datetime.substr(5)+"</span><span style='margin-left: 70px;font-size: 17px;'>"+(k.HighPressure+'/'+k.LowPressure+'mmHg')+"</span></li>";
+			            		});
+			            		
+			            		$(this).next().find("ul").append(li);
+	            			}
+	            		});
+	            	});
+	            	pagecount=list_data.pagecount;				
+					//显示加载更多
+					if(list_data.pageno==list_data.pagecount){
+						$(".show_message").show();
+					}
+				}
+	      	}
+ 		});		
+	}
+	
+	//查看当月数据
+	$("#yearmonth").change(function(){
+		$("#demo").empty();
+		init(1);
+		current1=1;
+	});
+    //滑动处理
+/*     var startX, startY, moveEndX, moveEndY, X, Y;
+    $('body').on('touchstart',function(e) {
+        var _touch = e.originalEvent.targetTouches[0];
+        startX= _touch.pageX;
+        startY= _touch.pageY;
+    });
+    var current1=1;
+    $('body').on('touchmove', function(e) {
+        var _touch2 = e.originalEvent.targetTouches[0];
+        moveEndX= _touch2.pageX;
+        moveEndY= _touch2.pageY;
+        X = moveEndX - startX;
+        Y = moveEndY - startY;
+        if (Y < 0) {
+           	current1++;
+            init(current1);
+        }
+    }); */
+ //滑动处理
+var current1=1;
+$(window).scroll(function(){
+　　var scrollTop = $(this).scrollTop();
+　　var scrollHeight = $(document).height();
+　　var windowHeight = $(this).height();
+　　if(scrollTop + windowHeight == scrollHeight){
+ 		var current=current1++;
+		if(current<= pagecount){
+			init(current1);
+		}
+　　}
+})
+</script>
+</body>
+</html>

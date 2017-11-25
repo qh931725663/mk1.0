@@ -1,0 +1,35 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.platform.maintenance.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.dao.MaintenanceDao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class MaintenanceService {
+	
+	@Resource
+	private MaintenanceDao maintenanceDao;
+	
+	
+	public InfoJson maintenancePage(String datemin,String datemax,int pageno,int pagesize){
+		List<Object> list = new ArrayList<Object>();
+		return InfoJson.setSucc(maintenanceDao.getPage(datemin, datemax, pageno, pagesize));
+	}
+
+}

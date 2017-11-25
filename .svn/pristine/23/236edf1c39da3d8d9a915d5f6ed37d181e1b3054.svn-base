@@ -1,0 +1,251 @@
+package com.haaa.cloudmedical.app.user.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.service.PositionService;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.TokenUtil;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+public class UserAppService {
+
+	@Autowired
+	private UserAppDao dao;
+	
+	@Autowired
+	private PositionService positionService;
+
+	private Logger logger = Logger.getLogger(UserAppService.class);
+
+	// 信息查询
+	public ResponseDTO getUser(String user_id,String user_type) {
+		ResponseDTO dto = new ResponseDTO();
+		Map<String, Object> user = dao.selectById(user_id,user_type);
+		if (user != null) {
+			dao.redisPut(user_id, user);
+			dto.setFlag(true);
+			dto.setData(user);
+		}
+		return dto;
+	}
+
+	// 用户信息修改
+	public ResponseDTO updateUser(User user, Patient patient) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dao.update(user, "n_user");
+			try {
+				dao.update(patient, "d_patient");
+				dto.setFlag(true);
+			} catch (Exception e) {
+				logger.error(patient.getPatient_id() + ":d_patient表信息更新失败！" + e.getMessage());
+			}
+		} catch (Exception e) {
+			logger.error(user.getUser_id() + ":n_user表信息更新失败！" + e.getMessage());
+		}
+		String sql = "select a.* from n_user a where a.user_id = ?";
+		Map<String, Object> map = dao.select(sql, user.getUser_id()).get(0);
+		dto.setData(map);
+		return dto;
+	}
+
+	// 用户信息修改
+	@SuppressWarnings("unchecked")
+	public ResponseDTO updateUser(User user,String doctor_id) {
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dao.update(user, "n_user");
+			if(user.getUser_type().equals(Constant.USER_TYPE_PATIENT)){
+				Patient patient = new Patient();
+				patient.setPatient_id(user.getUser_id());
+				patient.setPatient_name(user.getUser_name());
+				if(doctor_id!=null&&!"".equals(doctor_id))
+					patient.setDoctor_id(doctor_id);
+				try{
+					dao.update(patient, "d_patient");
+				}catch(Exception e){
+					logger.error("更新d_patient表信息更新失败：" + e.getMessage());
+				}
+			}else if(user.getUser_type().equals(Constant.USER_TYPE_DOCTOR)){
+				Doctor doctor = new Doctor();
+				doctor.setDoctor_id(user.getUser_id());
+				doctor.setDoctor_name(user.getUser_name());
+				try{
+					dao.update(doctor, "d_doctor");
+				}catch(Exception e){
+					logger.error("更新d_doctor表信息更新失败：" + e.getMessage());
+				}
+			}
+			dto.setFlag(true);
+		} catch (Exception e) {
+			logger.error("更新n_user表信息更新失败！" + e.getMessage());
+			e.printStackTrace();
+		}
+		String sql = "select a.*,b.doctor_id from n_user a left join d_patient b on a.user_id = b.patient_id where a.user_id=?";
+		Map<String, Object> map = dao.select(sql, user.getUser_id()).get(0);
+		String doctor_name = "";
+		try{
+			Map<String,Object> doctor = (Map<String, Object>) positionService.getDoctorById(Long.parseLong(map.get("doctor_id").toString())).getData();
+			doctor_name=doctor.get("doctor_name").toString();
+		}catch(Exception e){
+			doctor_name = "";
+		}
+		map.put("doctor_name", doctor_name);
+		dao.redisPut(user.getUser_id(), map);
+		dto.setData(map);
+		return dto;
+	}
+
+	// 修改密码
+	public ResponseDTO password(String user_phone, String user_pwd) {
+		String sql = "update n_user set user_pwd = ? where user_phone = ?";
+		ResponseDTO dto = new ResponseDTO();
+		try {
+			dao.execute(sql, user_pwd, user_phone);
+			Map<String,Object> user = dao.selectByAccount(user_phone, user_pwd);
+			dao.redisPut(user.get("user_id").toString(), user);
+			dto.setFlag(true);
+			dto.setData(user);
+		} catch (Exception e) {
+			logger.error("重置密码失败:" + e.getMessage());
+		}
+		return dto;
+	}
+
+	// 检查该手机号码的个数
+	public int getPhones(String user_phone) {
+		String sql = "select count(*) from n_user where user_phone = ?";
+		int size = dao.count(sql,user_phone);
+		return size;
+	}
+
+	// 注册
+	public ResponseDTO register(String user_phone, String user_pwd,String user_type) {
+
+		String date = DateUtil.DateFormat(new Date(), "yyyy/MM/dd hh:mm:ss");
+		ResponseDTO dto = new ResponseDTO();
+
+		User user = new User();
+		user.setUser_phone(user_phone);
+		user.setUser_pwd(user_pwd);
+		user.setUser_type(user_type);
+		user.setUser_flag("2000001");
+		user.setUser_source(Constant.USER_SOURCE_REGIEST);
+		user.setCreate_date(date);
+		long user_id = 0;
+		try {
+			user_id = dao.insert(user, "n_user");
+			if(user_type.equals(Constant.USER_TYPE_PATIENT)){
+				Patient patient = new Patient();
+				patient.setPatient_id(String.valueOf(user_id));
+				patient.setCreate_date(date);
+				try {
+					dao.insert(patient, "d_patient");
+					dto.setFlag(true);
+				} catch (Exception e) {
+					logger.error("写入d_patient表失败！" + e.getMessage());
+					dao.delete(user, String.valueOf(user_id));
+				}
+			}else if(user_type.equals(Constant.USER_TYPE_DOCTOR)){
+				Doctor doctor = new Doctor();
+				doctor.setDoctor_id(String.valueOf(user_id));
+				doctor.setCreate_date(date);
+				try {
+					dao.insert(doctor, "d_doctor");
+					dto.setFlag(true);
+				} catch (Exception e) {
+					logger.error("写入d_doctor表失败！" + e.getMessage());
+					dao.delete(user, String.valueOf(user_id));
+				}
+			}
+		} catch (Exception e) {
+			logger.error("写入n_user表失败！" + e.getMessage());
+		}
+		return dto;
+	}
+
+	// 登录
+	@SuppressWarnings("unchecked")
+	public ResponseDTO login(String user_phone, String user_pwd) {
+		ResponseDTO dto = new ResponseDTO();
+		try{
+			Map<String, Object> user = dao.selectByAccount(user_phone, user_pwd);
+			System.out.println("userAppService:login:"+user_phone+":"+user_pwd);
+			Object doctor_id = user.get("doctor_id");
+			if(doctor_id!=null){
+				Map<String,Object> doctor=null;
+				if(!doctor_id.toString().equals("0")){
+					doctor=(Map<String, Object>) positionService.getDoctorById(Long.parseLong(doctor_id.toString())).getData();
+					user.put("doctor_name", doctor.get("doctor_name").toString());
+				}
+			}						
+			String user_id = user.get("user_id").toString();
+			String loginToken = TokenUtil.generateToken(user_id, user_phone);
+			dto.setFlag(true);
+			dto.setData(user);
+			dto.setLoginToken(loginToken);
+			dao.redisPut(loginToken,loginToken);//登录令牌写入缓存
+			dao.redisPut(user_id,user);//UserBean写入缓存
+		}catch(Exception e){
+			dto.setErrmsg("登录失败！");
+			logger.error("登录失败！",e);
+		}	
+		return dto;
+	}
+
+	public void redisPut(String key, String value, long seconds) {
+		if (seconds <= 0)
+			dao.redisPut(key, value);
+		else
+			dao.redisPut(key, value, seconds);
+	}
+
+	public Object redisGet(String key) {
+		Object value = dao.redisGet(key);
+		return value;
+	}
+
+	public void redisDelete(String key) {
+		dao.redisDelete(key);
+	}
+
+	public int getMySqlTime() {
+		String sql = "select date_format(now(),'%Y')";
+		int year = dao.query(sql);
+		return year;
+	}
+
+	public double getAhdi(String user_phone, String user_card) {
+		double ahdi = -1;
+		List<String> params = new ArrayList<String>();
+		String sql = " select ahdi_value from n_user where 1=1";
+		if (user_phone != null && !"".equals(user_phone)) {
+			params.add(user_phone);
+			sql += " and user_phone = ? ";
+		}
+		if (user_card != null && !"".equals(user_card)) {
+			params.add(user_card);
+			sql += " and user_card = ? ";
+		}
+		try {
+			ahdi = Double.parseDouble(dao.select(sql, params.toArray()).get(0).get("ahdi_value").toString());
+		} catch (Exception e) {
+			logger.error("数据库没有数据：" + e.getMessage());
+		}
+		return ahdi;
+	}
+
+}

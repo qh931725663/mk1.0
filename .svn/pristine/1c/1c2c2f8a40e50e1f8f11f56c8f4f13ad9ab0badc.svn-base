@@ -1,0 +1,124 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.survey.controller;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.survey.service.SurveyAppService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.platform.survey.service.SurveyService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/survey-app")
+public class SurveyAppController {
+	
+	@Autowired
+	private SurveyAppService service;
+	
+	private Logger logger = Logger.getLogger(SurveyAppController.class);
+	
+	@RequestMapping("/userInfo.action")
+	@ResponseBody
+	public Object getUserInfo(String user_id){
+		Map<String,Object> user = service.getUserInfo(user_id);
+		return user;
+	}
+	
+	@RequestMapping("/saveAnswer.action")
+	@ResponseBody
+	public Object saveAnswer(HttpServletRequest request){
+		
+		//保存人员信息
+		String user_id = request.getParameter("user_id");
+		String email = request.getParameter("email");
+		String post_code = request.getParameter("post_code");
+		String user_address = request.getParameter("user_address");
+		String user_area = request.getParameter("user_area");
+		String user_height = request.getParameter("user_height");
+		String user_weight = request.getParameter("user_weight");
+		String user_waist = request.getParameter("user_waist");
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String doctor_id = request.getParameter("doctor_id");
+		Map<String, Object> survey = new HashMap<String, Object>();
+		survey.put("user_id", user_id);
+		survey.put("email", email);
+		survey.put("post_code", post_code);
+		survey.put("user_address",user_area+user_address);
+		survey.put("user_height", user_height);
+		survey.put("user_weight", user_weight);
+		survey.put("user_waist", user_waist);
+		survey.put("create_date", date);
+		survey.put("doctor_id", doctor_id);
+		//初始化健康评估表
+		long order_id = service.addSurvey(survey);
+		
+		//获取答案并保存
+		List<Map<String,Object>> question_list = service.getSurveyQuestionList(order_id);
+		List<Map<String,Object>> answer_list = new ArrayList<Map<String,Object>>();
+		for (Map<String, Object> map : question_list) {
+			String survey_question_order_id = map.get("order_id").toString();//问题ID
+			String question_k_order_id = map.get("question_k_order_id").toString();//问题编码
+			String survey_option_order_id = request.getParameter("select_"+question_k_order_id);// key=问题编码,value=答案编码
+			if(survey_option_order_id!=null&&!"".equals(survey_option_order_id)){
+				Map<String,Object> question = new HashMap<String,Object>();
+				question.put("survey_order_id", order_id);//评估表ID
+				question.put("survey_question_order_id", survey_question_order_id);//问题ID
+				question.put("survey_option_order_id", survey_option_order_id);//答案ID
+				question.put("survey_option_content", service.getSurveyAnswerContent(Long.parseLong(survey_option_order_id)));//答案内容
+				question.put("create_date", date);
+				answer_list.add(question);
+				//保存默认计划
+				//service.saveChronicManage(question_k_order_id, question, user_id);
+			}
+		}
+		service.saveAnswer(answer_list);
+		service.call(String.valueOf(order_id));
+		ResponseDTO dto = new ResponseDTO(); 
+		dto.setFlag(true);
+		return dto;
+	}
+
+	
+	@RequestMapping("/getTimeList.action")
+	public InfoJson getTimeList(String user_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getTimeList(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+		
+	}
+	
+	
+	@RequestMapping("getDetail.action")
+	public InfoJson getDetail(String order_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getDetail(order_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+}

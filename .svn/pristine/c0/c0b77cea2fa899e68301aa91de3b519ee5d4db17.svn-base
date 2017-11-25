@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>基础信息</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<div class="header">
+		<div class="circle">
+			<div class="dotBox"></div>
+			<p><span class="dot on"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+		</div>
+		<div class="txtBox">
+			<p><span class="txt onFont">基础信息</span></p>
+			<p><span class="txt">生活方式</span></p>
+			<p><span class="txt">既往史</span></p>
+			<p><span class="txt">查体</span></p>
+		</div>
+	</div>
+	<input type="hidden" class="haha" value=""/>
+	<form class="main" id="infoForm">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<div class="info_left"><span class="must">*</span>性别</div>
+				<div class="info_rgt infocla" data-id="user_sex"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>出生日期</div>
+				<div class="info_rgt infocla" data-id="user_birthday"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>年龄</div>
+				<div class="info_rgt infocla" data-id="user_age"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>身份证号</div>
+				<div class="info_rgt infocla" data-id="user_card"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>联系方式</div>
+				<div class="info_rgt infocla"  data-id="user_phone"></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>身高</div>
+				<div class="info_rgt"><input type="number" class="bitian hgt" data-val="身高" id="height" name="030501" placeholder="点击填写"/> <span class="mond">&nbsp;cm</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>体重</div>
+				<div class="info_rgt"><input type="number" class="bitian wgt" data-val="体重" id="weight" name="030601" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;Kg</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>腰围</div>
+				<div class="info_rgt"><input type="number" class="bitian wst" data-val="腰围" name="030701" placeholder="点击填写"/> <span class="mond">&nbsp;cm</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>BMI</div>
+				<div class="info_rgt"><input type="number" class="bitian" name="030801" id="BMI" placeholder="点击填写"/> <span class="mond">Kg/m2</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>心率</div>
+				<div class="info_rgt"><input type="number" class="bitian" name="030101" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>脉搏</div>
+				<div class="info_rgt"><input type="number" class="bitian" name="030201" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>呼吸</div>
+				<div class="info_rgt"><input type="number" class="bitian" name="030301" placeholder="点击填写"/> <span class="mond">&nbsp;&nbsp;次/分</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>血压</div>
+				<div class="info_rgt">
+					<input class="magic rd" name="030403" value="1" type="radio" id="c1">
+			        <label class="lab" for="c1">一级</label>
+			        <input class="magic rd" name="030403" value="2" type="radio" id="c2">
+			        <label class="lab" for="c2">二级</label>
+			        <input class="magic rd" name="030403" value="3" type="radio" id="c3">
+			        <label class="lab" for="c3">三级</label>
+				</div>
+				<ul class="checkBox">
+					<li style="height:1px">
+						<div class="info_left"></div>
+						<div class="info_rgt"><input type="hidden"/> <span></span></div>
+					</li>
+					<li>
+						<div class="info_left">伸张压</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="030401" placeholder="点击填写"/> <span class="mond">mmHg</span></div>
+					</li>
+					<li>
+						<div class="info_left">收缩压</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="030402" placeholder="点击填写"/> <span class="mond">mmHg</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="goback">返回</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p><span class="must">*</span>1、体育锻炼</p>
+				<ul class="checkBox">
+					<li class="sports">
+						<div class="info_left">锻炼频率</div>
+						<div class="info_rgt">
+							<input class="magic rd" name="010101" value="1" type="radio" id="s1">
+					        <label class="lab" for="s1">每天</label>
+					        <input class="magic rd" name="010101" value="2" type="radio" id="s2">
+					        <label class="lab" for="s2">每周一次以上</label>
+					        <input class="magic rd" name="010101" value="3" type="radio" id="s3">
+					        <label class="lab" for="s3">偶尔</label>
+					        <input class="magic rd" name="010101" value="4" type="radio" id="s4">
+					        <label class="lab" for="s4">从不锻炼</label>
+						</div>
+					</li>
+					<li style="display:none;">
+						<div class="info_left">每次锻炼时间</div>
+						<div class="info_rgt">
+						<input type="text" class="bitian" name="010102" placeholder="请输入时间"/> <span class="mond">分钟</span></div>
+					</li>
+					<li style="display:none;">
+						<div class="info_left">锻炼方式</div>
+						<div class="info_rgt"><input type="text" class="bitian" name="010103" placeholder="请输入锻炼方式"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>2、饮食习惯</p>
+				<ul class="checkBox">
+					<li>
+						<p>荤素比例</p>
+						<p>
+							<input class="magic rd" name="010201" value="1" type="radio" id="e1">
+					        <label class="lab" for="e1">荤素均衡</label>
+					        <input class="magic rd" name="010201" value="2" type="radio" id="e2">
+					        <label class="lab" for="e2">荤食为主</label>
+					        <input class="magic rd" name="010201" value="3" type="radio" id="e3">
+					        <label class="lab" for="e3">素食为主</label>
+						</p>
+					</li>
+					<li>
+						<p>偏好</p>
+						<p>
+							<input class="magic ck pianhao" name="01020201" data-name="010202" value="1" type="checkbox" id="p1">
+					        <label class="lab" for="p1">嗜盐</label>
+					        <input class="magic ck pianhao" name="01020202" data-name="010202" value="2" type="checkbox" id="p2">
+					        <label class="lab" for="p2">嗜油</label>
+					        <input class="magic ck pianhao" name="01020203" data-name="010202" value="3" type="checkbox" id="p3">
+					        <label class="lab" for="p3">嗜糖</label>
+						</p>
+					</li>
+					<li>
+						<div class="info_left">每日摄盐量</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="010203" placeholder="点击填写"/> <span class="mond">克</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>3、睡眠时间</p>
+				<ul class="checkBox">
+					<li>
+						<p>您平均每晚的睡眠时间能达到7个小时吗？</p>
+						<p>
+							<input class="magic rd" name="010301" value="0" type="radio" id="sleep1">
+					        <label class="lab" for="sleep1">没有</label>
+					        <input class="magic rd" name="010301" value="1" type="radio" id="sleep2">
+					        <label class="lab" for="sleep2">有</label>
+						</p>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>4、吸烟情况</p>
+				<ul class="checkBox">
+					<li class="smoked">
+						<div class="info_left">吸烟状况</div>
+						<div class="info_rgt">
+							<input class="magic rd" name="010401" value="1" type="radio" id="yan1">
+					        <label class="lab" for="yan1">从不吸烟</label>
+					        <input class="magic rd" name="010401" value="2" type="radio" id="yan2">
+					        <label class="lab" for="yan2">已戒烟</label>
+					        <input class="magic rd" name="010401" value="3" type="radio" id="yan3">
+					        <label class="lab" for="yan3">吸烟</label>
+						</div>
+					</li>
+					<li class="nnever" style="display:none;">
+						<div class="info_left">日吸烟量</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="010402" placeholder="点击填入"/> <span class="mond">支</span></div>
+					</li>
+					<li class="nnever" style="display:none;">
+						<div class="info_left">烟龄</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="010403" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+					<li class="sago" style="display:none;">
+						<div class="info_left">戒烟年龄</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="010404" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>5、饮酒情况</p>
+				<ul class="checkBox">
+					<li class="drinking">
+						<div class="info_left">饮酒频率</div>
+						<div class="info_rgt">
+							<input class="magic rd" name="010501" value="1" type="radio" id="yinjiu1">
+					        <label class="lab" for="yinjiu1">从不</label>
+					        <input class="magic rd" name="010501" value="2" type="radio" id="yinjiu2">
+					        <label class="lab" for="yinjiu2">偶尔</label>
+					        <input class="magic rd" name="010501" value="3" type="radio" id="yinjiu3">
+					        <label class="lab" for="yinjiu3">经常</label>
+					        <input class="magic rd" name="010501" value="4" type="radio" id="yinjiu4">
+					        <label class="lab" for="yinjiu4">每天</label>
+						</div>
+					</li>
+					<li class="yesdrink" style="display:none;">
+						<div class="info_left">日均饮酒量</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="010502" placeholder="点击填入"/> <span class="mond">两</span></div>
+					</li>
+					<li class="yesdrink" style="display:none;">
+						<div class="info_left">酒龄</div>
+						<div class="info_rgt"><input type="number" class="bitian" name="010503" placeholder="点击填入"/> <span class="mond">年</span></div>
+					</li>
+					<li class="yesdrink" style="display:none;">
+						<div class="info_left">近期是否饮酒</div>
+						<div class="info_rgt">
+							<input class="magic" name="010504" value="0" type="radio" id="jinqi1">
+					        <label class="lab" for="jinqi1">没有</label>
+					        <input class="magic" name="010504" value="1" type="radio" id="jinqi2">
+					        <label class="lab" for="jinqi2">有</label>
+						</div>
+					</li>
+					<li style="display:none;">
+						<p>饮酒种类</p>
+						<p>
+							<input class="magic" name="01050501" data-name="010505" value="1" type="checkbox" id="zhonglei1">
+					        <label class="lab" for="zhonglei1">白酒</label>
+					        <input class="magic" name="01050502" data-name="010505" value="2" type="checkbox" id="zhonglei2">
+					        <label class="lab" for="zhonglei2">啤酒</label>
+					        <input class="magic" name="01050503" data-name="010505" value="3" type="checkbox" id="zhonglei3">
+					        <label class="lab" for="zhonglei3">红酒</label>
+					        <input class="magic" name="01050504" data-name="010505" value="4" type="checkbox" id="zhonglei4">
+					        <label class="lab" for="zhonglei4">黄酒</label>
+					        <input class="magic" name="01050505" data-name="010505" value="5" type="checkbox" id="zhonglei5">
+					        <label class="lab" for="zhonglei5">其他</label>
+						</p>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>6、心理状态</p>
+				<ul class="checkBox">
+					<li>
+						<p>您与家人和朋友的关系好吗</p>
+						<p>
+							<input class="magic rd" name="020101" value="1" type="radio" id="have1">
+					        <label class="lab" for="have1">不好</label>
+					        <input class="magic rd" name="020101" value="2" type="radio" id="have2">
+					        <label class="lab" for="have2">一般</label>
+					        <input class="magic rd" name="020101" value="3" type="radio" id="have3">
+					        <label class="lab" for="have3">好</label>
+					        <input class="magic rd" name="020101" value="4" type="radio" id="have4">
+					        <label class="lab" for="have4">很好</label>
+					        <input class="magic rd" name="020101" value="5" type="radio" id="have5">
+					        <label class="lab" for="have5">特别好</label>
+						</p>
+					</li>
+					<li>
+						<p>您对现在的生活满意吗？</p>
+						<p>
+							<input class="magic rd" name="020201" value="0" type="radio" id="nice1">
+					        <label class="lab" for="nice1">否</label>
+					        <input class="magic rd" name="020201" value="1" type="radio" id="nice2">
+					        <label class="lab" for="nice2">是</label>
+						</p>
+					</li>
+					<li>
+						<p>您会经常感觉郁闷焦虑吗？</p>
+						<p>
+							<input class="magic rd" name="020202" value="0" type="radio" id="feel1">
+					        <label class="lab" for="feel1">否</label>
+					        <input class="magic rd" name="020202" value="1" type="radio" id="feel2">
+					        <label class="lab" for="feel2">是</label>
+						</p>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p><span class="must">*</span>1、病史</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">高血压</div>
+						<div class="info_rgt"><input class="gaoxueya" type="number" placeholder="点击填写"/> <span class="mond">&nbsp;年</span></div>
+					</li>
+					<li>
+						<div class="info_left">糖尿病</div>
+						<div class="info_rgt"><input class="tangniaobing" type="number" placeholder="点击填写"/> <span class="mond">&nbsp;年</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>2、是否有疾病史</div>
+				<div class="info_rgt rad_rgt">
+					<input class="magic rd" name="040101" value="0" type="radio" id="jibing1">
+					<label class="lab" for="jibing1">没有</label>
+					<input class="magic rd" name="040101" value="1" type="radio" id="jibing2">
+					<label class="lab" for="jibing2">有</label>
+				</div>
+				<div class="checkBox showjibing" style="display:none;">
+		            <div class="sport plusBox ">
+						<div class="opt">
+			                <input class="magic addtime" data-name="040102" name="04010201" value="1" type="checkbox" id="hypertension">
+			                <label class="lab" for="hypertension">高血压</label>
+			                <input type="text" name="04010301" data-name="040103" class="datetime" placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010202" data-name="040102" value="2" type="checkbox" id="diabetes">
+			                <label class="lab" for="diabetes">糖尿病</label>
+			                <input type="text" name="04010302" class="datetime" data-name="040103"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010203" data-name="040102" value="3" type="checkbox" id="heart">
+			                <label class="lab" for="heart">冠心病</label>
+			                <input type="text" name="04010303" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010204" data-name="040102" value="4" type="checkbox" id="slow">
+			                <label class="lab" for="slow">慢性阻塞性肺疾病</label>
+			                <input type="text" name="04010304" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010205" data-name="040102" value="5" type="checkbox" id="vicious">
+			                <label class="lab" for="vicious">恶性肿瘤</label>
+			                <input type="text" name="04010305" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010206" data-name="040102" value="6" type="checkbox" id="Stroke">
+			                <label class="lab" for="Stroke">脑卒中</label>
+			                <input type="text" name="04010306" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010207" data-name="040102" value="7" type="checkbox" id="mental">
+			                <label class="lab" for="mental">重性精神疾病</label>
+			                <input type="text" name="04010307" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010208" data-name="040102" value="8" type="checkbox" id="Tuberculosis">
+			                <label class="lab" for="Tuberculosis">结核病</label>
+			                <input type="text" name="04010308" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010209" data-name="040102" value="9" type="checkbox" id="hepatitis">
+			                <label class="lab" for="hepatitis">肝炎</label>
+			                <input type="text" name="04010309" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010210" data-name="040102" value="11" type="checkbox" id="Iother">
+			                <label class="lab" for="Iother">其他法定传染病</label>
+			                <input type="text" name="04010310" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+			            <div class="opt">
+			                <input class="magic addtime" name="04010211" data-name="040102" value="10" type="checkbox" id="Ioth">
+			                <label class="lab" for="Ioth">其他</label>
+			                <input type="text" name="04010311" data-name="040103" class="datetime"  placeholder="确诊时间"/>
+			            </div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>3、是否有手术史</div>
+				<div class="info_rgt rad_rgt">
+					<input class="magic rd" name="040201" value="0" type="radio" id="shoushu1">
+					<label class="lab" for="shoushu1">否</label>
+					<input class="magic rd" name="040201" value="1" type="radio" id="shoushu2">
+					<label class="lab" for="shoushu2">是</label>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<table class="sstable shuoshu" style="display:none;">
+						<tbody>
+							<tr class="first_tr"><td>手术史</td><td></td></tr><tr>
+							<td>手术名称</td>
+							<td><input type="text" name="040202" class="ssname addInp" placeholder="点击填写"/></td></tr><tr>
+							<td>手术时间</td>
+							<td><input type="text" name="040203" class="sstime addInpT" placeholder="点击填写"/></td></tr>
+						</tbody>
+						</table>
+					</div>
+		            <div class="hide_cont sport addpadding once shuoshuOnce">
+						<div class="plustable">
+							<div class="addbtn addshoushu">
+								<img src="image/plus.png" class="addimg"/>
+								<span>添加手术史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>4、是否有外伤史</div>
+				<div class="info_rgt rad_rgt">
+					<input class="magic rd" name="040301" value="0" type="radio" id="waishang1">
+					<label class="lab" for="waishang1">否</label>
+					<input class="magic rd" name="040301" value="1" type="radio" id="waishang2">
+					<label class="lab" for="waishang2">是</label>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<table class="sstable waishang" style="display:none;">
+						<tbody>
+							<tr class="first_tr"><td>外伤史</td><td></td></tr><tr>
+							<td>外伤名称</td>
+							<td><input type="text" name="040302" class="ssname addInp" placeholder="点击填写"/></td></tr><tr>
+							<td>外伤时间</td>
+							<td><input type="text" name="040303" class="sstime addInpT" placeholder="点击填写"/></td></tr>
+						</tbody>
+						</table> 
+					</div>
+		            <div class="hide_cont sport addpadding once waishangOnce">
+						<div class="plustable">
+							<div class="addbtn addshang">
+								<img src="image/plus.png" class="addimg"/>
+								<span>添加外伤史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>5、是否有输血史</div>
+				<div class="info_rgt rad_rgt">
+					<input class="magic rd" name="040401" value="0" type="radio" id="shuxue1">
+					<label class="lab" for="shuxue1">否</label>
+					<input class="magic rd" name="040401" value="1" type="radio" id="shuxue2">
+					<label class="lab" for="shuxue2">是</label>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<table class="sstable shuxue" style="display:none;">
+						<tbody>
+							<tr class="first_tr"><td>输血史</td><td></td></tr><tr>
+							<td>输血原因</td>
+							<td><input type="text" name="040402" class="ssname addInp" placeholder="点击填写"/></td></tr>
+							<tr><td>输血时间</td>
+							<td><input type="text" name="040403" class="sstime addInpT" placeholder="点击填写"/></td></tr>
+						</tbody>
+						</table>
+					</div>
+		            <div class="hide_cont sport addpadding once shuxueOnce">
+						<div class="plustable">
+							<div class="addbtn addblood">
+								<img src="image/plus.png" class="addimg"/>
+								<span>添加输血史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>6、是否有家庭成员病史</div>
+				<div class="info_rgt rad_rgt">
+					<input class="magic rd" name="050101" value="0" type="radio" id="jiating1">
+					<label class="lab" for="jiating1">否</label>
+					<input class="magic rd" name="050101" value="1" type="radio" id="jiating2">
+					<label class="lab" for="jiating2">是</label>
+				</div>
+				<div class="checkBox">
+					<div class="hide_table">
+						<div class="member" style="display:none;">
+							<div class="first_tr member_num">
+								<p><span class="num_mm">家庭病史</span><span class="del_member">删除</span></p>
+							</div>
+							<div class="info_left f_left">家庭成员</div>
+							<p style="margin-left:20px;">
+								<input class="magic rd" name="050102" value="1" type="radio" id="familynumber1">
+								<label class="lab" for="familynumber1">父亲</label>
+								<input class="magic rd" name="050102" value="2" type="radio" id="familynumber2">
+								<label class="lab" for="familynumber2">母亲</label>
+								<input class="magic rd" name="050102" value="3" type="radio" id="familynumber3">
+								<label class="lab" for="familynumber3">兄</label>
+								<input class="magic rd" name="050102" value="4" type="radio" id="familynumber4">
+								<label class="lab" for="familynumber4">弟</label>
+								<input class="magic rd" name="050102" value="5" type="radio" id="familynumber5">
+								<label class="lab" for="familynumber5">姐</label>
+								<input class="magic rd" name="050102" value="6" type="radio" id="familynumber6">
+								<label class="lab" for="familynumber6">妹</label>
+								<input class="magic rd" name="050102" value="7" type="radio" id="familynumber7">
+								<label class="lab" for="familynumber7">儿子</label>
+								<input class="magic rd" name="050102" value="8" type="radio" id="familynumber8">
+								<label class="lab" for="familynumber8">女儿</label>
+							</p>
+							<div class="info_left f_left">选择所患疾病</div>
+							<div class="info_rgt f_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+							<div class="sickBox plusBox">
+								<div class="opt">
+									<input class="magic" name="05010301" data-name="050103" value="1" type="checkbox">
+									<label class="lab">高血压</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010302" data-name="050103" value="2" type="checkbox">
+									<label class="lab">糖尿病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010303" data-name="050103" value="3" type="checkbox">
+									<label class="lab">冠心病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010304" value="4" data-name="050103" type="checkbox">
+									<label class="lab">慢性阻塞性肺疾病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010305" value="5" data-name="050103" type="checkbox">
+									<label class="lab">恶性肿瘤</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010306" value="6" data-name="050103" type="checkbox">
+									<label class="lab">脑卒中</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010307" value="7" data-name="050103" type="checkbox">
+									<label class="lab">重性精神疾病</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010308" value="8" data-name="050103" type="checkbox">
+									<label class="lab">结核病</label>
+								</div><br/>
+								<div class="opt">
+								    <input class="magic" name="05010309" value="9" data-name="050103" type="checkbox">
+									<label class="lab">肝炎</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010310" value="10" data-name="050103" type="checkbox">
+									<label class="lab">先天畸形</label>
+								</div>
+								<div class="opt">
+								    <input class="magic" name="05010311" value="11" data-name="050103" type="checkbox">
+									<label class="lab">其他</label>
+								</div>
+							</div>
+						</div> 
+					</div>
+		            <div class="hide_cont sport addpadding once memberOnce">
+						<div class="plustable">
+							<div class="addbtn addmember">
+								<img src="image/plus.png" class="addimg"/>
+								<span>新增家庭成员病史</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p><span class="must">*</span>1、下肢水肿</p>
+				<p>
+					<input class="magic rd" name="060101" value="1" type="radio" id="xiazhi1">
+					<label class="lab" for="xiazhi1">无</label>
+					<input class="magic rd" name="060101" value="2" type="radio" id="xiazhi2">
+					<label class="lab" for="xiazhi2">单侧</label>
+					<input class="magic rd" name="060101" value="3" type="radio" id="xiazhi3">
+					<label class="lab" for="xiazhi3">双侧不对称</label>
+					<input class="magic rd" name="060101" value="4" type="radio" id="xiazhi4">
+					<label class="lab" for="xiazhi4">双侧对称</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>2、足背动脉搏动</p>
+				<p>
+					<input class="magic rd" name="060102" value="1" type="radio" id="zubei1">
+					<label class="lab" for="zubei1">未触及</label>
+					<input class="magic rd" name="060102" value="2" type="radio" id="zubei2">
+					<label class="lab" for="zubei2">触及双侧对称</label>
+					<input class="magic rd" name="060102" value="3" type="radio" id="zubei3">
+					<label class="lab" for="zubei3">触及左侧弱或消失</label>
+					<input class="magic rd" name="060102" value="4" type="radio" id="zubei4">
+					<label class="lab" for="zubei4">触及右侧弱或消失</label>
+				</p>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/layer-mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/highBloodPressure.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

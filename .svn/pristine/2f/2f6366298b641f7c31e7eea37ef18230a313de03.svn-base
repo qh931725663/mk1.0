@@ -1,0 +1,259 @@
+package com.haaa.cloudmedical.platform.user.controller;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.entity.Department;
+import com.haaa.cloudmedical.entity.Doctor;
+import com.haaa.cloudmedical.entity.Hospital;
+import com.haaa.cloudmedical.entity.Manager;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.user.service.UserPlatformService;
+
+@Controller
+@RequestMapping("/user-platform")
+public class UserPlatFormController {
+    
+    public UserPlatFormController(){
+        System.out.println("UserPlatFormController");
+    }
+	@Autowired
+	private UserPlatformService service;
+
+	/**
+	 * 检验手机号码是否已注册
+	 * 
+	 * @param user_phone
+	 * @param flag
+	 * @return
+	 */
+	@RequestMapping("/exists.action")
+	@ResponseBody
+	public boolean contain(String user_phone, String type) {
+		boolean flag = false;
+		flag = service.contain(user_phone, type);
+		return flag;
+	}
+
+	/**
+	 * 检验身份证是否已注册
+	 * 
+	 * @param user_phone
+	 * @param flag
+	 * @return
+	 */
+	@RequestMapping("/checkUserCard.action")
+	@ResponseBody
+	public boolean containUserCard(String user_card, String type) {
+		boolean flag = false;
+		flag = service.containUserCard(user_card, type);
+		return flag;
+	}
+
+	/**
+	 * 登录
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/login.action")
+	@ResponseBody
+	public Object login(String user_phone, String user_pwd, HttpServletRequest request) {
+		ResponseDTO dto = service.login(user_phone, MD5Util.encode(user_pwd), request);
+		return dto;
+	}
+
+	/**
+	 * 菜单列表
+	 * 
+	 * @param user_phone
+	 * @param user_pwd
+	 * @return
+	 */
+	@RequestMapping("/getMenu.action")
+	@ResponseBody
+	public Object getMenu(String user_phone) {
+		ResponseDTO dto = service.getMenu(user_phone);
+		return dto;
+	}
+
+	/**
+	 * 分页查询
+	 * 
+	 * @param user
+	 * @param patient
+	 * @param doctor
+	 * @param department
+	 * @param hospital
+	 * @param startDate
+	 * @param endDate
+	 * @param c_menu_code
+	 * @param pageno
+	 * @return
+	 */
+	@RequestMapping("/managergridquery.action")
+	@ResponseBody
+	public Object query(Manager manager, Integer pageno) {
+		Page page = null;
+		if (pageno == null || "".equals(pageno))
+			pageno = 1;
+		page = service.query(manager, pageno);
+
+		return page;
+	}
+
+	@RequestMapping("/membergridquery.action")
+	@ResponseBody
+	public Object query(User user, Doctor doctor, String startDate, String endDate, Integer pageno) {
+		Page page = null;
+		if (pageno == null || "".equals(pageno))
+			pageno = 1;
+		page = service.query(user, doctor, startDate, endDate, pageno);
+		return page;
+	}
+
+	@RequestMapping("/doctorgridquery.action")
+	@ResponseBody
+	public Object query(User user, Doctor doctor, Department department, Hospital hospital, String startDate,
+			String endDate, Integer pageno) {
+		Page page = null;
+		if (pageno == null || "".equals(pageno))
+			pageno = 1;
+		page = service.query(user, doctor, department, startDate, endDate, pageno);
+		return page;
+	}
+
+	/**
+	 * 当前用户信息查询
+	 * 
+	 * @param user_phone
+	 * @param c_menu_code
+	 * @return
+	 */
+	@RequestMapping("/query.action")
+	@ResponseBody
+	public Object query(String user_id, String user_type) {
+		Map<String, Object> map = service.query(user_id, user_type);
+		map.forEach((k,v)->{
+			map.compute(k, (k1,v1)->v==null||v.equals("null")?"":v);
+		});
+		return map;
+	}
+
+	/**
+	 * 修改用户信息
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/modifyManager.action")
+	@ResponseBody
+	public Object modify(HttpServletRequest request,Manager manager) {
+		boolean flag = false;
+		if (manager.getUser_pwd() != null && !"".equals(manager.getUser_pwd()))
+			manager.setUser_pwd(MD5Util.encode(manager.getUser_pwd()));
+		flag = service.update(request,manager);
+		return flag;
+	}
+
+	@RequestMapping("/modifyMember.action")
+	@ResponseBody
+	public Object modify(User user, Patient patient) {
+		boolean flag = false;
+		flag = service.update(user, patient);
+		return flag;
+	}
+
+	@RequestMapping("/modifyDoctor.action")
+	@ResponseBody
+	public Object modify(User user, Doctor doctor) {
+		boolean flag = false;
+		flag = service.update(user, doctor);
+		return flag;
+	}
+
+	/**
+	 * 新增用户
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/addManager.action")
+	@ResponseBody
+	public Object add(Manager manager) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		ResponseDTO dto = null;
+		manager.setUser_pwd(MD5Util.encode(manager.getUser_pwd()));
+		manager.setCreate_date(date);
+		dto = service.addUser(manager);
+		return dto;
+	}
+
+	@RequestMapping("/addMember.action")
+	@ResponseBody
+	public Object add(User user, Patient patient) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String user_pwd=BeanUtil.getProperty("dbconfig").getObject("initPassword").toString();
+		ResponseDTO dto = null;
+		user.setUser_type(Constant.USER_TYPE_PATIENT);
+		user.setCreate_date(date);
+		user.setUser_pwd(MD5Util.encode(user_pwd));
+		patient.setCreate_date(date);
+		dto = service.addUser(user, patient);
+		return dto;
+	}
+
+	@RequestMapping("/addDoctor.action")
+	@ResponseBody
+	public Object add(User user, Doctor doctor) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		String user_pwd=BeanUtil.getProperty("dbconfig").getObject("initPassword").toString();
+		ResponseDTO dto = null;
+		user.setUser_type(String.valueOf(Constant.USER_TYPE_DOCTOR));
+		user.setCreate_date(date);
+		user.setUser_pwd(MD5Util.encode(user_pwd));
+		doctor.setCreate_date(date);
+		dto = service.addUser(user, doctor);
+		return dto;
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/password.action")
+	@ResponseBody
+	public Object save(HttpServletRequest request,String user_id, String user_pwd) {
+		boolean flag = service.password(request,user_id, MD5Util.encode(user_pwd));
+		return flag;
+	}
+
+	/**
+	 * 修改用户状态
+	 * 
+	 * @param user_id
+	 * @param flag
+	 * @return
+	 */
+	@RequestMapping("/userflag.action")
+	@ResponseBody
+	public boolean modify(String user_id, String user_flag) {
+		boolean flag = service.modify(user_id, user_flag);
+		return flag;
+
+	}
+}

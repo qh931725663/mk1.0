@@ -1,0 +1,113 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
+<%@ page import="com.mysql.jdbc.Connection"%>
+<%@ page import="com.mysql.jdbc.PreparedStatement"%>
+<%@ page import="com.mysql.jdbc.PreparedStatement"%>
+<%@ page import="java.sql.SQLException"%>
+<%@ page import="java.sql.ResultSet"%>
+<%@ page import="java.sql.DriverManager"%>
+<%@ page import="com.haaa.cloudmedical.common.util.ReadFile" %>
+<%@ page import="java.io.File"%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>javabean javebean</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="????">
+<link rel="stylesheet" type="text/css"
+	href="Contents/shop/common/general/style/base.css" />
+<link rel="stylesheet" type="text/css" href="style/error.css" />
+<title>测试例子说明</title>
+
+</head>
+<body>
+	<%
+		String path = application.getRealPath("/");
+
+		String dir = new File(path).getAbsolutePath();
+
+		String we = "WEB-INF";
+		String sdir = dir + "/" + we + "/" + "classes" + "/" + "dbconfig.properties";
+		out.println("显示ʾ" + sdir);
+
+		String aa = request.getParameter("fname");
+		if ((aa == null) || aa.equals("")) {
+		} else {
+
+			String[] wk = null;
+
+			File file = new File(sdir);
+
+			wk = ReadFile.cs(ReadFile.readerFilecs(file));
+
+			String urls = wk[2];
+
+			Connection conn = null;
+			conn = (Connection) DriverManager.getConnection(wk[2], wk[3], wk[4]);
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			pstmt = (PreparedStatement) conn.prepareStatement(aa);
+
+			rs = pstmt.executeQuery();
+	%>
+	<table>
+		<%
+			while (rs.next()) {
+		%>
+		<tr>
+			<td><%=rs.getString(1)%></td>
+			<td><%=rs.getString(2)%></td>
+			<td><%=rs.getString(3)%></td>
+		</tr>
+		<%
+			}
+		%>
+
+
+
+	</table>
+
+	<%
+		if (rs != null) { // ???????   
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (pstmt != null) { // ???????   
+				try {
+					pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) { // ??????????   
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	%>
+
+
+
+
+	<form action="/jsp/test.jsp" method="get">
+		First name: <input type="text" name="fname" /> <input type="submit"
+			value="Submit" />
+	</form>
+
+
+</body>
+</html>

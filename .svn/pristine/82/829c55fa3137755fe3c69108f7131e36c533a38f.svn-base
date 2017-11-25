@@ -1,0 +1,515 @@
+//请求地址参数
+function getUrlParam(name) {
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if (r != null) return unescape(r[2]);
+	return null;
+}
+//清除方法
+var clear = function() {
+	$('.btn-danger').on('click', function() {
+		$(this).parent().find('input').val("");
+		$(this).parent().find('.btn-success').click();
+	});
+}();
+
+//初始化方法
+$(function() {
+	report_detail.init();
+
+})
+
+//tab点击事件
+var tabsClick = function() {
+	$('.tabBar').find('span').on('click', function() {
+		var index = $(this).index();
+		if (index === 0) {
+			$(".btn-success[name='hospital']").click();
+		} else if (index === 1) {
+			$(".btn-success[name='clinic']").click();
+		} else if (index === 2) {
+			$(".btn-success[name='insurance']").click();
+		} else if (index === 3) {
+			$(".btn-success[name='check']").click();
+		} else if (index === 4) {
+			//加载用户信息
+			loadSurveyUser();
+			//
+			$(".btn-success[name='survey']").click();
+		}
+	});
+}();
+//查询方法
+var search = function() {
+	$('.btn-success').on('click', function() {
+		//
+		var param = {};
+		//类型
+		var name = this.name;
+		var pic_type = "";
+		var dataID = "";
+		if (name == "hospital") {
+			pic_type = "500003";
+			dataID = "#hospital_report";
+		} else if (name == "check") {
+			pic_type = "500001";
+			dataID = "#check_report";
+			//一体机数据
+			initMachine($(this));
+		} else if (name == "clinic") {
+			pic_type = "500002";
+			dataID = "#clinic_report";
+		} else if (name == "insurance") {
+			pic_type = "500004";
+			dataID = "#insurance_report";
+		} else if (name == "survey") {
+			//查询健康报告
+			loadSurveyData($(this), param);
+			return;
+		}
+		param.pic_type = pic_type;
+		//用户
+		var user_id = getUrlParam("id");
+		param.user_id = user_id;
+		//
+		$(this).parent().find('input').each(function() {
+			if (this.name == "datemin") {
+				param.start = $(this).val();
+			} else if (this.name == "datemax") {
+				param.end = $(this).val();
+			}
+		});
+		//
+		loadData(param, dataID, name);
+	});
+}();
+//加载页面数据
+var loadData = function(param, dataID, dataKey) {
+	return $.ajax({
+		url : "../../../health-record/detail.action",
+		type : "post",
+		dataType : 'json',
+		data : param,
+		success : function(json) {
+			//console.log(json.data);
+			if (json.flag) {
+				if (json.data.length > 0) {
+					//保存数据
+					$(dataID).data(dataKey, json.data);
+					if (dataKey == "check") {
+						doCheck(dataID, json.data);
+					} else {
+						//初始化选择
+						init_select(dataID, json.data);
+						//
+						var data = json.data[0];
+						//加载数据
+						initData($(dataID), data);
+					}
+				}
+			}
+		}
+	});
+};
+//初始化选择
+var init_select = function(dataID, data) {
+	var html = "<option value=''>全部</option>";
+	if (dataID == "#hospital_report") {
+		$.each(data, function(i, item) {
+			html += "<option value='" + item.order_id + "'>" + item.hospital_report_time + "</option>";
+		});
+	} else if (dataID == "#clinic_report") {
+		$.each(data, function(i, item) {
+			html += "<option value='" + item.order_id + "'>" + item.clinic_report_time + "</option>";
+		});
+	} else if (dataID == "#insurance_report") {
+		$.each(data, function(i, item) {
+			html += "<option value='" + item.order_id + "'>" + item.medical_insurance_time + "</option>";
+		});
+	}
+	//
+	$(dataID).find('.radius').empty();
+	$(dataID).find('.radius').append(html);
+};
+//切换日期
+var select_change = function() {
+	$('.radius').not($('.machine')[0]).on('change', function() {
+		//
+		var time = $(this).val();
+		var dataKey = $(this).parents('.tabCon').find('.btn-success').attr('name');
+		var data = $(this).parents('.tabCon').data(dataKey);
+		var $t = $(this).parents('.tabCon');
+		//
+		if (dataKey == "hospital") {
+			$.each(data, function(i, item) {
+				if (item.order_id == time) {
+					initData($t, item);
+				}
+			});
+		} else if (dataKey == "check") {
+			//
+			$.each(data, function(i, item) {
+				if (item.order_id == time) {
+					initCheckData($t, item);
+				}
+			});
+
+		} else if (dataKey == "clinic") {
+			$.each(data, function(i, item) {
+				if (item.order_id == time) {
+					initData($t, item);
+				}
+			});
+		} else if (dataKey == "insurance") {
+			$.each(data, function(i, item) {
+				if (item.order_id == time) {
+					initData($t, item);
+				}
+			});
+		} else if (dataKey == "survey") {
+			$.each(data, function(i, item) {
+				if (item.create_date == time) {
+					loadSurveyAnswerData(item);
+					return false;
+				}
+			});
+		}
+	});
+}();
+//数据显示
+var initData = function($t, data) {
+	//基本信息显示
+	$t.find('div.collection-baseinfo span').each(function(i) {
+		$(this).text("");
+		var name = $(this).attr('data-name');
+		if (data[name]) {
+			$(this).text(data[name]);
+		}
+	});
+	//图片显示
+	var key = $t.find('.btn-success').attr('name');
+	var pictures = data.pictures;
+	$t.find('.blood-data .check_img').empty();
+	$.each(pictures, function(i, item) {
+		var pic_html = "<a data-lightbox='plan-image-" + key + "' class='example-image-link' href='" + item.medical_picture_upload + "'><img src='" + item.medical_picture_upload + "' class='bor' " +
+			/*"onerror=\"this.src = 'http://localhost:8080/mkh1.0/images/default.jpg'\"" +*/
+			"style='width:300px;height:300px;margin-top:20px;'></a>";
+		$t.find('.blood-data .check_img').append(pic_html);
+	});
+};
+//显示体检报告数据
+var initCheckData = function($t, data) {
+	//基本信息显示
+	$t.find('div.collection-baseinfo.check span').each(function(i) {
+		var name = $(this).attr('data-name');
+		if (data[name]) {
+			$(this).text(data[name]);
+		}
+	});
+	//图片显示
+	var pictures = data.pictures;
+	var key = $t.find('.btn-success').attr('name');
+	$t.find('.blood-data.check .check_img').empty();
+	$.each(pictures, function(i, item) {
+		var pic_html = "<a data-lightbox='plan-image-" + key + "' class='example-image-link' href='" + item.medical_picture_upload + "'><img src='" + item.medical_picture_upload + "' class='bor' " +
+			/*"onerror=\"this.src = 'http://localhost:8080/mkh1.0/images/default.jpg'\"" +*/
+			"style='width:300px;height:300px;margin-top:20px;'></a>";
+		$t.find('.blood-data .check_img').append(pic_html);
+	});
+};
+//
+var report_detail = {
+	init : function() {
+		//用户ID
+		var user_id = getUrlParam("id");
+		//类型默认
+		var pic_type = "500003";
+		var param = {
+			user_id : user_id,
+			pic_type : pic_type
+		};
+		//
+		return loadData(param, "#hospital_report", "hospital");
+	}
+};
+
+//处理体检报告
+var doCheck = function(dataID, data) {
+	var html = "<option value=''>全部</option>";
+	//
+	$.each(data, function(i, item) {
+		html += "<option value='" + item.order_id + "'>" + item.check_time + "</option>";
+	});
+	$(dataID).find('.radius.check').empty();
+	$(dataID).find('.radius.check').append(html);
+	var data = data[0];
+	//基本信息显示
+	$(dataID).find('div.collection-baseinfo.check span').each(function(i) {
+		var name = $(this).attr('data-name');
+		if (data[name]) {
+			$(this).text(data[name]);
+		}
+	});
+	//图片显示
+	var pictures = data.pictures;
+	$(dataID).find('.blood-data.check .check_img').empty();
+	$.each(pictures, function(i, item) {
+		var url = "http://localhost:8080/mkh1.0/images/error.gif";
+		var pic_html = "<a data-lightbox='plan-image-" + dataID + "' class='example-image-link' href='" + item.medical_picture_upload + "'><img src='" + item.medical_picture_upload + "' class='bor' " +
+			/*"onerror=\"this.src = 'http://localhost:8080/mkh1.0/images/default.jpg'\"" +*/
+			"style='width:300px;height:300px;margin-top:20px;'></a>";
+		$(dataID).find('.blood-data.check .check_img').append(pic_html);
+	});
+};
+
+var initMachine = function($t) {
+	//var param = {user_id:"349", "downTime":"2017-03-16", upTime:"2017-05-20"};
+	//
+	var param = {};
+	$t.parent().find('input').each(function() {
+		if (this.name == "datemin") {
+			param.downTime = $(this).val();
+		} else if (this.name == "datemax") {
+			param.upTime = $(this).val();
+		}
+	});
+	var user_id = mkh.getUrlParam("id");
+	param.user_id = user_id;
+
+	//请求
+	$.ajax({
+		url : "../../../aio/getDetailByTime.action",
+		type : "get",
+		dataType : 'json',
+		data : param,
+		success : function(data) {
+			var data = data.data;
+			//数据显示
+			if (data && data.length > 0) {
+				//缓存数据
+				$('.radius.machine').data('machine', data);
+				//时间显示
+				initMachneDateSelect(data);
+
+				showMachineData(data[0]);
+				//基础数据
+				$('.collection-baseinfo.machine').find('span').each(function() {
+					var name = $(this).attr("data-name");
+					if (data[0][name]) {
+						$(this).text(data[0][name]);
+					}
+				});
+			}
+		}
+	});
+};
+//
+var initMachneDateSelect = function(data) {
+	var html = "<option value=''>全部</option>";
+	$.each(data, function(i, item) {
+		html += "<option value='" + item.order_id + "'>" + item.date + "</option>";
+	});
+	$('#check_report').find('.radius.machine').empty();
+	$('#check_report').find('.radius.machine').append(html);
+}
+//显示一体机数据
+var showMachineData = function(data){
+	console.log(data);
+	//
+	var report_type = data.report_type;
+	if (6500 == report_type) {
+		$('.showCardiogram').find('table').hide();
+		var pic_html = "<ul id='dowebok' style='margin-top:20px;margin-left:20px;'>";
+		//
+		pic_html += "<li><img style='width:300px;height:300px;' src='" + data.s6500_pic_index + "'></li></ul>";
+		$('.cardiogramPic').empty();
+		$('.cardiogramPic').append(pic_html);
+		$('#dowebok').viewer();
+		return;
+	}
+	$('.showCardiogram').find('table').show();
+	//
+	$('.blood-data.machine').find('span.show_data').each(function() {
+		var name = $(this).attr("data-name");
+		$(this).parent().next().text(data.date);
+		//血氧
+		console.log(data);
+		if ("Oxygen-OPulseRate" == name){
+			if(!(data.Oxygen && data.OPulseRate)) return;
+			$(this).text((data.Oxygen || 0) + "/" + (data.OPulseRate || 0));
+		}
+		//血压
+		else if( "HighPressure-LowPressure"==name){
+			if(!(data.HighPressure && data.LowPressure)) return;
+			$(this).text((data.HighPressure || 0) + "/" + (data.LowPressure || 0));
+		}
+		//BMI
+		else if( "BMI-BMIResult" == name){
+			if(!(data.BMI && data.BMIResult)) return;
+			$(this).text((data.BMI || 0) + "/" + (data.BMIResult || 0));
+		//其他选项
+		}else{
+			if(!data[name]) return;
+			$(this).text(data[name]);
+		}
+		//初始化样式
+		initMachineStyle();
+	});
+	//
+	showCardiogramPic(data);
+};
+//初始化样式
+var initMachineStyle = function(){
+	$('.blood-data.machine').find('span.show_data').each(function() {
+		var text = $(this).text();
+		$(this).css({
+				'color' : 'green'
+		});
+		if( text && text.indexOf("+") > 0){
+			$(this).css({
+				'color' : 'red'
+			});
+		}
+		else if (text && text.indexOf("过轻") > 0) {
+			$(this).css({
+				'color' : 'red'
+			});
+		}
+		else if (text && text.indexOf("异常") > 0) {
+			$(this).css({
+				'color' : 'red'
+			});
+		}
+	});
+}
+
+var showCardiogramPic = function(data) {
+	console.log(data)
+	//图片置空
+	$('.cardiogramPic').empty();
+	//
+	var pic_html = "<ul id='dowebok' style='margin-top:20px;margin-left:20px;'>";
+	var ecgList = data["ecgList"];
+//	console.log(ecgList);
+	for (i in ecgList){
+		var ecg = ecgList[i];
+		pic_html += "<li>"+ecg["name"]+"<img style='width:100%;height:300px;margin-top:20px;' src='" + ecg["image"] + "'></li>";
+	}
+	pic_html +="</ul>";
+	$('.cardiogramPic').append(pic_html);
+	$('#dowebok').viewer();
+};
+
+var changeMachineDate = function() {
+	$('#check_report').on('change', '.radius.machine', function() {
+		//
+		var value = this.value;
+		var data = $(this).data('machine');
+		$.each(data, function(i, item) {
+			if (value == item.order_id) {
+				showMachineData(item);
+				//基础数据
+				$('.collection-baseinfo.machine').find('span').each(function() {
+					var name = $(this).attr("data-name");
+					if (item[name]) {
+						$(this).text(item[name]);
+					}
+				});
+			}
+		});
+	});
+}();
+//加载用户信息
+var loadSurveyUser = function() {
+	//用户信息
+	var user_id = mkh.getUrlParam("id");
+	var data = {
+		user_id : user_id,
+		user_type : "1500001"
+	};
+	$.ajax({
+		url : "../../../user-platform/query.action",
+		type : "post",
+		dataType : 'json',
+		data : data,
+		success : function(data) {
+			if (data) {
+				$('#userMessage').find('li span').each(function() {
+					var name = $(this).attr('data-name');
+					if (data[name]) {
+						if (name == "user_sex") {
+							$(this).text(data[name] == '200002' ? '女' : '男');
+						} else {
+							$(this).text(data[name]);
+						}
+					}
+				});
+			}
+		}
+	});
+}
+
+//加载健康评估
+var loadSurveyData = function($t, param) {
+	//
+	$t.parent().find('input').each(function() {
+		if (this.name == "datemin") {
+			param.start = $(this).val();
+		} else if (this.name == "datemax") {
+			param.end = $(this).val();
+		}
+	});
+	var user_id = mkh.getUrlParam("id");
+	param.user_id = user_id;
+	$.ajax({
+		url : "../../../survey/querySurvey.action",
+		type : "post",
+		dataType : 'json',
+		data : param,
+		success : function(data) {
+			if (data) {
+				//缓存数据
+				$('#survey_report').data('survey', data);
+				//初始化时间选项
+				initSurveyDateSelect(data);
+				//
+				var item = data[0];
+				loadSurveyAnswerData(item);
+			}
+		}
+	});
+}
+//初始化时间选项
+var initSurveyDateSelect = function(data) {
+	var html = "<option value=''>全部</option>";
+	$.each(data, function(i, item) {
+		html += "<option value='" + item.create_date + "'>" + item.date + "</option>";
+	});
+	$('select.survey').empty();
+	$('select.survey').append(html);
+};
+//
+var loadSurveyAnswerData = function(item) {
+	if (!item) {
+		return;
+	}
+	//基础数据
+	$('span.survey').each(function() {
+		var name = $(this).attr("data-name");
+		if (item[name]) {
+			$(this).text(item[name]);
+		}
+	});
+	//答案
+	$('span.survey_answer').each(function() {
+		var name = $(this).attr("data-name");
+		name = name.substring(name.indexOf('_') + 1, name.length);
+		var self = $(this);
+		$.each(item.answers, function(i, m) {
+			if (name == m.question_k_order_id) {
+				self.text(m.survey_option_content);
+				return false;
+			}
+		});
+	});
+}

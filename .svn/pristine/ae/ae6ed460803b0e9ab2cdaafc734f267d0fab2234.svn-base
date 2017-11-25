@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>辅助检查</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<div class="header">
+		<div class="circle">
+			<div class="dotBox"></div>
+			<p><span class="dot on"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+			<p><span class="dot"></span></p>
+		</div>
+		<div class="txtBox">
+			<p><span class="txt onFont">辅助检查</span></p>
+			<p><span class="txt">药物治疗</span></p>
+			<p><span class="txt">脏器功能</span></p>
+			<p><span class="txt">中医体质辨识</span></p>
+		</div>
+	</div>
+	<form class="main">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<div class="info_left"><span class="must">*</span>1、空腹血糖</div>
+				<div class="info_rgt">
+					<input type="text" value="" placeholder="点击填写"/>
+					<select class="mond_op">
+						<option value="">mmol/L</option>
+						<option value="">mmol/dL</option>
+					</select>
+				</div>
+			</li>
+			<li>
+				<p>2、血常规</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">血红蛋白</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">白细胞</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血小板</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">其他</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>3、尿常规</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">尿蛋白</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">尿糖</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">尿酮体</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">尿潜血</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/></div>
+					</li>
+					<li>
+						<div class="info_left">其他</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left" style="width: 26%;"><span class="must">*</span>4、糖化血红蛋白</div>
+				<div class="info_rgt" style="width: 72%;"><input type="text" value="" placeholder="点击填写"/> <span class="mond">mmol/dL</span></div>
+			</li>
+			<li>
+				<div class="info_left">5、大便潜血</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="Stool" type="radio" id="Stoolno">
+		                <label class="lab" for="Stoolno">阴性</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="Stool" type="radio" id="Stoolyes">
+		                <label class="lab" for="Stoolyes">阳性</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<p>6、肝功能</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left" style="width:24%">血清谷丙转氨酶</div>
+						<div class="info_rgt" style="width:74%"><input type="text" value="" placeholder="点击输入"/> <span class="mond">U/L</span></div>
+					</li>
+					<li>
+						<div class="info_left" style="width:24%">血清谷草转氨酶</div>
+						<div class="info_rgt" style="width:74%"><input type="text" value="" placeholder="点击输入"/> <span class="mond">U/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">白蛋白</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">&nbsp;g/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">总胆红素</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">结合胆红素</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>7、肾功能</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">血清肌酐</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">μmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血尿素氮</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血钾浓度</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">血钠浓度</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>8、血脂</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">总胆固醇</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left">甘油三酯</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left" style="width:36%">血清低密度脂蛋白胆固醇</div>
+						<div class="info_rgt" style="width:62%"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+					<li>
+						<div class="info_left" style="width:36%">血清高密度脂蛋白胆固醇</div>
+						<div class="info_rgt" style="width:62%"><input type="text" value="" placeholder="点击输入"/> <span class="mond">mmol/L</span></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left" style="width: 26%;"><span class="must">*</span>9、尿微量白蛋白</div>
+				<div class="info_rgt" style="width: 72%;"><input type="text" value="" placeholder="点击填写"/> <span class="mond">%</span></div>
+			</li>
+			<li>
+				<div class="info_left" style="width: 36%;"><span class="must">*</span>10、血清同型半胱氨酸</div>
+				<div class="info_rgt" style="width: 62%;"><input type="text" value="" placeholder="点击填写"/> <span class="mond">μmol/L</span></div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>11、眼底镜</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="mirror" type="radio" id="mirrorno">
+		                <label class="lab" for="mirrorno">正常</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="mirror" type="radio" id="mirroryes">
+		                <label class="lab" for="mirroryes">异常</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>12、心电图</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="ECG" type="radio" id="ECGno">
+		                <label class="lab" for="ECGno">正常</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="ECG" type="radio" id="ECGyes">
+		                <label class="lab" for="ECGyes">异常</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray">13、胸部X线片</div>
+				<div class="info_rgt ray_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="X-ray" type="radio" id="X-rayno">
+		                <label class="lab" for="X-rayno">正常</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="X-ray" type="radio" id="X-rayyes">
+		                <label class="lab" for="X-rayyes">异常</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray"><span class="must">*</span>14、心脏超声</div>
+				<div class="info_rgt ray_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="ultrasound" type="radio" id="ultrasoundno">
+		                <label class="lab" for="ultrasoundno">正常</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="ultrasound" type="radio" id="ultrasoundyes">
+		                <label class="lab" for="ultrasoundyes">异常</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray">15、颈动脉超声</div>
+				<div class="info_rgt ray_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="artery" type="radio" id="arteryno">
+		                <label class="lab" for="arteryno">正常</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="artery" type="radio" id="arteryyes">
+		                <label class="lab" for="arteryyes">异常</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left ray">16、下肢血管超声</div>
+				<div class="info_rgt ray_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+		            <div class="opt" style="margin-left: 0.9rem;">
+		                <input class="magic" name="limbs" type="radio" id="limbsno">
+		                <label class="lab" for="limbsno">正常</label>
+		            </div>
+					<div class="opt">
+		                <input class="magic both" name="limbs" type="radio" id="limbsyes">
+		                <label class="lab" for="limbsyes">异常</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>1、是否服用降压药</div>
+				<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="checkDiv">
+					<div class="opt xrgt">
+		                <input class="magic" name="Buck" type="radio" id="Buck1">
+		                <label class="lab" for="Buck1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="Buck" type="radio" id="Buck2">
+		                <label class="lab" for="Buck2">否</label>
+		            </div>
+				</div>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="follow" type="radio" id="follow1">
+				                <label class="lab" for="follow1">规律</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow" type="radio" id="follow2">
+				                <label class="lab" for="follow2">间断</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow" type="radio" id="follow3">
+				                <label class="lab" for="follow3">不服药</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>2、是否服用降糖药</div>
+				<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="checkDiv">
+					<div class="opt xrgt">
+		                <input class="magic" name="sweet" type="radio" id="sweet1">
+		                <label class="lab" for="sweet1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="sweet" type="radio" id="sweet2">
+		                <label class="lab" for="sweet2">否</label>
+		            </div>
+				</div>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="follow1" type="radio" id="follow4">
+				                <label class="lab" for="follow4">规律</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow1" type="radio" id="follow5">
+				                <label class="lab" for="follow5">间断</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow1" type="radio" id="follow6">
+				                <label class="lab" for="follow6">不服药</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>3、是否服用降脂药</div>
+				<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="checkDiv">
+					<div class="opt xrgt">
+		                <input class="magic" name="fat" type="radio" id="fat1">
+		                <label class="lab" for="fat1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="fat" type="radio" id="fat2">
+		                <label class="lab" for="fat2">否</label>
+		            </div>
+				</div>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="follow2" type="radio" id="follow7">
+				                <label class="lab" for="follow7">规律</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow2" type="radio" id="follow8">
+				                <label class="lab" for="follow8">间断</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow2" type="radio" id="follow9">
+				                <label class="lab" for="follow9">不服药</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>4、是否服用其它药物</div>
+				<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="checkDiv">
+					<div class="opt xrgt">
+		                <input class="magic" name="drugs" type="radio" id="drugs1">
+		                <label class="lab" for="drugs1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="drugs" type="radio" id="drugs2">
+		                <label class="lab" for="drugs2">否</label>
+		            </div>
+				</div>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">药物名称</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用法</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用量</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">用药时间</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left rad_left">服药依从性</div>
+						<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="follow3" type="radio" id="follow10">
+				                <label class="lab" for="follow10">规律</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow3" type="radio" id="follow11">
+				                <label class="lab" for="follow11">间断</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="follow3" type="radio" id="follow12">
+				                <label class="lab" for="follow12">不服药</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<p><span class="must">*</span>1、口腔</p>
+				<ul class="checkBox">
+					<li>
+						<div class="info_left">口唇</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="lip" type="radio" id="lip1">
+				                <label class="lab" for="lip1">红润</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="lip" type="radio" id="lip2">
+				                <label class="lab" for="lip2">苍白</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="lip" type="radio" id="lip3">
+				                <label class="lab" for="lip3">发干</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="lip" type="radio" id="lip4">
+				                <label class="lab" for="lip4">皲裂</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="lip" type="radio" id="lip5">
+				                <label class="lab" for="lip5">疱疹</label>
+				            </div>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">齿列</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="dentition" type="radio" id="dentition1">
+				                <label class="lab" for="dentition1">红润</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="dentition" type="radio" id="dentition2">
+				                <label class="lab" for="dentition2">苍白</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="dentition" type="radio" id="dentition3">
+				                <label class="lab" for="dentition3">发干</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="dentition" type="radio" id="dentition4">
+				                <label class="lab" for="dentition4">皲裂</label>
+				            </div>
+						</div>
+					</li>
+					<li>
+						<div class="info_left">咽部</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+						<div class="hide_cont sport">
+							<div class="opt">
+				                <input class="magic" name="pharynx" type="radio" id="pharynx1">
+				                <label class="lab" for="pharynx1">红润</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="pharynx" type="radio" id="pharynx2">
+				                <label class="lab" for="pharynx2">苍白</label>
+				            </div>
+				            <div class="opt">
+				                <input class="magic" name="pharynx" type="radio" id="pharynx3">
+				                <label class="lab" for="pharynx3">发干</label>
+				            </div>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p><span class="must">*</span>2、视力</p>
+				<ul class="checkBox">
+					<li>裸眼视力</li>
+					<li>
+						<div class="info_left">左眼</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">右眼</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>矫正视力</li>
+					<li>
+						<div class="info_left">左眼</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+					<li>
+						<div class="info_left">右眼</div>
+						<div class="info_rgt"><input type="text" value="" placeholder="点击填写"/></div>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>3、听力</div>
+				<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="hearing" type="radio" id="hearing1">
+		                <label class="lab" for="hearing1">听见</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="hearing" type="radio" id="hearing2">
+		                <label class="lab" for="hearing2">听不清或无法听见</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left rad_left"><span class="must">*</span>4、运动功能</div>
+				<div class="info_rgt rad_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="motion" type="radio" id="motion1">
+		                <label class="lab" for="motion1">可顺利完成</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="motion" type="radio" id="motion2">
+		                <label class="lab" for="motion2">无法独立完成其中任何一个动作</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="next">下一步</span>
+			</li>
+		</ul>
+		<ul class="basicInfo">
+			<li>
+				<div class="info_left"><span class="must">*</span>1、平和质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="quality" type="radio" id="quality1">
+		                <label class="lab" for="quality1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="quality" type="radio" id="quality2">
+		                <label class="lab" for="quality2">基本是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>2、气虚质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="qixv" type="radio" id="qixv1">
+		                <label class="lab" for="qixv1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="qixv" type="radio" id="qixv2">
+		                <label class="lab" for="qixv2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>3、阳虚质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="yangxv" type="radio" id="yangxv1">
+		                <label class="lab" for="yangxv1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="yangxv" type="radio" id="yangxv2">
+		                <label class="lab" for="yangxv2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>4、阴虚质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="yinxv" type="radio" id="yinxv1">
+		                <label class="lab" for="yinxv1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="yinxv" type="radio" id="yinxv2">
+		                <label class="lab" for="yinxv2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>5、痰湿质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="tanshi" type="radio" id="tanshi1">
+		                <label class="lab" for="tanshi1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="tanshi" type="radio" id="tanshi2">
+		                <label class="lab" for="tanshi2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>6、湿热质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="shire" type="radio" id="shire1">
+		                <label class="lab" for="shire1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="shire" type="radio" id="shire2">
+		                <label class="lab" for="shire2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>7、血瘀质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="xueyu" type="radio" id="xueyu1">
+		                <label class="lab" for="xueyu1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="xueyu" type="radio" id="xueyu2">
+		                <label class="lab" for="xueyu2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>8、气郁质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="qiyu" type="radio" id="qiyu1">
+		                <label class="lab" for="qiyu1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="qiyu" type="radio" id="qiyu2">
+		                <label class="lab" for="qiyu2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<div class="info_left"><span class="must">*</span>9、特秉质</div>
+				<div class="info_rgt"><input type="text" value="" placeholder="请选择"/><img class="arrow" src="image/rgt.png"/></div>
+				<div class="hide_cont sport">
+					<div class="opt xrgt">
+		                <input class="magic" name="te" type="radio" id="te1">
+		                <label class="lab" for="te1">是</label>
+		            </div>
+		            <div class="opt">
+		                <input class="magic" name="te" type="radio" id="te2">
+		                <label class="lab" for="te2">倾向是</label>
+		            </div>
+				</div>
+			</li>
+			<li>
+				<span class="back">上一步</span><span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/auxiliaryCheck.js?v=ssa" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

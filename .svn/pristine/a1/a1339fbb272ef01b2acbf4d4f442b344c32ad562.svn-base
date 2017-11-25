@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="view/lib/html5shiv.js"></script>
+	<script type="text/javascript" src="view/lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="view/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="view/static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="view/lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="view/static/h-admin/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="view/static/h-admin/css/main.css" />
+<!--[if IE 6]>
+	<script type="text/javascript" src="view/lib/DD_belatedPNG_0.0.8a-min.js"></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>美康惠健康管理系统</title>
+</head>
+<body>
+<header class="navbar-wrapper">
+	<div class="navbar navbar-fixed-top">
+		<div class="container-fluid cl">
+			<span class="logo f-l" style="text-align: left;"><img src="view/images/logo.png" /></span>
+			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+				<ul class="cl">
+					<li><i class="Hui-iconfont" style="color:#f36a5a;">&#xe62c;</i></li>
+					<li class="dropDown dropDown_hover">
+						<span class="dropDown_A" id="show-user" style="display:inline-block;margin:0 5px;"></spans>
+					</li>
+					<li>
+						<div>修改密码</div>
+					</li>
+					<li class="ml-5 mr-5">|</li>
+					<li>
+						<div id="btn-exit" style="cursor: pointer;">退出</div>
+					</li>
+					<li style="display:none;" id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:void(0);" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
+							<li><a href="javascript:void(0);" data-val="blue" title="蓝色">蓝色</a></li>
+							<li><a href="javascript:void(0);" data-val="green" title="绿色">绿色</a></li>
+							<li><a href="javascript:void(0);" data-val="red" title="红色">红色</a></li>
+							<li><a href="javascript:void(0);" data-val="yellow" title="黄色">黄色</a></li>
+							<li><a href="javascript:void(0);" data-val="orange" title="橙色">橙色</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</header>
+<aside class="Hui-aside">
+	<div class="menu_dropdown bk_2 " id="menulist">
+		<!--<dl class="menu-member">
+			<dt>账号管理</dt>
+			<dd>
+				<ul>
+					<li><a data-href="view/user/user-list.html" data-title="用户管理" href="javascript:void(0);">用户管理</a></li>
+					<li><a data-href="#" data-title="角色管理" href="javascript:void(0);">角色管理</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl class="menu-admin">
+				<dt>会员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="view/Member_management/member-list.html" data-title="会员管理" href="javascript:void(0)">会员管理</a></li>
+					<li><a data-href="view/doctor/doctor-list.html" data-title="医生管理" href="javascript:void(0)">医生管理</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl class="menu-data-collection">
+			<dt>数据管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="view/datacollection/datacollection-list.html" data-title="数据采集" href="javascript:void(0)">数据采集</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl id="menu-basic-data">
+			<dt>审核管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="#" data-title="身份证审核" href="javascript:void(0)">身份审核</a></li>
+					<li><a data-href="#" data-title="评估表审核" href="javascript:void(0)">评估表审核</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl id="menu-equipment">
+			<dt>新闻管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="view/equipment/equitment-list.html" data-title="Banner管理" href="javascript:void(0)">Banner管理</a></li>
+					<li><a data-href="#" data-title="健康科普" href="javascript:void(0)">健康科普</a></li>
+				</ul>
+			</dd>
+		</dl>
+			<dl id="menu-quit-smoking">
+			<dt>戒烟管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="view/quit_smoking/quit-smoking-list.html" data-title="戒烟列表" href="javascript:void(0)">戒烟列表</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl id="menu-health">
+			<dt>健康档案<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<li><a data-href="view/health/health-record-list.html" data-title="档案上传" href="javascript:void(0)">档案上传</a></li>
+				<li><a data-href="view/health/health-record-list.html" data-title="档案填写" href="javascript:void(0)">档案填写</a></li>
+			</dd>
+		</dl>
+		<dl id="menu-remind">
+			<dt>提醒管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="#" data-title="提醒管理" href="javascript:void(0)">提醒管理</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl id="menu-plan">
+			<dt>计划管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a data-href="#" data-title="计划管理" href="javascript:void(0)">计划管理</a></li>
+				</ul>
+			</dd>
+		</dl>
+			-->
+	</div>
+</aside>
+<!--导航缩进-->
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+<section class="Hui-article-box">
+	<div id="Hui-tabNav" class="Hui-tabNav hidden-xs" style="display: none;">
+		<div class="Hui-tabNav-wp">
+			<ul id="min_title_list" class="acrossTab cl">
+				<li class="active">
+					<span title="我的桌面" data-href="welcome.html">我的桌面</span>
+					<em></em>
+				</li>
+			</ul>
+		</div>
+		<div class="Hui-tabNav-more btn-group"><a id="js-tabNav-prev" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d4;</i></a><a id="js-tabNav-next" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d7;</i></a></div>
+	</div>
+	<div id="iframe_box" class="Hui-article">
+		<div class="show_iframe">
+			<div style="display:none" class="loading"></div>
+			<iframe scrolling="yes" frameborder="0" src="welcome.html" name="iframe"></iframe>
+		</div>
+	</div>
+</section>
+
+<div class="contextMenu" id="Huiadminmenu" style="display: none;">
+	<ul>
+		<li id="closethis">关闭当前 </li>
+		<li id="closeall">关闭全部 </li>
+</ul>
+</div>
+<script type="text/javascript" src="view/lib/jquery/jquery-1.11.3.js"></script>
+<script type="text/javascript">
+	$(function(){
+	//动态处理加载树形结构
+	    var menulist = [
+        { "MID": "1000", "MName": "账号管理", "menulist":
+                [
+                    { "MID": "1010", "MName": "用户管理", "Url": "view/user/user-list.html"},
+                    { "MID": "1020", "MName": "角色管理", "Url": "#" }
+                ]
+        },
+        { "MID": "2000", "MName": "会员管理","menulist":
+                [
+                    { "MID": "2010", "MName": "会员管理", "Url": "view/member_management/member-list.html"},
+                    { "MID": "2020", "MName": "医生管理", "Url": "view/doctor/doctor-list.html" }
+                ]
+        },
+         { "MID": "3000", "MName": "数据管理","menulist":
+                [
+                    { "MID": "3010", "MName": "数据采集", "Url": "view/datacollection/datacollection-list.html"}
+                ]
+        },
+       
+    ];
+    var dl="";
+    var dt="";
+    $.each(menulist,function(key,val){
+    	 var dd="";
+        $.each(val.menulist,function(v,k){
+            dd+="<li><a data-href='"+k.Url+"?"+k.MID+"' data-title='"+k.MName+"' href='javascript:void(0)'>"+ k.MName+"</a></li>";
+        });
+        dt="<dt>"+val.MName+"<i class='Hui-iconfont menu_dropdown-arrow'>&#xe6d5;</i></dt><dd><ul>"+dd+"</ur></dd>";
+        dl+="<dl>"+dt+"</dl>";
+    });
+    $('#menulist').append(dl);
+
+	});
+</script>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="view/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="view/static/h-admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="view/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#menulist").find("dl:first dt").trigger("click");
+	$("#menulist").find("dl:first").find("dd ul li a:first").trigger("click");
+	//获取用户名
+	var user = window.localStorage.getItem("loginUname");
+	$("#show-user").html(user);
+	//点击退出
+	$("#btn-exit").click(function(){
+		window.location.href="login.html";
+		window.localStorage.clear();
+	});
+
+});
+</script>
+</body>
+</html>

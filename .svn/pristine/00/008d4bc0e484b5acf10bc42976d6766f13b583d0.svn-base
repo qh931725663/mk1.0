@@ -1,0 +1,66 @@
+package com.haaa.cloudmedical.platform.equipment.controller;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.BloodPressure;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.Electrocardiograph;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.LungCapacity;
+import com.haaa.cloudmedical.entity.UrineTest;
+import com.haaa.cloudmedical.platform.equipment.service.EquipmentService;
+
+@RestController
+@RequestMapping({ "/equipment" })
+public class EquipmentController {
+	@Resource
+	private EquipmentService service;
+
+	private Logger logger = Logger.getLogger(EquipmentController.class);
+
+	/**
+	 * 后台数据添加以后要提取出去
+	 * 
+	 * @param user_id
+	 * @param bloodOxygen
+	 * @param bloodPressure
+	 * @param bloodSugar
+	 * @param earThermometer
+	 * @param electrocardiograph
+	 * @param lungCapacity
+	 * @param urineTest
+	 * @return
+	 */
+	@RequestMapping(value = { "/addAll.action" }, method = {
+			org.springframework.web.bind.annotation.RequestMethod.POST })
+	public InfoJson addAll(EquipmentUse equipmentUse, BloodOxygen bloodOxygen, BloodPressure bloodPressure, BloodSugar bloodSugar,
+			EarThermometer earThermometer, Electrocardiograph electrocardiograph, LungCapacity lungCapacity,
+			UrineTest urineTest,Integer oPulseRate,Integer pPulseRate) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			if (oPulseRate!=null) {
+				bloodOxygen.setPulseRate(oPulseRate);
+			}
+			if (pPulseRate!=null) {
+				bloodPressure.setPulseRate(pPulseRate);
+			}
+			infoJson = service.addAll(equipmentUse, bloodOxygen, bloodPressure, bloodSugar, earThermometer,
+					electrocardiograph, lungCapacity, urineTest);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+}

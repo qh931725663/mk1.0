@@ -1,0 +1,400 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.equipment.service;
+
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.dao.equipment.BloodOxygenDao;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.dao.equipment.UrineTestDao;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+@Log(name = "app7件套")
+public class EquipmentAppService {
+
+	@Resource
+	private BloodOxygenDao bloodOxygenDao;
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	@Resource
+	private UrineTestDao urineTestDao;
+
+	public InfoJson getMostRecentAllData(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		DecimalFormat dformat = new DecimalFormat();
+		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> bloodPressureMap = bloodPressureDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> bloodSugarMap = bloodSugarDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> electroacardiographMap = electrocardiographDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> bloodOxygenMap = bloodOxygenDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> lungCapacityMap = lungCapacityDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> urineTestMap = urineTestDao.getMostRecentData(Long.valueOf(user_id));
+		if (bloodPressureMap != null) {
+			dformat.applyPattern("#");
+			result.put("BloodPressure", bloodPressureMap);
+			int result1 = DataTransfromUtil.classifyBloodPressure((int) bloodPressureMap.get("HighPressure"),
+					(int) bloodPressureMap.get("LowPressure"));
+			if (result1 < 0) {
+				bloodPressureMap.put("BloodPressureResult", "低于正常");
+			} else if (result1 == 0) {
+				bloodPressureMap.put("BloodPressureResult", "正常");
+			} else {
+				bloodPressureMap.put("BloodPressureResult", "高于正常");
+			}
+			bloodPressureMap.put("HighPressure", dformat.format((Number) bloodPressureMap.get("HighPressure")));
+			bloodPressureMap.put("LowPressure", dformat.format((Number) bloodPressureMap.get("LowPressure")));
+			bloodPressureMap.put("PulseRate", dformat.format((Number) bloodPressureMap.get("PulseRate")));
+
+		} else {
+			bloodPressureMap = new HashMap<String, Object>();
+			result.put("BloodPressure", bloodPressureMap);
+			bloodPressureMap.put("datetime", "");
+			bloodPressureMap.put("HighPressure", "");
+			bloodPressureMap.put("LowPressure", "");
+			bloodPressureMap.put("PulseRate", "");
+			bloodPressureMap.put("BloodPressureResult", "");
+		}
+		if (bloodSugarMap != null) {
+			dformat.applyPattern("#.0");
+			result.put("BloodSugar", bloodSugarMap);			
+			int result1 = DataTransfromUtil.classifyBloodSugar((float) bloodSugarMap.get("BloodSugar"),
+					(int) bloodSugarMap.get("measurement_period"));
+			if (result1 < 0) {
+				bloodSugarMap.put("BloodSugarResult", "低于正常");
+			} else if (result1 == 0) {
+				bloodSugarMap.put("BloodSugarResult", "正常");
+			} else {
+				bloodSugarMap.put("BloodSugarResult", "高于正常");
+			}
+			bloodSugarMap.put("BloodSugar", dformat.format((Number) bloodSugarMap.get("BloodSugar")));
+
+		} else {
+			bloodSugarMap = new HashMap<String, Object>();
+			result.put("BloodSugar", bloodSugarMap);
+			bloodSugarMap.put("datetime", "");
+			bloodSugarMap.put("BloodSugar", "");
+			bloodSugarMap.put("BloodSugarResult", "");
+		}
+		if (electroacardiographMap != null) {
+			dformat.applyPattern("#");
+			result.put("Electrocardiograph", electroacardiographMap);
+			electroacardiographMap.put("HeartRate", dformat.format((Number) electroacardiographMap.get("HeartRate")));
+		} else {
+			electroacardiographMap = new HashMap<String, Object>();
+			result.put("Electrocardiograph", electroacardiographMap);
+			electroacardiographMap.put("datetime", "");
+			electroacardiographMap.put("Result", "");
+			electroacardiographMap.put("HeartRate", "");
+		}
+		if (bloodOxygenMap != null) {
+			dformat.applyPattern("#");
+			result.put("BloodOxygen", bloodOxygenMap);
+			bloodOxygenMap.put("Oxygen", dformat.format((Number) bloodOxygenMap.get("Oxygen")));
+			bloodOxygenMap.put("PulseRate", dformat.format((Number) bloodOxygenMap.get("PulseRate")));
+		} else {
+			bloodOxygenMap = new HashMap<String, Object>();
+			result.put("BloodOxygen", bloodOxygenMap);
+			bloodOxygenMap.put("datetime", "");
+			bloodOxygenMap.put("Oxygen", "");
+			bloodOxygenMap.put("PulseRate", "");
+		}
+		if (lungCapacityMap != null) {
+			dformat.applyPattern("#.00");
+			result.put("LungCapacity", lungCapacityMap);
+			lungCapacityMap.put("fvc", dformat.format((Number) lungCapacityMap.get("fvc")));
+			lungCapacityMap.put("fev1", dformat.format((Number) lungCapacityMap.get("fev1")));
+			lungCapacityMap.put("pef", dformat.format((Number) lungCapacityMap.get("pef")));
+			dformat.applyPattern("#");
+			lungCapacityMap.put("fvc_rate", dformat.format((Number) lungCapacityMap.get("fvc_rate")));
+			lungCapacityMap.put("fev1_rate", dformat.format((Number) lungCapacityMap.get("fev1_rate")));
+			lungCapacityMap.put("pef_rate", dformat.format((Number) lungCapacityMap.get("pef_rate")));
+		} else {
+			lungCapacityMap = new HashMap<String, Object>();
+			result.put("LungCapacity", lungCapacityMap);
+			lungCapacityMap.put("datetime", "");
+			lungCapacityMap.put("fvc", "");
+			lungCapacityMap.put("fev1", "");
+			lungCapacityMap.put("pef", "");
+			lungCapacityMap.put("fvc_rate", "");
+			lungCapacityMap.put("fev1_rate", "");
+			lungCapacityMap.put("pef_rate", "");
+		}
+		if (urineTestMap != null) {
+			result.put("UrineTest", urineTestMap);
+			dformat.applyPattern("#.0");
+			urineTestMap.put("PH", dformat.format((Number) urineTestMap.get("PH")));
+			dformat.applyPattern("#.000");
+			urineTestMap.put("SG", dformat.format((Number) urineTestMap.get("SG")));
+		} else {
+			urineTestMap = new HashMap<String, Object>();
+			result.put("UrineTest", urineTestMap);
+			urineTestMap.put("datetime", "");
+			urineTestMap.put("URO", "");
+			urineTestMap.put("BLD", "");
+			urineTestMap.put("BIL", "");
+			urineTestMap.put("KET", "");
+			urineTestMap.put("GLU", "");
+			urineTestMap.put("PRO", "");
+			urineTestMap.put("PH", "");
+			urineTestMap.put("NIT", "");
+			urineTestMap.put("LEU", "");
+			urineTestMap.put("SG", "");
+			urineTestMap.put("VC", "");
+		}
+		infoJson.setData(result);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
+	public InfoJson getIOSMostRecentAllData(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		DecimalFormat dformat = new DecimalFormat();
+		List<Object> resultList = new LinkedList();
+		Map<String, Object> bloodPressureMap = bloodPressureDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> bloodSugarMap = bloodSugarDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> electroacardiographMap = electrocardiographDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> bloodOxygenMap = bloodOxygenDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> lungCapacityMap = lungCapacityDao.getMostRecentData(Long.valueOf(user_id));
+		Map<String, Object> urineTestMap = urineTestDao.getMostRecentData(Long.valueOf(user_id));
+		if (bloodPressureMap != null) {
+			Map<String, Object> sMap = new HashMap<String, Object>();
+			dformat.applyPattern("#");
+			resultList.add(sMap);
+			sMap.put("type", "BloodPressure");
+			sMap.put("datetime", bloodPressureMap.get("datetime"));
+			List<Object> sList = new LinkedList<Object>();
+			sMap.put("result", sList);
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血压情况");
+					int result = DataTransfromUtil.classifyBloodPressure((int) bloodPressureMap.get("HighPressure"),
+							(int) bloodPressureMap.get("LowPressure"));
+					if (result < 0) {
+						put("value", "低于正常");
+					} else if (result == 0) {
+						put("value", "正常");
+					} else {
+						put("value", "高于正常");
+					}
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血压值");
+					put("value", dformat.format((Number) bloodPressureMap.get("HighPressure")) + "/"
+							+ dformat.format((Number) bloodPressureMap.get("LowPressure")) + "mmHg");
+				}
+			});
+		}
+		if (bloodSugarMap != null) {
+			Map<String, Object> sMap = new HashMap<String, Object>();
+			dformat.applyPattern("#.0");
+			resultList.add(sMap);
+			sMap.put("type", "BloodSugar");
+			sMap.put("datetime", bloodSugarMap.get("datetime"));
+			List<Object> sList = new LinkedList<Object>();
+			sMap.put("result", sList);
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血糖情况");
+					int result = DataTransfromUtil.classifyBloodSugar((float) bloodSugarMap.get("BloodSugar"),
+							(int) bloodSugarMap.get("measurement_period"));
+					if (result < 0) {
+						put("value", "低于正常");
+					} else if (result == 0) {
+						put("value", "正常");
+					} else {
+						put("value", "高于正常");
+					}
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血糖值");
+					put("value", dformat.format((Number) bloodSugarMap.get("BloodSugar")) + "mmol/L");
+				}
+			});
+		}
+		if (electroacardiographMap != null) {
+			Map<String, Object> sMap = new HashMap<String, Object>();
+			dformat.applyPattern("#");
+			resultList.add(sMap);
+			sMap.put("type", "Electrocardiograph");
+			sMap.put("datetime", electroacardiographMap.get("datetime"));
+			List<Object> sList = new LinkedList<Object>();
+			sMap.put("result", sList);
+
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "心电");
+					put("value", dformat.format((Number) electroacardiographMap.get("HeartRate")));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "心电诊断");
+					put("value", electroacardiographMap.get("Result"));
+				}
+			});
+		}
+		if (bloodOxygenMap != null) {
+			Map<String, Object> sMap = new HashMap<String, Object>();
+			dformat.applyPattern("#");
+			resultList.add(sMap);
+			sMap.put("type", "BloodOxygen");
+			sMap.put("datetime", bloodOxygenMap.get("datetime"));
+			List<Object> sList = new LinkedList<Object>();
+			sMap.put("result", sList);
+
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "血氧");
+					put("value", dformat.format((Number) bloodOxygenMap.get("Oxygen"))+"%");
+				}
+			});
+		}
+		if (lungCapacityMap != null) {
+			Map<String, Object> sMap = new HashMap<String, Object>();
+			dformat.applyPattern("#.00");
+			resultList.add(sMap);
+			sMap.put("type", "LungCapacity");
+			sMap.put("datetime", lungCapacityMap.get("datetime"));
+			List<Object> sList = new LinkedList<Object>();
+			sMap.put("result", sList);
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "FVC(用力肺活量)");
+					put("value", dformat.format((Number) lungCapacityMap.get("fvc")) + "L");
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "FEV1(一秒用力呼气容积)");
+					put("value", dformat.format((Number) lungCapacityMap.get("fev1")) + "L/S");
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "PEF(最大呼气流量)");
+					put("value", dformat.format((Number) lungCapacityMap.get("pef")) + "L");
+				}
+			});
+		}
+		if (urineTestMap != null) {
+			Map<String, Object> sMap = new HashMap<String, Object>();
+			resultList.add(sMap);
+			sMap.put("type", "UrineTest");
+			sMap.put("datetime", urineTestMap.get("datetime"));
+			List<Object> sList = new LinkedList<Object>();
+			sMap.put("result", sList);
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "URO(尿胆原)");
+					put("value", urineTestMap.get("URO"));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "BLD(潜血)");
+					put("value", urineTestMap.get("BLD"));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "BIL(胆红素)");
+					put("value", urineTestMap.get("BIL"));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "KET(酮体)");
+					put("value", urineTestMap.get("KET"));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "GLU(葡萄糖)");
+					put("value", urineTestMap.get("GLU"));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "PRO(蛋白质)");
+					put("value", urineTestMap.get("PRO"));
+				}
+			});
+			dformat.applyPattern("#.0");
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "PH(酸碱度)");
+					put("value", dformat.format((Number) urineTestMap.get("PH")));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "NIT(亚硝酸盐)");
+					put("value", urineTestMap.get("NIT"));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "LEU(白细胞)");
+					put("value", urineTestMap.get("LEU"));
+				}
+			});
+			dformat.applyPattern("#.000");
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "SG(比重)");
+					put("value", dformat.format((Number) urineTestMap.get("SG")));
+				}
+			});
+			sList.add(new HashMap<String, Object>() {
+				{
+					put("name", "VC(抗坏血酸)");
+					put("value", urineTestMap.get("VC"));
+				}
+			});
+		}
+		infoJson.setData(resultList);
+		infoJson.setCount(resultList.size());
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+}

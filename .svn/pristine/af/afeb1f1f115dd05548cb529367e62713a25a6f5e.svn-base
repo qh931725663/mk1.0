@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control"  content="no-siteapp" />
+<!--[if lt IE 9]>
+    <script type="text/javascript" src="../lib/html5shiv.js"></script>
+    <script type="text/javascript" src="../lib/respond.min.js"></script>
+    <![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+
+<!--[if IE 6]>
+    <script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+<title>Banner编辑</title>
+</head>
+<body>
+	<article class="page-container">
+		<form class="form form-horizontal" id="form-news-add"
+			enctype="multipart/form-data">
+			<div class="row cl member-list-input">
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red"></span>新闻类型</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<select class="select-box" id="news_type" name="news_type"
+							style="width: 240px;" onchange="change()">
+							<option value="1" selected>Banner</option>
+							<option value="2">健康科普</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>文章标题</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<input id="title" name="title" class="input-text"
+							style="width:240px;"><span class="c-red">&nbsp;&nbsp;文章标题必填项&nbsp;&nbsp;&nbsp;&nbsp;字数10-20个</span>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-12 member-input-1" id="contain">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>设置标签</label>
+					<div class="formControls col-xs-3 col-sm-3">
+						<input type="checkbox" id="is_push_to_patient"	name="is_push_to_patient" value="1" /><span>患者端</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+						<input type="checkbox"	id="is_push_to_doctor" name="is_push_to_doctor" value="1"/><span>医生端</span>
+					</div>
+				</div>
+
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>显示图片</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<img src="../images/photo_01.png" class='bor' id="show_pic"
+							style="width:120px;height:120px;cursor: pointer;"
+							onclick="javascript:$('#pic').click()"> <input class="file"
+							id="pic" name="pic" type="file"
+							ACCEPT="image/gif,image/jpeg,image/jpg,image/png"
+							style="display:none"> <span class="btn-upload form-group">
+							<input type="file" multiple name="image1" class="input-file">
+							<span style="color:rgb(180,180,180);">上传图片大小 750*360</span>
+						</span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>简短导读</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<input id="short_introduction" name="short_introduction"
+							class="input-text" style="width:240px;"> <span
+							class="c-red">&nbsp;&nbsp;简短导读必填项&nbsp;&nbsp;&nbsp;&nbsp;字数10-20个</span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>链接地址</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<input id="url_index" name="url_index" class="input-text"
+							style="width:240px;">
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-12 member-input-1">
+					<label class="form-label col-xs-2 col-sm-2"><span
+						class="c-red">*</span>正文内容</label>
+					<div class="formControls col-xs-7 col-sm-7">
+						<textarea rows="15" cols="40" id="the_text" name="the_text"></textarea>
+					</div>
+				</div>
+
+				<div class="col-xs-8 col-sm-9 col-xs-offset-3 col-sm-offset-2">
+					<button class="btn btn-danger radius" type="button"
+						onclick="news_add()">保存</button>
+				</div>
+			</div>
+		</form>
+	</article>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/main.js"></script>
+	<script type="text/javascript"
+		src="../static/h-admin/js/verification-check.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/jquery.validation/js/jquery.validate.js"></script>
+	<script type="text/javascript">
+		var user_id = "";
+		$(function() {
+			var user_phone = window.localStorage.getItem("loginUname");
+			$.ajax({
+				url : "../../../news/getUserId.action",
+				type : "post",
+				dataType : 'json',
+				data : {
+					user_phone : user_phone
+				},
+				success : function(response) {
+					user_id = response;
+				}
+			});
+		});
+	
+	
+		//点击新增
+		function news_add() {
+			$.ajax({
+				url : "../../../news/add.action",
+				type : "post",
+				dataType : 'json',
+				data : $.param({
+						user_id : user_id
+					}) + '&' + $('#form-news-add').serialize(),
+				success : function(response) {
+					if (response > 0) {
+						upload_image(user_id, response);
+						layer.msg('新增成功!');
+						setTimeout(function() {
+							parent.location.reload();
+							layer_close();
+						}, 1000);
+					} else {
+						layer.msg("新增失败！");
+					}
+				}
+			});
+	
+		}
+	
+		//保存上传图片
+		function upload_image(user_id, order_id) {
+			var data = new FormData($("#form-news-add")[0]);
+			$.ajax({
+				type : "post",
+				url : "../../../upload/file.action",
+				headers : {
+					user_id : user_id,
+					order_id : order_id,
+					report_type : '500009',
+				},
+				data : data,
+				dataType : "json",
+				processData : false,
+				contentType : false,
+				success : function(data) {
+					console.log(data);
+				}
+			});
+		}
+		function change() {
+			if ($('#news_type').val() == 1) {
+				$('#contain').html("<label class='form-label col-xs-2 col-sm-2'><span class='c-red'>*</span>设置标签</label>" +
+					"<div class='formControls col-xs-3 col-sm-3'>" +
+					"<input type='checkbox' id='is_push_to_patient' name='is_push_to_patient' value='1'/><span>患者端</span>" +
+					"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+					"<input type='checkbox' id='is_push_to_doctor' name='is_push_to_doctor' value='1'/><span>医生端</span>" +
+					"</div>");
+			}
+			if ($('#news_type').val() == 2) {
+				$('#contain').html("<label class='form-label col-xs-2 col-sm-2'><span class='c-red'>*</span>发布首页</label>" +
+					"<div class='formControls col-xs-3 col-sm-3'>" +
+					"<input type='radio' id='is_push_to_frontpage' name='is_push_to_frontpage' value='1'/><span>是</span>" +
+					"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+					"<input type='radio' id='is_push_to_frontpage' name='is_push_to_frontpage' value='0'/><span>否</span>" +
+					"</div>");
+			}
+		}
+		function upload_img(up_img, show_img) {
+			$(up_img).change(function() {
+				var file = this.files[0];
+				var r = new FileReader();
+				r.readAsDataURL(file);
+				$(r).load(function() {
+					$(show_img).attr({
+						src : this.result,
+						class : 'no-bor'
+					});
+				})
+			})
+		}
+		upload_img("#pic", "#show_pic");
+	</script>
+	<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

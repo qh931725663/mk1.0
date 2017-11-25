@@ -1,0 +1,149 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css" href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css" href="../static/view-image/css/lightbox.css">
+<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>计划详情列表</title>
+<style type="text/css">
+.f-l span{margin-left: 15px;}
+.check_img img{margin-left: 15px;}
+.lable_style {display: inline-block;width: 100px;text-align: left;}
+.li-base {width: 300px;}
+.check-box input {display:block;width: 140%;height:140%;margin:0;padding:0;border: 0;opacity: 0; background: rgb(255, 255, 255);}
+.li-rel{position: relative;}
+.li-rel .check-box {position: absolute;left: 240px;}
+#goTop:hover span { display: block; }
+/*修改*/
+.navbar-collection{margin-top: 20px;}
+.collection-baseinfo .baseinfo-list { margin: 10px 20px;}
+</style>
+</head>
+<body>
+	<div class="page-container">
+		<!-- 基础档案 -->
+		<div id="health_baseinfo"></div>
+	</div>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript" src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script>
+		$(function(){
+			//获取地址栏order_id方法
+			function getUrlParam(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null) return unescape(r[2]);
+					return null;
+			}
+			var order_id = getUrlParam("order_id");
+			//初始化加载数据
+			init(order_id);
+			function init(order_id){
+				$.ajax({
+					url:"../../../chronicplan-app/getChronicPlanDetail.action",
+					type:"get",
+					dataType : 'json',
+					data:{order_id:order_id},
+					success:function(list) {
+						var list_data=list.data;
+						if(list.flag==true){
+							$.each(list_data,function(i,p){
+								var title = p.plan_item_name;
+								var div_list= "";
+								var len = $('#health_baseinfo').find('div.title:last').length;
+								//判断是否有标题
+								if(len == 0){
+									div_list='<div class="collection-baseinfo">'+
+											'<div class="navbar-collection title">'+title+'</div>'+
+											'<ul class="baseinfo-list" style="margin-left:0px;">'+
+											'<li>'+
+											'<table class="table table-border table-bordered table-bg table-striped table-hover baseif-tablelist">'+
+											'<thead>'+
+											'<tr class="text-c"><th>评估内容</th><th>目标监测次数</th><th>实际监测次数</th><th>计划完成率(%)</th><th>达标次数</th><th>达标率(%)</th><th>监测数值(平均)</th>'+
+											'</tr>'+
+											'</thead>'+
+											'<tbody class="baseif-tbody"></tbody>'+
+											'</table>'+
+											'</li>'+
+											'</ul>'+
+											'</div>';
+									$('#health_baseinfo').append(div_list);
+								}else{
+									//判断标题不相等
+									var temp = true;
+									$('#health_baseinfo').find('div.title').each(function(){
+										if($(this).text()==title){
+											temp = false;
+										}
+									});
+									if(temp){
+										div_list='<div class="collection-baseinfo">'+
+											'<div class="navbar-collection title">'+title+'</div>'+
+											'<ul class="baseinfo-list" style="margin-left:0px;">'+
+											'<li>'+
+											'<table class="table table-border table-bordered table-bg table-striped table-hover baseif-tablelist">'+
+											'<thead>'+
+											'<tr class="text-c"><th>评估内容</th><th>目标监测次数</th><th>实际监测次数</th><th>计划完成率(%)</th><th>达标次数</th><th>达标率(%)</th><th>监测数值(平均)</th>'+
+											'</tr>'+
+											'</thead>'+
+											'<tbody class="baseif-tbody"></tbody>'+
+											'</table>'+
+											'</li>'+
+											'</ul>'+
+											'</div>';
+										$('#health_baseinfo').append(div_list);
+									}
+								}
+								//判断标题相等
+ 								$('#health_baseinfo').find('.collection-baseinfo:last').each(function(){
+									if($(this).find("div.title").text() == title){
+										var tr = "";
+											tr+='<tr>'+
+													'<td>'+(p.plan_name)+'</td>'+
+													'<td>'+(p.plan_num==null?'':p.plan_num)+'</td>'+
+													'<td>'+(p.real_num==null?'':p.real_num)+'</td>'+
+													'<td>'+(p.plan_rate==null?'':p.plan_rate)+'</td>'+
+													'<td>'+(p.up2std_num==null?'':p.up2std_num)+'</td>'+
+													'<td>'+(p.up2std_rate==null?'':p.up2std_rate)+'</td>'+
+													'<td>'+(p.avg_value==null?'':p.avg_value)+'</td>'+
+												'</tr>';
+										$(this).find("div.title").next().find("tbody.baseif-tbody").append(tr);
+									}
+								}); 
+							});
+						}
+					}
+				});
+			}
+		});
+	</script>
+</body>
+</html>

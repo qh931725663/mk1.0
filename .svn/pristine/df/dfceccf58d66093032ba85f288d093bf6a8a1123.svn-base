@@ -1,0 +1,515 @@
+package com.haaa.cloudmedical.platform.chronicManage.service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.ChronicManageDTO;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.StringUtil;
+import com.haaa.cloudmedical.dao.ChronicPlanDao;
+import com.haaa.cloudmedical.entity.ChronicManage;
+import com.haaa.cloudmedical.entity.ChronicTrack;
+import com.haaa.cloudmedical.entity.User;
+
+@Service
+public class ChronicPlanService {
+
+    @Autowired
+    private ChronicPlanDao dao;
+
+    public Page gridQuery(User user, ChronicManage chronicManage, ChronicManageDTO dto, int pageno) {
+        Object temp = null;
+        List<Object> values = new ArrayList<Object>();
+        StringBuilder sql = new StringBuilder(
+            "select a.user_id,a.user_name,a.user_card,a.user_phone,getahdi(a.ahdi_value) ahdi,allChronicName(a.user_id) ChronicName,"
+                                              + "findname(a.user_sex) user_sex,a.user_age,findname(a.user_marriage) user_marriage,findname(a.user_work) user_work,"
+                                              + "(case is_end(a.user_id) when 0 then '进行中' when 1 then '已完成' end) plan_flag,date_format(b.update_date,'%Y-%m-%d %H:%i') update_date"
+                                              + " from n_user a,m_chronic_manage b where a.user_id = b.user_id");
+        // 姓名
+        temp = user.getUser_name();
+        if (temp != null && !"".equals(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_name like ?");
+        }
+        // 身份证号码
+        temp = user.getUser_card();
+        if (temp != null && !"".equals(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_card like ?");
+        }
+        // 手机号
+        temp = user.getUser_phone();
+        if (temp != null && !"".equals(temp)) {
+            values.add("%" + temp + "%");
+            sql.append(" and a.user_phone like ?");
+        }
+        // 慢病类型
+        temp = chronicManage.getChronic_name();
+        if (temp != null && !"".equals(temp)) {
+            values.add(temp);
+            sql.append(" and instr(allChronicName(a.user_id),?)>0");
+        }
+        // 性别
+        temp = user.getUser_sex();
+        if (temp != null && !"".equals(temp)) {
+            values.add(temp);
+            sql.append(" and a.user_sex = ?");
+        }
+        // 风险指数
+        temp = dto.getAhdi();
+        if (temp != null && !"".equals(temp)) {
+            values.add(temp);
+            sql.append(" and getahdi(a.ahdi_value) = ?");
+        }
+        // 工作强度
+        temp = user.getUser_work();
+        if (temp != null && !"".equals(temp)) {
+            values.add(temp);
+            sql.append(" and a.user_work = ?");
+        }
+        // 管理计划完成状态
+        temp = dto.getFlag();
+        if (temp != null && !"".equals(temp)) {
+            values.add(temp);
+            sql.append(" and is_end(b.user_id) = ?");
+        }
+        // 更新日期
+        String startDate = dto.getStatrDate();
+        String endDate = dto.getEbdDate();
+        if ((startDate != null && !"".equals(startDate)) && (endDate == null || "".equals(endDate))) {
+            values.add(startDate);
+            sql.append(" and b.update_date >= ? and b.update_date<= now()");
+        }
+        if ((startDate == null || "".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+            values.add(endDate);
+            sql.append(" and b.update_date>= now()" + " and b.update_date <= ? ");
+        }
+        if ((startDate != null && !"".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+            values.add(startDate);
+            values.add(endDate);
+            sql.append(" and b.update_date >= ? and b.update_date <= ? ");
+        }
+        sql.append(" group by b.user_id order by b.update_date");
+        Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+        return page;
+
+    }
+
+    // 获取该病人计划详情
+    public Map<String, Object> getUserPlan(String user_id) {
+        String sql = "select a.user_name,a.user_card,a.user_phone,findName (a.user_is_vip) user_is_vip,findname (a.user_sex) user_sex,a.user_age,"
+                     + "findName (a.user_marriage) user_marriage,a.user_medicare_card,findname (a.user_medical_burden) user_medical_burden,findname(a.user_work) user_work,"
+                     + "a.user_height,a.user_weight,findname(a.user_blood) user_blood,date_format(a.create_date,'%Y-%m-%d') create_date,allChronicName (a.user_id) ChronicName,"
+                     + "(case is_end (a.user_id) when 0 then '进行中' when 1 then '已完成' end) plan_flag from	n_user a where a.user_id= ?";
+        Map<String, Object> user = dao.select(sql, user_id).get(0);
+
+        sql = "select	a.order_id,a.chronic_name,a.remarks,CONCAT('一年不少于',a.check_target,'次',a.manage_text) manage_text,(case is_end when 101 then	'完成' when 102 then '未完成' end) is_end"
+              + " from m_chronic_manage a where a.user_id = ? ";
+        Map<String, Object> chronicPlanGroup = new HashMap<String, Object>();
+        chronicPlanGroup.put("user_info", user);
+        List<Map<String, Object>> allchronicplan = dao.select(sql, user_id);
+        for (String chronic_name : Arrays.asList("高血压", "高脂血症", "糖尿病", "慢性阻塞性肺病")) {
+            List<Map<String, Object>> list = allchronicplan.stream().filter(m -> m.get("chronic_name").toString().equals(chronic_name))
+                .collect(Collectors.toList());
+            if (list.size() > 0) {
+                chronicPlanGroup.put(chronic_name, list);
+            }
+        }
+        return chronicPlanGroup;
+    }
+
+    // 检测计划详情
+    public List<Map<String, Object>> userPlanDetail(String order_id) {
+        String sql = "select a.order_id,a.chronic_code,a.chronic_name,(select b.manage_text from m_chronic_manage b where b.order_id = a.chronic_order_id) manage_text,a.check_num,"
+                     + "date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,a.check_result from m_track_plan a where a.chronic_order_id = ?";
+        List<Map<String, Object>> user_info = dao.select(sql, order_id);
+        List<Long> values = new ArrayList<Long>();
+        for (Map<String, Object> map : user_info) {
+            values.add(Long.parseLong(map.get("order_id").toString()));
+        }
+        sql = "select parent_id,medical_picture_upload from p_picture  where parent_id in (" + StringUtils.repeat("?", ",", values.size())
+              + ")  and pic_type= ?";
+
+        String pic_type = "";
+        if (user_info.size() > 0) {
+            pic_type = user_info.get(0).get("chronic_code").toString();
+        }
+        values.add(Long.parseLong(pic_type));
+        List<Map<String, Object>> pic_list = dao.select(sql, values.toArray());
+        for (Map<String, Object> userinfo : user_info) {
+            List<String> pic_index = new ArrayList<String>();
+            for (Map<String, Object> pic_index_map : pic_list) {
+                if (pic_index_map.get("parent_id").toString().equals(userinfo.get("order_id").toString())) {
+                    pic_index.add(pic_index_map.get("medical_picture_upload").toString());
+                }
+            }
+            userinfo.put("pic_index", pic_index);
+        }
+        return user_info;
+    }
+
+    // 修改计划
+    public boolean modifyPlan(ChronicManage model) {
+        boolean flag = false;
+        try {
+            if (Integer.valueOf(model.getCheck_target()) > Integer.valueOf(model.getCheck_num())) {
+                model.setIs_end("102");
+            } else if (Integer.valueOf(model.getCheck_target()) == Integer.valueOf(model.getCheck_num())) {
+                model.setIs_end("101");
+            }
+            //
+            dao.update(model, "m_chronic_manage");
+            flag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    // 查询
+    public Map<String, Object> query(String order_id) {
+        String sql = "select a.order_id,a.chronic_name,a.manage_text,a.check_num,a.check_target,a.is_end,a.remarks,a.chronic_source from m_chronic_manage a where a.order_id = ? ";
+        Map<String, Object> map = null;
+        List<Map<String, Object>> list = dao.select(sql, order_id);
+        if (list.size() > 0) {
+            map = list.get(0);
+        }
+        return map;
+    }
+
+    // 追踪计划
+    public boolean trackPlan(String order_id, String check_result) {
+        boolean flag = false;
+        String sql = "select * from m_chronic_manage where order_id = ?";
+        List<Map<String, Object>> list = dao.select(sql, order_id);
+        if (list.size() > 0) {
+            ChronicManage chronicManage = BeanUtil.toObjectFromMap(list.get(0), ChronicManage.class);
+            int check_num = Integer.parseInt(chronicManage.getCheck_num());
+            int check_target = Integer.parseInt(chronicManage.getCheck_target());
+            chronicManage.setCheck_num(String.valueOf(check_num + 1));
+            if (check_num + 1 >= check_target)
+                chronicManage.setIs_end(Constant.COMMON_FLAG_YES);
+            try {
+                dao.update(chronicManage, "m_chronic_manage");
+                ChronicTrack track = new ChronicTrack();
+                track.setCheck_result(check_result);
+                track.setChronic_order_id(order_id);
+                track.setCheck_num(chronicManage.getCheck_num());
+                track.setChronic_name(chronicManage.getChronic_name());
+                track.setChronic_code(chronicManage.getChronic_code());
+                track.setCreate_date(DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                try {
+                    dao.insert(track, "m_track_plan");
+                    flag = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return flag;
+    }
+
+    // 新增计划
+    public Long addUserPlan(ChronicManage chronicManage) {
+        Long order_id = null;
+        chronicManage.setCheck_num("0");
+        chronicManage.setChronic_source("900006");
+        chronicManage.setCreate_date(DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        try {
+            order_id = dao.insert(chronicManage, "m_chronic_manage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order_id;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Page queryPage(User user, ChronicManage model, int pageno, String datemin, String datemax) {
+        /*String sql_info = "select * from(select a.user_id, a.user_name,a.user_card,a.user_phone, findname(a.user_sex) user_sex,group_concat(distinct chronic_name) chronic_name,"
+                          + "a.user_age,findname(a.user_marriage) user_marriage,findname(a.user_work) user_work,date_format(b.update_date,'%Y-%m-%d %H:%i') update_date,"
+                          + "group_concat(distinct is_end) is_end from n_user a,m_chronic_manage b where a.user_id = b.user_id group by a.user_id) c where 1=1";*/
+        String sql_info = "select a.user_id, a.user_name,a.user_card,a.user_phone, findname(a.user_sex) user_sex,a.user_age,findname(a.user_marriage) user_marriage,"
+                          + "findname(a.user_work) user_work,chronic,group_concat(distinct b.is_end) is_end,date_format(a.update_date,'%Y-%m-%d %H:%i') update_date from "
+                          + "n_user a left join m_chronic_manage b on b.user_id = a.user_id where a.chronic != '0' ";
+        StringBuilder sql = new StringBuilder(sql_info);
+        //
+        List<Object> values = new ArrayList<Object>();
+        StringBuilder buff = new StringBuilder("");
+        // 姓名
+        String temp = user.getUser_name();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            buff.append(" and a.user_name like ?");
+        }
+        // 身份证号码
+        temp = user.getUser_card();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            buff.append(" and a.user_card like ?");
+        }
+        // 电话
+        temp = user.getUser_phone();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add("%" + temp + "%");
+            buff.append(" and a.user_phone like ?");
+        }
+        // 慢病类型
+        temp = user.getChronic();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            sql.append(" and FIND_IN_SET(?, chronic)");
+        }
+        // 性别
+        temp = user.getUser_sex();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            buff.append(" and a.user_sex = ?");
+        }
+        // 风险指数
+
+        // 工作强度
+        temp = user.getUser_work();
+        if (StringUtils.isNotBlank(temp)) {
+            values.add(temp);
+            buff.append(" and a.user_work = ?");
+        }
+        // 管理计划完成状态
+        temp = model.getIs_end();
+        if (StringUtils.isNotBlank(temp)) {
+            if ("101".equals(temp)) {
+                values.add(temp);
+                buff.append(" and b.is_end = ?");
+            } else {
+                values.add("%" + temp + "%");
+                buff.append(" and b.is_end like ? ");
+            }
+        }
+        //
+        if (StringUtil.isBlank(datemin) && StringUtil.isNotBlank(datemax)) {
+            values.add(datemax);
+            buff.append(" and a.update_date <= ?");
+        } else if (StringUtil.isNotBlank(datemin) && StringUtil.isBlank(datemax)) {
+            values.add(datemin);
+            buff.append(" and a.update_date >= ?");
+        } else if (StringUtil.isNotBlank(datemin) && StringUtil.isNotBlank(datemax) && !datemin.equals(datemax)) {
+            values.add(datemin);
+            values.add(datemax);
+            buff.append(" and a.update_date >= ? and a.update_date <= ?");
+        } else if (StringUtil.isNotBlank(datemin) && datemin.equals(datemax)) {
+            values.add(datemin);
+            buff.append(" and date_format(a.update_date,'%Y-%m-%d') = ?");
+        }
+        //
+        sql.append(buff);
+        sql.append("group by a.user_id order by a.update_date desc");
+        //查询
+        Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+        List<Map<String, Object>> data = (List<Map<String, Object>>) page.getData();
+        if (data != null && data.size() > 0) {
+            data = data.stream().map(x -> {
+                String chronic = x.get("chronic").toString();
+                StringBuffer bf = new StringBuffer("");
+                Arrays.asList(chronic.split(",")).stream().forEach(i -> {
+                    if (!"0".equals(i)) {
+                        String chr_sql = "select survey_question_content from s_survey_question_k where order_id = " + i;
+                        List<Map<String, Object>> list = dao.select(chr_sql);
+                        String name = list.get(0).get("survey_question_content").toString();
+                        bf.append(name).append(",");
+                    }
+                });
+                String chronic_name = bf.substring(0, bf.lastIndexOf(","));
+                x.put("chronic_name", chronic_name);
+                return x;
+            }).collect(Collectors.toList());
+        }
+        return page;
+    }
+
+    // 获取该病人计划详情
+    public Map<String, Object> getUserPlanItem(String user_id) {
+        String sql = "select a.user_name,a.user_card,a.user_phone,findName(a.user_is_vip) user_is_vip,findname(a.user_sex) user_sex,a.user_age,"
+                     + "findName (a.user_marriage) user_marriage,a.user_medicare_card,findname (a.user_medical_burden) user_medical_burden,findname(a.user_work) user_work,"
+                     + "a.user_height,a.user_weight,findname(a.user_blood) user_blood,date_format(a.create_date,'%Y-%m-%d') create_date,"
+                     + "a.chronic,group_concat(distinct is_end) is_end from n_user a left join m_chronic_manage b on a.user_id = b.user_id "
+                     + "where a.user_id = ? group by a.user_id";
+        Map<String, Object> user = dao.select(sql, user_id).get(0);
+
+        String chronic = user.get("chronic").toString();
+        StringBuffer bf = new StringBuffer("");
+        Arrays.asList(chronic.split(",")).stream().forEach(i -> {
+            if (!"0".equals(i)) {
+                String chr_sql = "select survey_question_content from s_survey_question_k where order_id = " + i;
+                List<Map<String, Object>> list = dao.select(chr_sql);
+                String name = list.get(0).get("survey_question_content").toString();
+                bf.append(name).append(",");
+            }
+        });
+        String chronic_name = bf.substring(0, bf.lastIndexOf(","));
+        user.put("chronic_name", chronic_name);
+
+        //
+        sql = "select a.order_id,a.chronic_name,a.chronic_code,a.remarks,manage_text,check_target,is_end,remarks from m_chronic_manage a where a.user_id = ? ";
+        //
+        Map<String, Object> chronicPlanGroup = new HashMap<String, Object>();
+        chronicPlanGroup.put("user_info", user);
+        List<Map<String, Object>> allchronicplan = dao.select(sql, user_id);
+        for (String chronic_code : Arrays.asList("900001", "900002", "900003", "900004")) {
+            List<Map<String, Object>> list = allchronicplan.stream().filter(m -> m.get("chronic_code").toString().equals(chronic_code))
+                .collect(Collectors.toList());
+            if (list.size() > 0) {
+                chronicPlanGroup.put("item_" + chronic_code, list);
+            }
+        }
+        return chronicPlanGroup;
+    }
+
+    //保存计划
+    public Long saveTrackPlan(ChronicTrack model, String check_target) {
+        Integer check_num = Integer.valueOf(model.getCheck_num()) + 1;
+        model.setCreate_date(DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        model.setCheck_num(check_num.toString());
+        //保存计划
+        Long order_id = dao.insert(model, "m_track_plan");
+        String is_end = "";
+        //更新数量
+        if (StringUtils.isNotBlank(check_target) && Integer.valueOf(check_target) == check_num) {
+            is_end = ",is_end = 101";
+        }
+        String sql = "update m_chronic_manage set check_num = check_num + 1" + is_end + " where order_id = " + model.getChronic_order_id();
+        dao.execute(sql);
+        return order_id;
+    }
+
+    //计划列表
+    public List<Map<String, Object>> queryPlanList(String order_id) {
+        String uploadUrl = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+        String sql = "select a.order_id,a.check_num,a.chronic_name,a.check_result,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,b.manage_text from m_track_plan a left join m_chronic_manage b on a.chronic_order_id = b.order_id where a.chronic_order_id = "
+                     + order_id;
+        List<Map<String, Object>> list = dao.select(sql);
+        for (Map<String, Object> info : list) {
+            String parent_id = info.get("order_id").toString();
+            sql = "select order_id,concat('" + uploadUrl
+                  + "',medical_picture_upload) medical_picture_upload from p_picture a where pic_type = '500008' and a.parent_id=" + parent_id;
+            info.put("pictures", dao.select(sql));
+        }
+        return list;
+    }
+
+    /**
+     * 分页查询
+     * @Description: 
+     * @author 吴琪
+     * @param model
+     * @return 
+     * @date: 2017年6月20日 上午10:52:57
+     */
+    public Object queryPlanTemplatePage(Map<String, Object> model) {
+        Object obj = model.get("pageno");
+        int pageno = 1;
+        if (null != obj) {
+            pageno = Integer.valueOf(obj.toString());
+        }
+        StringBuilder sql = new StringBuilder(
+            "select a.order_id,findname(a.plan_type) plan_type,a.plan_title,a.plan_text,a.plan_num,date_format(a.create_date,'%Y-%m-%d %H:%i') "
+                                              + "create_date,b.user_name add_user_id from m_plan_template a left join n_user b on a.add_user_id = b.user_phone where 1=1");
+        List<Object> values = new ArrayList<Object>();
+        //计划类型
+        Object plan_type = model.get("plan_type");
+        if (plan_type != null && !"".equals(plan_type)) {
+            values.add(plan_type);
+            sql.append(" and plan_type = ?");
+        }
+        //创建人
+        Object add_user_id = model.get("add_user_id");
+        if (add_user_id != null && !"".equals(add_user_id)) {
+            values.add("%" + add_user_id + "%");
+            sql.append(" and b.user_name like ? ");
+        }
+        // 更新日期
+        String startDate = model.get("startDate").toString();
+        String endDate = model.get("endDate").toString();
+        if ((startDate != null && !"".equals(startDate)) && (endDate == null || "".equals(endDate))) {
+            values.add(startDate);
+            sql.append(" and a.create_date >= ? and a.create_date<= now()");
+        }
+        if ((startDate == null || "".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+            values.add(endDate);
+            sql.append(" and a.create_date>= now()" + " and a.create_date <= ? ");
+        }
+        if ((startDate != null && !"".equals(startDate)) && (endDate != null && !"".equals(endDate))) {
+            values.add(startDate);
+            values.add(endDate);
+            sql.append(" and a.create_date >= ? and a.create_date <= ? ");
+        }
+        //
+        Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+        return page;
+    }
+
+    /**
+     * 添加模板
+     * @Description: 
+     * @author 吴琪
+     * @param model
+     * @return 
+     * @date: 2017年6月20日 上午10:53:04
+     */
+    public Object addPlanTemplate(Map<String, Object> model) {
+        model.put("create_date", DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        return this.dao.insert(model, "m_plan_template");
+    }
+
+    /**
+     * 修改模板
+     * @Description: 
+     * @author 吴琪
+     * @param model
+     * @return 
+     * @date: 2017年6月20日 上午10:53:19
+     */
+    public Object updatePlanTemplate(Map<String, Object> model) {
+        return this.dao.update(model, "m_plan_template");
+    }
+
+    /**
+     * 查询模板
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月20日 上午10:53:37
+     */
+    public Object getPlanTemplate(String order_id) {
+        String sql = "select * from m_plan_template where order_id=" + order_id;
+        return this.dao.select(sql).get(0);
+    }
+
+    /**
+     * 删除模板
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月20日 下午5:50:09
+     */
+    public Object deletePlanTemplate(String order_id) {
+        String sql = "delete from m_plan_template where order_id=" + order_id;
+        return this.dao.execute(sql);
+    }
+
+}

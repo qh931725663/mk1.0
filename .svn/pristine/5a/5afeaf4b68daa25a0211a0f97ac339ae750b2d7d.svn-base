@@ -1,0 +1,72 @@
+package com.haaa.cloudmedical.interceptor;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.haaa.cloudmedical.wechat.service.IWeixinUserService;
+import com.haaa.cloudmedical.wechat.util.WeixinUtil;
+
+public class WeChatFilter implements Filter {
+
+    @Override
+    public void destroy() {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+        String url = req.getRequestURI();
+        /*if (url.contains("wechat")) {
+            String agent = req.getHeader("User-Agent");
+            if (agent != null && agent.toLowerCase().indexOf("micromessenger") >= 0) {
+                String code = request.getParameter("code");
+                String state = request.getParameter("state");
+                if (code != null && state != null && state.equals("1")) {
+
+                    //通过Code获取openid来进行授权
+                    ApplicationContext app = WebApplicationContextUtils.getWebApplicationContext(req.getServletContext());
+                    IWeixinUserService userService = (IWeixinUserService) app.getBean("weixinUserService");
+                    String openid = userService.queryOpenidByCode(code);
+                    if (openid != null) {
+                        req.getSession().setAttribute("openid", openid);
+                    }
+                    //
+                    chain.doFilter(request, response);
+                } else {
+                    String path = req.getRequestURL().toString();
+                    String query = req.getQueryString();
+                    if (query != null) {
+                        path = path + "?" + query;
+                    }
+                    String uri = WeixinUtil.AUTH_URL;
+                    uri = uri.replace("APPID", WeixinUtil.APPID).replace("REDIRECT_URI", URLEncoder.encode(path, "UTF-8"))
+                        .replace("SCOPE", "snsapi_base").replace("STATE", "1");
+                    res.sendRedirect(uri);
+                    return;
+                }
+            }
+        }*/
+        chain.doFilter(request, response);
+
+    }
+
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+
+    }
+
+}

@@ -1,0 +1,142 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.wechat.service.impl;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.StdDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.wechat.service.IWeixinBloodPressureService;
+
+/**
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class WeixinBloodPressureServiceImpl implements IWeixinBloodPressureService {
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private UserAppDao userAppDao;
+	
+	private NumberFormat nFormat =DecimalFormat.getInstance();
+
+
+	@Override
+	public StdDTO getGraph(String open_id, int days) {
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		Map<String, Object> userMap = userAppDao.getUserByOpenId(open_id);
+		long user_id = (long) userMap.get("user_id");
+		List<Map<String, Object>> list = bloodPressureDao.queryRecent(user_id, days);
+		retMap.put("datalist", list);
+		int high = 0;
+		int low = 0;
+		int normal = 0;
+		nFormat.setMaximumFractionDigits(0);
+		for (Map<String, Object> map : list) {
+			int highPressure = (int) map.get("HighPressure");
+			int lowPressure = (int) map.get("LowPressure");
+			if (highPressure > Constant.HIGH_PRESSURE_HIGH || lowPressure > Constant.LOW_PRESSURE_HIGH) {
+				high++;
+			} else if (lowPressure < Constant.LOW_PRESSURE_LOW || highPressure < Constant.HIGH_PRESSURE_LOW) {
+				low++;
+			} else {
+				normal++;
+			}
+			map.put("HighPressure",nFormat.format(map.get("HighPressure")));
+			map.put("LowPressure",nFormat.format(map.get("LowPressure")));
+			map.put("PulseRate",nFormat.format(map.get("PulseRate")));
+		}
+		retMap.put("high", high);
+		retMap.put("low", low);
+		retMap.put("normal", normal);
+		return StdDTO.setSuccess(retMap);
+	}
+
+
+	@Override
+	public StdDTO getPage(String open_id,String year_month, int pageno, int pagesize) {
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		Map<String, Object> userMap = userAppDao.getUserByOpenId(open_id);
+		long user_id = (long) userMap.get("user_id");
+		List<Map<String, Object>> dataList;
+		if (year_month!=null) {
+			dataList = bloodPressureDao.pageQuery(user_id, pageno, pagesize);
+		}else{
+			dataList = bloodPressureDao.queryByMonth(user_id, year_month, pageno, pagesize);
+		}
+		int pagecount = bloodPressureDao.pageNumber(user_id + "", pagesize);
+		nFormat.setMaximumFractionDigits(0);
+		Object data = dataList.stream()
+				.collect(Collectors.groupingBy(m -> DateUtil.dateFormat((Date) m.get("datetime"), "yyyy-MM")))
+				.entrySet().stream().map(s -> new HashMap<String, Object>() {
+					{
+						put("yearmonth", s.getKey());
+						s.getValue().forEach(ss -> {
+							ss.put("period",periodDefine(Integer.parseInt(DateUtil.dateFormat((Date) ss.get("datetime"), "HH"))));
+							ss.put("datetime", DateUtil.dateFormat((Date) ss.get("datetime"), "yyyy-MM-dd HH:mm"));
+							ss.put("HighPressure",nFormat.format(ss.get("HighPressure")));
+							ss.put("LowPressure",nFormat.format(ss.get("LowPressure")));
+							ss.put("PulseRate",nFormat.format(ss.get("PulseRate")));
+							ss.remove("equipment_use_order_id");
+						});
+						put("datalist", s.getValue());
+					}
+				}).sorted((s1, s2) -> {
+					return String.valueOf(s2.get("yearmonth")).compareTo(String.valueOf(s1.get("yearmonth")));
+				}).collect(Collectors.toList());
+		retMap.put("monthlist", data);
+		retMap.put("pageno", pageno);
+		retMap.put("pagecount", pagecount);
+		retMap.put("pagesize", pagesize);
+		return StdDTO.setSuccess(retMap);
+	}
+
+
+	
+
+
+	@Override
+	public StdDTO getMonths(String open_id) {
+		Map<String, Object> retMap = new HashMap<String, Object>();
+		Map<String, Object> userMap = userAppDao.getUserByOpenId(open_id);
+		long user_id = (long) userMap.get("user_id");
+		retMap.put("list", bloodPressureDao.queryMonth(user_id));
+		return StdDTO.setSuccess(retMap);
+	}
+
+	
+	
+	/**
+	 * 
+	 * @Title: periodDefine @Description: 根据查询的时间 判断早中晚时间段，-1上午，0下午，1晚上 @param
+	 *         hour @return int 返回类型 @throws
+	 */
+	private int periodDefine(int hour) {
+		int period = 0;
+		if (hour < Constant.MORNING_END && hour >= 0) {
+			period = -1;
+		} else if (hour < Constant.NIGHT_BEGIN) {
+			period = 0;
+		} else {
+			period = 1;
+		}
+		return period;
+	}
+}

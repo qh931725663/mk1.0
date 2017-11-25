@@ -1,0 +1,399 @@
+package com.haaa.cloudmedical.platform.RemindManage.controller;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.app.util.CommonUserService;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.entity.DoctorRemind;
+import com.haaa.cloudmedical.entity.MeasurementRemind;
+import com.haaa.cloudmedical.entity.MedicationRemind;
+import com.haaa.cloudmedical.entity.RemindSend;
+import com.haaa.cloudmedical.platform.RemindManage.service.RemindManageService;
+
+@Controller
+@RequestMapping("/remind")
+public class RemindManageController {
+
+	@Autowired
+	private RemindManageService service;
+	
+	@Autowired
+	private CommonUserService common;
+
+	
+	/**
+	 * 获取药品列表
+	 * @param helpname
+	 * @return
+	 */
+	@RequestMapping("/getMedicalList.action")
+	@ResponseBody
+	public Object getMedicalList(String helpname) {
+		List<Map<String, Object>> dto = service.getMedicalList(helpname.toUpperCase());
+		return dto;
+	}
+	
+	/**
+	 * 获取所有的提醒
+	 * @param helpname
+	 * @return
+	 */
+	@RequestMapping("/getRemind.action")
+	@ResponseBody
+	public Object getRemind(){
+		ResponseDTO dto = null;
+		Map<String,Object> user = common.getUserMap();
+		if(user!=null){
+			String user_id = user.get("user_id").toString();
+			dto = service.getRemind(user_id);
+		}
+		return dto;
+	}
+
+	/**
+	 * 平台端获取测量提醒详情
+	 * @return
+	 */
+	@RequestMapping("/getMeasurementRemind.action")
+	@ResponseBody
+	public Object getMeasurementRemind() {
+		ResponseDTO dto = null;
+		Map<String,Object> user = common.getUserMap();
+		if(user!=null){
+			String user_id = user.get("user_id").toString();
+			dto = service.getRemind(user_id, Constant.remind_type_measurement);
+		}
+		return dto;
+	}
+
+	/**
+	 * 获取用药提醒详情
+	 * @return
+	 */
+	@RequestMapping("/getMedicationRemind.action")
+	@ResponseBody
+	public Object getMedicationRemind(String user_id) {
+		ResponseDTO dto = service.getRemind(user_id, Constant.remind_type_medication);
+		return dto;
+	}
+
+	/**
+	 * 获取就诊提醒详情
+	 * @return
+	 */
+	@RequestMapping("/getDoctorRemind.action")
+	@ResponseBody
+	public Object getDoctorRemind(String user_id) {
+		ResponseDTO dto = service.getRemind(user_id, Constant.remind_type_doctor);
+		System.out.println(dto);
+		return dto;
+	}
+
+	/**
+	 * 增加测量提醒
+	 * @return
+	 */
+	@RequestMapping("/addMeasurementRemind.action")
+	@ResponseBody
+	public Object addMeasurementRemind(MeasurementRemind remind) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		remind.setCreate_date(date);
+		if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_bloodpressure))
+			remind.setMeasurement_remind_content(Constant.measurement_message_bloodpressure);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_bloodsugar))
+			remind.setMeasurement_remind_content(Constant.measurement_message_bloodsugar);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_heartrate))
+			remind.setMeasurement_remind_content(Constant.measurement_message_heartrate);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_oxygen))
+			remind.setMeasurement_remind_content(Constant.measurement_message_oxygen);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_temperature))
+			remind.setMeasurement_remind_content(Constant.measurement_message_temperature);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_urine))
+			remind.setMeasurement_remind_content(Constant.measurement_message_urine);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_vitalcapacity))
+			remind.setMeasurement_remind_content(Constant.measurement_message_vitalcapacity);
+		else if(remind.getMeasurement_remind_title().equals(Constant.remind_measurement_weight))
+			remind.setMeasurement_remind_content(Constant.measurement_message_weight);		
+		long  order_id = service.addRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_measurement);
+		
+		RemindSend send = new RemindSend();
+		send.setCreate_date(date);
+		send.setRemind_id(String.valueOf(order_id));
+		send.setUser_id(remind.getUser_id());
+		send.setRemind_type(Constant.remind_type_measurement);
+		send.setRemind_title(remind.getMeasurement_remind_title());
+		send.setRemind_start(remind.getBegin_day());
+		send.setRemind_flag("1");
+		
+		List<String> remind_time = new ArrayList<String>();
+		if(remind.getTime1()!=null&&!"".equals(remind.getTime1()))
+			remind_time.add(remind.getTime1());
+		if(remind.getTime2()!=null&&!"".equals(remind.getTime2()))
+			remind_time.add(remind.getTime2());
+		if(remind.getTime3()!=null&&!"".equals(remind.getTime3()))
+			remind_time.add(remind.getTime3());
+		if(remind.getTime4()!=null&&!"".equals(remind.getTime4()))
+			remind_time.add(remind.getTime4());
+		
+		if(remind.getInterval_day()!=null&&!"".equals(remind.getInterval_day())){
+			send.setRemind_interva(remind.getInterval_day());
+			send.setRemind_unit("2");
+		}else{
+			List<String> remind_date = new ArrayList<String>();
+			if(remind.getMonday()!=null&&!"".equals(remind.getMonday()))
+				remind_date.add("1");
+			if(remind.getTuesday()!=null&&!"".equals(remind.getTuesday()))
+				remind_date.add("2");
+			if(remind.getWednesday()!=null&&!"".equals(remind.getWednesday()))
+				remind_date.add("3");
+			if(remind.getThursday()!=null&&!"".equals(remind.getThursday()))
+				remind_date.add("4");
+			if(remind.getFriday()!=null&&!"".equals(remind.getFriday()))
+				remind_date.add("5");
+			if(remind.getSaturday()!=null&&!"".equals(remind.getSaturday()))
+				remind_date.add("6");
+			if(remind.getSunday()!=null&&!"".equals(remind.getSunday()))
+				remind_date.add("7");
+			send.setRemind_date_repeat(StringUtils.join(remind_date.toArray(), ","));
+			send.setRemind_unit("1");
+		}
+		send.setTime(remind_time.toArray());
+		service.addRemindSend(send);
+		return order_id;
+	}
+
+	/**
+	 * 增加用药提醒
+	 * @return
+	 */
+	@RequestMapping("/addMedicationRemind.action")
+	@ResponseBody
+	public Object addMedicationRemind(MedicationRemind remind) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		remind.setCreate_date(date);
+		long order_id = service.addRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_medication);
+		
+		RemindSend send = new RemindSend();
+		send.setCreate_date(date);
+		send.setRemind_id(String.valueOf(order_id));
+		send.setUser_id(remind.getUser_id());
+		send.setRemind_type(Constant.remind_type_medication);
+		send.setRemind_title(Constant.remind_type_medication);
+		send.setRemind_date_repeat("1,2,3,4,5,6,7");
+		send.setRemind_flag("1");
+		send.setRemind_unit("1");
+		List<String> remind_time = new ArrayList<String>();
+		if(remind.getMedication_remind_time_one()!=null&&!"".equals(remind.getMedication_remind_time_one()))
+			remind_time.add(remind.getMedication_remind_time_one().toString());
+		if(remind.getMedication_remind_time_two()!=null&&!"".equals(remind.getMedication_remind_time_two()))
+			remind_time.add(remind.getMedication_remind_time_two().toString());
+		if(remind.getMedication_remind_time_three()!=null&&!"".equals(remind.getMedication_remind_time_three()))
+			remind_time.add(remind.getMedication_remind_time_three().toString());
+		if(remind.getMedication_remind_time_four()!=null&&!"".equals(remind.getMedication_remind_time_four()))
+			remind_time.add(remind.getMedication_remind_time_four().toString());
+		send.setTime(remind_time.toArray());
+		service.addRemindSend(send);
+		return order_id;
+	}
+
+	/**
+	 * 增加就诊提醒
+	 * @return
+	 */
+	@RequestMapping("/addDoctorRemind.action")
+	@ResponseBody
+	public Object addDoctorRemind(DoctorRemind remind) {
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd HH:mm:ss");
+		remind.setCreate_date(date);
+		long order_id = service.addRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_doctor);
+		RemindSend send = new RemindSend();
+		send.setCreate_date(date);
+		send.setRemind_id(String.valueOf(order_id));
+		send.setUser_id(remind.getPatient_id());
+		send.setRemind_type(Constant.remind_type_doctor);
+		send.setRemind_title(Constant.remind_type_doctor);
+		send.setRemind_flag("1");
+		send.setRemind_unit("3");
+		send.setRemind_date_visit(remind.getDoctor_remind_date());
+		send.setRemind_time(remind.getDoctor_remind_time());
+		send.setTime(new Object[]{remind.getDoctor_remind_time()});
+		service.addRemindSend(send);
+		return order_id;
+	}
+	
+	/**
+	 * 删除测量提醒功能
+	 * @return
+	 */
+	@RequestMapping("/deleteMeasurementRemind.action")
+	@ResponseBody
+	public Object deleteMeasurementRemind(String user_id,String order_id){
+		boolean flag = service.deleteRemind(order_id, Constant.remind_type_measurement);
+		service.deleteRemindSend(user_id, order_id);
+		return flag;
+	}
+	
+	/**
+	 * 删除用药提醒功能
+	 * @return
+	 */
+	@RequestMapping("/deleteMedicationRemind.action")
+	@ResponseBody
+	public Object deleteMedicationRemind(String user_id,String order_id){
+		boolean flag = service.deleteRemind(order_id, Constant.remind_type_medication);
+		service.deleteRemindSend(user_id, order_id);
+		return flag;
+	}
+	
+	/**
+	 * 删除就诊提醒功能
+	 * @return
+	 */
+	@RequestMapping("/deleteDoctorRemind.action")
+	@ResponseBody
+	public Object deleteDoctorRemind(String user_id,String order_id){
+		boolean flag = service.deleteRemind(order_id, Constant.remind_type_doctor);
+		service.deleteRemindSend(user_id, order_id);
+		return flag;
+	}
+	
+	/**
+	 * 修改就诊提醒功能
+	 * @return
+	 */
+	@RequestMapping("/updateDoctorRemind.action")
+	@ResponseBody
+	public Object updateDoctorRemind(DoctorRemind remind){
+		boolean flag = service.updateRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_doctor);
+		
+		RemindSend send = new RemindSend();
+		send.setCreate_date(DateUtil.DateFormat(LocalDate.now(),"yyyy-MM-dd"));
+		send.setRemind_id(remind.getOrder_id());
+		send.setUser_id(remind.getPatient_id());
+		send.setRemind_type(Constant.remind_type_doctor);
+		send.setRemind_title(Constant.remind_type_doctor);
+		send.setRemind_flag("1");
+		send.setRemind_unit("3");
+		send.setRemind_date_visit(remind.getDoctor_remind_date());
+		send.setRemind_time(remind.getDoctor_remind_time());
+		send.setTime(new Object[]{remind.getDoctor_remind_time()});
+		
+		service.deleteRemindSend(remind.getUpdate_date(), remind.getOrder_id());
+		service.addRemindSend(send);
+		return flag;
+	}
+	
+	/**
+	 * 修改测量提醒功能
+	 * @return
+	 */
+	@RequestMapping("/updateMeasurementRemind.action")
+	@ResponseBody
+	public Object updateMeasurementRemind(MeasurementRemind remind){
+		boolean flag = service.updateRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_measurement);
+		RemindSend send = new RemindSend();
+		send.setCreate_date(DateUtil.DateFormat(LocalDate.now(), "yyyy-MM-dd"));
+		send.setRemind_id(remind.getOrder_id());
+		send.setUser_id(remind.getUser_id());
+		send.setRemind_type(Constant.remind_type_measurement);
+		send.setRemind_title(remind.getMeasurement_remind_title());
+		send.setRemind_start(remind.getBegin_day());
+		send.setRemind_flag("1");
+		
+		List<String> remind_time = new ArrayList<String>();
+		if(remind.getTime1()!=null&&!"".equals(remind.getTime1()))
+			remind_time.add(remind.getTime1());
+		if(remind.getTime2()!=null&&!"".equals(remind.getTime2()))
+			remind_time.add(remind.getTime2());
+		if(remind.getTime3()!=null&&!"".equals(remind.getTime3()))
+			remind_time.add(remind.getTime3());
+		if(remind.getTime4()!=null&&!"".equals(remind.getTime4()))
+			remind_time.add(remind.getTime4());
+		
+		if(remind.getInterval_day()!=null&&!"".equals(remind.getInterval_day())){
+			send.setRemind_interva(remind.getInterval_day());
+			send.setRemind_unit("2");
+		}else{
+			List<String> remind_date = new ArrayList<String>();
+			if(remind.getMonday()!=null&&!"".equals(remind.getMonday()))
+				remind_date.add("1");
+			if(remind.getTuesday()!=null&&!"".equals(remind.getTuesday()))
+				remind_date.add("2");
+			if(remind.getWednesday()!=null&&!"".equals(remind.getWednesday()))
+				remind_date.add("3");
+			if(remind.getThursday()!=null&&!"".equals(remind.getThursday()))
+				remind_date.add("4");
+			if(remind.getFriday()!=null&&!"".equals(remind.getFriday()))
+				remind_date.add("5");
+			if(remind.getSaturday()!=null&&!"".equals(remind.getSaturday()))
+				remind_date.add("6");
+			if(remind.getSunday()!=null&&!"".equals(remind.getSunday()))
+				remind_date.add("7");
+			send.setRemind_date_repeat(StringUtils.join(remind_date.toArray(), ","));
+			send.setRemind_unit("1");
+		}
+		send.setTime(remind_time.toArray());
+		service.deleteRemindSend(send.getUser_id(), send.getRemind_id());
+		service.addRemindSend(send);
+		return flag;
+	}
+	
+	/**
+	 * 修改用药提醒功能
+	 * @return
+	 */
+	@RequestMapping("/updateMedicationRemind.action")
+	@ResponseBody
+	public Object updateMedicationRemind(MedicationRemind remind){
+		boolean flag = service.updateRemind(BeanUtil.toMapFromObject(remind), Constant.remind_type_medication);
+		RemindSend send = new RemindSend();
+		send.setCreate_date(DateUtil.DateFormat(LocalDate.now(), "yyyy-MM-dd"));
+		send.setRemind_id(remind.getOrder_id());
+		send.setUser_id(remind.getUser_id());
+		send.setRemind_type(Constant.remind_type_medication);
+		send.setRemind_title(Constant.remind_type_medication);
+		send.setRemind_date_repeat("1,2,3,4,5,6,7");
+		send.setRemind_flag("1");
+		send.setRemind_unit("1");
+		List<String> remind_time = new ArrayList<String>();
+		if(remind.getMedication_remind_time_one()!=null&&!"".equals(remind.getMedication_remind_time_one()))
+			remind_time.add(remind.getMedication_remind_time_one().toString());
+		if(remind.getMedication_remind_time_two()!=null&&!"".equals(remind.getMedication_remind_time_two()))
+			remind_time.add(remind.getMedication_remind_time_two().toString());
+		if(remind.getMedication_remind_time_three()!=null&&!"".equals(remind.getMedication_remind_time_three()))
+			remind_time.add(remind.getMedication_remind_time_three().toString());
+		if(remind.getMedication_remind_time_four()!=null&&!"".equals(remind.getMedication_remind_time_four()))
+			remind_time.add(remind.getMedication_remind_time_four().toString());
+		send.setTime(remind_time.toArray());
+		service.deleteRemindSend(remind.getUser_id(), remind.getOrder_id());
+		service.addRemindSend(send);
+		return flag;
+	}
+	
+	@Scheduled(cron="0 0 0/1 * * ?")
+	@RequestMapping("/pushMessage.action")
+	public void pushMessage(){
+		//service.pushMessage();
+	    service.pushToUser();
+	}
+	
+	@RequestMapping("/pushMessagetest.action")
+	public void pushMessageTest(){
+        //service.pushMessage();
+        service.pushToUser();
+    }
+}

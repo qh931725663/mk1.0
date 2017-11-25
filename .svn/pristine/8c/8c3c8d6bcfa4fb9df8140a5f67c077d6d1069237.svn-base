@@ -1,0 +1,46 @@
+package com.haaa.cloudmedical.platform.survey.controller;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.platform.survey.service.MedicalSurveyService;
+
+@RestController
+@RequestMapping("/HealthSurvey")
+public class MedicalSurveyController {
+
+	@Resource
+	private MedicalSurveyService service;
+	
+	private Logger logger = Logger.getLogger(MedicalSurveyController.class);
+
+	@RequestMapping("/getPersonalInfo")
+	public InfoJson getPersonalInfo(String user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson = service.getPersonalInfo(user_id);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping("/saveHealthSurvey")
+	public InfoJson saveHealthSurvey(@RequestParam Map<String, Object> data) {
+		InfoJson infoJson = new InfoJson();
+        try {
+			infoJson = service.saveHealthSurvey(data);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

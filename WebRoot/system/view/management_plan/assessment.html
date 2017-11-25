@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>风险评估</title>
+	<script src="../wechat/common/js/flexible_css.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/flexible.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="css/highBloodPressure.css"/>
+</head>
+<body>
+	<input type="hidden" class="haha" value=""/>
+	<form class="main" id="assessForm">
+		<ul class="basicInfo" style="display: block;">
+			<li>
+				<p><span class="must">*</span>1、年龄是否符合：男性＞55岁、女性＞65岁</p>
+				<p class="choose">
+					<input class="magic rd" name="090101" value="0" type="radio" id="age1">
+					<label class="lab" for="age1">否</label>
+					<input class="magic rd" name="090101" value="1" type="radio" id="age2">
+					<label class="lab" for="age2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>2、是否吸烟</p>
+				<p class="choose">
+					<input class="magic rd" name="090201" value="0" type="radio" id="smoking1">
+					<label class="lab" for="smoking1">否</label>
+					<input class="magic rd" name="090201" value="1" type="radio" id="smoking2">
+					<label class="lab" for="smoking2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>3、血脂是否异常</p>
+				<p class="choose">
+					<input class="magic rd" name="090301" value="0" type="radio" id="xuezhi1">
+					<label class="lab" for="xuezhi1">否</label>
+					<input class="magic rd" name="090301" value="1" type="radio" id="xuezhi2">
+					<label class="lab" for="xuezhi2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>4、是否存在早发心血管疾病家族史</p>
+				<p class="choose">
+					<input class="magic rd" name="090401" value="0" type="radio" id="xinxue1">
+					<label class="lab" for="xinxue1">否</label>
+					<input class="magic rd" name="090401" value="1" type="radio" id="xinxue2">
+					<label class="lab" for="xinxue2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>5、是否属于肥胖体制<span style="font-size: 0.3rem;">（体质指数≥28 kg/m2或腹型肥胖：腰围男≥90 cm，女≥85 cm）</p>
+				<p class="choose">
+					<input class="magic rd" name="090501" value="0" type="radio" id="feipang1">
+					<label class="lab" for="feipang1">否</label>
+					<input class="magic rd" name="090501" value="1" type="radio" id="feipang2">
+					<label class="lab" for="feipang2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>6、是否存在靶器官损害</p>
+				<p class="choose">
+					<input class="magic rd" name="090601" value="0" type="radio" id="qiguan1">
+					<label class="lab" for="qiguan1">否</label>
+					<input class="magic rd" name="090601" value="1" type="radio" id="qiguan2">
+					<label class="lab" for="qiguan2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>7、是否合并心脏病、脑血管病、肾脏病、周围血管病、视网膜病变</p>
+				<p class="choose">
+					<input class="magic rd" name="090701" value="0" type="radio" id="hebing1">
+					<label class="lab" for="hebing1">否</label>
+					<input class="magic rd" name="090701" value="1" type="radio" id="hebing2">
+					<label class="lab" for="hebing2">是</label>
+				</p>
+			</li>
+			<li>
+				<p><span class="must">*</span>8、是否合并糖尿病</p>
+				<p class="choose">
+					<input class="magic rd" name="090801" value="0" type="radio" id="hetang1">
+					<label class="lab" for="hetang1">否</label>
+					<input class="magic rd" name="090801" value="1" type="radio" id="hetang2">
+					<label class="lab" for="hetang2">是</label>
+				</p>
+			</li>
+			<li>
+				<div class="info_left fengx">危险因素</div>
+				<div class="info_rgt fengx_rgt"><input type="number" name="090901" class="number" style="background: #fff;" placeholder="点击输入"/> <span class="mond">个</span></div>
+			</li>
+			<li>
+				<p><span class="must">*</span>疾病风险评估</p>
+				<p class="choose">
+					<input class="magic rd" name="risk" value="2500001" type="radio" id="pinggu1">
+					<label class="lab" for="pinggu1">低危</label>
+					<input class="magic rd" name="risk" value="2500002" type="radio" id="pinggu2">
+					<label class="lab" for="pinggu2">中危</label>
+					<input class="magic rd" name="risk" value="2500003" type="radio" id="pinggu3">
+					<label class="lab" for="pinggu3">高危</label>
+					<input class="magic rd" name="risk" value="2500004" type="radio" id="pinggu4">
+					<label class="lab" for="pinggu4">很高危</label>
+				</p>
+			</li>
+			<li>
+				<span class="goback">返回</span><span class="tijiao">保存</span>
+			</li>
+		</ul>
+	</form>
+	<script src="../wechat/common/js/jquery-1.11.3.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../wechat/common/js/layer-mobile/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/assessment.js?v=59" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

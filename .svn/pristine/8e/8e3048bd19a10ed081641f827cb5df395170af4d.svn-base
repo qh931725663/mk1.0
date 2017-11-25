@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+    <style>
+        *{font-family: "Microsoft Yahei";}
+        div{margin:5px 0;}
+        h2{font-weight:bold;font-size:25px;text-align: center;margin: 10px 0; }
+        h3{font-weight: bold;margin:8px 0;font-size: 18px; }
+        p{margin:3px 0;font-size: 16px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="company" style="padding: 0 20px;">
+        <h2 >孕期能做放射性检查吗？</h2>
+        <span style="margin-left: 75px;margin-right: 8px;color:#666666;">2017-04-25 17:40</span><span>作者：育儿网</span>
+        <p style="margin-top:5px;">
+            <img src="../../images/img/health-exposition/heal_01.png" style="width: 95%;margin: 5px 2px;"/>
+        </p>
+        <p style="margin-bottom: 10px;color:#666666;">
+            放射线一般包括X、α、β、γ射线以及电子、中子等粒子的放射线。放射线可使妊娠4～8周的胚胎细胞基因突变或染色体发生异常，造成胚胎的死亡或畸形，新生儿造血系统障碍和神经系统缺陷。所以怀孕期间，尤其是孕早期，尽量不要做x线检查，不得不做的，最好不直接照下腹部，并在下腹部作保护        </p>
+        <p style="color:#666666;">
+            如果孕妇在不知道自己怀孕的时候，作了x射线或放射性同位素的治疗和检查，是否继续妊娠或终止妊娠应征询放射治疗医师的意见，医师会根据剂量的大小、孕妇的年龄、切盼程度，考虑是否中止妊娠。一般说，孕妇必须做的胸透应安排在孕28周后进行，骨盆X射线测量或拍摄胸片，均须在妊娠末期进行。如果是从事放射工作的孕妇，怀孕期间应暂时离开放射环境，改做其他工作。如果妊娠早期接受腹部放射线照射，应用人工流产终止妊娠。        </p>
+        <p style="margin:10px 0;color:#666666;">
+            B超虽对胎儿影响较小，也不宜多作。B超是确诊妊娠最可靠的方法，如果妊娠3个月内需做B超检查，做B超不宜超过10分钟。妊娠3个月后，B超对胎儿无影。        <p>
+    </div>
+</div>
+</body>
+</html>

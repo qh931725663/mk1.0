@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>公司介绍</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+    <style>
+        h2{
+            margin:10px 0;
+            font-size: 16px;
+        }
+        p{
+            margin:3px 0;
+            font-size: 14px;
+            color:#666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="company" style="padding: 0 20px;">
+        <h2 style="font-weight: 600;text-align: center;">公司介绍</h2>
+        <p style="text-indent: 2em;">美康惠健康管理（浙江）有限公司与中国人民健康保险股份有限公司和美国贝勒盛威医疗集团及相关大型医疗集团紧密型合作，全面整合国内保险和美国医疗服务，开创保险产品与国际医疗服务相结合的全方位健康管理服务。</p>
+        <p style="text-indent: 2em;">利用美康惠在国内首创、国际领先的大数据云平台及7X24客户服务中心，“人保美康惠”服务模式是由美国贝勒盛威医疗集团提供在华驻场医生基础医疗服务，中国人保健康集团承保，对接美国境内96%的医院和92%的医生资源，为相应健康产品在美提供医疗健康服务而成。美康惠成功的将美国的医疗服务模式与体系延伸到中国，在中国首创基于整合式医疗云平台支持的以患者为中心居家健康管家服务，满足中国高净值人群的家族健康管理需求。</p>
+    </div>
+</div>
+</body>
+</html>

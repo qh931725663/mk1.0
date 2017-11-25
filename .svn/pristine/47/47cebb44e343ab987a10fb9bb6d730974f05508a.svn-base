@@ -1,0 +1,840 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+	<script type="text/javascript" src="../lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../lib/respond.min.js"></script>
+	<![endif]-->
+<link rel="stylesheet" type="text/css"
+	href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/Hui-iconfont/iconfont.css?v=1" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css"
+	href="../lib/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"
+	href="../static/h-admin/css/main.css">
+<link rel="stylesheet" type="text/css"
+	href="../lib/pagination/css/pagination.css">
+<link rel="stylesheet" type="text/css"
+	href="../static/view-image/css/lightbox.css">
+<link rel="stylesheet" type="text/css" href="./css/viewer.min.css">
+<!--[if IE 6]>
+	<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+<title>档案详情</title>
+<style type="text/css">
+.f-l span {
+	margin-left: 15px;
+}
+
+.check_img img {
+	margin-left: 15px;
+}
+
+.show_data {
+	span-size: 14px;
+	color: #008000;
+}
+
+.unit-m {
+	margin-left: 6px;
+}
+
+.lable_style {
+	display: inline-block;
+	width: 100px;
+	text-align: left;
+	font-weight: bold;
+}
+
+.lable_style_2 {
+	display: inline-block;
+	width: 100px;
+	text-align: left;
+	width: 220px;
+	font-weight: bold;
+}
+
+.lable-xu {
+	width: 360px;
+}
+
+.li-base {
+	width: 300px;
+}
+
+.li-xu {
+	width: 570px;
+}
+
+.check-box input {
+	display: block;
+	width: 140%;
+	height: 140%;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	opacity: 0;
+	background: rgb(255, 255, 255);
+}
+
+.li-rel {
+	position: relative;
+}
+
+.li-rel .check-box {
+	position: absolute;
+	left: 240px;
+}
+.table-striped tbody>tr:nth-child(even)>td{
+	background-color:#fff;
+}
+.table-striped tbody>tr:nth-child(even)>td:hover{
+	background-color:#b6fab2;
+}
+</style>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont"></i>健康档案 <span class="c-gray en">&gt;</span>详情
+		<a class="btn btn-success radius r"
+			style="line-height:1.6em;margin-top:3px"
+			href="javascript:location.replace(location.href);" title="刷新"><i
+			class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+	<div class="page-container">
+		<form class="form form-horizontal" id="form-article-add">
+			<div id="tab-system" class="HuiTab">
+				<div class="tabBar cl">
+					<span>住院报告</span> <span>门诊报告</span> <span>医保记录</span> <span>体检报告</span>
+					<span>健康评估</span><span class="health-survey" id="health-survey">健康调查</span><span
+						class="datastart-survey" id="health_datastart_tab">八件套数据详情</span>
+				</div>
+				<!-- 住院报告 -->
+				<div class="tabCon" id="hospital_report">
+					<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+						<!-- 住院报告 -->
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="hospital">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</div>
+					<div class="cl pd-5 bg-1 bk-gray mt-20"
+						style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">住院报告</span>
+						<div style="float:right;">
+							<span
+								style="display:inline-block;width:100px;margin-top:2px;color:#fff">历史住院报告：</span>
+							<select class="radius" style="height:30px;width:150px;">
+								<option value="">全部</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>住院报告基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">姓名：</label><span data-name="user_name"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">身份证号：</label><span data-name="user_card"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">住院日期：</label><span
+								data-name="hospital_report_time"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">住院医院：</label><span data-name="hosp_name"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">主诊医生：</label><span data-name="report_doctor"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">住院天数：</label><span
+								data-name="hospital_report_days"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">住院科室：</label><span
+								data-name="department_name"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:95%"><label class="lable_style">主诉：</label><span
+								data-name="hospital_report_disease"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:95%"><label class="lable_style">诊断：</label><span
+								data-name="hospital_report_result"></span></li>
+						</ul>
+					</div>
+					<div class="blood-data">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>住院报告图片
+						</div>
+						<div class="check_img"></div>
+					</div>
+				</div>
+				<!-- 门诊报告 -->
+				<div class="tabCon" id="clinic_report">
+					<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="clinic">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</div>
+					<div class="cl pd-5 bg-1 bk-gray mt-20"
+						style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">门诊报告</span>
+						<div style="float:right;">
+							<span
+								style="display:inline-block;width:100px;margin-top:2px;color:#fff">历史门诊报告：</span>
+							<select class="radius" style="height:30px;width:150px;">
+								<option value="">全部</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>门诊报告基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">姓名：</label><span data-name="user_name"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">就诊日期：</label><span
+								data-name="clinic_report_time"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">就诊医院：</label><span data-name="hosp_name"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">主诊医生：</label><span data-name="report_doctor"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">就诊科室：</label><span
+								data-name="department_name"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:100%"><label
+								class="lable_style">主诉：</label><span
+								data-name="clinic_report_disease"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:100%"><label
+								class="lable_style">诊断：</label><span
+								data-name="clinic_report_result"></span></li>
+						</ul>
+					</div>
+					<div class="blood-data">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>门诊报告图片
+						</div>
+						<div class="check_img"></div>
+					</div>
+				</div>
+				<!-- 医保记录 -->
+				<div class="tabCon" id="insurance_report">
+					<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="insurance">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</div>
+					<div class="cl pd-5 bg-1 bk-gray mt-20"
+						style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">医保记录</span>
+						<div style="float:right;">
+							<span
+								style="display:inline-block;width:100px;margin-top:2px;color:#fff">历史医保记录：</span>
+							<select class="radius" style="height:30px;width:150px;">
+								<option value="">全部</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>医保记录基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">姓名：</label><span data-name="user_name"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">身份证号码：</label><span data-name="user_card"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">医保卡号：</label><span
+								data-name="user_medicare_card"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">就诊机构：</label><span data-name="hosp_name"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">医保类型：</label><span
+								data-name="medical_insurance_type"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">报销日期：</label><span
+								data-name="medical_insurance_time"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">费用总额：</label><span
+								data-name="medical_insurance_total"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">报销金额：</label><span
+								data-name="medical_insurance_reimbursement_amount"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:100%"><label
+								class="lable_style">补助金额：</label><span
+								data-name="medical_insurance_subsidy_amount"></span></li>
+						</ul>
+					</div>
+					<div class="blood-data">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>医保记录图片
+						</div>
+						<div class="check_img"></div>
+					</div>
+				</div>
+				<!-- 一体机体检报告 -->
+				<div class="tabCon" id="check_report">
+					<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="check">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</div>
+					<div class="cl pd-5 bg-1 bk-gray mt-20"
+						style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">一体机体检报告</span>
+						<div style="float:right;">
+							<span
+								style="display:inline-block;width:100px;margin-top:2px;color:#fff">历史体检报告：</span>
+							<select class="radius machine" style="height:30px;width:150px;">
+								<option value="">全部</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="collection-baseinfo machine">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">姓名：</label><span data-name="UserName"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">体检日期：</label><span data-name="date"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">体检机构：</label><span data-name="Hospital"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">体检编号：</label><span data-name=""></span></li>
+						</ul>
+					</div>
+					<div class="blood-data machine">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>体检报告
+						</div>
+						<div class="showCardiogram" style="margin-top:20px;">
+							<div class="cover" style="height: 360px; ">
+							<table
+								class="table table-border table-bordered table-bg table-hover table-striped"
+								style="width:42%;margin-left:20px;float: left;">
+								<thead>
+									<tr class="text-c">
+										<th colspan="2">类型</th>
+										<th>状态</th>
+									</tr>
+								</thead>
+								<tbody>
+									 <tr class="text-c">
+										<td colspan="2">心率</td>
+										<td><span class="show_data" data-name="HeartRate"></span><span
+											class="unit-m">bpm</span></td>
+									</tr> 
+									<tr class="text-c">
+										<td colspan="2">血氧</td>
+										<td><span class="show_data" data-name="Oxygen-OPulseRate"></span><span
+											class="unit-m"> % / bpm</span></td>
+									</tr>
+									<tr class="text-c">
+										<td colspan="2">血压</td>
+										<td><span class="show_data"
+											data-name="HighPressure-LowPressure"></span><span
+											class="unit-m">mmHg / mmHg </span></td>
+									</tr>
+									<tr class="text-c">
+										<td colspan="2">血糖</td>
+										<td><span class="show_data" data-name="BloodSugar"></span><span
+											class="unit-m">mmol / L</span></td>
+									</tr>
+									<tr class="text-c">
+										<td colspan="2">身高</td>
+										<td><span class="show_data" data-name="user_height"></span><span
+											class="unit-m">cm</span></td>
+									</tr>
+									<tr class="text-c">
+										<td colspan="2">体重</td>
+										<td><span class="show_data" data-name="user_weight"></span><span
+											class="unit-m">kg</span></td>
+									</tr>
+									<tr class="text-c">
+										<td colspan="2">BMI</td>
+										<td><span class="show_data" data-name="BMI-BMIResult"></span><span
+											class="unit-m">指数</span></td>
+									</tr>
+									<tr class="text-c">
+										<td colspan="2">体温</td>
+										<td><span class="show_data" data-name="temperature"></span><span
+											class="unit-m">℃</span></td>
+									</tr>
+									<tr class="text-c">
+										<td rowspan="4">肺功能</td>
+									</tr>
+									<tr class="text-c">
+										<td>FVC</td>
+										<td><span class="show_data" data-name="fvc"></span><span
+											class="unit-m">L</span></td>
+									</tr>
+									<tr class="text-c">
+										<td>PEF</td>
+										<td><span class="show_data" data-name="pef"></span><span
+											class="unit-m">L/s</span></td>
+									</tr>
+									<tr class="text-c">
+										<td>FEV1</td>
+										<td><span class="show_data" data-name="fev1"></span><span
+											class="unit-m">L</span></td>
+									</tr>
+								</tbody>
+							</table>
+							<table
+								class="table table-border table-bordered table-bg table-hover table-striped"
+								style="width:42%;margin-left:20px;float: left;">
+								<thead>
+									<tr class="text-c">
+										<th colspan="2" style="width: 50%;">类型</th>
+										<th>状态</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="text-c">
+										<td rowspan="12">尿常规</td>
+									</tr>
+									<tr class="text-c">
+										<td>PH(酸碱度)</td>
+										<td><span class="show_data" data-name="PH"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>SG(比重)</td>
+										<td><span class="show_data" data-name="SG"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>BLD(潜血)</td>
+										<td><span class="show_data" data-name="BLD"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>KET(酮体)</td>
+										<td><span class="show_data" data-name="KET"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>BIL(胆红素)</td>
+										<td><span class="show_data" data-name="BIL"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>GLU(葡萄糖)</td>
+										<td><span class="show_data" data-name="GLU"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>PRO(蛋白质)</td>
+										<td><span class="show_data" data-name="PRO"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>URO(尿胆原)</td>
+										<td><span class="show_data" data-name="URO"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>LEU(白细胞)</td>
+										<td><span class="show_data" data-name="LEU"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>VC(抗坏血酸)</td>
+										<td><span class="show_data" data-name="VC"></span></td>
+									</tr>
+									<tr class="text-c">
+										<td>NIT(亚硝酸盐)</td>
+										<td><span class="show_data" data-name="NIT"></span></td>
+									</tr>
+								</tbody>
+							</table>
+							</div>
+								
+							<div class="cardiogramPic">
+								
+							</div>
+						</div>
+					</div>
+
+					<div class="cl pd-5 bg-1 bk-gray mt-20"
+						style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">体检报告</span>
+						<div style="float:right;">
+							<span
+								style="display:inline-block;width:100px;margin-top:2px;color:#fff">历史体检报告：</span>
+							<select class="radius check" style="height:30px;width:150px;">
+								<option value="">全部</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="collection-baseinfo check">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>体检报告基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l">
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">姓名：</label><span data-name="user_name"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">体检日期：</label><span data-name="check_time"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">体检机构：</label><span data-name="hosp_name"></span></li>
+							<li class="f-l" style="width:300px;"><label
+								class="lable_style">体检编号：</label><span data-name="report_no"></span></li>
+						</ul>
+					</div>
+					<div class="blood-data check">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>体检报告图片
+						</div>
+						<div class="check_img"></div>
+					</div>
+				</div>
+				<!-- 健康评估 -->
+				<div class="tabCon" id="survey_report">
+					<div style="width:100%;margin-bottom:10px;margin-top:20px;">
+						<span class="ml-10" style="display:inline-block;width:62px;">时间区间</span>
+						<input type="text"
+							onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })"
+							id="datemin" name="datemin" class="input-text Wdate"
+							style="width:172px;">
+						&nbsp;&nbsp;&nbsp;至&nbsp;&nbsp;&nbsp; <input type="text"
+							onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })"
+							id="datemax" name="datemax" class="input-text Wdate"
+							style="width:182px;">
+						<button type="button" class="btn btn-success"
+							style="margin-left:15px;" name="survey">查询</button>
+						&nbsp;&nbsp;&nbsp;
+						<button type="button" class="btn btn-danger">清空</button>
+					</div>
+
+					<div class="cl pd-5 bg-1 bk-gray mt-20"
+						style="height:30px;background:#858383">
+						<span class="l" style="margin-left:10px;margin-top:2px;color:#fff">健康评估</span>
+						<div style="float:right;">
+							<span
+								style="display:inline-block;width:150px;margin-top:2px;color:#fff">历史健康风险评估表：</span>
+							<select class="radius survey" style="height:30px;width:150px;">
+								<!-- <option value="">全部</option> -->
+							</select>
+						</div>
+					</div>
+
+					<!-- 基本信息 -->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>基本信息
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;"
+							id="userMessage">
+							<li class="f-l li-base"><label class="lable_style">姓名：</label>
+								<span data-name="user_name"></span></li>
+							<li class="f-l li-base"><label class="lable_style">身份证号：</label>
+								<span data-name="user_card"></span></li>
+							<li class="f-l li-base"><label class="lable_style">出生日期：</label>
+								<span data-name="user_birthday"></span></li>
+							<li class="f-l li-base"><label class="lable_style">性别：</label>
+								<span data-name="user_sex"></span></li>
+							<li class="f-l li-base"><label class="lable_style">年龄：</label>
+								<span data-name="user_age"></span></li>
+							<li class="f-l li-base"><label class="lable_style">联系电话：</label>
+								<span data-name="user_phone"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base"><label class="lable_style">邮箱：</label>
+								<span data-name="email" class="survey"></span></li>
+							<li class="f-l li-base"><label class="lable_style">邮编：</label>
+								<span data-name="post_code" class="survey"></span></li>
+							<li class="f-l" style="width:500px;"><label
+								class="lable_style">家庭住址：</label> <span data-name="user_address"
+								class="survey"></span></li>
+						</ul>
+					</div>
+					<!-- 一般健康信息-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>一般健康信息
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;"
+							id="userBaseMsg">
+							<li class="f-l li-base"><label class="lable_style">身高（cm）：</label>
+								<span data-name="user_height" class="survey"></span></li>
+							<li class="f-l li-base"><label class="lable_style">体重（kg）：</label>
+								<span data-name="user_weight" class="survey"></span></li>
+							<li class="f-l li-base"><label class="lable_style">腰围（cm）：</label>
+								<span data-name="user_waist" class="survey"></span></li>
+							<li class="f-l li-base"><label class="lable_style">您有几个孩子：</label>
+								<span class="survey_answer" data-name="answer_200"></span></li>
+						</ul>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base"><label class="lable_style">您的最高学历：</label>
+								<span class="survey_answer" data-name="answer_400"></span></li>
+							<li class="f-l li-base" style="width:500px;"><label
+								class="lable_style" style="width:200px;">您今年的预期家庭收入是多少：</label>
+								<span class="survey_answer" data-name="answer_500"></span></li>
+						</ul>
+					</div>
+					<!-- 一般健康信息（续）-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>一般健康信息（续）
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您有吸过香烟或雪茄吗：</label>
+								<span class="survey_answer" data-name="answer_600"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您每天的咖啡饮品量是?（咖啡、苏打水、茶）：</label>
+								<span class="survey_answer" data-name="answer_800"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您多久感到郁闷.紧张或焦虑：</label>
+								<span class="survey_answer" data-name="answer_1400"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您的生活一般令您满意：</label>
+								<span class="survey_answer" data-name="answer_1200"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">驾车时，您读取和/或发送电子邮件或短信的概率是多少：</label>
+								<span class="survey_answer" data-name="answer_1000"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您平均一周喝多少酒精饮料：</label>
+								<span class="survey_answer" data-name="answer_700"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您平均每晚的睡眠时间是7小时吗：</label>
+								<span class="survey_answer" data-name="answer_1100"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">您与家人和朋友的关系好吗：</label>
+								<span class="survey_answer" data-name="answer_1300"></span></li>
+							<li class="f-l li-xu"><label class="lable_style lable-xu">开车时，您使用安全带的频率是：</label>
+								<span class="survey_answer" data-name="answer_900"></span></li>
+						</ul>
+					</div>
+
+					<!-- 预防服务-->
+					<div class="collection-baseinfo" id="healthPrevention">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>预防服务
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base"><label class="lable_style">结肠癌筛查：</label>
+								<span class="survey_answer" data-name="answer_1510"></span></li>
+							<li class="f-l li-base"><label class="lable_style">直肠检查：</label>
+								<span class="survey_answer" data-name="answer_1520"></span></li>
+							<li class="f-l li-base"><label class="lable_style">破伤风射击：</label>
+								<span class="survey_answer" data-name="answer_1540"></span></li>
+							<li class="f-l li-base"><label class="lable_style">牙科检查：</label>
+								<span class="survey_answer" data-name="answer_1570"></span></li>
+							<li class="f-l li-base"><label class="lable_style">流感疫苗：</label>
+								<span class="survey_answer" data-name="answer_1530"></span></li>
+							<li class="f-l li-base"><label class="lable_style">血压测量：</label>
+								<span class="survey_answer" data-name="answer_1550"></span></li>
+							<li class="f-l li-base"><label class="lable_style">胆固醇：</label>
+								<span class="survey_answer" data-name="answer_1560"></span></li>
+						</ul>
+					</div>
+					<!-- 慢性疾病-->
+					<div class="collection-baseinfo">
+						<div class="navbar-collection">
+							<span style="margin-right:6px;">|</span>慢性疾病
+						</div>
+						<ul class="baseinfo-list" class="f-l" style="margin-left:0px;">
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">哮喘：</label> <span class="survey_answer"
+								data-name="answer_101"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">高脂血症：</label> <span class="survey_answer"
+								data-name="answer_113"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">类风湿关节炎：</label> <span
+								class="survey_answer" data-name="answer_124"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">充血性心力衰竭 ：</label> <span
+								class="survey_answer" data-name="answer_107"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">肺动脉高压症（与COPD无关）：</label> <span
+								class="survey_answer" data-name="answer_122"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">癫痫：</label> <span class="survey_answer"
+								data-name="answer_111"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">局限性肠炎：</label> <span class="survey_answer"
+								data-name="answer_123"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">溃疡性结肠炎：</label> <span
+								class="survey_answer" data-name="answer_126"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">慢性肾功能不全：</label> <span
+								class="survey_answer" data-name="answer_104"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">慢性阻塞性肺病伴肺动脉高压症：</label> <span
+								class="survey_answer" data-name="answer_106"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">房颤：</label> <span class="survey_answer"
+								data-name="answer_102"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">糖尿病前期：</label> <span class="survey_answer"
+								data-name="answer_120"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">冠状动脉疾病 ：</label> <span
+								class="survey_answer" data-name="answer_108"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">慢性阻塞性肺病：</label> <span
+								class="survey_answer" data-name="answer_105"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">高血压：</label> <span class="survey_answer"
+								data-name="answer_114"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">代谢综合征：</label> <span class="survey_answer"
+								data-name="answer_116"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">外周动脉疾病：</label> <span
+								class="survey_answer" data-name="answer_119"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">睡眠呼吸暂停征：</label> <span
+								class="survey_answer" data-name="answer_125"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">抑郁症：</label> <span class="survey_answer"
+								data-name="answer_109"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">帕金森氏病：</label> <span class="survey_answer"
+								data-name="answer_118"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">风湿性多肌痛：</label> <span
+								class="survey_answer" data-name="answer_121"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">慢性静脉血栓性疾病：</label> <span
+								class="survey_answer" data-name="answer_103"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">糖尿病：</label> <span class="survey_answer"
+								data-name="answer_110"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">多发性硬化症：</label> <span
+								class="survey_answer" data-name="answer_117"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">甲状腺功能亢进：</label> <span
+								class="survey_answer" data-name="answer_115"></span></li>
+							<li class="f-l li-base li-rel" style="position:relative;"><label
+								class="lable_style_2">人类免疫缺陷病毒感染：</label> <span
+								class="survey_answer" data-name="answer_112"></span></li>
+						</ul>
+					</div>
+				</div>
+				<!-- 健康调查 -->
+				<div class="health-survey"></div>
+				<!--数据采集-->
+				<div class="datastart-report"></div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript"
+		src="../static/view-image/js/lightbox-plus-jquery.min.js"></script>
+	<!--_footer 作为公共模版分离出去-->
+	<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+	<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+	<script type="text/javascript"
+		src="../lib/pagination/js/jquery.pagination.js"></script>
+	<!--/_footer 作为公共模版分离出去-->
+
+	<!--请在下方写此页面业务相关的脚本-->
+	<script type="text/javascript"
+		src="../lib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript"
+		src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+	<script type="text/javascript" src="../lib/layer/js/layer.js"></script>
+	<script type="text/javascript" src="./js/viewer.min.js"></script>
+	<script type="text/javascript" src="js/mkh.common.js"></script>
+	<script type="text/javascript" src="js/health-record-detail.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$.Huitab("#tab-system .tabBar span", "#tab-system .tabCon", "current", "click", "0");
+			//跳转选择
+			initClickSelect();
+			
+			//链接跳转健康调查页面
+			$("#health-survey").click(function(){
+				var id=getUrlParam("id");
+				window.location.href = "health-record-research-detail.html?id=" + id;
+			});
+			//链接跳转数据采集详情
+			$("#health_datastart_tab").click(function(){
+				var id=getUrlParam("id");
+				window.location.href = "health-data-stat.html?id=" + id;
+			});
+		});
+		
+		//初始化跳转选择
+		var initClickSelect = function(){
+			var type = mkh.getUrlParam('type');
+			//
+			if(type){
+				if(type == "hospital"){
+					$('.tabBar').find('span').eq(0).click();
+				}else if(type == "clinic"){
+					$('.tabBar').find('span').eq(1).click();
+				}else if(type == "insurance"){
+					$('.tabBar').find('span').eq(2).click();
+				}else if(type == "check"){
+					$('.tabBar').find('span').eq(3).click();
+				}else if(type == "survey"){
+					$('.tabBar').find('span').eq(4).click();
+				}
+			}
+		};
+	</script>
+</body>
+</html>

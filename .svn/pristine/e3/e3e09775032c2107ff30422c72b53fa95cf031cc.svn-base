@@ -1,0 +1,92 @@
+/**
+ * 
+ */
+package com.haaa.cloudmedical.app.chrondoc.controller;
+
+<<<<<<< .mine
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.chrondoc.service.DiabetesDocAppService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+
+||||||| .r3519
+=======
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.chrondoc.service.DiabetesDocAppService;
+
+>>>>>>> .r3522
+/**
+ * @author Bowen Fan
+ *
+ */
+@RestController
+@RequestMapping("/diabetesDoc-app")
+public class DiabetesDocAppController {
+
+<<<<<<< .mine
+	@Resource
+	private DiabetesDocAppService diabetesDocAppService;
+
+	private Logger logger = Logger.getLogger(getClass());
+	
+	@RequestMapping("/addAnswers.action")
+	public Object addAnswers(@RequestParam MultiValueMap<String, Object> map) {		
+		InfoJson infoJson = new InfoJson();
+		try {
+		Map<String, List<Object>> map2 = map;
+		System.out.println(map2);
+		map2.forEach((k, v) -> {
+			System.out.println("k----->"+k);
+			v.forEach(s -> {
+				System.out.println("v----->"+s);
+			});
+		});
+		infoJson= diabetesDocAppService.addAnswers(map2);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+
+		}
+		return infoJson;
+
+
+	}
+
+||||||| .r3519
+=======
+	@Resource
+	private DiabetesDocAppService diabetesDocAppService;
+
+	@RequestMapping("/addAnswers.action")
+	public Object addAnswers(@RequestParam MultiValueMap<String, Object> map) {
+		Map<String, List<Object>> map2 = map;
+		System.out.println(map2);
+		map2.forEach((k, v) -> {
+			System.out.println("k----->"+k);
+			v.forEach(s -> {
+				System.out.println("v----->"+s);
+			});
+		});
+		return map2;
+
+	}
+
+>>>>>>> .r3522
+}

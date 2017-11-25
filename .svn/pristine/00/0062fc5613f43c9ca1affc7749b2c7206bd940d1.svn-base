@@ -1,0 +1,484 @@
+package com.haaa.cloudmedical.platform.allinone.service;
+
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.aop.ThrowsAdvice;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.IdcardInfoExtractor;
+import com.haaa.cloudmedical.common.util.MD5Util;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.common.util.XMLUtil;
+import com.haaa.cloudmedical.dao.AIODao;
+import com.haaa.cloudmedical.dao.UserAppDao;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.dao.equipment.BloodOxygenDao;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.dao.equipment.EquipmentDao;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.dao.equipment.UrineTestDao;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.BloodPressure;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.LungCapacity;
+import com.haaa.cloudmedical.entity.Patient;
+import com.haaa.cloudmedical.entity.UrineTest;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.user.controller.UserPlatFormController;
+
+/**
+ * 9900一体机，以及一体机数据查询
+ * 
+ * @author Bowen Fan
+ *
+ */
+@Service
+public class AIOService {
+
+	@Resource
+	private UserAppDao userAppDao;
+
+	@Resource
+	private AIODao aioDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	@Resource
+	private EquipmentDao equipmentDao;
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	@Resource
+	private BloodOxygenDao bloodoxygenDao;
+
+	@Resource
+	private UrineTestDao urineTestDao;
+
+	@Resource
+	private UserPlatFormController userPlatFormController;
+
+	private Logger logger = Logger.getLogger(AIOService.class);
+
+	/**
+	 * 
+	 * @throws ParseException
+	 * @Title: login @Description: 9900一体机登录 @param requestXml @return @throws
+	 */
+	public Map<String, Object> login(String requestXml) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		Map<String, Object> userMap = XMLUtil.xml2Map(requestXml);
+		String authType = (String) userMap.get("AuthType");
+		Map<String, Object> userMap2 = null;
+		if (authType.equals("08")) {
+			Map<String, Object> authData = (Map<String, Object>) userMap.get("AuthData");
+			String identityCard = (String) authData.get("ProofNum");
+			userMap2 = userAppDao.selectByIdCard(identityCard);
+			if (userMap2 == null) {
+				autoRegister(authData);
+				userMap2 = userAppDao.selectByIdCard(identityCard);
+			}
+		} else if (authType.equals("07")) {
+			Map<String, Object> authData = (Map<String, Object>) userMap.get("AuthData");
+			String account = (String) authData.get("Account");
+			String pwd = (String) authData.get("Pwd");
+			if (account.length() > 12) {
+				userMap2 = userAppDao.selectByIdCard(account);
+			} else {
+				userMap2 = userAppDao.selectByAccount(account);
+			}
+			pwd = MD5Util.encode(pwd);
+			if (!pwd.equals(userMap2.get("user_pwd"))) {
+				userMap2 = null;
+			}
+		}
+		if (userMap2 != null) {
+			responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+			String identityCard = (String) userMap2.get("user_card");
+			if (identityCard == null) {
+				responseMap.put("ResultCode", "9");
+				responseMap.put("ResultMsg", "请先填写身份证号");
+			} else {
+				responseMap.put("ResultCode", "0");
+				responseMap.put("ResultMsg", "");
+				responseMap.put("ResultData", new HashMap<String, Object>());
+				Map<String, Object> map = (Map<String, Object>) responseMap.get("ResultData");
+				map.put("UserId", userMap2.get("user_id"));
+				map.put("UserName", userMap2.get("user_name"));
+				IdcardInfoExtractor idcardInfo = new IdcardInfoExtractor(identityCard);
+				map.put("Birthday", DateUtil.dateFormat(idcardInfo.getBirthday(), "yyyy-MM-dd"));
+				map.put("UserSex", idcardInfo.getGender());
+				map.put("IdentityCard", identityCard);
+			}
+		} else {
+			responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+			responseMap.put("ResultCode", "1");
+			responseMap.put("ResultMsg", "用户名或者密码错误，可选择身份证登录！！！");
+		}
+		return responseMap;
+	}
+
+	private void autoRegister(Map<String, Object> authData) {
+		User user = new User();
+		Patient patient = new Patient();
+		user.setUser_card(authData.get("ProofNum") + "");
+		user.setUser_name(authData.get("Name") + "");
+		user.setUser_address(authData.get("Address") + "");
+		user.setUser_nation(unicodeService.getIdByName(authData.get("Nation") + ""));
+		IdcardInfoExtractor idcardInfo = new IdcardInfoExtractor(authData.get("ProofNum") + "");
+		user.setUser_birthday(DateUtil.dateFormat(idcardInfo.getBirthday(), "yyyy-MM-dd"));
+		user.setUser_sex(idcardInfo.getGender().equals("男") ? Constant.MALE : Constant.FEMALE);
+		userPlatFormController.add(user, patient);
+	}
+
+	/**
+	 * 
+	 * @throws Exception
+	 * @Title: saveData @Description: 9900一体机数据保存 @param
+	 *         requestData @return @throws
+	 */
+	public Map<String, Object> saveData(String requestData) throws Exception {
+		EquipmentUse equipmentUse = new EquipmentUse();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> dataMap = XMLUtil.xml2Map(requestData);
+		System.out.println(requestData);
+		logger.error(dataMap);
+
+		if (dataMap.get("SenseData") != null && !dataMap.get("SenseData").equals("")) {
+			equipmentUse.setCheck_data_source(Constant.BLUETOOTHUPLOAD);
+			equipmentUse.setCreate_date(
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(dataMap.get("TimeStamp"))));
+			equipmentUse.setEquipment_name("selfservice");
+			equipmentUse.setEquipment_property_order_id(Constant.SELF_SERVICE);
+			Map<String, Object> user = userAppDao.selectByIdCard((String) dataMap.get("UserDiscernData"));
+			equipmentUse.setUser_id(String.valueOf(user.get("user_id")));
+			long id = equipmentDao.add(equipmentUse);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("equipment_use_order_id", id);
+			map.put("create_date",
+					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(String.valueOf(dataMap.get("TimeStamp"))));
+			if (dataMap.get("SenseData") instanceof Map) {
+				Map<String, Object> senseData = (Map<String, Object>) dataMap.get("SenseData");
+				Object item = senseData.get("Item");
+				if (item instanceof Map) {
+					save(map, (Map<String, Object>) item, String.valueOf(id),
+							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+									.parse(String.valueOf(dataMap.get("TimeStamp"))));
+				} else {
+					for (Map<String, Object> element : (List<Map<String, Object>>) item) {
+						save(map, element, String.valueOf(id), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+								.parse(String.valueOf(dataMap.get("TimeStamp"))));
+					}
+				}
+				equipmentDao.addCommon(map);
+				resultMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+				if (id > 0) {
+					resultMap.put("ResultCode", "0");
+					resultMap.put("ResultMsg", "数据同步成功");
+				} else {
+					resultMap.put("ResultCode", "1");
+					resultMap.put("ResultMsg", "数据同步失败");
+				}
+			}
+		} else {
+			resultMap.put("ResultCode", "1");
+			resultMap.put("ResultMsg", "测量数据不能为空");
+		}
+		return resultMap;
+	}
+
+	public Map<String, Object> saveCardioData(String requestXml) {
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		Map<String, Object> dataMap = XMLUtil.xml2Map(requestXml);
+
+		// TODO
+
+		responseMap.put("ResultCode", "0");
+		responseMap.put("ResultMsg", "");
+		responseMap.put("TimeStamp", DateUtil.dateFormat(new Date(), "yyyy-MM-dd HH:mm:ss"));
+		return responseMap;
+	}
+
+	/**
+	 * 
+	 * @throws Exception
+	 * @Title: fieldTrans @Description: 将一体机数据分别保存进七件套表格内 @param map @param
+	 *         dataMap @param size @return @throws
+	 */
+	private void save(Map<String, Object> map, Map<String, Object> dataMap, String use_id, Date date) throws Exception {
+		String type = (String) dataMap.get("ItemType");
+		Map<String, Object> itemDataMap = (Map<String, Object>) dataMap.get("ItemData");
+		switch (type) {
+		case "bloodPress":
+			BloodPressure bloodPressure = new BloodPressure();
+			bloodPressure.setEquipment_use_order_id(use_id);
+			bloodPressure.setCreate_date(date);
+			bloodPressure.setHighPressure(String.valueOf(itemDataMap.get("SBP")));
+			bloodPressure.setLowPressure(String.valueOf(itemDataMap.get("DBP")));
+			bloodPressure.setPulseRate(String.valueOf(itemDataMap.get("PulseRate")));
+			bloodPressureDao.add(bloodPressure);
+			break;
+		case "bloodGlucose":
+			BloodSugar bloodSugar = new BloodSugar();
+			bloodSugar.setEquipment_use_order_id(use_id);
+			bloodSugar.setCreate_date(date);
+			bloodSugar.setBloodSugar(String.valueOf(itemDataMap.get("BloodGlucose")));
+			bloodSugar.setMeasurement_period(String.valueOf(Constant.EMPTY_STOMACH));
+			bloodSugarDao.add(bloodSugar);
+			break;
+		case "bloodOxygen":
+			BloodOxygen bloodOxygen = new BloodOxygen();
+			bloodOxygen.setEquipment_use_order_id(use_id);
+			bloodOxygen.setCreate_date(date);
+			bloodOxygen.setOxygen(String.valueOf(itemDataMap.get("BloodOxygen")));
+			bloodOxygen.setPulseRate(String.valueOf(itemDataMap.get("PulseRate")));
+			bloodoxygenDao.add(bloodOxygen);
+			break;
+		case "heightWeight":
+			map.put("user_height", itemDataMap.get("Height"));
+			map.put("user_weight", itemDataMap.get("Weight"));
+			map.put("BMI", itemDataMap.get("BMI"));
+			break;
+		case "temperature":
+			EarThermometer earThermometer = new EarThermometer();
+			earThermometer.setEquipment_use_order_id(use_id);
+			earThermometer.setCreate_date(date);
+			earThermometer.setTemperature(String.valueOf(itemDataMap.get("Thermometer")));
+			earThermometerDao.add(earThermometer);
+			break;
+		case "electrocardio":
+
+			break;
+		case "lungFunction":
+			LungCapacity lungCapacity = new LungCapacity();
+			lungCapacity.setEquipment_use_order_id(use_id);
+			lungCapacity.setCreate_date(date);
+			lungCapacity.setFvc(String.valueOf(itemDataMap.get("FVC")));
+			lungCapacity.setFev1(String.valueOf(itemDataMap.get("FevOne")));
+			lungCapacity.setPef(String.valueOf(itemDataMap.get("PEF")));
+			map.put("fef25", String.valueOf(itemDataMap.get("FiveOne")));
+			map.put("fef75", String.valueOf(itemDataMap.get("FiveThree")));
+			map.put("fef2575", String.valueOf(itemDataMap.get("FiveTwo")));
+			lungCapacityDao.add(lungCapacity);
+			break;
+		case "urineRoutine":
+			UrineTest urineTest = new UrineTest();
+			urineTest.setEquipment_use_order_id(use_id);
+			urineTest.setCreate_date(date);
+			urineTest.setBil(String.valueOf(itemDataMap.get("LRY")));
+			urineTest.setBld(String.valueOf(itemDataMap.get("BU")));
+			urineTest.setGlu(String.valueOf(itemDataMap.get("GLU")));
+			urineTest.setKet(String.valueOf(itemDataMap.get("KET")));
+			urineTest.setLeu(String.valueOf(itemDataMap.get("LEU")));
+			urineTest.setNit(String.valueOf(itemDataMap.get("NIT")));
+			urineTest.setPh(String.valueOf(itemDataMap.get("PH")));
+			urineTest.setPro(String.valueOf(itemDataMap.get("PRO")));
+			urineTest.setSg(String.valueOf(itemDataMap.get("SG")));
+			urineTest.setUro(String.valueOf(itemDataMap.get("UBG")));
+			urineTest.setVc(String.valueOf(itemDataMap.get("VC")));
+			DataTransfromUtil.urineTest9900Trans(urineTest);
+			urineTestDao.add(urineTest);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 
+	 * @Title: getTimeList @Description: 查询时间列表 @param user_id @param
+	 *         datemin @param datemax @return @throws
+	 */
+	public InfoJson getTimeList(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> list = aioDao.getTimeList(user_id, datemin, datemax);
+		System.out.println(list);
+		infoJson.setData(list);
+
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getDetail @Description: 根据一体机数据order_id查询具体数据 @param
+	 *         user_id @param order_id @return @throws
+	 */
+	public InfoJson getDetail(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		Map<String, Object> selfServiceCheck = aioDao.getDetail(order_id);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("order_id", selfServiceCheck.get("order_id"));
+		resultMap.put("UserName", selfServiceCheck.get("user_name"));
+		resultMap.put("Hospital", selfServiceCheck.get("hosp_name"));
+		resultMap.put("date", selfServiceCheck.get("create_date"));
+		resultMap.put("HeartRate", selfServiceCheck.get("HeartRate"));
+		resultMap.put("Oxygen", NumberUtil.decimalFormat((float) selfServiceCheck.get("Oxygen"), 2));
+		resultMap.put("OPulseRate", selfServiceCheck.get("PulseRate"));
+		resultMap.put("PPulseRate", selfServiceCheck.get("PulseRate"));
+		resultMap.put("HighPressure", selfServiceCheck.get("HighPressure"));
+		resultMap.put("LowPressure", selfServiceCheck.get("LowPressure"));
+		resultMap.put("Weight", NumberUtil.decimalFormat((float) selfServiceCheck.get("user_weight"), 2));
+		resultMap.put("Height", NumberUtil.decimalFormat((float) selfServiceCheck.get("user_height"), 2));
+		resultMap.put("BloodSugar", NumberUtil.decimalFormat((float) selfServiceCheck.get("BloodSugar"), 2));
+		resultMap.put("FVC", NumberUtil.decimalFormat((float) selfServiceCheck.get("FVC"), 2));
+		resultMap.put("Temperature", NumberUtil.decimalFormat((float) selfServiceCheck.get("temperature"), 2));
+		Float bmi = (Float) selfServiceCheck.get("BMI");
+		resultMap.put("BMI", bmi);
+		if (bmi != null) {
+			if (bmi < Constant.BMI1) {
+				resultMap.put("BMIResult", "过轻");
+			} else if (bmi < Constant.BMI2) {
+				resultMap.put("BMIResult", "正常");
+			} else if (bmi < Constant.BMI3) {
+				resultMap.put("BMIResult", "过重");
+			} else if (bmi < Constant.BMI4) {
+				resultMap.put("BMIResult", "肥胖");
+			} else {
+				resultMap.put("BMIResult", "非常肥胖");
+			}
+		}
+		if (selfServiceCheck.get("BLD") != null && selfServiceCheck.get("BIL") != null
+				&& selfServiceCheck.get("GLU") != null && selfServiceCheck.get("KET") != null
+				&& selfServiceCheck.get("LEU") != null && selfServiceCheck.get("NIT") != null
+				&& selfServiceCheck.get("PRO") != null && selfServiceCheck.get("URO") != null
+				&& selfServiceCheck.get("SG") != null && selfServiceCheck.get("PH") != null) {
+			if (!selfServiceCheck.get("BLD").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("BIL").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("GLU").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("KET").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("LEU").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("LEU").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("PRO").equals(Constant.URINEMINUS)
+					|| !selfServiceCheck.get("URO").equals(Constant.URINEMINUS)
+					|| (float) selfServiceCheck.get("SG") < Constant.URINESG1
+					|| (float) selfServiceCheck.get("SG") > Constant.URINESG2
+					|| (float) selfServiceCheck.get("PH") < Constant.URINEPH1
+					|| (float) selfServiceCheck.get("PH") > Constant.URINEPH2) {
+				resultMap.put("UrineResult", "异常");
+			} else {
+				resultMap.put("UrineResult", "正常");
+			}
+		}
+		infoJson.setData(resultMap);
+
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: getDetailByTime @Description: 按时间查询一体机数据（包含具体数据） @param
+	 *         user_id @param datemin @param datemax @return @throws
+	 */
+	public InfoJson getDetailByTime(String user_id, String datemin, String datemax) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> selfServiceCheckList = aioDao.getDetailByTime(user_id, datemin, datemax);
+		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+		for (Map<String, Object> selfServiceCheck : selfServiceCheckList) {
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("order_id", selfServiceCheck.get("order_id"));
+			resultMap.put("UserName", selfServiceCheck.get("user_name"));
+			resultMap.put("Hospital", selfServiceCheck.get("hosp_name"));
+			resultMap.put("date", selfServiceCheck.get("create_date") != null
+					? DateUtil.dateFormat((Date) selfServiceCheck.get("create_date"), "yyyy-MM-dd") : "");
+			resultMap.put("HeartRate", selfServiceCheck.get("HeartRate"));
+			resultMap.put("Oxygen", selfServiceCheck.get("Oxygen") != null
+					? NumberUtil.decimalFormat((float) selfServiceCheck.get("Oxygen"), 2) : "");
+			resultMap.put("OPulseRate", selfServiceCheck.get("PulseRate"));
+			resultMap.put("PPulseRate", selfServiceCheck.get("PulseRate"));
+			resultMap.put("HighPressure", selfServiceCheck.get("HighPressure"));
+			resultMap.put("LowPressure", selfServiceCheck.get("LowPressure"));
+			resultMap.put("Weight", selfServiceCheck.get("user_weight") != null
+					? NumberUtil.decimalFormat((float) selfServiceCheck.get("user_weight"), 2) : "");
+			resultMap.put("Height", selfServiceCheck.get("user_height") != null
+					? NumberUtil.decimalFormat((float) selfServiceCheck.get("user_height"), 2) : "");
+			resultMap.put("BloodSugar", selfServiceCheck.get("BloodSugar") != null
+					? NumberUtil.decimalFormat((float) selfServiceCheck.get("BloodSugar"), 2) : "");
+			resultMap.put("FVC", selfServiceCheck.get("FVC") != null
+					? NumberUtil.decimalFormat((float) selfServiceCheck.get("FVC"), 2) : "");
+			resultMap.put("Temperature", selfServiceCheck.get("temperature") != null
+					? NumberUtil.decimalFormat((float) selfServiceCheck.get("temperature"), 2) : "");
+			Float bmi = (Float) selfServiceCheck.get("BMI");
+			resultMap.put("BMI", bmi != null ? bmi : "");
+			if (bmi != null) {
+				if (bmi < Constant.BMI1) {
+					resultMap.put("BMIResult", "过轻");
+				} else if (bmi < Constant.BMI2) {
+					resultMap.put("BMIResult", "正常");
+				} else if (bmi < Constant.BMI3) {
+					resultMap.put("BMIResult", "过重");
+				} else if (bmi < Constant.BMI4) {
+					resultMap.put("BMIResult", "肥胖");
+				} else {
+					resultMap.put("BMIResult", "非常肥胖");
+				}
+			} else {
+				resultMap.put("BMIResult", "");
+			}
+			if (selfServiceCheck.get("BLD") != null && selfServiceCheck.get("BIL") != null
+					&& selfServiceCheck.get("GLU") != null && selfServiceCheck.get("KET") != null
+					&& selfServiceCheck.get("LEU") != null && selfServiceCheck.get("NIT") != null
+					&& selfServiceCheck.get("PRO") != null && selfServiceCheck.get("URO") != null
+					&& selfServiceCheck.get("SG") != null && selfServiceCheck.get("PH") != null) {
+				if (!selfServiceCheck.get("BLD").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("BIL").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("GLU").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("KET").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("LEU").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("LEU").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("PRO").equals(Constant.URINEMINUS)
+						|| !selfServiceCheck.get("URO").equals(Constant.URINEMINUS)
+						|| (float) selfServiceCheck.get("SG") < Constant.URINESG1
+						|| (float) selfServiceCheck.get("SG") > Constant.URINESG2
+						|| (float) selfServiceCheck.get("PH") < Constant.URINEPH1
+						|| (float) selfServiceCheck.get("PH") > Constant.URINEPH2) {
+					resultMap.put("UrineResult", "异常");
+				} else {
+					resultMap.put("UrineResult", "正常");
+				}
+			}
+			resultList.add(resultMap);
+		}
+		infoJson.setData(resultList);
+
+		return infoJson;
+	}
+
+/*	public void saveTest() throws Exception {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><TimeStamp>2017-06-10 12:11:32</TimeStamp><AccessCode>CONTEC</AccessCode><UserDiscernType>02</UserDiscernType><UserDiscernData>330501199107299411</UserDiscernData><PhoneNum>null</PhoneNum><SenseData><Item><ItemType>heightWeight</ItemType><ItemData><Height>174.5</Height><Weight>87</Weight><BMI>28.57</BMI><DetectionTime>2017-06-10 12:11:08</DetectionTime><DetectionResult></DetectionResult><EquCode></EquCode><Id></Id></ItemData></Item><Item><ItemType>temperature</ItemType><ItemData><Thermometer>36.9</Thermometer><TestPositon>01</TestPositon><DetectionTime>2017-06-10 12:11:08</DetectionTime><DetectionResult></DetectionResult><EquCode></EquCode><Id></Id></ItemData></Item></SenseData><RoomId>JM1410100034</RoomId></root>";
+		saveData(xml);
+	}
+*/
+}

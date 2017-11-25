@@ -1,0 +1,53 @@
+$(function(){
+	$(".sel_op").on('click',function(){
+		$(this).toggleClass('change');
+		$(this).siblings().removeClass('change');
+	})
+	$(".mem_op").on('click',function(){
+		$(this).toggleClass('mem_change');
+		$(this).siblings().removeClass('mem_change');
+	})
+	var flag = 0;
+	$('.info_rgt').on('click',function(){
+		if(flag == 0){
+			$(this).children('.arrow').attr('src','image/under.png');
+			flag = 1;
+		}else{
+			$(this).children('.arrow').attr('src','image/rgt.png');
+			flag = 0;
+		}
+		//隐藏
+		$(this).next().toggle();
+		
+	});
+	//点击下一步
+	$(".next").on('click',function(){
+		$(".basicInfo").css('display','none');
+		$(this).parent().parent().next().css('display','block');
+		var index = $(this).parent().parent().next().index();
+		Change('.dot','on',index);
+		Change('.txt','onFont',index);
+	})
+	//点击上一步
+	$(".back").on('click',function(){
+		$(".basicInfo").css('display','none');
+		$(this).parent().parent().prev().css('display','block');
+		var index = $(this).parent().parent().prev().index();
+		Change('.dot','on',index);
+		Change('.txt','onFont',index);
+	})
+	//下一步、上一步的函数封装
+	function Change(n,m,i){
+		$(n).removeClass(m);
+		var spp = $(n).eq(i).addClass(m);
+	}
+	//既往史单选
+	$(".both").on('change',function(){
+		
+		if($(this).attr("checked")){
+			console.log("no");
+		}else{
+			console.log("ok");
+		}
+	});
+});

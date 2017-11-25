@@ -1,0 +1,64 @@
+package com.haaa.cloudmedical.app.equipment.controller;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.haaa.cloudmedical.app.equipment.service.UrineTestService;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+@RestController
+@RequestMapping({ "/urine_test" })
+public class UrineTestController {
+	@Resource
+	private UrineTestService service;
+
+	private Logger logger = Logger.getLogger(UrineTestController.class);
+
+	@RequestMapping(value = { "/add.action" }, method = { RequestMethod.POST })
+	public InfoJson add(EquipmentUse equipmentUse, UrineTest urineTest, HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println(urineTest);
+		try {
+			if (urineTest.getBil() != null || urineTest.getBld() != null || urineTest.getGlu() != null
+					|| urineTest.getKet() != null || urineTest.getNit() != null || urineTest.getPh() != null
+					|| urineTest.getPro() != null || urineTest.getSg() != null || urineTest.getUro() != null
+					|| urineTest.getVc() != null) {
+				infoJson = service.add(equipmentUse, urineTest);
+			}else{
+				infoJson.setInfo("没有数据传入！！！");
+			}		
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	@RequestMapping(value = { "/query.action" }, method = { RequestMethod.GET })
+	public InfoJson query(Long user_id, String recent, String type, Integer pageno, Integer pagesize,
+			HttpServletRequest request) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println(type);
+		try {
+			if (pagesize == null) {
+				pagesize = 1;
+			}
+			if (recent != null) {
+				infoJson = service.queryRecent(user_id, type);
+			} else if (pageno != null) {
+				infoJson = service.pageQuery(user_id, pageno, pagesize);
+			}
+			System.out.println(infoJson);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

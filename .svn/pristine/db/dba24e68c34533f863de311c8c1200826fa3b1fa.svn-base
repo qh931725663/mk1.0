@@ -1,0 +1,148 @@
+package com.haaa.cloudmedical.dao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.haaa.cloudmedical.common.dao.BaseTemplateDao;
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.service.PositionService;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+
+@Repository
+public class UserAppDao extends BaseTemplateDao {
+
+	@Autowired
+	private PositionService positionService;
+
+	public Map<String, Object> selectById(String user_id, String user_type) {
+		Map<String, Object> map = null;
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		if (user_type.equals(Constant.USER_TYPE_PATIENT)) {
+			String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,a.user_height,a.user_weight,a.user_blood,a.user_medicare_card,a.user_marriage,a.user_address,"
+					+ "a.user_phone,a.user_pwd,a.email,a.user_work,a.user_medical_burden,a.user_waist,a.picture_head_order_id,"
+					+ "concat('" + url + "',a.user_head_pic_upload_index) user_head_pic_upload_index,concat('" + url
+					+ "',a.picture_card_front_order_id) picture_card_front_order_id,c.doctor_name,concat('" + url
+					+ "',a.user_card_front_upload_index) user_card_front_upload_index,a.picture_card_back_order_id,"
+					+ "a.user_card_back_upload_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,date_format(a.update_date,'%Y-%m-%d %H:%i') update_date,a.user_source,"
+					+ "a.user_flag,a.ahdi_value,b.doctor_id,date_format(now(), '%Y') sys_year,a.wechat,a.qq "
+					+ "from n_user a,d_patient b left outer join d_doctor c on b.doctor_id = c.doctor_id where a.user_id = b.patient_id and a.user_id = ? ";
+			List<Map<String, Object>> list = select(sql, user_id);
+			if (list.size() > 0) {
+				map = list.get(0);
+				if (map.get("user_card") != null) {
+					Map<String, Object> cardInfo = BeanUtil.getCardInfo(map.get("user_card").toString());
+					map.putIfAbsent("user_age", cardInfo.get("user_age"));
+					map.putIfAbsent("user_birthday", cardInfo.get("user_birthday"));
+					map.putIfAbsent("user_sex", cardInfo.get("user_sex"));
+				}
+			} else {
+				map = new HashMap<String, Object>();
+			}
+		}
+
+		return map;
+	}
+
+	/*public Map<String, Object> selectByAccount(String user_phone, String user_pwd) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,a.user_height,a.user_weight,a.user_blood,a.user_medicare_card,a.user_marriage,a.user_address,"
+				+ "a.user_phone,a.user_pwd,a.email,a.user_work,a.user_medical_burden,a.user_waist,a.picture_head_order_id,"
+				+ "concat('" + url + "',a.user_head_pic_upload_index) user_head_pic_upload_index,concat('" + url
+				+ "',a.picture_card_front_order_id) picture_card_front_order_id,concat('" + url
+				+ "',a.user_card_front_upload_index) user_card_front_upload_index,a.picture_card_back_order_id,"
+				+ "a.user_card_back_upload_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,date_format(a.update_date,'%Y-%m-%d %H:%i') update_date,a.user_source,"
+				+ "a.user_flag,a.ahdi_value,b.doctor_id,date_format(now(), '%Y') sys_year,a.wechat,a.qq from n_user a left join d_patient b on a.user_id = b.patient_id where a.user_phone = ? and a.user_pwd = ?";
+		Map<String, Object> map = null;
+		List<Map<String, Object>> list = select(sql, new Object[] { user_phone, user_pwd });
+		if (list.size() > 0)
+			map = list.get(0);
+		return map;
+	}*/
+
+	public Map<String, Object> selectByAccount(String user_phone, String user_card, String user_pwd) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,a.user_height,a.user_weight,"
+				+ "a.user_blood,a.user_medicare_card,a.user_marriage,a.user_address,a.user_phone,a.user_pwd,a.email,a.user_work,a.user_medical_burden,"
+				+ "a.user_waist,a.picture_head_order_id,c.doctor_name,concat('" + url
+				+ "',a.user_head_pic_upload_index) user_head_pic_upload_index,concat('" + url
+				+ "',a.user_card_front_upload_index) user_card_front_upload_index,concat('" + url
+				+ "',a.user_card_back_upload_index) user_card_back_upload_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,b.doctor_id,a.qq,"
+				+ "date_format(a.update_date,'%Y-%m-%d %H:%i') update_date,a.user_source,a.user_flag,a.ahdi_value,date_format(now(), '%Y') sys_year,a.wechat "
+				+ "from n_user a,d_patient b left outer join d_doctor c on b.doctor_id = c.doctor_id where a.user_id = b.patient_id and a.user_type='1500001' and (a.user_phone = ? or a.user_card = ? ) and a.user_pwd = ?";
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> list = select(sql, new Object[] { user_phone, user_card, user_pwd });
+		if (list.size() > 0) {
+			map = list.get(0);
+			if (map.get("user_card") != null) {
+				Map<String, Object> cardInfo = BeanUtil.getCardInfo(map.get("user_card").toString());
+				map.putIfAbsent("user_age", cardInfo.get("user_age"));
+				map.putIfAbsent("user_birthday", cardInfo.get("user_birthday"));
+				map.putIfAbsent("user_sex", cardInfo.get("user_sex"));
+			}
+		}
+		return map;
+	}
+
+	public Map<String, Object> selectByAccount(String user_phone) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,a.user_height,a.user_weight,a.user_blood,a.user_medicare_card,a.user_marriage,a.user_address,"
+				+ "a.user_phone,a.user_pwd,a.email,a.user_work,a.user_medical_burden,a.user_waist,a.picture_head_order_id,"
+				+ "concat('" + url + "',a.user_head_pic_upload_index) user_head_pic_upload_index,concat('" + url
+				+ "',a.picture_card_front_order_id) picture_card_front_order_id,concat('" + url
+				+ "',a.user_card_front_upload_index) user_card_front_upload_index,a.picture_card_back_order_id,"
+				+ "a.user_card_back_upload_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,date_format(a.update_date,'%Y-%m-%d %H:%i') update_date,a.user_source,"
+				+ "a.user_flag,a.ahdi_value,b.doctor_id,date_format(now(), '%Y') sys_year,a.wechat,a.qq from n_user a left join d_patient b on a.user_id = b.patient_id where a.user_phone = ?";
+		Map<String, Object> map = null;
+		List<Map<String, Object>> list = select(sql, new Object[] { user_phone });
+		if (list.size() > 0)
+			map = list.get(0);
+		return map;
+	}
+
+	public Map<String, Object> selectByIdCard6500(String identityCard) {
+		String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,a.user_height,a.user_weight,a.user_blood,"
+				+ "a.user_phone,a.user_pwd from  n_user a left join d_patient b on a.user_id = b.patient_id where a.user_card = ? ";
+		Map<String, Object> map = jdbcTemplate.queryForMap(sql, identityCard);
+		return map;
+	}
+
+	public Map<String, Object> selectByIdCard(String identityCard) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		String sql = "select a.user_id,a.user_type,a.user_is_vip,a.user_name,a.user_sex,a.user_age,a.user_birthday,a.user_card,a.user_height,a.user_weight,a.user_blood,a.user_medicare_card,a.user_marriage,a.user_address,"
+				+ "a.user_phone,a.user_pwd,a.email,a.user_work,a.user_medical_burden,a.user_waist,a.picture_head_order_id,"
+				+ "concat('" + url + "',a.user_head_pic_upload_index) user_head_pic_upload_index,concat('" + url
+				+ "',a.picture_card_front_order_id) picture_card_front_order_id,concat('" + url
+				+ "',a.user_card_front_upload_index) user_card_front_upload_index,"
+				+ "a.picture_card_back_order_id,a.user_card_back_upload_index,date_format(a.create_date,'%Y-%m-%d %H:%i') create_date,date_format(a.update_date,'%Y-%m-%d %H:%i') update_date,a.user_source,"
+				+ "a.user_flag,a.ahdi_value,b.doctor_id,date_format(now(), '%Y') sys_year,a.wechat,a.qq from n_user a left join d_patient b on a.user_id = b.patient_id where a.user_card= ? ";
+		Map<String, Object> map = null;
+		List<Map<String, Object>> list = select(sql, identityCard);
+		if (list.size() > 0)
+			map = list.get(0);
+		/*
+		 * for(Map.Entry<String, Object> entry:map.entrySet()){ Object value =
+		 * entry.getValue(); if(value==null){ entry.setValue(""); } }
+		 */
+		return map;
+	}
+
+	public int count(String user_phone) {
+		String sql = "select count(*) from n_user where user_phone = ?";
+		int rows = this.jdbcTemplate.queryForObject(sql, new Object[] { user_phone }, Integer.class);
+		return rows;
+	}
+
+	public int count(String sql, Object... args) {
+		int size = this.jdbcTemplate.queryForObject(sql, args, Integer.class);
+		return size;
+	}
+
+	public int query(String sql) {
+		int result = this.jdbcTemplate.queryForObject(sql, Integer.class);
+		return result;
+	}
+}

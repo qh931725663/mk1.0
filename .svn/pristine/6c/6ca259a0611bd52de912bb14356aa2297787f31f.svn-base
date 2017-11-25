@@ -1,0 +1,101 @@
+package com.haaa.cloudmedical.platform.news.service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.dao.NewsDao;
+
+@Service
+public class NewsManageService {
+
+	@Resource
+	private NewsDao newsDao;
+
+	private Logger logger = Logger.getLogger(NewsManageService.class);
+
+	public InfoJson addNews(Map<String, Object> newsMap) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			long news_id = newsDao.addNews(newsMap);
+			Map<String, Object> picMap = new HashMap<String, Object>();
+			if (newsMap.get("pic_index")!=null) {
+				picMap.put("parent_id", news_id);
+				picMap.put("pic_type", Constant.PIC_TYPE_NEWS);
+				picMap.put("pic_num", 1);
+				picMap.put("medical_picture_upload", newsMap.get("pic_index"));
+				picMap.put("create_date", newsMap.get("create_date"));
+				newsDao.addNewsPic(picMap);
+			}
+			infoJson.setData(news_id);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson deleteNews(String order_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			int result = newsDao.deleteNewsById(order_id);
+			if (result > 0) {
+				infoJson.setStatus(1);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson updateNews(Map<String, Object> newsMap) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			int result = newsDao.update(newsMap,"b_banner_news");
+			Map<String, Object> picMap = new HashMap<String, Object>();
+			if (newsMap.get("pic_index")!=null) {
+				picMap.put("parent_id", newsMap.get("order_id"));
+				picMap.put("pic_type", Constant.PIC_TYPE_NEWS);
+				picMap.put("pic_num", 1);
+				picMap.put("medical_picture_upload", newsMap.get("pic_index"));
+				picMap.put("create_date", newsMap.get("create_date"));
+				newsDao.addNewsPic(picMap);
+			}
+			infoJson.setData(result);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson getNewsByCondition(String condition, String downTime, String upTime, Integer pageno,
+			Integer pagesize) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson.setData(newsDao.getNewsByCondition(condition, downTime, upTime, pageno, pagesize));
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+	
+	public InfoJson getNewsById(String order_id){
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson.setData(newsDao.getNewsById(order_id));
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+}

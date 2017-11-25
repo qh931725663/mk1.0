@@ -1,0 +1,104 @@
+package com.haaa.cloudmedical.platform.allinone.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.haaa.cloudmedical.entity.AIO6500;
+import com.haaa.cloudmedical.platform.allinone.service.AIO6500Service;
+
+@Controller
+@RequestMapping("/aio6500")
+public class AIO6500Controller {
+
+	@Resource
+	private AIO6500Service service;
+
+	private Logger logger = Logger.getLogger(AIO6500Controller.class);
+
+	@RequestMapping("/login.action")
+	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		String paitInfo = service.login(request);
+		out.print(paitInfo);
+	}
+
+	@RequestMapping("/saveData.action")
+	public void saveData(AIO6500 aio, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		try {
+			out.println(service.saveData(aio));
+		} catch (Exception e) {
+			logger.error("", e);
+			out.println("ERR_DB_UPLOAD_TREND:");
+		}
+	}
+
+	@RequestMapping("/personalInfo.action")
+	public void personalInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		try {
+			out.println(service.personalInfo(request));
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			logger.error("", e);
+			out.println("ERR_SESSION_INVALID:");
+		}
+	}
+
+	@RequestMapping("/report.action")
+	public void saveReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		try {
+			out.println(service.saveReport(request));
+		} catch (Exception e) {
+			logger.error("", e);
+			out.println("ERR_SESSION_INVALID:");			
+		}		
+	}
+	
+	@RequestMapping("/originalInfo.action")
+	public void saveOriginalData(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		try {
+			out.println(service.saveOriginalData(request));
+		} catch (Exception e) {
+			logger.error("", e);
+			out.println("ERR_SESSION_INVALID:");			
+		}	
+	}
+	
+	@RequestMapping("/controlInfo.action")
+	public void controlInfo(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType("text/html");
+		response.setCharacterEncoding("GB2312");
+		PrintWriter out = response.getWriter();
+		try {
+			out.println(service.controlInfo(request));
+		} catch (Exception e) {
+			logger.error("", e);
+			out.println("ERR_SESSION_INVALID:");			
+		}	
+	}
+	
+	
+
+}

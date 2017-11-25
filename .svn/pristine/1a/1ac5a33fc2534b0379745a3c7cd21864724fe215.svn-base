@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="yes" name="apple-touch-fullscreen">
+<meta content="telephone=no,email=no" name="format-detection">
+<script type="text/javascript" src="js/flexible_css.js"></script>
+<script type="text/javascript" src="js/flexible.js"></script>
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="Shortcut Icon" href="favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="css/layer.css" />
+<link rel="stylesheet" href="css/common.css" />
+<title>就诊报告</title>
+</head>
+<body>
+	<div class="main">
+		<!-- 头部信息 -->
+		<section class="title">
+			<img alt="" src="image/th.png"> 
+			<span>带*为必填项</span>
+		</section>
+		<!-- 内容 -->
+		<section class="content">
+			<ul class="write">
+				<li class="write-item view-item">
+					<span class="view-label">姓名</span>
+					<span class="view-data view-no" data-name="user_name">未填写</span>
+				</li>
+				<li class="write-item view-item write-bottom">
+					<span class="view-label must">就诊日期</span>
+					<span class="view-data view-no" data-name="clinic_report_time">未填写</span>
+				</li>
+				<li class="write-item view-item">
+					<span class="view-label must">就诊医院</span>
+					<span class="view-data view-no" data-name="hosp_name">未填写</span>
+				</li>
+				<li class="write-item view-item">
+					<span class="view-label must">就诊科室</span>
+					<span class="view-data view-no" data-name="department_name">未填写</span>
+				</li>
+				<li class="write-item view-item write-bottom">
+					<span class="view-label must">主诊医生</span>
+					<span class="view-data view-no" data-name="report_doctor">未填写</span>
+				</li>
+				<li class="write-item view-item">
+					<span class="view-label">病症</span>
+					<span class="view-data view-no" data-name="clinic_report_disease">未填写</span>
+				</li>
+				<li class="write-item view-item write-bottom">
+					<span class="view-label">诊断</span>
+					<span class="view-data view-no" data-name="clinic_report_result">未填写</span>
+				</li>
+				<li class="write-item view-item write-bottom-none">
+					<span class="view-label must">图片</span>
+				</li>
+			</ul>
+			<!--    照片添加    -->
+	        <div class="z_photo z_photo-view"></div>
+		</section>
+	</div>
+	<script type="text/javascript" src="../../common/js/jquery-1.11.3.js"></script>
+	<script type="text/javascript" src="js/common-view.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			HEALTH_VIEW = $.extend(HEALTH_VIEW,{
+				url : "/mkh1.0/wx/healthRecord/examineInfo.action"
+			}); 
+			HEALTH_VIEW.loadData();
+		});
+	</script>
+</body>
+</html>

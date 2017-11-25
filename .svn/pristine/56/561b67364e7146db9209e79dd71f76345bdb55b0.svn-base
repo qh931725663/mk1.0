@@ -1,0 +1,250 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>疾病风险因素统计和风险评估</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" href="css/diabetes-comm.css"/>
+    <link rel="stylesheet" href="css/diabete-main.css"/>
+    <link rel="stylesheet" href="layer/css/layer.css"/>
+    <link rel="stylesheet" href="css/iosSelect.css"/>
+    <style>
+        .step2-list-ul li{padding-left: 10px;}
+    </style>
+</head>
+<body>
+<div class="container">
+<input type="hidden" id="order_id" />
+    <div class="step-content box-step-container">
+        <div class="step-list" style="margin: 10px 20px;">
+        <form id="form-rsk-total-write">
+            <h2 class="text-align-center" style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>1.是否糖尿病病史>5年</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-1" class="magic check_radio rest" name="7001" value="1000713" style="width: 25px;height: 25px;" checked/><label for="jbfx-1" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-2" class="magic check_radio sure" name="7001" value="1000709" style="width: 25px;height: 25px;"/><label for="jbfx-2" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>2.是否吸烟</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-3" class="magic check_radio rest" name="7002" value="1000721" style="width: 25px;height: 25px;" checked/><label for="jbfx-3" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-4" class="magic check_radio sure" name="7002" value="1000717" style="width: 25px;height: 25px;"/><label for="jbfx-4" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>3.是否血脂异常</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-5" class="magic check_radio rest" name="7003" value="1000729" style="width: 25px;height: 25px;" checked/><label for="jbfx-5" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-6" class="magic check_radio sure" name="7003" value="1000725" style="width: 25px;height: 25px;"/><label for="jbfx-6" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>4.早发心血管疾病家族史；一级亲属，男55岁、女65岁以前发病</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-7" class="magic check_radio rest" name="7004" value="1000737" style="width: 25px;height: 25px;" checked/><label for="jbfx-7" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-8" class="magic check_radio sure" name="7004" value="1000733" style="width: 25px;height: 25px;"/><label for="jbfx-8" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>5.肥胖：体质指数≥28 kg/m2或腹型肥胖：腰围男≥90 cm，女≥85 cm</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-9" class="magic check_radio rest" name="7005" value="1000745" style="width: 25px;height: 25px;" checked/><label for="jbfx-9" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-10" class="magic check_radio sure" name="7005" value="1000741" style="width: 25px;height: 25px;"/><label for="jbfx-10" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>6.糖尿病神经病变</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-11" class="magic check_radio rest" name="7006" value="1000753" style="width: 25px;height: 25px;" checked/><label for="jbfx-11" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-12" class="magic check_radio sure" name="7006" value="1000749" style="width: 25px;height: 25px;"/><label for="jbfx-12" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>7.糖尿病肾病</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-13" class="magic check_radio rest" name="7007" value="1000761" style="width: 25px;height: 25px;" checked/><label for="jbfx-13" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-14" class="magic check_radio sure" name="7007" value="1000757" style="width: 25px;height: 25px;"/><label for="jbfx-14" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>8.糖尿病视网膜病变</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-15" class="magic check_radio rest" name="7008" value="1000769" style="width: 25px;height: 25px;" checked/><label for="jbfx-15" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-16" class="magic check_radio sure" name="7008" value="1000765" style="width: 25px;height: 25px;"/><label for="jbfx-16" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>9.糖尿病下肢血管病变</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-17" class="magic check_radio rest" name="7009" value="1000777" style="width: 25px;height: 25px;" checked/><label for="jbfx-17" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-18" class="magic check_radio sure" name="7009" value="1000773" style="width: 25px;height: 25px;"/><label for="jbfx-18" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>10.糖尿病足</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-19" class="magic check_radio rest" name="7010" value="1000785" style="width: 25px;height: 25px;" checked/><label for="jbfx-19" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-20" class="magic check_radio sure" name="7010" value="1000781" style="width: 25px;height: 25px;"/><label for="jbfx-20" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>11.糖尿病心脑血管疾病（高血压、心电图、心脏超声、血脂异常）</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-21" class="magic check_radio rest" name="7011" value="1000793" style="width: 25px;height: 25px;" checked/><label for="jbfx-21" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-22" class="magic check_radio sure" name="7011" value="1000789" style="width: 25px;height: 25px;"/><label for="jbfx-22" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <h2 style="padding-top: 35px;font-size: 15px;"><span class="red-asterisk">*</span>12.代谢综合征（促甲状腺激素异常，高尿酸血脂）</h2>
+            <ul class="step2-list-ul">
+                <li style="border: none;">
+                    <input type="radio" id="jbfx-23" class="magic check_radio rest" name="7012" value="1000801" style="width: 25px;height: 25px;" checked/><label for="jbfx-23" style="width: 5%;">否</label>
+                    <input type="radio" id="jbfx-24" class="magic check_radio sure" name="7012" value="1000797" style="width: 25px;height: 25px;"/><label for="jbfx-24" style="width: 5%;">是</label>
+                </li>
+            </ul>
+            <ul class="step2-list-ul">
+                 <li><label style="font-size: 15px;">并发症统计(*根据以上选择自动计算)</label>
+                    <input id="total-index" class="survey_answer" type="text" name="7501"  style="direction: rtl;font-size: 14px;margin-left: 5px;" readonly/>
+                    <span style="margin-left: 5px;">个</span>
+                </li>
+                <li>
+                    <label style="width:74%;font-size: 15px;"><span class="red-asterisk">*</span>糖尿病分型</label>
+<!--                     <select id="type-select" name="type" style="direction: rtl;width: 20%;font-size: 14px;">
+                        <option value="1型">1型</option>
+                        <option value="2型">2型</option>
+                        <option value="妊娠糖尿病">妊娠糖尿病</option>
+                    </select> -->
+                    <input class="show_select" type="hidden" name="type" id="selt_type" value="1型" >
+        			<span id="show_type" style="text-align:right;width: 20%;font-size: 14px;">1型</span>    
+                    <span class="gt" style="margin-left: 5px;"></span>
+                </li>
+            </ul>
+        </form>    
+        </div>
+        <div style="padding: 20px 10px;margin-bottom: 20px;overflow:hidden;text-align: center;">
+            <button id="back" class="fl btn btn-green" type="button" style="width: 255px;">返回</button>
+            <button id="save" class="fr btn btn-red" type="button" style="width: 255px;">保存</button>
+        </div>
+    </div>
+    </div>
+</div>
+<script src="../../../js/jquery-1.4.2.min.js"></script>
+<script src="layer/layer.js"></script>
+<script src="js/iosSelect.js"></script>
+<script src="js/data_nation.js"></script>
+<script>
+$(function(){
+		//获取地址栏order_id方法
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		var order_id=getUrlParam("order_id");
+		$("#order_id").val(order_id);
+	//并发症统计
+	function total_index(){
+		$(".step-list .step2-list-ul").find("li input.sure:checked").each(function(index){
+				$("#total-index").val(index+1);
+		});	
+	}
+	$("li input.sure").click(function(){//赋值并发统计
+		total_index();
+	});
+	$("li input.rest").click(function(){//赋值并发统计
+		total_index();
+	});
+	
+	//初始化加载显示数据
+     $.ajax({
+         url: "../../../diabetesDoc-app/getAnswers.action",
+         type: "GET",
+         dataType: 'json',
+         data: {order_id:order_id,scope_flag:'3'},
+         success: function (response) {
+			 var p1=response.data.answer;
+			 var p2=response.data.doc;
+			 
+			 $("#type-select").find("option[value='"+p2.type+"']").attr("selected",true);
+             if(response.status=='1'){
+             
+				 if(p1.t0!=undefined){
+					//单选按钮赋值
+					$(".box-step-container .check_radio").each(function(){
+						var va = $(this).val();
+						var name = $(this).attr("name");
+						var _self = this;
+						
+	 					$.each(p1.t0.c0, function(i,m){
+		  					if(va == m.option_order_id && name==m.question_k_order_id){
+								$(_self).attr("checked",true).click();
+								return false;
+							} 
+						});
+					});
+					//文本框赋值
+					$(".box-step-container input.survey_answer").each(function(){
+						var name = $(this).attr("name");
+						var _self =this;
+		  				$.each(p1.t0.c0, function(i,m){
+			  				if(name == m.question_k_order_id && m.question_type==3){
+								$(_self).val(m.option_content);
+								return false;
+							} 
+						});
+					});
+				}	
+             }
+         }
+     });
+     //保存
+     $("#save").click(function(){
+          var data=$.param({order_id: order_id,scope_flag:3})+'&'+ $('#form-rsk-total-write').serialize();
+          $.ajax({
+               url:"../../../diabetesDoc-app/updateAnswers.action",
+               type:"post",
+               dataType:'json',
+               data:data,
+               success:function(response){
+                   if(response.status==1){
+                       layer.open({
+	                       content: '添加成功！',
+	                       btn: '确定',
+	                       yes: function(){
+								window.location.href = "diabetes-file-index.html?order_id="+$("#order_id").val();							
+	  					   }
+                       });
+                   }else{
+                       layer.open({content: '添加失败！',btn: '确定'});
+                   }
+               }
+          });
+     });
+});
+//返回首页
+$("#back").click(function(){
+	window.location.href = "diabetes-file-index.html?order_id="+$("#order_id").val();
+});
+  //选择框 show_select 插件
+  function select(show,idzhu,list_select){
+   	var showDom = $(show);
+   	var idDom = $(idzhu);
+   	showDom.click(function () {
+   		var _self=$(this);
+    	var bankSelect = new IosSelect(1,
+    		[list_select],
+    		{
+     			itemHeight: 50,
+     			itemShowCount: 3,
+              	callback: function (selectOneObj) {
+		    		idDom.val(selectOneObj.id);
+		     		_self.html(selectOneObj.value);
+     			}
+    	});
+	});     
+	}
+select('#show_type','#selt_type',list_select.data_type);
+</script>
+</body>
+</html>

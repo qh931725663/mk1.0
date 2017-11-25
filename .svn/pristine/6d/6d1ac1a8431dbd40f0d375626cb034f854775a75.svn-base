@@ -1,0 +1,78 @@
+/*主要js*/
+$(function(){
+    //输入身份证获取年龄
+    $("#user_card").keyup(function(){
+        var idcard = $("#user_card").val();
+        //debugger;
+        if   (idcard.length==18){
+            //获取出生日期 <br />
+            //获取年龄 <br />
+            //获取性别 <br />
+
+            if (parseInt(idcard.substr(16, 1)) % 2 == 1) {
+                // alert("1");
+                $("#sex-wen").prop("selected","");
+
+                $("#sex-man").prop("selected","selected");
+
+            } else {
+                // alert("2");
+                $("#sex-man").prop("selected","");
+                $("#sex-wen").prop("selected","selected");
+            }
+
+            var myDate = new Date();
+            var month = myDate.getMonth() + 1;
+            var day = myDate.getDate();
+            var age = myDate.getFullYear() - idcard.substring(6, 10) - 1;
+            if (idcard.substring(10, 12)<month || idcard.substring(10, 12) == month && idcard.substring(12, 14) <= day) {
+                age++;
+            }
+            $("#user_age").val(age);
+            //年龄 age</p>
+        }else if(idcard=="") {
+            $("#sex-man").removeAttr("selected");
+            $("#sex-wen").removeAttr("selected");
+            $("#user_age").val("");
+        }
+
+    });
+
+    //医生管理模块 医院和科室下拉列表显示
+    var doctor_list="";
+    $.ajax({
+        url:"../../../constant/hospitals.action",
+        type:"get",
+        dataType : 'json',
+        success:function(hosp) {
+            $.each(hosp.data, function(i,p){
+                doctor_list += `<option value="${p.order_id}">${p.hosp_name}</option>`;
+            });
+            $('#hosp_order_id').append(doctor_list);
+        }
+    });
+
+    //当用户选择某医院时，填充对应的科室列表
+    $('#hosp_order_id').change(function(){
+        var department_list="";
+        var orderId=this.value;
+        $('#department_order_id').html('<option value="">全部</option>');
+        if(orderId==''){
+            return;
+        }
+        $.ajax({
+            url:"../../../constant/position.action",
+            type:"get",
+            dataType : 'json',
+            data:{type:"hosp_department",parent_id:orderId},
+            success:function(department) {
+                $.each(department.data, function(i,p){
+                    department_list += `<option value="${p.order_id}">${p.department_name}</option>`;
+                });
+                $('#department_order_id').append(department_list);
+            }
+        });
+
+    });
+});
+

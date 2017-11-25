@@ -1,0 +1,109 @@
+package com.haaa.cloudmedical.platform.RemindManage.controller;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.entity.User;
+import com.haaa.cloudmedical.platform.RemindManage.service.RemindService;
+
+@Controller
+@RequestMapping("/remind/message")
+public class RemindController {
+
+    @Resource
+    private RemindService service;
+
+    /**
+     * 分页查询
+     * @Description: 
+     * @author 吴琪
+     * @param user
+     * @param model
+     * @param pageno
+     * @param datemin
+     * @param datemax
+     * @return 
+     * @date: 2017年6月1日 上午9:28:53
+     */
+    @RequestMapping("/page.action")
+    @ResponseBody
+    public Object page(User user, Integer pageno, String datemin, String datemax) {
+        if (pageno == null || "".equals(pageno)) {
+            pageno = 1;
+        }
+        Page page = service.queryPage(user, pageno, datemin, datemax);
+        return page;
+    }
+
+    /**
+     * 保存测量提醒
+     * @Description: 
+     * @author 吴琪
+     * @param map
+     * @return 
+     * @date: 2017年6月14日 下午1:38:09
+     */
+    @RequestMapping("/saveOrUpdateMeasure.action")
+    @ResponseBody
+    public Object saveOrUpdateMeasure(@RequestParam Map<String, Object> map) {
+        ResponseDTO dto = new ResponseDTO();
+        long ret = service.saveOrUpdateMeasure(map);
+        if (ret > 0) {
+            dto.setData(ret);
+            dto.setFlag(true);
+            return dto;
+        }
+        return dto;
+    }
+
+    /**
+     * 查询测量列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id
+     * @return 
+     * @date: 2017年6月14日 下午1:38:28
+     */
+    @RequestMapping("/getMeasureList.action")
+    @ResponseBody
+    public Object getMeasureList(String user_id) {
+        return service.getMeasureList(user_id);
+    }
+
+    /**
+     * 查询测量提醒
+     * @Description: 
+     * @author 吴琪
+     * @param order_id
+     * @return 
+     * @date: 2017年6月14日 下午3:25:34
+     */
+    @RequestMapping("/getMeasure.action")
+    @ResponseBody
+    public Object getMeasure(String order_id) {
+        return service.getMeasure(order_id);
+    }
+
+    /**
+     * 查询类型列表
+     * @Description: 
+     * @author 吴琪
+     * @param user_id
+     * @return 
+     * @date: 2017年6月14日 下午5:12:50
+     */
+    @RequestMapping("/getMeasureTypeList.action")
+    @ResponseBody
+    public Object getMeasureTypeList(String user_id) {
+        return service.getMeasureTypeList(user_id);
+    }
+
+}

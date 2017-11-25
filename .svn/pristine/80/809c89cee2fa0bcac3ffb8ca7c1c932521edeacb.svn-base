@@ -1,0 +1,124 @@
+package com.haaa.cloudmedical.platform.equipment.service;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.BeanPropertyUtil;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.equipment.BloodPressureDao;
+import com.haaa.cloudmedical.dao.equipment.BloodSugarDao;
+import com.haaa.cloudmedical.dao.equipment.BloodoxygenDao;
+import com.haaa.cloudmedical.dao.equipment.EarThermometerDao;
+import com.haaa.cloudmedical.dao.equipment.ElectrocardiographDao;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.dao.equipment.EquipmentDao;
+import com.haaa.cloudmedical.entity.BloodOxygen;
+import com.haaa.cloudmedical.entity.BloodPressure;
+import com.haaa.cloudmedical.entity.BloodSugar;
+import com.haaa.cloudmedical.entity.EarThermometer;
+import com.haaa.cloudmedical.entity.Electrocardiograph;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.LungCapacity;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class EquipmentService {
+	@Resource
+	private EquipmentDao equipmentDao;
+
+	@Resource
+	private BloodPressureDao bloodPressureDao;
+
+	@Resource
+	private BloodSugarDao bloodSugarDao;
+
+	@Resource
+	private EarThermometerDao earThermometerDao;
+
+	@Resource
+	private ElectrocardiographDao electrocardiographDao;
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	@Resource
+	private BloodoxygenDao bloodoxygenDao;
+
+	private Logger logger = Logger.getLogger(EquipmentService.class);
+
+	@Transactional
+	public InfoJson addAll(EquipmentUse equipmentUse, BloodOxygen bloodOxygen, BloodPressure bloodPressure,
+			BloodSugar bloodSugar, EarThermometer earThermometer, Electrocardiograph electrocardiograph,
+			LungCapacity lungCapacity, UrineTest urineTest) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			// DataTransfromUtil.urineTestTrans(urineTest,
+			// equipmentUse.getCheck_data_source());
+			// DataTransfromUtil.electroTrans(electrocardiograph);
+			String time = DateUtil.getTime();
+			int flag = 0;
+			if (bloodPressure.getHighPressure() != null && bloodPressure.getLowPressure() != null
+					&& bloodPressure.getPulseRate() != null) {
+				dataSave(equipmentUse, 1, "blood_pressure", time, bloodPressure);
+				flag=1;
+			}
+			if (bloodSugar.getBloodSugar() != null && bloodSugar.getMeasurement_period() != null) {
+				dataSave(equipmentUse, 5, "blood_sugar", time, bloodSugar);
+				flag=1;
+			}
+			if (earThermometer.getTemperature() != null) {
+				dataSave(equipmentUse, 9, "ear_thermometer", time, earThermometer);
+				flag=1;
+			}
+			if (electrocardiograph.getHeartRate() != null && electrocardiograph.getResult() != null) {
+				dataSave(equipmentUse, 13, "electrocardiograph", time, electrocardiograph);
+				flag=1;
+			}
+			if (lungCapacity.getFev1() != null && lungCapacity.getFev1_rate() != null && lungCapacity.getFvc() != null
+					&& lungCapacity.getFvc_rate() != null && lungCapacity.getPef() != null) {
+				dataSave(equipmentUse, 17, "lung_capacity", time, lungCapacity);
+				flag=1;
+			}
+			if (bloodOxygen.getOxygen() != null || bloodOxygen.getPulseRate() != null) {
+				dataSave(equipmentUse, 21, "pulse_bloodoxygen", time, bloodOxygen);
+				flag=1;
+			}
+			if (urineTest.getBil() != null && urineTest.getBld() != null && urineTest.getGlu() != null
+					&& urineTest.getKet() != null && urineTest.getLeu() != null && urineTest.getNit() != null
+					&& urineTest.getPh() != null && urineTest.getSg() != null && urineTest.getUro() != null
+					&& urineTest.getVc() != null) {
+				dataSave(equipmentUse, 25, "urine_test", time, urineTest);
+				flag=1;
+			}
+			if (flag==1) {
+				infoJson.setStatus(1);
+			}else{
+				infoJson.setInfo("请填写至少一件套的完整信息！！！");
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+
+		return infoJson;
+	}
+
+	private void dataSave(EquipmentUse equipmentUse, int equip_id, String equip_name, String time, Object object) {
+		equipmentUse.setEquipment_property_order_id(equip_id);
+		equipmentUse.setEquipment_name(equip_name);
+		equipmentUse.setCheck_data_source(Constant.MANUALUPLOAD);
+		Map<String, Object> equipMap = new HashMap<String, Object>();
+		BeanPropertyUtil.toMapFromObject(equipMap, object);
+		equipMap.put("create_date", time);
+		Number use_id = equipmentDao.insertAndGetKey(equipmentUse, "c_equipment_use");
+		equipMap.put("equipment_use_order_id", use_id);
+		equipmentDao.insert(equipMap, "c_" + equip_name);
+	}
+
+}

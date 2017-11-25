@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>基础档案</title>
+	<link rel="stylesheet" type="text/css" href="../../../app/css/comm.css"/>
+	<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/basicinfo.css"/>
+</head>
+<body>
+	<div class="basicinfo-main">
+		<div class="basicInfo">
+			<h1>基本信息</h1>
+			<ul class="basic-information">
+				<li>
+					<span class="name">姓名</span>
+					<span class="user-name data" id="user_name"></span>
+				</li>
+				<li>
+					<span class="sex">性别</span>
+					<span class="user-sex data" id="user_sex"></span>
+				</li>
+				<li>
+					<span class="age">年龄</span>
+					<span class="user-age data" id="user_age"></span>
+				</li>
+				<li>
+					<span class="ID">身份证号</span>
+					<span class="user-ID data" id="user_card"></span>
+				</li>
+				<li>
+					<span class="phone">手机号</span>
+					<span class="user-phone data" id="user_phone"></span>
+				</li>
+				<li>
+					<span class="height">身高</span><span class="monad">cm</span>
+					<span class="user-height data" id="user_height"></span>
+				</li>
+				<li>
+					<span class="weight">体重</span><span class="monad">kg</span>
+					<span class="user-weight data" id="user_weight"></span>
+				</li>
+				<li>
+					<span class="waistline">腰围</span><span class="monad">cm</span>
+					<span class="user-waistline data" id="user_waist"></span>
+				</li>
+				<li>
+					<span class="blood">血型</span>
+					<span class="user-blood data" id="user_blood"></span>
+				</li>
+				<li>
+					<span class="RH">是否RH阴性</span>
+					<span class="user-RH data" id="user_blood_is_rh"></span>
+				</li>
+				<li>
+					<span class="marriage">婚姻状况</span>
+					<span class="user-marriage data" id="user_marriage"></span>
+				</li>
+				<li>
+					<span class="resident">常住类型</span>
+					<span class="user-resident data" id="resident_type"></span>
+				</li>
+				<li>
+					<span class="nation">民族</span>
+					<span class="user-nation data" id="user_nation"></span>
+				</li>
+				<li>
+					<span class="education">文化程度</span>
+					<span class="user-education data" id="cultural_level"></span>
+				</li>
+				<li>
+					<span class="work">职业</span>
+					<span class="user-work data" id="career"></span>
+				</li>
+				<li>
+					<span class="income">家庭年收入</span>
+					<span class="user-income data" id="income"></span>
+				</li>
+				<li>
+					<span class="treatment">医疗费用类型</span>
+					<span class="user-treatment data" id="user_medical_burden"></span>
+				</li>
+				<li>
+					<span class="home-address">家庭住址</span>
+					<span class="home-address data" id="user_address"></span>
+				</li>
+				<li>
+					<span class="company">工作单位</span>
+					<span class="company data" id="work_unit"></span>
+				</li>
+				<li>
+					<span class="c-address">单位地址</span>
+					<span class="company-address data" id="work_address"></span>
+				</li>
+				<li>
+					<span class="family">家庭成员</span>
+					<span id="family_info"></span>
+					<!--<span class="child-phone survey_answer" id="1103"></span>
+					<span class="child-name survey_answer" id="1102"></span>
+					<span class="child survey_answer" id="1101"></span>-->
+				</li>
+			</ul>
+		</div>
+		<div class="lifestyle">
+			<h1>生活方式</h1>
+			<p>1、体育锻炼</p>
+			<ul class="physical-exercise">
+				<li>
+					<span class="survey">锻炼频率</span>
+					<span class="survey_answer do" id="2101"></span>
+				</li>
+				<li>
+					<span class="survey">每次锻炼时间</span>
+					<span class="monad">分钟</span>
+					<span class="survey_answer" id="2102"></span>
+				</li>
+				<li>
+					<span class="survey">锻炼方式</span>
+					<span class="survey_answer" id="2103"></span>
+				</li>
+			</ul>
+			<p>2、饮食习惯</p>
+			<ul class="eating-habits">
+				<li>
+					<span class="survey">荤素比例</span>
+					<span class="survey_answer" id="2230"></span>
+				</li>
+				<li>
+					<span class="survey">偏好</span>
+					<span class="survey_answer" id="2250"></span>
+				</li>
+			</ul>
+			<p>3、吸烟情况 &nbsp;&nbsp;&nbsp;<span class="survey_answer smoked" style="padding-right: 15px;" id="2300"> </span></p>
+			<ul class="smoking-situation">
+				<li>
+					<span class="survey">日吸烟量</span>
+					<span class="monad">支</span>
+					<span class="survey_answer" id="2304"></span>
+				</li>
+				<li class="smoking">
+					<span class="survey">烟龄</span>
+					<span class="monad">年</span>
+					<span class="survey_answer" id="2305"></span>
+				</li>
+				<li class="no_smoking">
+					<span class="survey">戒烟年龄</span>
+					<span class="monad">年</span>
+					<span class="survey_answer" id="2306"></span>
+				</li>
+			</ul>
+			<p>4、饮酒情况 &nbsp;&nbsp;&nbsp;<span class="survey_answer drink" style="padding-right: 15px;" id="2400"> </span></p>
+			<ul class="smoking-situation">
+				<li>
+					<span class="survey">日饮酒量</span>
+					<span class="monad">两</span>
+					<span class="survey_answer" id="2405"></span>
+				</li>
+				<li>
+					<span class="survey">酒龄</span>
+					<span class="monad">年</span>
+					<span class="survey_answer" id="2406"></span>
+				</li>
+				<li>
+					<span class="survey">近期是否饮酒</span>
+					<span class="survey_answer" id="2407"></span>
+				</li>
+				<li>
+					<span class="survey">饮酒种类</span>
+					<span class="survey_answer" id="2408"></span>
+				</li>
+			</ul>
+		</div>
+		<div class="pasthistory">
+			<h1>既往史</h1>
+			<p>1、药物过敏史 
+				<span class="history-drug survey_answer yes_hide" id="3100"></span>
+				<span class="history-drug survey_answer" id="3101"></span>
+			</p>
+			
+			<p>2、疾病史  <span class="surgery-history survey_answer show_hide yes_hide" id="3200"></span></p>
+			<ul class="medical-history">
+				<p class="table_box">
+					<span>病种</span><span>&nbsp;&nbsp;&nbsp;确诊时间</span>
+					<span>&nbsp;&nbsp;病种</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;确诊时间</span>
+				</p>
+				<!--<li><span>高血压</span><span>2015-05</span></li>
+				<li><span>高血压</span><span>2015-05</span></li>-->
+			</ul>
+			<p>3、手术史  <span class="surgery-history survey_answer show_hide yes_hide" id="3300"></span></p>
+			<ul class="shoushu_list">
+				<p class="table_box">
+					<span>手术名称</span><span>&nbsp;&nbsp;&nbsp;手术时间</span>
+					<span>&nbsp;&nbsp;手术名称</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;手术时间</span>
+				</p>
+				<!--<li><span>高血压</span><span>2015-05</span></li>
+				<li><span>高血压</span><span>2015-05</span></li>-->
+			</ul>
+			<p>4、外伤史  <span class="injury-history survey_answer show_hide yes_hide" id="3400"></span></p>
+			<ul class="injury_list">
+				<p class="table_box">
+					<span>外伤名称</span><span>&nbsp;&nbsp;&nbsp;发生时间</span>
+					<span>&nbsp;&nbsp;外伤名称</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发生时间</span>
+				</p>
+				<!--<li><span>高血压</span><span>2015-05</span></li>
+				<li><span>高血压</span><span>2015-05</span></li>-->
+			</ul>
+			<p>5、输血史  <span class="injury-history survey_answer show_hide yes_hide" id="3500"></span></p>
+			<ul class="blood_list">
+				<p class="table_box">
+					<span>输血原因</span><span>&nbsp;&nbsp;&nbsp;发生时间</span>
+					<span>&nbsp;&nbsp;输血原因</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发生时间</span>
+				</p>
+				<!--<li><span>高血压</span><span>2015-05</span></li>
+				<li><span>高血压</span><span>2015-05</span></li>-->
+			</ul>
+			<p>6、家庭成员病史 <span class="injury-history survey_answer show_hide yes_hide" id="3600"></span></p>
+			<ul class="familyd_list">
+				<p class="table_box">
+					<span>家庭成员</span><span>&nbsp;&nbsp;&nbsp;所患疾病</span>
+					<span>&nbsp;&nbsp;家庭成员</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;所患疾病</span>
+				</p>
+				<!--<li><span>高血压</span><span>2015-05</span></li>
+				<li><span>高血压</span><span>2015-05</span></li>-->
+			</ul>
+			<p>7、遗传病史 
+				<span class="survey_answer show_hide yes_hide" id="3700"></span>
+				<span class="survey_answer" id="3701"></span>
+			</p>
+			<p>8、残疾情况 
+				<span class="survey_answer show_hide yes_hide" id="3800"></span>
+				<span class="survey_answer" id="3801"></span>
+			</p>
+		</div>
+		<div class="survey">
+			<h1>问卷调查</h1>
+			<p>1、您有以下症状 <span class="survey_answer plus" id="4100"></span></p>
+			
+			<p>2、您有以下慢性病 <span class="survey_answer sort" id="4200"></span></p>
+			<ul class="manb_list">
+				<p class="table_box">
+					<span>&nbsp;&nbsp;病种</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态</span>
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;病种</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;状态</span>
+				</p>
+				<li><span class="survey_answer" id="4201"></span><span class="survey_answer" id="4202"></span></li>
+				<li><span class="survey_answer" id="4203"></span><span class="survey_answer" id="4204"></span></li>
+			</ul>
+			<p>3、您与家人和朋友关系好吗？  <span class="survey_answer" id="4300"></span></p>
+			<p>4、您对现在的生活满意吗？  <span class="survey_answer" id="4400"></span></p>
+			<p>5、您会经常感觉郁闷焦虑吗？  <span class="survey_answer" id="4500"></span></p>
+			<p>6、您平时每晚的睡眠时间能达到7个小时吗？  <span class="survey_answer" id="4600"></span></p>
+		</div>
+		<div class="checking">
+			<h1>辅助检查</h1>
+			<p>1、下肢水肿检查<span class="survey_answer" id="5001"></span></p>
+			<p>2、足背动脉搏动<span class="survey_answer" id="5002"></span></p>
+		</div>
+		<div class="prevention">
+			<h1>预防检疫</h1>
+			<p>1、最近一次结肠癌筛查<span class="survey_answer" id="6001"></span></p>
+			<p>2、最近一次直肠检查<span class="survey_answer" id="6002"></span></p>
+			<p>3、最近一次注射破伤风疫苗<span class="survey_answer" id="6003"></span></p>
+			<p>4、最近一次血压、血脂检查<span class="survey_answer" id="6004"></span></p>
+			<p>5、最近一次牙科检查<span class="survey_answer" id="6005"></span></p>
+		</div>
+	</div>
+	<script src="../../../js/jquery-1.4.2.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/basicinfo.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

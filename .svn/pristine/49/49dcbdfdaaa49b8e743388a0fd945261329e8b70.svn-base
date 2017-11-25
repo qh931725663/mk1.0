@@ -1,0 +1,118 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../lib/html5shiv.js"></script>
+<script type="text/javascript" src="../lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../static/h-admin/css/main.css">
+	<!--[if IE 6]>
+<script type="text/javascript" src="../lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>管理员列表</title>
+</head>
+<body>
+	<nav class="breadcrumb">
+		<i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 设备管理 <span class="c-gray en">&gt;</span> 设备列表
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+<div class="page-container">
+	<form id="form">
+		<div style="width:100%;margin-bottom:10px;">
+			<span style="display:inline-block;width:96px;text-align: right">姓名：</span><input type="text" class="input-text radius"  name="" style="width:130px;"/>
+			<span style="display:inline-block;width:70px;text-align: right">身份证:</span><input type="text" class="input-text input-width radius"  name="">
+			<span style="display:inline-block;width:70px;text-align: right">烟瘾程度：</span>
+			<select class="radius" name="" style="height:30px;width:60px;">
+				<option value="">全部</option>
+				<option value="0">轻度烟民</option>
+				<option value="1">中度烟民</option>
+				<option value="2">重度烟民</option>
+			</select>
+			<span>时间：</span>
+			<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
+			-
+			<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
+			<button type="button" class="btn btn-success" id="" name="">查询</button>
+			</div>
+	</form>
+	<table class="table table-border table-bordered table-bg table-hover">
+		<thead>
+			<tr class="text-c">
+				<th>序号</th>
+				<th>姓名</th>
+				<th>设备类型</th>
+				<th>设备编号</th>
+				<th>性别</th>
+				<th>年龄</th>
+				<th>身份证号</th>
+				<th >手机号</th>
+				<th>婚姻状况</th>
+				<th>创建时间</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="text-c">
+				<td>1</td>
+				<td>张三</td>
+				<td>血压计</td>
+				<td>092</td>
+				<td>男</td>
+				<td>48</td>
+				<td>33333333333333</td>
+				<td>13296767676</td>
+				<td>已婚</td>
+				<td >2017-01-01</td>
+			</tr>
+			<tr class="text-c">
+				<td>2</td>
+				<td>张三</td>
+				<td>血压计</td>
+				<td>092</td>
+				<td>男</td>
+				<td>48</td>
+				<td>33333333333333</td>
+				<td>13296767676</td>
+				<td>已婚</td>
+				<td >2017-01-01</td>
+			</tr>
+			<tr class="text-c">
+				<td>3</td>
+				<td>张三</td>
+				<td>血压计</td>
+				<td>092</td>
+				<td>男</td>
+				<td>48</td>
+				<td>33333333333333</td>
+				<td>13296767676</td>
+				<td>已婚</td>
+				<td >2017-01-01</td>
+			</tr>
+
+		</tbody>
+	</table>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-admin/js/H-ui.admin.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/laypage/laypage.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

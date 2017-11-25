@@ -1,0 +1,77 @@
+$(function(){
+	//获取地址栏order_id方法
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+		return null;
+	}
+	var order_id=getUrlParam("order_id");
+	$("#order_id").val(order_id);
+	/* 加载信息 */
+	getinfo();
+	function getinfo(){
+		$.ajax({
+			url: "../../../hypertension-app/getBasicInfo.action",
+			type: "GET",
+			dataType: 'json',
+			data: {order_id : 1},
+			success: function(list){
+				if(list.flag){
+					console.log(list);
+					var info = list.data.patientInfo;
+					$('.info').each(function(){
+						var name = $(this).attr('name');
+						if(info[name] || info[name]==0){
+							if(info[name] == "200001" || info[name] == "200002"){
+								$(this).val(info[name] = "200001" ? '男':'女');
+							}else{
+								$(this).val(info[name]);
+							}
+						}
+					});
+					/*输入框*/
+					
+				}
+			}
+		});
+	}
+	/*体育锻炼*/
+	$(".sports").on('change',function(){
+		if($(this).val() == '4'){
+			$(this).parent().siblings().css('display','none');
+		}else{
+			$(this).parent().siblings().css('display','inline-block');
+		}
+	});
+	/*吸烟状况*/
+	$(".dosmoke").on('change',function(){
+		if($(this).val() == '1'){
+			$(this).parent().siblings().css('display','none');
+		}else if($(this).val() == '2'){
+			$(".smoking").css('display','none');
+			$(".smoked").css('display','inline-block');
+		}else{
+			$(".smoking").css('display','inline-block');
+			$(".smoked").css('display','none');
+		}
+	});
+	/*饮酒情况*/
+	$(".drinking").on('change',function(){
+		if($(this).val() == '1'){
+			$(this).parent().siblings().css('display','none');
+		}else{
+			$(this).parent().siblings().css('display','inline-block');
+		}
+	});
+	/*是否有疾病史*/
+	$(".sick").on('click',function(){
+		if($(this).val() == '0'){
+			console.log($(this).val());
+			$(this).parent().next().css('display','none');
+		}else{
+			console.log($(this).val());
+			$(this).parent().next().css('display','block');
+		}
+	});
+});

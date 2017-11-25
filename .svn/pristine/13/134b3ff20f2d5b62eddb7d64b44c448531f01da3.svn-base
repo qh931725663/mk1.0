@@ -1,0 +1,6 @@
+package com.haaa.cloudmedical.wechat.service;
+
+public interface IWeixinUserService {
+    
+    public String queryOpenidByCode(String code);
+}

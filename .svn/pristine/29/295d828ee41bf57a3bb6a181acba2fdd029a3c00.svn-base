@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>腕表使用说明</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="../../css/comm.css"/>
+    <link rel="stylesheet" href="../../css/main.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="use-explain">
+        <ul class="use-explain-list">
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/wrist_watch/equipment_1.png" alt="" style="width:100%;"/>
+                </div>
+                <p>1.佩戴手表后按功能键出现时间界面；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/wrist_watch/equipment_2.png" alt="" style="width:100%;"/>
+                </div>
+                <p>2.点击手机APP搜索并添加新设备，连接成功后自动同步时间；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/wrist_watch/equipment_3.png" alt="" style="width:100%;"/>
+                </div>
+                <p>3.血氧测量，手指轻轻盖住传感器，等数值稳定后松开手指，数据自动上传；</p>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/wrist_watch/equipment_4.png" alt="" style="width:100%;"/>
+                </div>
+                <P>4.心电测量，手指轻轻盖住传感器，等数据存储完毕松开手指，数据自动上传；</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/wrist_watch/equipment_5.png" alt="" style="width:100%;"/>
+                </div>
+                <P>5.动态血氧测量，测量后请拔下探头，数据自动上传（连接血氧探头的USB接口可用于充电）;</P>
+            </li>
+            <li>
+                <div class="use-img">
+                    <img src="../../images/img/wrist_watch/equipment_6.png" alt="" style="width:100%;"/>
+                </div>
+                <P>6.手机开机后出现时间界面，长按功能键可开启或关闭计步器功能。(通讯时设备与APP必须同时打开，测量时不能进行蓝牙搜索和数据传输)</P>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+
+</html>

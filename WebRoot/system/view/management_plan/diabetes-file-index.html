@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加糖尿病档案</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="css/diabetes-comm.css"/>
+    <link rel="stylesheet" href="css/diabete-main.css"/>
+    <link rel="stylesheet" href="layer/css/layer.css"/>
+</head>
+<body>
+<div class="container">
+	<input type="hidden" id="order_id">
+	<!--基础信息状态-->
+		<input type="hidden" class="base_status"/>
+	<!--辅助检查状态-->
+		<input type="hidden" class="image_status"/>
+    <ul class="table-list">
+        <li class="base_status"><span class="fl dia-height"></span><span class="fl dia-height">基础信息</span><span id="base_status" class="fr dia-height" style="font-size:22px;"></span></li>
+        <li class="image_status"><span class="fl dia-height"></span><span class="fl dia-height">辅助检查</span><span id="image_status" class="fr dia-height" style="font-size:22px;"></span></li>
+        <li class="station_status"><span class="fl dia-height"></span><span class="fl dia-height">疾病风险评估</span><span id="station_status" class="fr dia-height" style="font-size:22px;"></span></li>
+    </ul>
+</div>
+<script src="../../../js/jquery-1.4.2.min.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+$(function(){
+    	//获取地址栏order_id方法
+		function getUrlParam(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		var order_id=getUrlParam("order_id");
+		$("#order_id").val(order_id);
+	//初始化加载数据
+	init();
+	function init(){//状态
+	     $.ajax({
+	         url: "../../../diabetesDoc-app/getBasicDoc.action",
+	         type: "GET",
+	         dataType: 'json',
+	         data: {order_id:order_id},
+	         success: function (response) {
+				 var p1=response.data;
+	             if(response.status=='1'){
+	             	$(".base_status").val(p1.base_status);
+	             	$(".image_status").val(p1.image_status);
+	            	$("#base_status").html(p1.base_status==0?"未完成":p1.base_status==1?"已完成":"");
+	            	$("#image_status").html(p1.image_status==0?"未完成":p1.image_status==1?"已完成":"");
+	            	$("#station_status").html(p1.station_status==0?"未完成":p1.station_status==1?"已完成":"");
+	             }
+	         }
+	     });	
+	}
+	//点击添加基础档案
+	$(".base_status").click(function(){
+		window.location.href = "diabetes-baseinfo-write.html?order_id="+$("#order_id").val();
+	});
+	//点击添加辅助检查
+	$(".image_status").click(function(){
+		window.location.href = "supplementary-examination-write.html?order_id="+$("#order_id").val();
+	});
+	//点击添加疾病风险评估
+	$(".station_status").click(function(){
+		if($(".base_status").val()==1 && $(".image_status").val()==1){
+			window.location.href = "rsk-factor-total-write.html?order_id="+$("#order_id").val();
+		}else{
+			layer.open({content: '请先完成基础信息和辅助检查档案信息！',skin: 'msg',time: 2});		
+		}
+	});
+});
+
+
+</script>
+</body>
+</html>

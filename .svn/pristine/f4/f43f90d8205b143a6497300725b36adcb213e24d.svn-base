@@ -1,0 +1,105 @@
+package com.haaa.cloudmedical.app.equipment.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.service.UnicodeService;
+import com.haaa.cloudmedical.common.util.DataTransfromUtil;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.dao.equipment.UrineTestDao;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.UrineTest;
+
+@Service
+public class UrineTestService {
+
+	@Resource
+	private UrineTestDao urineTestDao;
+
+	@Resource
+	private UnicodeService unicodeService;
+
+	/**
+	 * 
+	 * @throws Exception
+	 * @Title: add @Description: 尿检数据添加 @param equipmentUse @param
+	 *         urineTest @return @throws
+	 */
+	@Transactional
+	public InfoJson add(EquipmentUse equipmentUse, UrineTest urineTest) throws Exception {
+		InfoJson infoJson = new InfoJson();
+		DataTransfromUtil.urineTestTrans(urineTest, equipmentUse.getCheck_data_source());
+		Date date = new Date();
+		equipmentUse.setCreate_date(date);
+		equipmentUse.setEquipment_name("urine_test");
+		equipmentUse.setEquipment_property_order_id(Constant.URINE_TEST_ID);
+		Long id = (Long) urineTestDao.insertAndGetKey(equipmentUse, "c_equipment_use");
+		urineTest.setCreate_date(date);
+		urineTest.setEquipment_use_order_id(id);
+		long result = (Long) urineTestDao.insertAndGetKey(urineTest, "c_urine_test");
+		Map<String, Object> map = urineTestDao.queryDetailById(result, "c_urine_test");
+		if (map != null) {
+			infoJson.setData(map);
+			infoJson.setStatus(1);
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: queryRecent @Description: app曲线查询近期数据 @param user_id @param
+	 *         type @return @throws
+	 */
+	public InfoJson queryRecent(Long user_id, String type) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> dataList = urineTestDao.queryRecent(user_id, type, Constant.RECENT);
+		// for (Map<String, Object> map : dataList) {
+		// if (map.get("PH") != null) {
+		// map.put("PH", (NumberUtil.decimalFormat((float) map.remove("PH"),
+		// 2)));
+		// }
+		// if (map.get("SG") != null) {
+		// map.put("SG", (NumberUtil.decimalFormat((float) map.remove("SG"),
+		// 2)));
+		// }
+		// }
+		infoJson.setData(dataList);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+
+	/**
+	 * 
+	 * @Title: pageQuery @Description: app分页查询，按月分页查询 @param user_id @param
+	 *         pageno @param pagesize @return @throws
+	 */
+	public InfoJson pageQuery(Long user_id, int pageno, int pagesize) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> datalist = urineTestDao.pageQuery(user_id, pageno, pagesize);
+		System.out.println(datalist);
+		// for (Map<String, Object> map : datalist) {
+		// if (map.get("PH") != null) {
+		// map.put("PH", (NumberUtil.decimalFormat((float) map.remove("PH"),
+		// 2)));
+		// }
+		// if (map.get("SG") != null) {
+		// map.put("SG", (NumberUtil.decimalFormat((float) map.remove("SG"),
+		// 2)));
+		// }
+		// }
+		infoJson.setData(datalist);
+		infoJson.setStatus(1);
+		return infoJson;
+	}
+}

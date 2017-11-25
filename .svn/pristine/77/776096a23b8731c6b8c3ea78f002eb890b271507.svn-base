@@ -1,0 +1,71 @@
+package com.haaa.cloudmedical.platform.healthRecords.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+
+public interface HealthRecordService {
+    
+    /**
+     * 查询分页
+     * @param user_name
+     * @param user_card
+     * @param user_phone
+     * @return
+     */
+    public Page queryPage(String user_name, String user_card, String user_phone, Integer pageNo);
+    
+    /**
+     * 保存体检报告
+     * @param entity
+     * @return
+     */
+    public Long saveCheck(CheckReport entity);
+    
+    /**
+     * 保存住院报告
+     * @param model
+     * @return
+     */
+    public Long saveHospital(HospitalReport entity);
+    
+    /**
+     * 门诊报告
+     * @param model
+     * @return
+     */
+    public Long saveClinic(ClinicReport entity);
+    
+    /**
+     * 医保记录
+     * @param model
+     * @return
+     */
+    public Long saveMedical(InsuranceReport model);
+    
+    /**
+     * @Description: 查询详情
+     * @author 吴琪
+     * @param user_id 用户ID
+     * @param pic_type 图片类型
+     * @param start 起始时间
+     * @param end 结束时间
+     * @return 
+     * @date: 2017年5月17日 下午1:03:37
+     */
+    public List<Map<String, Object>> getReport(String user_id, String pic_type, String start, String end);
+    
+    /**
+     * 获取医院列表
+     * @Description: 
+     * @author 吴琪
+     * @return 
+     * @date: 2017年5月18日 下午1:53:56
+     */
+    public List<Map<String, Object>> getHosptialList();
+}

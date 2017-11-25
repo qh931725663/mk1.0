@@ -1,0 +1,186 @@
+package com.haaa.cloudmedical.platform.hospital.service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.BeanUtil;
+import com.haaa.cloudmedical.dao.HospitalDao;
+import com.haaa.cloudmedical.entity.Hospital;
+
+@Service
+@Log(name = "医院管理")
+public class HospitalService {
+
+	@Autowired
+	private HospitalDao dao;
+
+	// 分页查询
+	public Page gridQuery(Hospital hospital, String startDate, String endDate, int pageno) {
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		StringBuilder sql = new StringBuilder(
+				"select d.order_id,d.hosp_name,d.area_id,d.hosp_level,d.hosp_property,concat('" + url
+						+ "',d.hosp_icon) hosp_icon,"
+						+ "date_format(d.create_date,'%Y-%m-%d %H:%i') create_date,concat(c.areacounty_name,b.areacounty_name,a.areacounty_name) areacounty_name "
+						+ "from k_hosp d,k_areacounty_all a,k_areacounty_all b,k_areacounty_all c "
+						+ "where d.area_id=a.areacounty_id and a.parent_id = b.areacounty_id and b.parent_id = c.areacounty_id");
+		List<String> values = new ArrayList<>();
+		String hosp_name = hospital.getHosp_name();
+		if (hosp_name != null && !"".equals(hosp_name)) {
+			sql.append(" and hosp_name like ? ");
+			values.add("%" + hosp_name + "%");
+		}
+		String area_id = hospital.getArea_id();
+		if (area_id != null && !"".equals(area_id)) {
+			sql.append(" and area_id = ? ");
+			values.add(area_id);
+		}
+		String hosp_level = hospital.getHosp_level();
+		if (hosp_level != null && !"".equals(hosp_level)) {
+			sql.append(" and hosp_level = ? ");
+			values.add(hosp_level);
+		}
+		String hosp_property = hospital.getHosp_property();
+		if (hosp_property != null && !"".equals(hosp_property)) {
+			sql.append(" and hosp_property = ? ");
+			values.add(hosp_property);
+		}
+		if (startDate != null && !"".equals(startDate)) {
+			sql.append(" and date_format(create_date,'%Y-%m-%d') >= ? ");
+			values.add(startDate);
+		}
+		if (endDate != null && !"".equals(endDate)) {
+			sql.append(" and date_format(create_date,'%Y-%m-%d') <= ? ");
+			values.add(endDate);
+		}
+		sql.append(" order by create_date desc");
+		Page page = dao.pageQuery(sql.toString(), values.toArray(), pageno);
+		return page;
+	}
+	
+	public ResponseDTO validate(String hosp_name){
+		ResponseDTO dto = new ResponseDTO();
+		String sql = "select * from k_hosp where hosp_name = ? ";
+		List<Map<String,Object>> list = dao.select(sql, hosp_name);
+		if(list.size()>0){
+			dto.setErrmsg("该医院已存在，请重新输入");
+		}else{
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+
+	// 新增一家医院
+	@Log(name = "新增医院")
+	public ResponseDTO addHospital(Hospital hospital, String department_name) {
+		ResponseDTO dto = new ResponseDTO();
+		if(department_name==null){
+			department_name="";
+		}
+		List<String> list = Arrays.stream(department_name.split(","))
+				.filter(str -> str != null && !"".equals(str))
+				.distinct()
+				.collect(Collectors.toList());
+		String sql = "insert into k_department(department_name,hosp_order_id,create_date) values(?,?,now())";
+		try {
+			long order_id = dao.insert(hospital, "k_hosp");
+			for (String name : list) {
+				try {
+					dao.execute(sql, name,order_id);
+					dto.setData(order_id);
+					dto.setFlag(true);
+				} catch (Exception e) {
+					dto.setErrmsg("添加科室失败");
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			dto.setErrmsg("添加医院失败");
+			e.printStackTrace();
+		}
+		return dto;
+	}
+
+	// 修改医院信息
+	@Log(name = "修改医院信息")
+	public ResponseDTO modifyHospital(Hospital hospital, String department_name) {
+		ResponseDTO dto = new ResponseDTO();
+		String hosp_order_id = hospital.getOrder_id();
+		if(department_name==null){
+			department_name="";
+		}
+		List<String> new_department_name = Arrays.stream(department_name.split(","))
+				.filter(str -> str != null && !"".equals(str))
+				.distinct()
+				.collect(Collectors.toList());
+		String sql = "select * from k_department where hosp_order_id = ? ";
+		List<Map<String,Object>> departmentList = dao.select(sql, hosp_order_id);
+		List<String> old_department_name = departmentList.stream()
+				.map(m->m.get("department_name").toString())
+				.collect(Collectors.toList());
+		try {
+			dao.update(hospital, "k_hosp");
+			sql = "insert into k_department(department_name,hosp_order_id,create_date) values(?,?,now())";
+			for (String name : new_department_name) {
+				if (!old_department_name.contains(name)) {
+					try {
+						dao.execute(sql, name,hosp_order_id);
+						dto.setFlag(true);
+					} catch (Exception e) {
+						dto.setErrmsg("添加科室失败");
+						e.printStackTrace();
+					}
+				}
+			}
+		} catch (Exception e) {
+			dto.setErrmsg("更新医院信息失败");
+			e.printStackTrace();
+		}
+		return dto;
+	}
+
+	// 删除科室
+	@Log(name = "删除医院下的科室")
+	public ResponseDTO deleteDepartment(String department_order_id) {
+		ResponseDTO dto = new ResponseDTO();
+		StringBuilder sql = new StringBuilder();
+		sql.append("select * from d_doctor where department_order_id = ? ");
+		List<Map<String, Object>> list = dao.select(sql.toString(), department_order_id);
+		if (list.size() > 0) {
+			dto.setErrmsg("该科室不能删除");
+		} else {
+			dao.execute("delete from k_department where order_id = ? ", department_order_id);
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+
+	// 获取医院信息
+	public ResponseDTO getHospitalInfo(String order_id) {
+		StringBuilder sql = new StringBuilder();
+		String url = BeanUtil.getProperty("dbconfig").getString("pictureuploadhttp");
+		sql.append("select a.order_id,a.hosp_name,a.area_id,a.hosp_level,a.hosp_property,concat('" + url
+				+ "',a.hosp_icon) hosp_icon from k_hosp a where a.order_id = ? ");
+		List<Map<String, Object>> hospList = dao.select(sql.toString(), order_id);
+		sql.setLength(0);
+		sql.append(
+				"select b.order_id department_order_id,b.department_name from k_department b where b.hosp_order_id = ? ");
+		List<Map<String, Object>> departmentList = dao.select(sql.toString(), order_id);
+		ResponseDTO dto = new ResponseDTO();
+		if (hospList.size() > 0) {
+			Map<String, Object> hosp = hospList.get(0);
+			hosp.put("departmentList", departmentList);
+			dto.setData(hosp);
+			dto.setFlag(true);
+		}
+		return dto;
+	}
+}

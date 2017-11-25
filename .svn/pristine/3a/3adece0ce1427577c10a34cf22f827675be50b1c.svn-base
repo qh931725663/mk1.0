@@ -1,0 +1,101 @@
+//
+var mkh = {
+	errTips : function(selector, msg) {
+		$(selector).tips({
+			msg : msg,
+			side : 2,
+			time : 0,
+			x : 10,
+		})
+	},
+	errTipsRemove : function(selector) {
+		if (selector.indexOf('#') != 0) {
+			throw new Error('必须传入ID！');
+		}
+		var id = $(selector).attr('id');
+		var error_element = "div.jq_tips_box." + id;
+		if ($(error_element).length != 0) {
+			$(error_element).remove();
+		}
+	},
+	initHospital : function(selector) {
+		$(selector).on("change", function() {
+			var $input = $(this).prev();
+			if ($input.length > 0) {
+				if ($(this).val())
+					$input.val($(this).find("option:selected").text());
+				else
+					$input.val("");
+			}
+		});
+		$.ajax({
+			type : "post",
+			url : "../../../health-record/getHosptialList.action",
+			dataType : "json",
+			success : function(data) {
+				if (data) {
+					var html = ""
+					$.each(data.data, function(i, item) {
+						html += "<option value='" + item.order_id + "'>" + item.hosp_name + "</option>";
+					});
+					$(selector).append(html);
+				}
+			}
+		});
+	},
+	getUrlParam : function(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null) return unescape(r[2]);
+		return null;
+	},
+	addPicture : function() {
+		//
+		var html = "<form class='form'><div class='upload_pic' style='margin-right:4px;'><img src='../images/browse.jpg' " +
+			"class='bor' style='width:120px;height:120px;cursor: pointer;' " +
+			"onclick='javascript:$(this).next().click()'><input class='image file'  " +
+			"name='image' type='file' MULTIPLE='true' ACCEPT='image/gif,image/jpeg,image/jpg,image/png' " +
+			"style='display:none'><span class='btn-upload form-group'><input type='file' multiple " +
+			"name='image1' class='input-file'></span><img src='../images/delete.png' class='delete_img'></div></form>";
+		$('#add_pic').before(html);
+	},
+	initPictures : function(){
+		var self = this;
+		$('#add_pic').on('click', function(){
+			self.addPicture();
+		});
+		//
+		$('#upload_file').on('mouseover mouseout','.upload_pic',function(){
+		    if(event.type == "mouseover"){
+		    	$(this).find('.delete_img').show();
+		    }else if(event.type == "mouseout"){
+		    	$(this).find('.delete_img').hide();
+		    } 
+		});
+		$('#upload_file').on('click', '.delete_img', function(){
+			$(this).parent().remove();
+		});
+	},
+	hospitalAutocomplete : function(){
+		$("#hosp_name").autocomplete({
+			source: "../../../health-record/getHosptialList.action",
+			select: function(event, data){
+				console.log(data)
+				//
+				$("#hosp_name").val(data.item.label);
+				$('#hosp_order_id').val(data.item.order_id);
+				// 必须阻止事件的默认行为，否则autocomplete默认会把ui.item.value设为输入框的value值
+				event.preventDefault();     
+			},
+			open  : function( event, ui ) {
+		       $(".ui-menu-item").each(function(i){
+					var text = $(this).find('a').text();
+					var input_val = $("#hosp_name").val();
+					if(text.indexOf(input_val) < 0){
+						$(this).remove();
+					}
+				});
+		    }
+		});
+	}
+};

@@ -1,0 +1,42 @@
+package com.haaa.cloudmedical.platform.healthRecords.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.entity.Page;
+import com.haaa.cloudmedical.entity.Hypertension;
+import com.haaa.cloudmedical.platform.plan.model.PlanVo;
+
+public interface ChronicRecordsService {
+
+	Page getPage(PlanVo model);
+///////////////////////////////高血压慢病档案CRUD开始////////////////////////////////////////////////////////////
+	long addNewHypertensionDocument(Hypertension hypertension);
+
+	Map<String, String[]> getHypertensionData(Map<String, String[]> raw);
+
+	void check(Map<String, String[]> data, String string);
+
+	void updateBasicInfo(Map<String, String[]> data);
+
+	void updateCheckInfo(Map<String, String[]> data);
+
+	void updateWorkStation(Map<String, String[]> data);
+
+	void deleteHypertension(String order_id);
+
+	Object getDocList(String patient_id);
+
+	Object getDocInfo(String order_id);
+
+	Object getDocuMent(String order_id, String string);
+///////////////////////////////高血压慢病档案CRUD结束////////////////////////////////////////////////////////////
+	Object getDocList2(String patient_id);
+	InfoJson addDoc(long parseLong);
+	InfoJson addAnswers(Map<String, List<Object>> map2);
+	InfoJson update(Map<String, List<Object>> map2);
+	InfoJson getAnswers(long order_id, String scope_flag);
+	InfoJson getBasicDoc(long order_id);
+
+}

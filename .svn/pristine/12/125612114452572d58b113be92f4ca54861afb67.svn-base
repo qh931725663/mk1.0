@@ -1,0 +1,68 @@
+package com.haaa.cloudmedical.app.healthRecords.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.dao.HealthRecordsAppDao;
+import com.haaa.cloudmedical.entity.CheckReport;
+import com.haaa.cloudmedical.entity.ClinicReport;
+import com.haaa.cloudmedical.entity.HospitalReport;
+import com.haaa.cloudmedical.entity.InsuranceReport;
+import com.haaa.cloudmedical.platform.user.service.UserPlatformService;
+
+@Service
+public class HealthRecordsAppService {
+	
+	@Autowired
+	private HealthRecordsAppDao dao;
+	
+	private Logger logger = Logger.getLogger(UserPlatformService.class);
+	
+	public ResponseDTO selectAllReprot(String user_id){
+		ResponseDTO dto = new ResponseDTO();
+		List<Map<String,Object>> list = dao.selectAllReprot(user_id);
+		dto.setData(list);
+		dto.setFlag(true);
+		return dto;
+	}
+	
+	public Map<String,Object> getUser(String user_id){
+		Map<String,Object> map = dao.getUser(user_id);
+		return map;
+	}
+	
+	public long uploadHealthReport(Object report){
+		long order_id = 0;
+		String date = DateUtil.DateFormat(new Date(), "yyyy-MM-dd hh:mm:ss");
+		String table="";
+		if(report instanceof CheckReport){
+			table="p_check_report";
+			((CheckReport) report).setCreate_date(date);
+		}else if(report instanceof ClinicReport){
+			((ClinicReport) report).setCreate_date(date);
+			table="p_clinic_report";
+		}else if(report instanceof HospitalReport){
+			((HospitalReport) report).setCreate_date(date);
+			table="p_hospital_report";
+		}else if(report instanceof InsuranceReport){
+			((InsuranceReport) report).setCreate_date(date);
+			table="p_medical_insurance_report";
+		}
+		try{
+			order_id = dao.insert(report, table);
+		}catch(Exception e){
+			logger.error("报告上传失败", e);
+			order_id=0;
+		}
+		
+		return order_id;
+	}
+	
+}

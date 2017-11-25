@@ -1,0 +1,173 @@
+package com.haaa.cloudmedical.advice;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.haaa.cloudmedical.common.annotation.Log;
+import com.haaa.cloudmedical.common.util.redis.RedisCacheUtil;
+import com.haaa.cloudmedical.log.service.LogService;
+import com.haaa.cloudmedical.platform.roleManage.service.RoleManageService;
+
+/**
+ * Logger
+ */
+public class RecordLogger {
+
+    @Autowired
+    LogService                    logService;
+    @Autowired
+    public RedisCacheUtil<Object> redis;
+
+    private Logger                logger = Logger.getLogger(RoleManageService.class);
+
+    @SuppressWarnings("unchecked")
+    public Object record(ProceedingJoinPoint pjp) {
+        Map<String, Object> log = new HashMap<String, Object>();
+        try {
+            //获取用户信息
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            //添加操作人信息
+            if (request != null) {
+                Object obj = request.getSession().getAttribute("user");
+                if (obj != null) {
+                    Map<String, Object> map = (Map<String, Object>) obj;
+                    //用户名
+                    String user_name = map.get("user_name").toString();
+                    String user_id = map.get("user_id").toString();
+                    log.put("user_id", user_id);
+                    log.put("user_name", user_name);
+                } else {
+                    //token
+                    String token = request.getHeader("token");
+                    Map<String, Object> map = redis.getCacheMap(token);
+                    obj = map.get("user");
+                    if (obj != null) {
+                        Map<String, Object> user = (Map<String, Object>) obj;
+                        //用户名
+                        String user_name = user.get("user_name").toString();
+                        String user_id = user.get("user_id").toString();
+                        log.put("user_id", user_id);
+                        log.put("user_name", user_name);
+                    }
+                }
+            }
+            //目标类
+            String optdesc = "";
+            Log annotation = pjp.getTarget().getClass().getAnnotation(Log.class);
+            if (annotation == null) {
+                optdesc = pjp.getTarget().getClass().getSimpleName();
+            } else {
+                optdesc = annotation.name();
+            }
+            log.put("class_name", optdesc);
+            //目标方面名称
+            String name = getMethodDesc(pjp);
+            if (name == "") {
+                name = pjp.getSignature().getName();
+            }
+            log.put("op_type", name);
+            //ip
+            String ip = this.getIpAddress(request);
+            log.put("ip_address", ip);
+            //操作参数 
+            /*Object[] params = pjp.getArgs();*/
+            log.put("param", arr2Str(pjp.getArgs()));
+            //调用目标对象的方法
+            Object ret = pjp.proceed();
+            //设置操作结果
+            log.put("result", "success");
+            //设置结果消息
+            return ret;
+        } catch (Throwable e) {
+            //
+            e.printStackTrace();
+            log.put("result", "failure");
+        } finally {
+            //
+            logger.info("保存日志");
+            logService.saveLog(log);
+        }
+        return null;
+    }
+
+    @SuppressWarnings("all")
+    private String getMethodDesc(ProceedingJoinPoint pjp) throws Exception {
+        String methodName = pjp.getSignature().getName();
+        Class<?> classTarget = pjp.getTarget().getClass();
+        Class<?>[] params = ((MethodSignature) pjp.getSignature()).getParameterTypes();
+        Method method = classTarget.getMethod(methodName, params);
+        Log annotation = method.getAnnotation(Log.class);
+        String name = "";
+        if (null != annotation) {
+            name = annotation.name();
+        }
+        return name;
+    }
+
+    //验证集合
+    private boolean isValid(Object[] arr) {
+        if (arr == null || arr.length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 将数组变换成字符串,使用","号分割
+     */
+    private String arr2Str(Object[] arr) {
+        String temp = "";
+        if (this.isValid(arr)) {
+            for (Object s : arr) {
+                //temp = temp + JSONArray.fromObject(s).toString() + "," ;
+                temp = s.getClass().getSimpleName() + ",";
+            }
+            return temp.substring(0, temp.length() - 1);
+        }
+        return temp;
+    }
+
+    public String getIpAddress(HttpServletRequest request) throws IOException {
+        // 获取请求主机IP地址,如果通过代理进来，则透过防火墙获取真实IP地址  
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("HTTP_CLIENT_IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getRemoteAddr();
+            }
+        } else if (ip.length() > 15) {
+            String[] ips = ip.split(",");
+            for (int index = 0; index < ips.length; index++) {
+                String strIp = (String) ips[index];
+                if (!("unknown".equalsIgnoreCase(strIp))) {
+                    ip = strIp;
+                    break;
+                }
+            }
+        }
+        return ip;
+    }
+}

@@ -1,0 +1,273 @@
+package com.haaa.cloudmedical.app.equipment.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.InfoJson;
+import com.haaa.cloudmedical.common.util.DateUtil;
+import com.haaa.cloudmedical.common.util.NumberUtil;
+import com.haaa.cloudmedical.dao.equipment.LungCapacityDao;
+import com.haaa.cloudmedical.entity.EquipmentUse;
+import com.haaa.cloudmedical.entity.LungCapacity;
+
+@Service
+public class LungCapacityService {
+
+	@Resource
+	private LungCapacityDao lungCapacityDao;
+
+	private Logger logger = Logger.getLogger(LungCapacityService.class);
+
+	@Transactional
+	public InfoJson add(EquipmentUse equipmentUse, LungCapacity lungCapacity) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			Date date = new Date();
+			equipmentUse.setCreate_date(date);
+			equipmentUse.setEquipment_name("lung_capacity");
+			equipmentUse.setEquipment_property_order_id(17);
+			Long id = (Long) lungCapacityDao.insertAndGetKey(equipmentUse, "c_equipment_use");
+			lungCapacity.setCreate_date(date);
+			lungCapacity.setEquipment_use_order_id(id);
+			long result = (Long) lungCapacityDao.insertAndGetKey(lungCapacity, "c_lung_capacity");
+			Map<String, Object> map = lungCapacityDao.queryDetailById(result, "c_lung_capacity");
+			if (map != null) {
+				infoJson.setData(map);
+				infoJson.setStatus(1);
+			}
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	/**
+	 * 根据type,user_id查询最近七天数据
+	 * 
+	 * @param user_id
+	 * @param type
+	 * @return
+	 */
+	public InfoJson queryRecent(long user_id, String type, int sex, int age, double height) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println(DateUtil.dateFormat(new Date(), "HH:mm:ss") + ":折线图");
+
+		try {
+			double pef = calculatePEF(sex, age, height);
+			Map<String, Object> map = new HashMap<String, Object>();
+			List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+
+			if (type.equals("all")) {
+				for (int i = 0; i < Constant.LUNGCAPACITYPARAMS.length; i++) {
+					Map<String, Object> dataMap = new HashMap<String, Object>();
+					List<Map<String, Object>> list = lungCapacityDao.queryRecent(user_id,
+							Constant.LUNGCAPACITYPARAMS[i]);
+					for (Map<String, Object> map2 : list) {
+						dataTrans(map2);
+					}
+					dataMap.put("type", Constant.LUNGCAPACITYPARAMS[i]);
+					dataMap.put("slist", list);
+					dataList.add(dataMap);
+				}
+			} else {
+				Map<String, Object> dataMap = new HashMap<String, Object>();
+				List<Map<String, Object>> list = lungCapacityDao.queryRecent(user_id, type);
+				for (Map<String, Object> map1 : list) {
+					dataTrans(map1);
+				}
+				dataMap.put("type", type);
+				dataMap.put("slist", list);
+				dataList.add(dataMap);
+			}
+			map.put("mlist", dataList);
+			map.put("normal_pef", pef);
+			infoJson.setData(map);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson queryRecent1(long user_id, String type, int sex, int age, double height) {
+		InfoJson infoJson = new InfoJson();
+		System.out.println(DateUtil.dateFormat(new Date(), "HH:mm:ss") + ":折线图");
+
+		try {
+			double pef = calculatePEF(sex, age, height);
+			Map<String, Object> map = new HashMap<String, Object>();
+
+			if (type.equals("all")) {
+				for (int i = 0; i < Constant.LUNGCAPACITYPARAMS.length; i++) {
+					Map<String, Object> dataMap = new HashMap<String, Object>();
+					List<Map<String, Object>> list = lungCapacityDao.queryRecent(user_id,
+							Constant.LUNGCAPACITYPARAMS[i]);
+					for (Map<String, Object> map2 : list) {
+						dataTrans(map2);
+					}
+					map.put(Constant.LUNGCAPACITYPARAMS[i], list);
+				}
+			} else {
+				Map<String, Object> dataMap = new HashMap<String, Object>();
+				List<Map<String, Object>> list = lungCapacityDao.queryRecent(user_id, type);
+				for (Map<String, Object> map2 : list) {
+					dataTrans(map2);
+				}
+				map.put(type, list);
+			}
+			map.put("normal_pef", pef);
+			infoJson.setData(map);
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	public InfoJson pageQuery(long user_id, String year_month, int pageno, int pagesize) {
+		InfoJson infoJson = new InfoJson();
+		List<Map<String, Object>> dataList = null;
+
+		try {
+			if (year_month != null) {
+				dataList = lungCapacityDao.queryByMonth(user_id, year_month, pageno, pagesize);
+			} else {
+				dataList = lungCapacityDao.pageQuery(user_id, pageno, pagesize);
+			}
+			if (dataList.size() > 0) {
+				Iterator<Map<String, Object>> iterator = dataList.iterator();
+				Map<String, Object> map = iterator.next();
+				Date date = (Date) map.get("datetime");
+				String yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+				String monthDay = DateUtil.dateFormat(date, "MM-dd");
+				String tempYearMonth = null;
+				List<Object> monthList = new ArrayList<Object>();
+				outer: while (true) {
+					if (map == null) {
+						break;
+					}
+					Map<String, Object> monthMap = new HashMap<String, Object>();
+					tempYearMonth = yearMonth;
+					monthList.add(monthMap);
+					monthMap.put("yearmonth", yearMonth);
+					List<Object> timeList = new ArrayList<Object>();
+					while (tempYearMonth.equals(yearMonth)) {
+						monthMap.put("timelist", timeList);
+						Map<String, Object> timeMap = new HashMap<String, Object>();
+						map.put("datetime", DateUtil.dateFormat(date, "MM-dd HH:mm"));
+						dataTrans(map);
+						timeMap.put("singledata", map);
+						int hour = DateUtil.getHour(date);
+						int period = periodDefine(hour);
+						timeMap.put("period", period);
+						timeList.add(timeMap);
+						if (iterator.hasNext()) {
+							map = iterator.next();
+							date = (Date) map.get("datetime");
+							yearMonth = DateUtil.dateFormat(date, "yyyy-MM");
+							monthDay = DateUtil.dateFormat(date, "MM-dd");
+						} else {
+							break outer;
+						}
+					}
+				}
+				System.out.println("monthlist-------" + monthList);
+				infoJson.setData(monthList);
+				infoJson.setStatus(1);
+			}
+
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+		return infoJson;
+	}
+
+	private void dataTrans(Map<String, Object> map) {
+		if (map.get("param") != null) {
+			map.put("param", (NumberUtil.decimalFormat((float) map.remove("param"), 2)));
+			if (map.get("param_rate") != null) {
+				map.put("param_rate", (NumberUtil.decimalFormat((float) map.remove("param_rate"), 0)));
+			}
+		} else {
+			if (map.get("fvc") != null) {
+				map.put("fvc", (NumberUtil.decimalFormat((float) map.remove("fvc"), 2)));
+			}
+			if (map.get("fvc_rate") != null) {
+				map.put("fvc_rate", (NumberUtil.decimalFormat((float) map.remove("fvc_rate"), 0)));
+			}
+			if (map.get("fev1") != null) {
+				map.put("fev1", (NumberUtil.decimalFormat((float) map.remove("fev1"), 2)));
+			}
+			if (map.get("fev1_rate") != null) {
+				map.put("fev1_rate", (NumberUtil.decimalFormat((float) map.remove("fev1_rate"), 0)));
+			}
+			if (map.get("pef") != null) {
+				map.put("pef", (NumberUtil.decimalFormat((float) map.remove("pef"), 2)));
+			}
+			if (map.get("pef_rate") != null) {
+				map.put("pef_rate", (NumberUtil.decimalFormat((float) map.remove("pef_rate"), 0)));
+			}
+		}
+
+	}
+
+	private int periodDefine(int hour) {
+		int period = 0;
+		if (hour < Constant.MORNING_END && hour >= 0) {
+			period = -1;
+		} else if (hour < Constant.NIGHT_BEGIN) {
+			period = 0;
+		} else {
+			period = 1;
+		}
+		return period;
+	}
+
+	/**
+	 * 返回具有信息的年月
+	 * 
+	 * @param user_id
+	 * @return
+	 */
+	public InfoJson queryMonth(Long user_id) {
+		InfoJson infoJson = new InfoJson();
+		try {
+			infoJson.setData(lungCapacityDao.queryMonth(user_id));
+			infoJson.setStatus(1);
+		} catch (Exception e) {
+			logger.error("", e);
+
+		}
+		return infoJson;
+
+	}
+
+	/**
+	 * 计算正常PEF
+	 * 
+	 * @param sex
+	 * @param age
+	 * @param height
+	 * @return
+	 */
+	private double calculatePEF(int sex, int age, double height) {
+		double pef = 0;
+		if (sex % 2 == 1) { // 男
+			pef = (75.6 + 20.4 * age - 0.41 * Math.pow(age, 2) + 0.002 * Math.pow(age, 3) + 1.19 * height) / 100;
+		} else { // 女
+			pef = (282.0 + 1.79 * age - 0.046 * Math.pow(age, 2) + 0.68) / 100;
+		}
+		return pef;
+	}
+}

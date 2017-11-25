@@ -1,0 +1,48 @@
+package com.haaa.cloudmedical.common.controller;
+
+import java.io.File;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.haaa.cloudmedical.common.entity.Constant;
+import com.haaa.cloudmedical.common.entity.ResponseDTO;
+import com.haaa.cloudmedical.common.service.FileUploadService;
+
+@Controller
+@RequestMapping("/batch")
+public class BatchNewInController {
+
+	@Autowired
+	private FileUploadService service;
+
+	@RequestMapping("/read.action")
+	@ResponseBody
+	public Object readExcel(String path, String data_type) {
+		ResponseDTO dto  = new ResponseDTO(); 
+		String sheet_name = null;
+		String[] params = null;
+		int readRows = Constant.READ_EXCEL_ROWS;
+		if (data_type.equals("1")) {
+			params = Constant.IMPORT_MEMBER_PARAMS;
+			sheet_name = Constant.IMPORT_MEMBER_SHEETNAME;
+		} else if (data_type.equals("2")) {
+			params = Constant.IMPORT_CHECK_PARAMS;
+			sheet_name = Constant.IMPORT_CHECK_SHEETNAME;
+		}
+		try{
+			File file = new File(path);
+			dto=service.read(file, sheet_name, readRows, params,data_type);
+			System.out.println("导入完成");
+			 
+		}catch(Exception e){
+			System.out.println("文件不存在！");
+			System.out.println("导入未完成");
+			e.printStackTrace();
+		}			
+		
+		return dto;
+	}
+}
